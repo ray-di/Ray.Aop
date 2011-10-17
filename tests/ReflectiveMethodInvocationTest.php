@@ -1,0 +1,70 @@
+<?php
+
+namespace Ray\Aop;
+
+/**
+ * Test class for Ray.Aop
+ */
+class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
+{
+    protected $invocation;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mock = new MockMethod;
+        // this is same as $this->mock->add(1);
+        $callable = array($this->mock, 'add');
+        $args = array(1);
+        $this->invocation = new ReflectiveMethodInvocation($callable, $args);
+    }
+
+    public function test_New()
+    {
+        $actual = $this->invocation;
+        $this->assertInstanceOf('\Ray\Aop\ReflectiveMethodInvocation', $this->invocation);
+    }
+
+    public function test_getMethod()
+    {
+        $methodReflection = $this->invocation->getMethod();
+        $this->assertInstanceOf('\ReflectionMethod', $methodReflection);
+
+    }
+
+    public function test_getMethodMethodName()
+    {
+        $methodReflection = $this->invocation->getMethod();
+        $this->assertSame('Ray\Aop\MockMethod', $methodReflection->class);
+        $this->assertSame('add', $methodReflection->name);
+    }
+
+    public function test_getArguments()
+    {
+        $args = $this->invocation->getArguments();
+        $this->assertSame($args, array(1));
+    }
+
+    public function test_proceed()
+    {
+        $this->invocation->proceed();
+        $this->assertSame(1, $this->mock->a);
+    }
+
+    public function test_proceedTwoTimes()
+    {
+        $this->invocation->proceed();
+        $this->invocation->proceed();
+        $this->assertSame(2, $this->mock->a);
+    }
+    
+    /**
+     * @expectedException Ray\Aop\Exception
+     */
+    public function test_Exception()
+    {
+        throw new Exception;
+    }
+
+
+}
