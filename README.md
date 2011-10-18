@@ -31,6 +31,9 @@ Intercepter
 Weave original class and interceptor with Weaver.
 
 	// with weaver
+    $bind = new Bind;
+    $bind->bindInterceptors('getDouble', array(new DoubleInterceptor, new DoubleInterceptor));
+    $this->weaver = new Weaver(new MockMethod, $bind);
 	$mock = new Weaver(new Mock, array(new tenTimes, new tenTimes));
 	echo $mock->getDouble(3); //600 =3*2*10*10
 
@@ -38,11 +41,26 @@ Weave original class and interceptor with Weaver.
 	$mock = new Mock;
 	echo $mock->getDouble(3); //6
 
+Or conditional binding with 'matcher'
+
+    $bind = new Bind;
+    // getXXX method ?
+    $matcher = function($name) {
+        return (substr($name, 0, 3) === 'get') ? true : false;
+    };
+    $bind->bindMatcher(matcher, array(new GetInterceptor));
+    $this->weaver = new Weaver(new MockMethod, $bind);
+	$mock = new Weaver(new Mock, array(new tenTimes, new tenTimes));
+	echo $mock->getDouble(3); //600 =3*2*10*10
+
 # Usage
 
  * Manual weave
 
 ## Manual Weave
 
+    // WeekendBlocker interceptor throw Exception on weekend.
+	$bind = new Bind;
+	$bind->bindInterceptors('chargeOrder', array(new WeekendBlocker));
 	$weavedBilling = new Weaver(new RealBilling, array(new WeekendBlocker));
 	$weavedBilling->chargeOrder($args);
