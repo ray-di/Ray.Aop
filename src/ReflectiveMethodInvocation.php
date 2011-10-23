@@ -65,7 +65,12 @@ class ReflectiveMethodInvocation implements MethodInvocation
         return $interceptor->invoke($this);
     }
 
-    // 	public function getThis()
-    // 	{
-    //  }
+   /**
+     * (non-PHPdoc)
+     * @see Ray\Aop.Joinpoint::getThis()
+     */
+     public function getThis()
+    {
+        return $this->object;
+    }
 }

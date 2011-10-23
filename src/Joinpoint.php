@@ -47,7 +47,7 @@ interface Joinpoint {
     *
     * @return the object (can be null if the accessible object is
     * static). */
-//    public function getThis();
+    public function getThis();
 
    /**
     * Returns the static part of this joinpoint.

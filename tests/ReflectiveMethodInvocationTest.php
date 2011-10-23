@@ -66,5 +66,9 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
         throw new Exception;
     }
 
-
+    public function test_getThis()
+    {
+        $actual = $this->invocation->getThis();
+		$this->assertSame($this->mock, $actual);
+    }
 }
