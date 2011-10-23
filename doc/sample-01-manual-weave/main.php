@@ -4,9 +4,13 @@ namespace Ray\Aop\Sample;
 
 require dirname(__DIR__) . '/bootstrap.php';
 
-use Ray\Aop\Weaver;
+use Ray\Aop\Weaver,
+    Ray\Aop\Bind;
 
-$weavedBilling = new Weaver(new RealBillingService, array(new WeekendBlocker));
+$bind = new Bind;
+$bind->bindInterceptors('chargeOrder', array(new WeekendBlocker));
+
+$weavedBilling = new Weaver(new RealBillingService, $bind);
 try {
     echo $weavedBilling->chargeOrder();
 } catch (\RuntimeException $e) {
