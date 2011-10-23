@@ -18,9 +18,4 @@ class MockMethod
     {
         return $a * 2;
     }
-
-    public function getSub($a, $b)
-    {
-        return $a - $b;
-    }
 }
