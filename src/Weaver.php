@@ -17,8 +17,14 @@ namespace Ray\Aop;
 class Weaver implements Weave
 {
     protected $object;
+    protected $bind;
+
 
     protected $interceptors;
+    /**
+     * @var \ReflectionClass
+     */
+    protected $reflcetion;
 
     /**
      * Constractor
@@ -26,10 +32,11 @@ class Weaver implements Weave
      * @param object $object
      * @param Inpterceptor[]
      */
-    public function __construct($object, array $interceptors)
+    public function __construct($object, Bind $bind)
     {
         $this->object = $object;
-        $this->interceptors = $interceptors;
+        $this->bind = $bind;
+        $this->reflcetion = new \ReflectionClass($object);
     }
 
     /**
@@ -40,7 +47,24 @@ class Weaver implements Weave
      */
     public function  __call($name, $args)
     {
-        $invocation = new ReflectiveMethodInvocation(array($this->object, $name), $args, $this->interceptors);
+        if ($this->reflcetion->hasMethod($name) === false) {
+            throw new \BadFunctionCallException($name);
+        }
+        // explicit bind
+        if (isset($this->bind[$name])) {
+            $interceptors = $this->bind[$name];
+            goto weave;
+        }
+        // matcher bind
+        $bind = $this->bind;
+        $interceptors = $bind($name);
+        if ($interceptors !== false) {
+            goto weave;
+        }
+        // no binding
+        return call_user_func_array(array($this->object, $name), $args);
+weave:
+        $invocation = new ReflectiveMethodInvocation(array($this->object, $name), $args, $interceptors);
         return $invocation->proceed();
     }
 }
