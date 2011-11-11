@@ -53,7 +53,26 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $this->weaver = new Weaver(new MockMethod, $bind);
         $actual = $this->weaver->getDouble(2);
         $this->assertSame(32, $actual);
-
     }
 
+    /**
+     * Use invoke for "named parameter" or "validation" or whatever you want modify/check parameters.
+     */
+    public function test_invoke()
+    {
+        $function = function($object, $method, $params){ return array($params[0] * 2);};
+        $weaver = $this->weaver;
+        $actual = $weaver($function, 'getDouble', array(2));
+        $this->assertSame(32, $actual);
+    }
+
+    /**
+     * Use invoke for "named parameter" or "validation" or whatever you want modify/check parameters.
+     */
+    public function test_invoke2()
+    {
+        $function = function($object, $method, $params){ return array($params[0] * 2);};
+        $actual = $this->weaver->__invoke($function, 'getDouble', array(2));
+        $this->assertSame(32, $actual);
+    }
 }

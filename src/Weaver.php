@@ -16,15 +16,26 @@ namespace Ray\Aop;
  */
 class Weaver implements Weave
 {
+    /**
+     * Target object
+     *
+     * @var mixed
+     */
     protected $object;
+
+    /**
+     * Interceptor binding
+     *
+     * @var array
+     */
     protected $bind;
 
-
-    protected $interceptors;
     /**
-     * @var \ReflectionClass
+     * Interceptors
+     *
+     * @var array
      */
-    protected $reflcetion;
+    protected $interceptors;
 
     /**
      * Constractor
@@ -36,35 +47,48 @@ class Weaver implements Weave
     {
         $this->object = $object;
         $this->bind = $bind;
-        $this->reflcetion = new \ReflectionClass($object);
     }
 
     /**
      * The magic method to call intercepted method.
      *
-     * @param string $name
-     * @param array  $args
+     * @param string $method
+     * @param array  $params
      */
-    public function  __call($name, $args)
+    public function  __call($method, $params)
     {
-        if ($this->reflcetion->hasMethod($name) === false) {
-            throw new \BadFunctionCallException($name);
+        if (!method_exists($this->object, $method)) {
+            throw new \BadFunctionCallException($method);
         }
         // explicit bind
-        if (isset($this->bind[$name])) {
-            $interceptors = $this->bind[$name];
+        if (isset($this->bind[$method])) {
+            $interceptors = $this->bind[$method];
             goto weave;
         }
         // matcher bind
         $bind = $this->bind;
-        $interceptors = $bind($name);
+        $interceptors = $bind($method);
         if ($interceptors !== false) {
             goto weave;
         }
         // no binding
-        return call_user_func_array(array($this->object, $name), $args);
+        return call_user_func_array(array($this->object, $method), $params);
 weave:
-        $invocation = new ReflectiveMethodInvocation(array($this->object, $name), $args, $interceptors);
+        $invocation = new ReflectiveMethodInvocation(array($this->object, $method), $params, $interceptors);
         return $invocation->proceed();
+    }
+
+    /**
+     * Invoke with callable parameter.
+     *
+     * @param Callable $getParams
+     * @param string   $method
+     * @param query    $query
+     * @return mixed
+     */
+    public function __invoke($getParams, $method, $query)
+    //public function __invoke(Callable $getParams, $method, $query) // for PHP 5.4
+    {
+        return $this->__call($method, $getParams($this->object, $method, $query));
     }
 }
