@@ -30,5 +30,5 @@ interface MethodInterceptor extends Inpterceptor
      *
      * @throws \Ray\Aop\Exception
      */
-	public function invoke(MethodInvocation $invocation);
+    public function invoke(MethodInvocation $invocation);
 }

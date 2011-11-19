@@ -16,12 +16,12 @@ namespace Ray\Aop;
  */
 interface Invocation extends Joinpoint {
 
-   /**
-    * Get the arguments as an array object.
-    * It is possible to change element values within this
-    * array to change the arguments.
-    *
-    * @return array the argument of the invocation
-    */
-   public function getArguments();
+    /**
+     * Get the arguments as an array object.
+     * It is possible to change element values within this
+     * array to change the arguments.
+     *
+     * @return array the argument of the invocation
+     */
+    public function getArguments();
 }

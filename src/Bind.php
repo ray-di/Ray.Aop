@@ -12,7 +12,7 @@ namespace Ray\Aop;
  * @package Ray.Aop
  * @author  Akihito Koriyama<akihito.koriyama@gmail.com>
  */
- class Bind extends \ArrayObject
+class Bind extends \ArrayObject
 {
     private $matchers = array();
 
@@ -71,9 +71,12 @@ namespace Ray\Aop;
     {
         $result = '';
         foreach ($this as $method => $interceptors) {
-            $classNames = array_map(function($interceptor){
-                return get_class($interceptor);
-            }, $interceptors);
+            $classNames = array_map(
+                function($interceptor){
+                    return get_class($interceptor);
+                },
+                $interceptors
+            );
             $intercetorsList = implode(',', $classNames);
             $result .= "[{$method}]=>[{$intercetorsList}]\n";
         }
