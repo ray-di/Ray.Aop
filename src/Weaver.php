@@ -2,7 +2,7 @@
 /**
  * Ray
  *
- * @license  http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
 
@@ -41,7 +41,7 @@ class Weaver implements Weave
      * Constractor
      *
      * @param object $object
-     * @param Inpterceptor[]
+     * @param Bind   $bind
      */
     public function __construct($object, Bind $bind)
     {
@@ -54,8 +54,11 @@ class Weaver implements Weave
      *
      * @param string $method
      * @param array  $params
+     *
+     * @return mixed
+     * @throws \BadFunctionCallException
      */
-    public function  __call($method, $params)
+    public function  __call($method, array $params)
     {
         if (!method_exists($this->object, $method)) {
             throw new \BadFunctionCallException($method);
@@ -81,13 +84,13 @@ weave:
     /**
      * Invoke with callable parameter.
      *
-     * @param Callable $getParams
-     * @param string   $method
-     * @param query    $query
+     * @param mixed  $getParams Callable
+     * @param string $method
+     * @param array  $query
+     *
      * @return mixed
      */
-    public function __invoke($getParams, $method, $query)
-    //public function __invoke(Callable $getParams, $method, $query) // for PHP 5.4
+    public function __invoke($getParams, $method, array $query)
     {
         return $this->__call($method, $getParams($this->object, $method, $query));
     }

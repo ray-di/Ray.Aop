@@ -2,7 +2,7 @@
 /**
  * Ray
  *
- * @license  http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
 
@@ -16,18 +16,49 @@ use Ray\Aop\MethodInvocation;
  */
 class ReflectiveMethodInvocation implements MethodInvocation
 {
+    /**
+     * Object
+     *
+     * @var object
+     */
     protected $object;
+
+    /**
+     * Parameters
+     *
+     * @var array
+     */
     protected $args;
+
+    /**
+     * Method
+     *
+     * @var string
+     */
     protected $method;
+
+    /**
+     * Interceptors
+     *
+     * @var array
+     */
     protected $interceptors;
+
+    /**
+     * Interceptor index
+     *
+     * @var integer
+     */
     protected $interceptorIndex;
 
     /**
-     * @param Calalble $target
-     * @param array $args
-     * @param array $interceptors
+     * Constructor
+     *
+     * @param object $target \Callable
+     * @param array  $args
+     * @param array  $interceptors
      */
-    public function __construct($target, $args, array $interceptors = array())
+    public function __construct($target, array $args, array $interceptors = array())
     {
         $this->object = $target[0];
         $this->args = $args;
@@ -36,6 +67,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
+     * (non-PHPdoc)
      * @see Ray\Aop.MethodInvocation::getMethod()
      */
     public function getMethod()

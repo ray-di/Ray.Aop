@@ -2,7 +2,7 @@
 /**
  * Ray
  *
- * @license  http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
 
@@ -14,6 +14,11 @@ namespace Ray\Aop;
  */
 class Bind extends \ArrayObject
 {
+    /**
+     * Matcher
+     *
+     * @var array
+     */
     private $matchers = array();
 
     /**
@@ -22,7 +27,7 @@ class Bind extends \ArrayObject
      * @param string $method
      * @param array  $interceptors
      *
-     * @return \Ray\Aop\Bind
+     * @return Bind
      */
     public function bindInterceptors($method, array $interceptors)
     {
@@ -36,11 +41,12 @@ class Bind extends \ArrayObject
      * @param \Closure $matcher
      * @param array    $interceptors
      *
-     * @return \Ray\Aop\Bind
+     * @return Bind
      */
     public function bindMatcher(\Closure $matcher, array $interceptors)
     {
         $this->matchers[] = array($matcher, $interceptors);
+        return $this;
     }
 
     /**
@@ -48,7 +54,7 @@ class Bind extends \ArrayObject
      *
      * @param string  $name
      *
-     * @return string|boolean matched method name
+     * @return mixed string|boolean matched method name
      */
     public function __invoke($name)
     {

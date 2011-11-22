@@ -18,9 +18,9 @@ namespace Ray\Aop;
 interface MethodInterceptor extends Inpterceptor
 {
     /**
-     * Implement this method to perform extra treatments before and
-     * after the invocation. Polite implementations would certainly
-     * like to invoke {@link Joinpoint#proceed()}.
+     * Implement this method to perform extra treatments before and after the invocation.
+     *
+     * Polite implementations would certainly like to invoke {@link Joinpoint#proceed()}.
      *
      * @param MethodInvocation $invocation the method invocation joinpoint
      *

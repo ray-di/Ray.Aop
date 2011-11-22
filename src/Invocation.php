@@ -14,10 +14,12 @@ namespace Ray\Aop;
  * @package Ray.Aop
  * @link    http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/Invocation.html
  */
-interface Invocation extends Joinpoint {
+interface Invocation extends Joinpoint
+{
 
     /**
      * Get the arguments as an array object.
+     *
      * It is possible to change element values within this
      * array to change the arguments.
      *
