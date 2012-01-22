@@ -77,7 +77,7 @@ class Weaver implements Weave
         }
         // no binding
         return call_user_func_array(array($this->object, $method), $params);
-weave:
+        weave:
         $invocation = new ReflectiveMethodInvocation(array($this->object, $method), $params, $interceptors);
         return $invocation->proceed();
     }
@@ -94,5 +94,17 @@ weave:
     public function __invoke($getParams, $method, array $query)
     {
         return $this->__call($method, $getParams($this->object, $method, $query));
+    }
+
+    /**
+     * __get
+     * 
+     * @param string $name
+     */
+    public function __get($name)
+    {
+        if (isset($name, $this->object)) {
+            return $this->object->$name;
+        }
     }
 }
