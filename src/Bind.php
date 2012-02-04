@@ -44,14 +44,14 @@ class Bind extends \ArrayObject
      *
      * @return Bind
      */
-    public function bindMatcher(\Closure $matcher, array $interceptors)
+    public function bindMatcher(Callable $matcher, array $interceptors)
     {
         $this->matchers[] = array($matcher, $interceptors);
         return $this;
     }
 
     /**
-     * Get matched method name
+     * Get matched Interceptor
      *
      * @param string  $name
      *
@@ -59,8 +59,15 @@ class Bind extends \ArrayObject
      */
     public function __invoke($name)
     {
-        foreach ($this->matchers as $matcheInceptor) {
-            list($matcher, $interceptors) = $matcheInceptor;
+        // pre compiled inplicit matcher
+        foreach($this as $methodName => $interceptors) {
+            if ($name === $methodName) {
+                return $interceptors;
+            }
+        }
+        // runtime matcher
+        foreach ($this->matchers as $matcheInterceptor) {
+            list($matcher, $interceptors) = $matcheInterceptor;
             $matched = $matcher($name);
             if ($matched === true) {
                 return $interceptors;
