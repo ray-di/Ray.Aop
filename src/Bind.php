@@ -13,7 +13,7 @@ namespace Ray\Aop;
  * @package Ray.Aop
  * @author  Akihito Koriyama<akihito.koriyama@gmail.com>
  */
-class Bind extends \ArrayObject
+final class Bind extends \ArrayObject
 {
     /**
      * Matcher
@@ -30,9 +30,10 @@ class Bind extends \ArrayObject
      *
      * @return Bind
      */
-    public function bindInterceptors($method, array $interceptors)
+    public function bindInterceptors($method, array $interceptors, $annotation = null)
     {
         $this[$method] = $interceptors;
+        $this->annotation[$method] = $annotation;
         return $this;
     }
 
@@ -48,6 +49,19 @@ class Bind extends \ArrayObject
     {
         $this->matchers[] = array($matcher, $interceptors);
         return $this;
+    }
+
+    /**
+     * Return has define any binding.
+     *
+     * @return bool
+     */
+    public function hasBinding()
+    {
+        $hasImplicitBinding = (count($this)) ? true : false;
+        $hasMatcher =  (count($this->matchers)) ? true : false;
+        $hasBinding = $hasImplicitBinding || $hasMatcher;
+        return $hasBinding;
     }
 
     /**

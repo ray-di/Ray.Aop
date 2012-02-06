@@ -78,10 +78,12 @@ class Weaver implements Weave
         // no binding
         return call_user_func_array(array($this->object, $method), $params);
 weave:
+        $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
         $invocation = new ReflectiveMethodInvocation(
             array($this->object, $method),
             $params,
-            $interceptors
+            $interceptors,
+            $annotation
         );
         return $invocation->proceed();
     }
