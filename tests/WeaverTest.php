@@ -2,6 +2,7 @@
 
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\AnnotationReader as Reader;
 /**
  * Test class for Ray.Aop
  */
@@ -46,13 +47,19 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function test_MatcherWeave()
     {
         $bind = new Bind;
-        $matcher = function($method) {
-            return true;
-        };
-        $bind->bindMatcher($matcher, array(new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor));
+        $bind->bindInterceptors('getDouble', array(new DoubleInterceptor));
         $this->weaver = new Weaver(new MockMethod, $bind);
         $actual = $this->weaver->getDouble(2);
-        $this->assertSame(32, $actual);
+        $this->assertSame(8, $actual);
+            }
+
+    public function test_MatcherWeaveWithMultipleInterceptor()
+    {
+        $bind = new Bind;
+        $bind->bindInterceptors('getDouble', array(new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor));
+        $this->weaver = new Weaver(new MockMethod, $bind);
+        $actual = $this->weaver->getDouble(2);
+        $this->assertSame(64, $actual);
     }
 
     /**

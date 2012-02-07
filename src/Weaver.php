@@ -70,11 +70,12 @@ class Weaver implements Weave
             goto weave;
         }
         // matcher bind
-        $bind = $this->bind;
-        $interceptors = $bind($method);
-        if ($interceptors !== false) {
-            goto weave;
-        }
+//         $bind = $this->bind;
+//         $interceptors = $bind($method);
+//         if ($interceptors !== false) {
+//             goto weave;
+//         }
+original:
         // no binding
         return call_user_func_array(array($this->object, $method), $params);
 weave:
