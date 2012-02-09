@@ -1,4 +1,5 @@
 <?php
+require __DIR__ . '/src/Annotation.php';
 require __DIR__ . '/src/Advice.php';
 require __DIR__ . '/src/Joinpoint.php';
 require __DIR__ . '/src/Interceptor.php';

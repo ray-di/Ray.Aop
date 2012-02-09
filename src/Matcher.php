@@ -86,10 +86,36 @@ class Matcher
         return $this;
     }
 
+    /**
+     * Matche withe closure
+     * 
+     * @param Callable $callable
+     * 
+     * @return \Closure
+     */
     public function call(Callable $callable)
     {
         return function ($name) use ($callable){
             return $callable($name);
         };
+    }
+    
+    /**
+     * Return subclass match closure
+     * 
+     * @param string $superClass
+     * 
+     * @return \Closure
+     */
+    public function subclassesOf($superClass)
+    {
+        $function = function($class) use ($superClass){
+            try {
+                return (new \ReflectionClass($class))->isSubclassOf($superClass);
+            } catch (\Exception $e) {
+                return false;
+            }
+        };
+        return $function;
     }
 }

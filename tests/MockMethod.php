@@ -23,4 +23,15 @@ class MockMethod
     {
         return $a - $b;
     }
+
+    /**
+     * @param unknown_type $c
+     * @return number
+     * 
+     * @Log
+     */
+    public function getTriple($c)
+    {
+        return $c * 3;
+    }
 }
