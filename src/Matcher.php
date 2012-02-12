@@ -88,9 +88,9 @@ class Matcher
 
     /**
      * Matche withe closure
-     * 
+     *
      * @param Callable $callable
-     * 
+     *
      * @return \Closure
      */
     public function call(Callable $callable)
@@ -99,12 +99,12 @@ class Matcher
             return $callable($name);
         };
     }
-    
+
     /**
      * Return subclass match closure
-     * 
+     *
      * @param string $superClass
-     * 
+     *
      * @return \Closure
      */
     public function subclassesOf($superClass)
@@ -117,5 +117,10 @@ class Matcher
             }
         };
         return $function;
+    }
+
+    public function __sleep()
+    {
+        return [];
     }
 }
