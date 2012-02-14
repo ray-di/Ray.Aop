@@ -33,7 +33,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function test_Any()
     {
         $any = $this->matcher->any();
-        $result = $any();
+        $result = $any('anyClassEvenDoesntExists', 'Ray\Aop\Tests\Mock\AnnotateClass');
         $this->assertTrue($result);
     }
 
@@ -59,38 +59,16 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $matched->annotation);
     }
 
-    public function test_annotatedWithCallTrue()
-    {
-        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
-        $function = function ($name) {
-            return ($name === 'Ray\Aop\Tests\Mock\AnnotateClass');
-        };
-        $match = $this->matcher->call($function);
-        $result = $match($class, Matcher::TARGET_CLASS);
-        $this->assertTrue($result);
-    }
-
-    public function test_annotatedWithCallFalse()
-    {
-        $class = 'Ray\Aop\Tests\Mock\XXXXXX';
-        $function = function ($name) {
-            return ($name === 'Ray\Aop\Tests\Mock\AnnotateClass');
-        };
-        $match = $this->matcher->call($function);
-        $result = $match($class, Matcher::TARGET_CLASS);
-        $this->assertFalse($result);
-    }
-
     public function test_SubclassesOf()
-    {        
+    {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
         $class = 'Ray\Aop\MatcherTestChildeClass';
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertTrue($result);
     }
-    
+
     public function test_SubclassesOfFalse()
-    {        
+    {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
         $class = 'Ray\Aop\MatcherTestChildeXXXX';
         $result = $match($class, Matcher::TARGET_CLASS);
