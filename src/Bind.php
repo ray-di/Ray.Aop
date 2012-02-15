@@ -28,9 +28,7 @@ final class Bind extends \ArrayObject
         if (! isset($this[$method])) {
             $this[$method] = $interceptors;
         } else {
-            foreach ($interceptors as $interceptor) {
-                $this[$method][] = $interceptor;
-            }
+            $this[$method] = array_merge($this[$method], $interceptors);
         }
         return $this;
     }
