@@ -71,6 +71,19 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->interceptors, $interceptors);
     }
 
+    public function test_bindAnyAnnotatedWithAnnotation()
+    {
+        $matcher = new Matcher(new Reader);
+        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
+        $annotationName = 'Ray\Aop\Tests\Annotation\Marker';
+        $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
+        $bind = $this->bind->bind($class, [$pointcut]);
+        /* @var $bind Bind */
+        list($method, $interceptors) = each($bind);
+        $annotation = $bind->annotation[$method];
+        $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $annotation);
+    }
+
     public function test_bindAnyAnnotatedWithDoubleBind()
     {
         $matcher = new Matcher(new Reader);

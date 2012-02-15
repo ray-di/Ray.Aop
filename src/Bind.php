@@ -16,6 +16,13 @@ namespace Ray\Aop;
 final class Bind extends \ArrayObject
 {
     /**
+     * Annotated binding annotation
+     *
+     * @var array [$method => $annotations]
+     */
+    public $annotation = [];
+
+    /**
      * Bind method to interceptors
      *
      * @param string $method
@@ -23,14 +30,28 @@ final class Bind extends \ArrayObject
      *
      * @return Bind
      */
-    public function bindInterceptors($method, array $interceptors)
+    public function bindInterceptors($method, array $interceptors, $annotation = null)
     {
         if (! isset($this[$method])) {
             $this[$method] = $interceptors;
         } else {
             $this[$method] = array_merge($this[$method], $interceptors);
         }
+        if ($annotation) {
+            $this->annotation[$method] = $annotation;
+        }
         return $this;
+    }
+
+    /**
+     * Return annotation
+     *
+     * @return object
+     */
+    public function getAnnotation($method)
+    {
+        $annotations = $this->annotation[$method];
+
     }
 
     /**
@@ -100,7 +121,7 @@ final class Bind extends \ArrayObject
         }
         foreach ($matches as $matched) {
             if ($matched instanceof Matched) {
-                $this->bindInterceptors($matched->methodName, $interceptors);
+                $this->bindInterceptors($matched->methodName, $interceptors, $matched->annotation);
             }
         }
     }

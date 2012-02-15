@@ -64,27 +64,18 @@ class Weaver implements Weave
         if (!method_exists($this->object, $method)) {
             throw new \BadFunctionCallException($method);
         }
-        // explicit bind
-        if (isset($this->bind[$method])) {
-            $interceptors = $this->bind[$method];
-            goto weave;
+        // direct call
+        if (! isset($this->bind[$method])) {
+            return call_user_func_array(array($this->object, $method), $params);
         }
-        // matcher bind
-//         $bind = $this->bind;
-//         $interceptors = $bind($method);
-//         if ($interceptors !== false) {
-//             goto weave;
-//         }
-original:
-        // no binding
-        return call_user_func_array(array($this->object, $method), $params);
-weave:
+        // interceptor weaved call
+        $interceptors = $this->bind[$method];
         $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
         $invocation = new ReflectiveMethodInvocation(
-            array($this->object, $method),
-            $params,
-            $interceptors,
-            $annotation
+                array($this->object, $method),
+                $params,
+                $interceptors,
+                $annotation
         );
         return $invocation->proceed();
     }
