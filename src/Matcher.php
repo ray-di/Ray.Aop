@@ -8,6 +8,9 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\Reader;
+use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException,
+    Ray\Aop\Exception\InvalidAnnotation;
+use ReflectionClass;
 
 /**
  * Matcher
@@ -32,13 +35,45 @@ class Matcher
     const TARGET_METHOD = false;
 
     /**
+     * Annotation reader
+     *
+     * @var Reader
+     */
+    private $reader;
+
+    /**
+     * Lazy match method
+     *
+     * @var string
+     */
+    private $method;
+
+    /**
+     * lazy match args
+     *
+     * @var array
+     */
+    private $args;
+
+    /**
      * Constructor
-     * s
+     *
      * @param Reader $reader
      */
     public function __construct(Reader $reader)
     {
         $this->reader = $reader;
+    }
+
+    /**
+     * Return is annotate bindings
+     *
+     * @return boolean
+     */
+    public function isAnnotateBinding()
+    {
+        $isAnnotateBinding = $this->method === 'annotatedWith';
+        return $isAnnotateBinding;
     }
 
     /**
@@ -50,16 +85,7 @@ class Matcher
     {
         $this->method = __FUNCTION__;
         $this->args = null;
-        return $this;
-    }
-
-    /**
-     * Return match(true)
-     *
-     * @return Ray\Di\Matcher
-     */
-    public function isAny($class, $target) {
-        return true;
+        return clone $this;
     }
 
     /**
@@ -67,43 +93,16 @@ class Matcher
      *
      * @param string $annotationName
      *
-     * @return \Ray\Di\Matcher
+     * @return array
      */
     public function annotatedWith($annotationName)
     {
+        if (! class_exists($annotationName)) {
+            throw new InvalidAnnotation($annotationName);
+        }
         $this->method = __FUNCTION__;
         $this->args = $annotationName;
-        return $this;
-    }
-
-    /**
-     * Return match
-     *
-     * @param string  $class
-     * @param string  $target
-     * @param array   $annotationName
-     *
-     * @return boolean|\Ray\Aop\Matched
-     */
-    private function isAnnotatedWith($class, $target, $annotationName) {
-        $reader = $this->reader;
-        if ($target === self::TARGET_CLASS) {
-            $annotation = $reader->getClassAnnotation(new \ReflectionClass($class), $annotationName);
-            $hasAnnotation = $annotation ? true : false;
-            return $hasAnnotation;
-        }
-        $methods = (new \ReflectionClass($class))->getMethods();
-        $result = [];
-        foreach ($methods as $method) {
-            $annotation = $reader->getMethodAnnotation($method, $annotationName);
-            if ($annotation) {
-                $matched = new Matched;
-                $matched->methodName = $method->name;
-                $matched->annotation = $annotation;
-                $result[] = $matched;
-            }
-        }
-        return $result;
+        return clone $this;
     }
 
     /**
@@ -117,7 +116,50 @@ class Matcher
     {
         $this->method = __FUNCTION__;
         $this->args = $superClass;
-        return $this;
+        return clone $this;
+    }
+
+    /**
+     * Return match(true)
+     *
+     * @return Ray\Di\Matcher
+     */
+    private function isAny($class, $target) {
+        return true;
+    }
+
+    /**
+     * Return match result
+     *
+     * Return Match object if annotate bindings, which cotainin multiple results.
+     * Otherwise returl bool.
+     *
+     * @param string  $class
+     * @param string  $target
+     * @param array   $annotationName
+     *
+     * @return boolean | \Ray\Aop\Matched[]
+     */
+    private function isAnnotatedWith($class, $target, $annotationName) {
+        $reader = $this->reader;
+        if ($target === self::TARGET_CLASS) {
+            $annotation = $reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
+            $hasAnnotation = $annotation ? true : false;
+            return $hasAnnotation;
+        }
+        $methods = (new ReflectionClass($class))->getMethods();
+        $result = [];
+        foreach ($methods as $method) {
+        new $annotationName;
+            $annotation = $reader->getMethodAnnotation($method, $annotationName);
+            if ($annotation) {
+                $matched = new Matched;
+                $matched->methodName = $method->name;
+                $matched->annotation = $annotation;
+                $result[] = $matched;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -131,21 +173,44 @@ class Matcher
     private function isSubclassesOf($class, $target, $superClass)
     {
         if ($target === self::TARGET_METHOD) {
-            throw new \RuntimeException($class);
+            throw new InvalidArgumentException($class);
         }
         try {
-            return (new \ReflectionClass($class))->isSubclassOf($superClass);
+            $isSubClass = (new ReflectionClass($class))->isSubclassOf($superClass);
+            return $isSubClass;
         } catch (\Exception $e) {
             return false;
         }
     }
 
+    /**
+     * Return match result
+     *
+     * @param string $class
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     *
+     * @return bool | array [$matcher, method]
+     */
     public function __invoke($class, $target)
     {
         $args = [$class, $target];
         array_push($args, $this->args);
-        $matchd = call_user_func_array([$this, 'is' . $this->method], $args);
+        $method = 'is' . $this->method;
+        if (! method_exists($this, $method)) {
+            return false;
+        }
+        $matchd = call_user_func_array([$this, $method], $args);
         return $matchd;
     }
 
+    /**
+     * __toString magic method
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $result = $this->method . ':' . json_encode($this->args);
+        return $result;
+    }
 }

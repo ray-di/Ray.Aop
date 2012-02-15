@@ -16,13 +16,6 @@ namespace Ray\Aop;
 final class Bind extends \ArrayObject
 {
     /**
-     * Matcher
-     *
-     * @var array
-     */
-    private $matchers = array();
-
-    /**
      * Bind method to interceptors
      *
      * @param string $method
@@ -30,29 +23,20 @@ final class Bind extends \ArrayObject
      *
      * @return Bind
      */
-    public function bindInterceptors($method, array $interceptors, $annotation = null)
+    public function bindInterceptors($method, array $interceptors)
     {
-        $this[$method] = $interceptors;
-        $this->annotation[$method] = $annotation;
+        if (! isset($this[$method])) {
+            $this[$method] = $interceptors;
+        } else {
+            foreach ($interceptors as $interceptor) {
+                $this[$method][] = $interceptor;
+            }
+        }
         return $this;
     }
 
     /**
-     * Bind matcher
-     *
-     * @param \Closure $matcher
-     * @param array    $interceptors
-     *
-     * @return Bind
-     */
-    public function bindMatcher(Callable $matcher, array $interceptors)
-    {
-        $this->matchers[] = array($matcher, $interceptors);
-        return $this;
-    }
-
-
-    /**
+     /**
      * Return has define any binding.
      *
      * @return bool
@@ -60,9 +44,7 @@ final class Bind extends \ArrayObject
     public function hasBinding()
     {
         $hasImplicitBinding = (count($this)) ? true : false;
-        $hasMatcher =  (count($this->matchers)) ? true : false;
-        $hasBinding = $hasImplicitBinding || $hasMatcher;
-        return $hasBinding;
+        return $hasImplicitBinding;
     }
 
     /**
@@ -75,82 +57,77 @@ final class Bind extends \ArrayObject
     public function __invoke($name)
     {
         // pre compiled inplicit matcher
-        foreach($this as $methodName => $interceptors) {
-            if ($name === $methodName) {
-                return $interceptors;
-            }
-        }
-        // runtime matcher
-        foreach ($this->matchers as $matcheInterceptor) {
-            list($matcher, $interceptors) = $matcheInterceptor;
-            $matched = $matcher($name);
-            if ($matched === true) {
-                return $interceptors;
-            }
-        }
-        return false;
+        $interceptors = isset($this[$name]) ? $this[$name] : false;
+        return $interceptors;
     }
 
     /**
      * Make pointcuts to binding information
      *
      * @param string       $class
-     * @param \ArrayObject $pointcuts
+     * @param \ArrayObject $pointcut
      *
      * @return \Ray\Aop\Bind
      */
-    public function bind($class, \ArrayObject $pointcuts)
+    public function bind($class, array $pointcuts)
     {
         foreach ($pointcuts as $pointcut) {
-            list($classMatcher, $methodMatcher, $interceptors) = $pointcut;
-            if ($classMatcher($class, Matcher::TARGET_CLASS) !== true) {
-                continue;
-            }
-            // compiled by annotation binding matcher
-            if ($methodMatcher instanceof Matcher){
-                goto METHOD_MATCH_BY_ANNOTATE_BINDING;
-            }
-METHOD_MATCH_BY_CALLABLE:
-            $methods = (new \ReflectionClass($class))->getMethods(\ReflectionMethod::IS_PUBLIC);
-            foreach ($methods as $method) {
-                if ($methodMatcher($method->name, Matcher::TARGET_METHOD) === true) {
-                    $this->bindInterceptors($method->name, $interceptors);
-                }
-            }
-            continue;
-
-METHOD_MATCH_BY_ANNOTATE_BINDING:
-            $matches = $methodMatcher($class,  Matcher::TARGET_METHOD);
-            if (! $matches) {
-                continue;
-            }
-            foreach ($matches as $matched) {
-                if ($matched instanceof Matched) {
-                    $this->bindInterceptors($matched->methodName, $interceptors, $matched->annotation);
-                }
+            /* @var $pointcut Ray\Aop\Pointcut */
+            $classMatcher = $pointcut->classMatcher;
+            $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
+            if ($isClassMatch === true) {
+                $method = ($pointcut->methodMatcher->isAnnotateBinding()) ? 'bindByAnnoateBindig' : 'bindByCallable';
+                $this->$method($class, $pointcut->methodMatcher, $pointcut->interceptors);
             }
         }
         return $this;
     }
 
+    private function bindByCallable($class, $methodMatcher, $interceptors)
+    {
+        $methods = (new \ReflectionClass($class))->getMethods(\ReflectionMethod::IS_PUBLIC);
+        foreach ($methods as $method) {
+            $isMethodMatch = ($methodMatcher($method->name, Matcher::TARGET_METHOD) === true);
+            if ($isMethodMatch) {
+                $this->bindInterceptors($method->name, $interceptors);
+            }
+        }
+    }
+
+    private function bindByAnnoateBindig($class, $methodMatcher, $interceptors)
+    {
+        $matches = $methodMatcher($class, Matcher::TARGET_METHOD);
+        if (! $matches) {
+            return;
+        }
+        foreach ($matches as $matched) {
+            if ($matched instanceof Matched) {
+                $this->bindInterceptors($matched->methodName, $interceptors);
+            }
+        }
+    }
+
     /**
      * to String
+     *
+     * for logging
      *
      * @return string
      */
     public function __toString()
     {
-        $result = '';
+        $result = [];
         foreach ($this as $method => $interceptors) {
             $classNames = array_map(
-            function($interceptor){
+                    function($interceptor){
                 return get_class($interceptor);
             },
             $interceptors
             );
             $intercetorsList = implode(',', $classNames);
-            $result .= "[{$method}]=>[{$intercetorsList}]\n";
+            $result[] = "method[{$method}]=>intercept[{$intercetorsList}]";
         }
+        $result = implode(' ', $result);
         return $result;
     }
 }
