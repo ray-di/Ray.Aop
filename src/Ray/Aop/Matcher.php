@@ -122,6 +122,9 @@ class Matcher
     /**
      * Return match(true)
      *
+     * @param string $class
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     *
      * @return Ray\Di\Matcher
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
@@ -137,9 +140,9 @@ class Matcher
      * Return Match object if annotate bindings, which cotainin multiple results.
      * Otherwise returl bool.
      *
-     * @param string  $class
-     * @param string  $target
-     * @param array   $annotationName
+     * @param string $class
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     * @param array  $annotationName
      *
      * @return boolean | \Ray\Aop\Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
@@ -170,8 +173,10 @@ class Matcher
      * Return subclass match.
      *
      * @param string $class
-     * @param string $target
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $superClass
+     *
+     * @return bool
      * @throws \RuntimeException
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */

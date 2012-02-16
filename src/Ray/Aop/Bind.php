@@ -27,6 +27,7 @@ final class Bind extends \ArrayObject
      *
      * @param string $method
      * @param array  $interceptors
+     * @param array  $annotation    Binding annotation if annotate bind
      *
      * @return Bind
      */
