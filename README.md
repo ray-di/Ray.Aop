@@ -71,12 +71,16 @@ Or use 'annotation matcher', Ray.Aop supports doctrine.common.annotation.
 $bind = new Bind;
 $matcher = new Matcher(new Reader);
 $interceptors = [new WeekendBlocker];
-$pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith('Ray\Aop\Sample\Annotation\WeekendBlock'), $interceptors);
+$pointcut = new Pointcut(
+		$matcher->any(),
+		$matcher->annotatedWith('Ray\Aop\Sample\Annotation\WeekendBlock'),
+		$interceptors
+);
 $bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
 
-$weavedBilling = new Weaver(new RealBillingService, $bind);
+$billing = new Weaver(new RealBillingService, $bind);
 try {
-    echo $weavedBilling->chargeOrder();
+    echo $billing->chargeOrder();
 } catch (\RuntimeException $e) {
     echo $e->getMessage() . "\n";
     exit(1);
