@@ -8,11 +8,11 @@ use Ray\Aop\Weaver,
     Ray\Aop\Bind;
 
 $bind = new Bind;
-$bind->bindInterceptors('chargeOrder', array(new WeekendBlocker));
+$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
 
-$weavedBilling = new Weaver(new RealBillingService, $bind);
+$billingService = new Weaver(new RealBillingService, $bind);
 try {
-    echo $weavedBilling->chargeOrder();
+    echo $billingService->chargeOrder();
 } catch (\RuntimeException $e) {
     echo $e->getMessage() . "\n";
     exit(1);

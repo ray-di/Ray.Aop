@@ -44,18 +44,6 @@ final class Bind extends \ArrayObject
     }
 
     /**
-     * Return annotation
-     *
-     * @return object
-     */
-    public function getAnnotation($method)
-    {
-        $annotations = $this->annotation[$method];
-
-    }
-
-    /**
-     /**
      * Return has define any binding.
      *
      * @return bool
@@ -83,8 +71,8 @@ final class Bind extends \ArrayObject
     /**
      * Make pointcuts to binding information
      *
-     * @param string       $class
-     * @param \ArrayObject $pointcut
+     * @param string $class
+     * @param array  $pointcuts
      *
      * @return \Ray\Aop\Bind
      */
@@ -102,7 +90,16 @@ final class Bind extends \ArrayObject
         return $this;
     }
 
-    private function bindByCallable($class, $methodMatcher, $interceptors)
+    /**
+     * Bind interceptor by callable matcher
+     *
+     * @param string  $class
+     * @param Matcher $methodMatcher
+     * @param array   $interceptors
+     *
+     * @return void
+     */
+    private function bindByCallable($class, Matcher $methodMatcher, array $interceptors)
     {
         $methods = (new \ReflectionClass($class))->getMethods(\ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
@@ -113,6 +110,15 @@ final class Bind extends \ArrayObject
         }
     }
 
+    /**
+     * Bind interceptor by annotation binding
+     *
+     * @param string  $class
+     * @param Matcher $methodMatcher
+     * @param array   $interceptors
+     *
+     * @return void
+     */
     private function bindByAnnoateBindig($class, $methodMatcher, $interceptors)
     {
         $matches = $methodMatcher($class, Matcher::TARGET_METHOD);
@@ -139,9 +145,9 @@ final class Bind extends \ArrayObject
         foreach ($this as $method => $interceptors) {
             $classNames = array_map(
                     function($interceptor){
-                return get_class($interceptor);
-            },
-            $interceptors
+                        return get_class($interceptor);
+                    },
+                    $interceptors
             );
             $intercetorsList = implode(',', $classNames);
             $result[] = "method[{$method}]=>intercept[{$intercetorsList}]";

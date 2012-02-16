@@ -123,6 +123,8 @@ class Matcher
      * Return match(true)
      *
      * @return Ray\Di\Matcher
+     *
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function isAny($class, $target) {
         return true;
@@ -139,6 +141,7 @@ class Matcher
      * @param array   $annotationName
      *
      * @return boolean | \Ray\Aop\Matched[]
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function isAnnotatedWith($class, $target, $annotationName) {
         $reader = $this->reader;
@@ -169,6 +172,7 @@ class Matcher
      * @param string $target
      * @param string $superClass
      * @throws \RuntimeException
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function isSubclassesOf($class, $target, $superClass)
     {

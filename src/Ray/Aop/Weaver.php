@@ -72,10 +72,10 @@ class Weaver implements Weave
         $interceptors = $this->bind[$method];
         $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
         $invocation = new ReflectiveMethodInvocation(
-                array($this->object, $method),
-                $params,
-                $interceptors,
-                $annotation
+            array($this->object, $method),
+            $params,
+            $interceptors,
+            $annotation
         );
         return $invocation->proceed();
     }
