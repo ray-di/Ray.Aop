@@ -119,7 +119,7 @@ final class Bind extends \ArrayObject
      *
      * @return void
      */
-    private function bindByAnnoateBindig($class, $methodMatcher, $interceptors)
+    private function bindByAnnoateBindig($class, Matcher $methodMatcher, array $interceptors)
     {
         $matches = $methodMatcher($class, Matcher::TARGET_METHOD);
         if (! $matches) {

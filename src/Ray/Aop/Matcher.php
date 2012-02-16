@@ -125,6 +125,7 @@ class Matcher
      * @return Ray\Di\Matcher
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     private function isAny($class, $target) {
         return true;
