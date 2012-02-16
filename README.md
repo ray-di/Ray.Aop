@@ -1,91 +1,97 @@
-# Ray.Aop
-## Aspect Oriented Programming for PHP###
+Ray.Aop
+=======
+
+Ray.Aop package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
 [![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
 
-To compliment dependency injection, Ray.Aop supports method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
+Requiement
+-------------
 
-## Getting Started
+ * PHP 5.4
+ 
+Getting Started
+===============
 
-Original class
+Target class
 
 ```php
 <?php
-class Mock
+class RealBillingService
 {
-    public function getDouble($a)
+	/**
+	 * @WeekendBlock
+	 */
+	public function chargeOrder()
+	{
+	    echo "Charged.\n";
+	}
+}
+```
+
+Intercepter, which block weekend charge.
+
+```php
+<?php
+class WeekendBlocker implements MethodInterceptor
+{
+    public function invoke(MethodInvocation $invocation)
     {
-        return $a * 2;
+        $today = getdate();
+        if ($today['weekday'][0] === 'S') {
+            throw new \RuntimeException(
+          		$invocation->getMethod()->getName() . " not allowed on weekends!"
+            );
+        }
+        return $invocation->proceed();
     }
 }
 ```
 
-Intercepter
+Weave interceptor with explicit method name.
 
 ```php
 <?php
-
-	class tenTimes implements MethodInterceptor
-	{
-	    public function invoke(MethodInvocation $invocation)
-	    {
-	        $result = $invocation->proceed();
-	        return $result * 10;
-	    }
-	}
-```
-
-Weave original class and interceptor with Weaver.
-
-```php
-<?php
-
-	// with weaver
-    $bind = new Bind;
-    $bind->bindInterceptors('getDouble', array(new DoubleInterceptor, new DoubleInterceptor));
-    $this->weaver = new Weaver(new MockMethod, $bind);
-	$mock = new Weaver(new Mock, array(new tenTimes, new tenTimes));
-	echo $mock->getDouble(3); //600 =3*2*10*10
-
-	// in original
-	$mock = new Mock;
-	echo $mock->getDouble(3); //6
-```
-
-
-# Usage
-
-## Implicit biding
-use method name
-
-```php
-<?php
-
-    // WeekendBlocker interceptor throw Exception on weekend.
 	$bind = new Bind;
-	$bind->bindInterceptors('chargeOrder', array(new WeekendBlocker));
-	$weavedBilling = new Weaver(new RealBilling, array(new WeekendBlocker));
-	$weavedBilling->chargeOrder($args);
-```
-
-## Matcher biding
-use matcher, which match 'any', 'subClassOf' and 'annotatedWith'.
-
-```php
-<?php
-
-    // WeekendBlocker interceptor throw Exception on weekend.
-	$bind = new Bind;
-	$matcher = new Matcher(new Reader);
-	$interceptors = [new WeekendBlocker];
-	$pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith('Ray\Aop\Sample\Annotation\WeekendBlock'), $interceptors);
-	$bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
-	$weavedBilling = new Weaver(new AnnotationRealBillingService, $bind);
+	$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
+	
+	$billingService = new Weaver(new RealBillingService, $bind);
 	try {
-	    echo $weavedBilling->chargeOrder();
+	   echo $billingService->chargeOrder();
 	} catch (\RuntimeException $e) {
-	    echo $e->getMessage() . "\n";
-	    exit(1);
+	   echo $e->getMessage() . "\n";
+	   exit(1);
 	}
+```
 
-see more detail at doc/sample-04-annotation/ for using annotation matcher.
+Or use 'annotation matcher', Ray.Aop supports doctrine.common.annotation.
+
+```php
+<?php
+$bind = new Bind;
+$matcher = new Matcher(new Reader);
+$interceptors = [new WeekendBlocker];
+$pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith('Ray\Aop\Sample\Annotation\WeekendBlock'), $interceptors);
+$bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
+
+$weavedBilling = new Weaver(new RealBillingService, $bind);
+try {
+    echo $weavedBilling->chargeOrder();
+} catch (\RuntimeException $e) {
+    echo $e->getMessage() . "\n";
+    exit(1);
+}
+```
+
+Testing Ray.Aop
+=======
+
+Here's how to install Ray.Aop from source to run the unit tests and sample:
+
+```
+$ git clone git://github.com/koriym/Ray.Aop.git
+$ git submodule update --init
+$ phpunit
+$ php doc/sample-01-quick-weave/main.php
+// Charged.
+```
