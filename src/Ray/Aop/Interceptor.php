@@ -15,6 +15,6 @@ namespace Ray\Aop;
  * @package Ray.Aop
  * @link http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/Interceptor.html
  */
-interface Inpterceptor extends Advice
+interface Interceptor extends Advice
 {
 }

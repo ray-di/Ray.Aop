@@ -16,7 +16,7 @@ namespace Ray\Aop;
  * @package Ray.Aop
  * @link http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html
  */
-interface MethodInterceptor extends Inpterceptor
+interface MethodInterceptor extends Interceptor
 {
     /**
      * Implement this method to perform extra treatments before and after the invocation.
