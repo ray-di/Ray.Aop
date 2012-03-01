@@ -18,7 +18,7 @@ use ReflectionClass;
  * @package Ray.Di
  *
  */
-class Matcher
+class Matcher implements Matchable
 {
     /**
      * Match CLASS

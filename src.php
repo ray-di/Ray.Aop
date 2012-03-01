@@ -10,6 +10,7 @@ require __DIR__ . '/src/Ray/Aop/ReflectiveMethodInvocation.php';
 require __DIR__ . '/src/Ray/Aop/Bind.php';
 require __DIR__ . '/src/Ray/Aop/Weave.php';
 require __DIR__ . '/src/Ray/Aop/Weaver.php';
+require __DIR__ . '/src/Ray/Aop/Matchable.php';
 require __DIR__ . '/src/Ray/Aop/Matcher.php';
 require __DIR__ . '/src/Ray/Aop/Matched.php';
 require __DIR__ . '/src/Ray/Aop/Pointcut.php';
