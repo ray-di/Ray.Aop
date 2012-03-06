@@ -96,5 +96,6 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function test__getNotExist()
     {
         $weaver = $this->weaver;
+        $weaver->not_exists;
     }
 }
