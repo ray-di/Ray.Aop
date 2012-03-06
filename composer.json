@@ -2,7 +2,7 @@
     "name": "Ray/Aop",
     "type": "library",
     "description": "Aspect oriented framework for PHP",
-    "keywords": ["aop", "annotation"、"method interception"],
+    "keywords": ["aop", "annotation", "method interception"],
     "homepage": "https://github.com/koriym/Ray.Aop",
     "version": "0.1.0",
     "license": "BSD",
