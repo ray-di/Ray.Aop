@@ -206,9 +206,6 @@ class Matcher implements Matchable
         $args = [$class, $target];
         array_push($args, $this->args);
         $method = 'is' . $this->method;
-        if (! method_exists($this, $method)) {
-            return false;
-        }
         $matchd = call_user_func_array([$this, $method], $args);
         return $matchd;
     }

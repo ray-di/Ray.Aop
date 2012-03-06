@@ -34,7 +34,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
-    public function atest_annotatedWithClass()
+    public function test_annotatedWithClass()
     {
         $annotation = 'Ray\Aop\Tests\Annotation\Resource';
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
@@ -98,4 +98,5 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $matcher = clone $this->matcher;
         $this->assertSame(':null', (string)$matcher);
     }
+
 }

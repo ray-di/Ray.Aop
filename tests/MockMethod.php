@@ -9,6 +9,8 @@ class MockMethod
 {
     public $a = 0;
 
+    public $msg = "hello";
+
     public function add($n)
     {
         $this->a += $n;
@@ -27,7 +29,7 @@ class MockMethod
     /**
      * @param unknown_type $c
      * @return number
-     * 
+     *
      * @Log
      */
     public function getTriple($c)

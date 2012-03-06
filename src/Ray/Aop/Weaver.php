@@ -7,6 +7,8 @@
  */
 namespace Ray\Aop;
 
+use Ray\Aop\Exception\UndefinedProperty;
+
 /**
  * Weaver
  *
@@ -95,14 +97,15 @@ class Weaver implements Weave
     }
 
     /**
-     * __get
+     * Return parameter
      *
      * @param string $name
      */
     public function __get($name)
     {
-        if (isset($name, $this->object)) {
+        if (isset($this->object->$name)) {
             return $this->object->$name;
         }
+        throw new UndefinedProperty(get_class($this->object) . '::$' . $name);
     }
 }

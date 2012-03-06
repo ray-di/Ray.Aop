@@ -82,4 +82,20 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $actual = $this->weaver->__invoke($function, 'getDouble', array(2));
         $this->assertSame(32, $actual);
     }
+
+    public function test__get()
+    {
+        $weaver = $this->weaver;
+        $this->assertSame('hello', $weaver->msg);
+    }
+
+    /**
+     * @expectedException Ray\Aop\Exception\UndefinedProperty
+     *
+     */
+    public function test__getNotExist()
+    {
+        $weaver = $this->weaver;
+        v($weaver->not_exit_property);
+    }
 }

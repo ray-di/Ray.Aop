@@ -57,7 +57,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
         $this->invocation->proceed();
         $this->assertSame(2, $this->mock->a);
     }
-    
+
     /**
      * @expectedException Ray\Aop\Exception
      */
@@ -70,5 +70,14 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     {
         $actual = $this->invocation->getThis();
 		$this->assertSame($this->mock, $actual);
+    }
+
+    public function test_getAnnotation()
+    {
+        $mock = new MockMethod;
+        $callable = array($mock, 'add');
+        $invocation = new ReflectiveMethodInvocation($callable, [], [], new \Ray\Aop\Tests\Annotation\Marker);
+        $annotations = $invocation->getAnnotation();
+        $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $annotations);
     }
 }

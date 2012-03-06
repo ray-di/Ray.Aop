@@ -58,7 +58,7 @@ final class Bind extends \ArrayObject
     /**
      * Get matched Interceptor
      *
-     * @param string  $name
+     * @param string  $name class name
      *
      * @return mixed string|boolean matched method name
      */

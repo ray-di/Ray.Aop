@@ -19,3 +19,4 @@ require __DIR__ . '/src/Ray/Aop/Exception.php';
 require __DIR__ . '/src/Ray/Aop/Exception/InvalidArgument.php';
 require __DIR__ . '/src/Ray/Aop/Exception/InvalidSubclassMatch.php';
 require __DIR__ . '/src/Ray/Aop/Exception/InvalidAnnotation.php';
+require __DIR__ . '/src/Ray/Aop/Exception/UndefinedProperty.php';

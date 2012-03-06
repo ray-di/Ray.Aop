@@ -126,4 +126,40 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $expected = 'method[getDouble]=>intercept[Ray\Aop\DoubleInterceptor,Ray\Aop\DoubleInterceptor]';
         $this->assertSame($expected, (string)$this->bind);
     }
+
+    public function test_hasBindingReturnTrue()
+    {
+        $matcher = new Matcher(new Reader);
+        $pointcut = new Pointcut($matcher->subclassesOf('Ray\Aop\parentClass'), $matcher->any(), $this->interceptors);
+        $class = 'Ray\Aop\childClass';
+        $this->bind->bind($class, [$pointcut]);
+        $this->assertTrue($this->bind->hasBinding());
+    }
+
+    public function test_hasBindingReturnFalse()
+    {
+        $this->assertFalse($this->bind->hasBinding());
+    }
+
+    public function test_invoke()
+    {
+        $this->bind->bindInterceptors('getDouble', $this->interceptors);
+        $bind = $this->bind;
+        $interceptors = $bind('getDouble');
+        $this->assertSame(2, count($interceptors));
+        $this->assertInstanceOf('Ray\Aop\DoubleInterceptor', $interceptors[0]);
+    }
+
+    /**
+     * Annoattion doesn't match, no bindig.
+     */
+    public function test_bindByAnnoateBindig()
+    {
+        $matcher = new Matcher(new Reader);
+        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
+        $annotationName = 'Ray\Aop\Tests\Annotation\Resource';
+        $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
+        $this->bind->bind($class, [$pointcut]);
+        $this->assertSame(0, (count($this->bind)));
+    }
 }

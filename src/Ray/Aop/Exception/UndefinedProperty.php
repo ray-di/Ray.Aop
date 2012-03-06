@@ -7,12 +7,14 @@
  */
 namespace Ray\Aop\Exception;
 
+use Ray\Aop\Exception;
+
 /**
- * Invalid Subclass Match
+ * Undefined property
  *
  * @package Ray.Aop
  * @author  Akihito Koriyama <akihito.koriyama@gmail.com>
  */
-class InvalidClass extends InvalidArgument
+class UndefinedProperty extends Exception
 {
 }
