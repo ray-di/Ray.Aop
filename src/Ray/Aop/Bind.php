@@ -27,7 +27,7 @@ final class Bind extends \ArrayObject
      *
      * @param string $method
      * @param array  $interceptors
-     * @param array  $annotation    Binding annotation if annotate bind
+     * @param object $annotation   Binding annotation if annotate bind
      *
      * @return Bind
      */
@@ -47,7 +47,7 @@ final class Bind extends \ArrayObject
     /**
      * Return has define any binding.
      *
-     * @return bool
+     * @return boolean
      */
     public function hasBinding()
     {
@@ -58,7 +58,7 @@ final class Bind extends \ArrayObject
     /**
      * Get matched Interceptor
      *
-     * @param string  $name class name
+     * @param string $name class name
      *
      * @return mixed string|boolean matched method name
      */
@@ -145,10 +145,10 @@ final class Bind extends \ArrayObject
         $result = [];
         foreach ($this as $method => $interceptors) {
             $classNames = array_map(
-                    function($interceptor){
-                        return get_class($interceptor);
-                    },
-                    $interceptors
+                function($interceptor){
+                    return get_class($interceptor);
+                },
+                $interceptors
             );
             $intercetorsList = implode(',', $classNames);
             $result[] = "method[{$method}]=>intercept[{$intercetorsList}]";

@@ -55,10 +55,10 @@ class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * Constructor
      *
-     * @param object $target \Callable
+     * @param object $target       Callable
      * @param array  $args
      * @param array  $interceptors
-     * @param array  $annotation
+     * @param string $annotation
      */
     public function __construct($target, array $args, array $interceptors = [], $annotation = [])
     {

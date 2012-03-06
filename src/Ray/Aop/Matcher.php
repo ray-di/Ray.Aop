@@ -16,7 +16,6 @@ use ReflectionClass;
  * Matcher
  *
  * @package Ray.Di
- *
  */
 class Matcher implements Matchable
 {
@@ -49,7 +48,7 @@ class Matcher implements Matchable
     private $method;
 
     /**
-     * lazy match args
+     * Lazy match args
      *
      * @var array
      */
@@ -142,7 +141,7 @@ class Matcher implements Matchable
      *
      * @param string $class
      * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
-     * @param array  $annotationName
+     * @param string $annotationName
      *
      * @return boolean | \Ray\Aop\Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
@@ -177,7 +176,7 @@ class Matcher implements Matchable
      * @param string $superClass
      *
      * @return bool
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function isSubclassesOf($class, $target, $superClass)
