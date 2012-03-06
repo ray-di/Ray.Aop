@@ -1,0 +1,24 @@
+{
+    "name": "Ray/Aop",
+    "type": "library",
+    "description": "PHP aspect oriented programming framework",
+    "keywords": ["aop", "framework", "annotation"],
+    "homepage": "http://code.google.com/p/rayphp/",
+    "version": "0.1.0",
+    "license": "BSD",
+    "authors": [
+        {
+            "name": "Akihito Koriyama",
+            "email": "akihito.koriyama@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "doctrine/common": "2.2.*"
+    },
+    "replace": {
+    },
+    "autoload": {
+        "psr-0": { "Ray\\Aop": "src/" }
+    }
+}
