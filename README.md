@@ -21,12 +21,12 @@ To mark select methods as weekdays-only, we define an annotation .
 ```php
 <?php
 /**
- * WeekendBlocker
+ * NotOnWeekends
  *
  * @Annotation
  * @Target("METHOD")
  */
-final class WeekendBlock
+final class NotOnWeekends
 {
 }
 ```
@@ -40,7 +40,7 @@ final class WeekendBlock
 class RealBillingService
 {
     /**
-     * @WeekendBlock
+     * @NotOnWeekends
      */
     chargeOrder(PizzaOrder $order, CreditCard $creditCard)
     {
@@ -77,7 +77,7 @@ $matcher = new Matcher(new Reader);
 $interceptors = [new WeekendBlocker];
 $pointcut = new Pointcut(
 		$matcher->any(),
-		$matcher->annotatedWith('Ray\Aop\Sample\Annotation\WeekendBlock'),
+		$matcher->annotatedWith('Ray\Aop\Sample\Annotation\NotOnWeekends'),
 		$interceptors
 );
 $bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
