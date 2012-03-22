@@ -108,4 +108,18 @@ class Weaver implements Weave
         }
         throw new UndefinedProperty(get_class($this->object) . '::$' . $name);
     }
-}
+
+    public function __toString()
+    {
+        return (string)$this->objcet;
+    }
+
+    /**
+     * Get target object
+     *
+     * @return \Ray\Aop\mixed
+     */
+    public function ___getObject()
+    {
+        return $this->object;
+    }}
