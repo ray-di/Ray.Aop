@@ -186,6 +186,9 @@ class Matcher implements Matchable
         }
         try {
             $isSubClass = (new ReflectionClass($class))->isSubclassOf($superClass);
+            if ($isSubClass === false) {
+                $isSubClass = ($class === $superClass);
+            }
             return $isSubClass;
         } catch (\Exception $e) {
             return false;
