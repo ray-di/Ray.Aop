@@ -151,7 +151,6 @@ final class Bind extends \ArrayObject
                 $interceptors
             );
             $intercetorsList = implode(',', $classNames);
-            $result[] = "method[{$method}]=>intercept[{$intercetorsList}]";
         }
         $result = implode(' ', $result);
         return $result;
