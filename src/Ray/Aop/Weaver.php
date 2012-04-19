@@ -122,4 +122,15 @@ class Weaver implements Weave
     public function ___getObject()
     {
         return $this->object;
-    }}
+    }
+    
+    /**
+     * Get target object
+     *
+     * @return \Ray\Aop\mixed
+     */
+    public function ___getBind()
+    {
+        return $this->bind;
+    }
+}
