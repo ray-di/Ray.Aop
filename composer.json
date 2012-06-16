@@ -4,7 +4,7 @@
     "description": "Aspect oriented programing framework",
     "keywords": ["aop", "annotation", "method interception"],
     "homepage": "https://github.com/koriym/Ray.Aop",
-    "version": "0.1.1",
+    "version": "1.0.0beta",
     "license": "BSD-3-Clause",
     "authors": [
         {
