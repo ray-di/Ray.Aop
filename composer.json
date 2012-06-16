@@ -5,7 +5,7 @@
     "keywords": ["aop", "annotation", "method interception"],
     "homepage": "https://github.com/koriym/Ray.Aop",
     "version": "0.1.1",
-    "license": "BSD",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Akihito Koriyama",
@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "doctrine/common": "2.2.*"
+        "doctrine/common": "2.3.*"
     },
     "replace": {
     },
