@@ -8,14 +8,14 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\Reader;
-use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException,
-    Ray\Aop\Exception\InvalidAnnotation;
+use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
+use Ray\Aop\Exception\InvalidAnnotation;
 use ReflectionClass;
 
 /**
  * Matcher
  *
- * @package Ray.Di
+ * @package Ray.Aop
  */
 class Matcher implements Matchable
 {
@@ -119,9 +119,23 @@ class Matcher implements Matchable
     }
 
     /**
+     * Return prefix match result
+     *
+     * @param string $prefix
+     *
+     * @return bool
+     */
+    public function startWith($prefix)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = $prefix;
+        return clone $this;
+    }
+
+    /**
      * Return match(true)
      *
-     * @param string $class
+     * @param string $name   class or method name
      * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      *
      * @return Ray\Di\Matcher
@@ -129,7 +143,16 @@ class Matcher implements Matchable
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    private function isAny($class, $target) {
+    private function isAny($name, $target) {
+        if ($target === self::TARGET_CLASS) {
+            return true;
+        }
+        if (substr($name, 0 ,2) === '__') {
+            return false;
+        }
+        if (in_array($name, ['offsetExists', 'offsetGet', 'offsetSet', 'offsetUnset', 'append', 'getArrayCopy', 'count', 'getFlags', 'setFlags', 'asort', 'ksort', 'uasort', 'uksort', 'natsort', 'natcasesort', 'unserialize', 'serialize', 'getIterator', 'exchangeArray', 'setIteratorClass', 'getIterator', 'getIteratorClass'])) {
+            return false;
+        }
         return true;
     }
 
@@ -156,7 +179,7 @@ class Matcher implements Matchable
         $methods = (new ReflectionClass($class))->getMethods();
         $result = [];
         foreach ($methods as $method) {
-        new $annotationName;
+            new $annotationName;
             $annotation = $reader->getMethodAnnotation($method, $annotationName);
             if ($annotation) {
                 $matched = new Matched;
@@ -193,6 +216,19 @@ class Matcher implements Matchable
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * Return prefix match
+     *
+     * @param string $name
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     * @param string $prefix
+     */
+    private function isStartWith($name, $target, $startWith)
+    {
+        $result = (strpos($name, $startWith) === 0) ? true :false;
+        return $result;
     }
 
     /**
