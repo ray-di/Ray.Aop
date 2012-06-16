@@ -8,6 +8,8 @@
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\UndefinedProperty;
+use ArrayAccess;
+use RuntimeException;
 
 /**
  * Weaver
@@ -17,7 +19,7 @@ use Ray\Aop\Exception\UndefinedProperty;
  * @package Ray.Aop
  * @author  Akihito Koriyama<akihito.koriyama@gmail.com>
  */
-class Weaver implements Weave
+class Weaver implements Weave, ArrayAccess
 {
     /**
      * Target object
@@ -74,10 +76,10 @@ class Weaver implements Weave
         $interceptors = $this->bind[$method];
         $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
         $invocation = new ReflectiveMethodInvocation(
-            array($this->object, $method),
-            $params,
-            $interceptors,
-            $annotation
+                array($this->object, $method),
+                $params,
+                $interceptors,
+                $annotation
         );
         return $invocation->proceed();
     }
@@ -109,9 +111,63 @@ class Weaver implements Weave
         throw new UndefinedProperty(get_class($this->object) . '::$' . $name);
     }
 
+    /**
+     * Return string
+     *
+     * @return string
+     */
     public function __toString()
     {
-        return (string)$this->objcet;
+        return (string)$this->object;
+    }
+
+    /**
+     * Return offsetExists
+     *
+     * @param string $name key
+     */
+    public function offsetExists($offset)
+    {
+        if (! $this->object instanceof ArrayAccess) {
+            throw new RuntimeException('ArrayAccess not allowed.');
+        }
+        return isset($this->object[$offset]);
+    }
+
+    /**
+     * Return offset exists
+     *
+     * @param string $name key
+     */
+    public function offsetGet($offset)
+    {
+        if (! $this->object instanceof ArrayAccess) {
+            throw new RuntimeException('ArrayAccess not allowed.');
+        }
+        return $this->object[$offset];
+    }
+
+    /**
+     * Set
+     *
+     * @param string $name key
+     */
+    public function offsetSet($offset, $value)
+    {
+        if (! $this->object instanceof ArrayAccess) {
+            throw new RuntimeException('ArrayAccess not allowed.');
+        }
+        $this->object[$offset] = $value;
+    }
+
+    /**
+     * Unset
+     *
+     * @param string $name key
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->object[$offset]);
     }
 
     /**
@@ -123,7 +179,7 @@ class Weaver implements Weave
     {
         return $this->object;
     }
-    
+
     /**
      * Get target object
      *
