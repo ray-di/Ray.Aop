@@ -41,6 +41,7 @@ final class Bind extends \ArrayObject
         if ($annotation) {
             $this->annotation[$method] = $annotation;
         }
+
         return $this;
     }
 
@@ -52,6 +53,7 @@ final class Bind extends \ArrayObject
     public function hasBinding()
     {
         $hasImplicitBinding = (count($this)) ? true : false;
+
         return $hasImplicitBinding;
     }
 
@@ -66,6 +68,7 @@ final class Bind extends \ArrayObject
     {
         // pre compiled inplicit matcher
         $interceptors = isset($this[$name]) ? $this[$name] : false;
+
         return $interceptors;
     }
 
@@ -88,6 +91,7 @@ final class Bind extends \ArrayObject
                 $this->$method($class, $pointcut->methodMatcher, $pointcut->interceptors);
             }
         }
+
         return $this;
     }
 
@@ -153,6 +157,7 @@ final class Bind extends \ArrayObject
             $intercetorsList = implode(',', $classNames);
         }
         $result = implode(' ', $result);
+
         return $result;
     }
 }

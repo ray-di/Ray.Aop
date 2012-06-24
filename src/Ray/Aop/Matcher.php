@@ -72,6 +72,7 @@ class Matcher implements Matchable
     public function isAnnotateBinding()
     {
         $isAnnotateBinding = $this->method === 'annotatedWith';
+
         return $isAnnotateBinding;
     }
 
@@ -84,6 +85,7 @@ class Matcher implements Matchable
     {
         $this->method = __FUNCTION__;
         $this->args = null;
+
         return clone $this;
     }
 
@@ -101,6 +103,7 @@ class Matcher implements Matchable
         }
         $this->method = __FUNCTION__;
         $this->args = $annotationName;
+
         return clone $this;
     }
 
@@ -115,6 +118,7 @@ class Matcher implements Matchable
     {
         $this->method = __FUNCTION__;
         $this->args = $superClass;
+
         return clone $this;
     }
 
@@ -129,6 +133,7 @@ class Matcher implements Matchable
     {
         $this->method = __FUNCTION__;
         $this->args = $prefix;
+
         return clone $this;
     }
 
@@ -143,7 +148,8 @@ class Matcher implements Matchable
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    private function isAny($name, $target) {
+    private function isAny($name, $target)
+    {
         if ($target === self::TARGET_CLASS) {
             return true;
         }
@@ -153,6 +159,7 @@ class Matcher implements Matchable
         if (in_array($name, ['offsetExists', 'offsetGet', 'offsetSet', 'offsetUnset', 'append', 'getArrayCopy', 'count', 'getFlags', 'setFlags', 'asort', 'ksort', 'uasort', 'uksort', 'natsort', 'natcasesort', 'unserialize', 'serialize', 'getIterator', 'exchangeArray', 'setIteratorClass', 'getIterator', 'getIteratorClass'])) {
             return false;
         }
+
         return true;
     }
 
@@ -163,17 +170,19 @@ class Matcher implements Matchable
      * Otherwise returl bool.
      *
      * @param string $class
-     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     * @param bool   $target         self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $annotationName
      *
      * @return boolean | \Ray\Aop\Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isAnnotatedWith($class, $target, $annotationName) {
+    private function isAnnotatedWith($class, $target, $annotationName)
+    {
         $reader = $this->reader;
         if ($target === self::TARGET_CLASS) {
             $annotation = $reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
             $hasAnnotation = $annotation ? true : false;
+
             return $hasAnnotation;
         }
         $methods = (new ReflectionClass($class))->getMethods();
@@ -188,6 +197,7 @@ class Matcher implements Matchable
                 $result[] = $matched;
             }
         }
+
         return $result;
     }
 
@@ -195,7 +205,7 @@ class Matcher implements Matchable
      * Return subclass match.
      *
      * @param string $class
-     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     * @param bool   $target     self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $superClass
      *
      * @return bool
@@ -212,6 +222,7 @@ class Matcher implements Matchable
             if ($isSubClass === false) {
                 $isSubClass = ($class === $superClass);
             }
+
             return $isSubClass;
         } catch (\Exception $e) {
             return false;
@@ -228,6 +239,7 @@ class Matcher implements Matchable
     private function isStartWith($name, $target, $startWith)
     {
         $result = (strpos($name, $startWith) === 0) ? true :false;
+
         return $result;
     }
 
@@ -245,6 +257,7 @@ class Matcher implements Matchable
         array_push($args, $this->args);
         $method = 'is' . $this->method;
         $matchd = call_user_func_array([$this, $method], $args);
+
         return $matchd;
     }
 
@@ -256,6 +269,7 @@ class Matcher implements Matchable
     public function __toString()
     {
         $result = $this->method . ':' . json_encode($this->args);
+
         return $result;
     }
 }

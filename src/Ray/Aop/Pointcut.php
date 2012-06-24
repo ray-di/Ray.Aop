@@ -35,7 +35,6 @@ final class Pointcut
      */
     public $interceptors = [];
 
-
     /**
      * Constructor
      *

@@ -69,7 +69,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function test_getThis()
     {
         $actual = $this->invocation->getThis();
-		$this->assertSame($this->mock, $actual);
+        $this->assertSame($this->mock, $actual);
     }
 
     public function test_getAnnotation()

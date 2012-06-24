@@ -27,7 +27,7 @@ class MockMethod
     }
 
     /**
-     * @param unknown_type $c
+     * @param  unknown_type $c
      * @return number
      *
      * @Log
@@ -36,9 +36,9 @@ class MockMethod
     {
         return $c * 3;
     }
-    
+
     public function __toString()
     {
         return 'toStringString';
-    }    
+    }
 }

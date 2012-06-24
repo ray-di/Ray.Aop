@@ -11,7 +11,7 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
 
     /**
      * taget method is:
-     * 
+     *
      * $mock = new MockMethod;
      * $mock->add(2);
      */
@@ -41,7 +41,7 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
         $expect = 32;
         $this->assertSame($expect, $actual);
     }
-    
+
     public function test_invoke_with_dobule_interceptors()
     {
         $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);

@@ -2,7 +2,6 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader as Reader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 class MatcherTestSuperClass {}
 class MatcherTestChildeClass extends MatcherTestSuperClass{}
@@ -52,7 +51,6 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(true, $result);
     }
 
-
     public function test_annotatedWithMethod()
     {
         $annotation = 'Ray\Aop\Tests\Annotation\Marker';
@@ -81,7 +79,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertTrue($result);
     }
-    
+
     public function test_SubclassesOfFalse()
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
@@ -89,7 +87,6 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertFalse($result);
     }
-
 
     /**
 * @expectedException Ray\Aop\Exception\InvalidArgument
@@ -105,7 +102,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function test_toString()
     {
         $matcher = clone $this->matcher;
-        $this->assertSame(':null', (string)$matcher);
+        $this->assertSame(':null', (string) $matcher);
     }
 
     /**
@@ -130,14 +127,14 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->assertFalse($result);
         }
     }
-    
+
     public function test_isStartWithMethodTrue()
     {
         $startWith = $this->matcher->startWith('get');
         $result = $startWith('getSub', Matcher::TARGET_METHOD);
         $this->assertTrue($result);
     }
-    
+
     public function test_isStartWithMethodFalse()
     {
         $startWith = $this->matcher->startWith('on');

@@ -2,7 +2,6 @@
 
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationReader as Reader;
 /**
  * Test class for Ray.Aop
  */
@@ -105,7 +104,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
 
     public function test_toString()
     {
-        $string = (string)$this->weaver;
+        $string = (string) $this->weaver;
         $this->assertSame('toStringString', $string);
     }
 

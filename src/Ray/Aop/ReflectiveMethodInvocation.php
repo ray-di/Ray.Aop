@@ -97,6 +97,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
             return $this->method->invokeArgs($this->object, $this->args);
         }
         $interceptor = array_shift($this->interceptors);
+
         return $interceptor->invoke($this);
     }
 

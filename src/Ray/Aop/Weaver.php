@@ -81,6 +81,7 @@ class Weaver implements Weave, ArrayAccess
                 $interceptors,
                 $annotation
         );
+
         return $invocation->proceed();
     }
 
@@ -118,7 +119,7 @@ class Weaver implements Weave, ArrayAccess
      */
     public function __toString()
     {
-        return (string)$this->object;
+        return (string) $this->object;
     }
 
     /**
@@ -131,6 +132,7 @@ class Weaver implements Weave, ArrayAccess
         if (! $this->object instanceof ArrayAccess) {
             throw new RuntimeException('ArrayAccess not allowed.');
         }
+
         return isset($this->object[$offset]);
     }
 
@@ -144,6 +146,7 @@ class Weaver implements Weave, ArrayAccess
         if (! $this->object instanceof ArrayAccess) {
             throw new RuntimeException('ArrayAccess not allowed.');
         }
+
         return $this->object[$offset];
     }
 

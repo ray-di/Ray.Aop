@@ -7,13 +7,12 @@ use Ray\Aop\Tests\Annotation\Marker;
 
 /**
  * Test class for Ray.Aop
- * 
+ *
  * @Resource
  */
 class AnnotateClass
 {
     public $a = 0;
-
 
     /**
      * @Marker
