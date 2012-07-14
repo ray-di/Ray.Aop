@@ -186,4 +186,11 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $bind = $this->weaver->___getBind();
         $this->assertInstanceOf('Ray\Aop\Bind', $bind);
     }
+    
+    public function test_addPublicProperty()
+    {
+        $this->weaver->a = 1;
+        $object = $this->weaver->___getObject();
+        $this->assertSame(1, $object->a);
+    }
 }

@@ -100,7 +100,7 @@ class Weaver implements Weave, ArrayAccess
     }
 
     /**
-     * Return parameter
+     * Return public property
      *
      * @param string $name
      */
@@ -109,9 +109,20 @@ class Weaver implements Weave, ArrayAccess
         if (isset($this->object->$name)) {
             return $this->object->$name;
         }
-        throw new UndefinedProperty(get_class($this->object) . '::$' . $name);
+        throw new UndefinedProperty(__METHOD__ . ':' . get_class($this->object) . '::$' . $name);
     }
 
+    /**
+     * Set public property
+     * 
+     * @param string $name
+     * @param mixed $value
+     */
+    public function __set($name , $value)
+    {
+        $this->object->$name = $value;
+    }
+    
     /**
      * Return string
      *
