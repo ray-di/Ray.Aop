@@ -163,4 +163,20 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->bind->bind($class, [$pointcut]);
         $this->assertSame(0, (count($this->bind)));
     }
+
+    public function test_serializable()
+    {
+        $serialized = serialize($this->bind);
+        $this->assertInternalType('string', $serialized);
+        return $serialized;
+    }
+
+    /**
+     * @depends test_serializable
+     */
+    public function test_unserialize($data)
+    {
+        $data = unserialize($data);
+        $this->assertTrue($data instanceof \Ray\Aop\Bind);
+    }
 }
