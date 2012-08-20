@@ -1,10 +1,10 @@
 {
-    "name": "Ray/Aop",
+    "name": "ray/aop",
     "type": "library",
     "description": "Aspect oriented programing framework",
     "keywords": ["aop", "method interception"],
     "homepage": "https://github.com/koriym/Ray.Aop",
-    "version": "1.0.0beta1",
+    "version": "1.0.0-beta1",
     "license": "BSD-3-Clause",
     "authors": [
         {
