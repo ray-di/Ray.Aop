@@ -131,7 +131,7 @@ Here's how to install Ray.Aop from source to run the unit tests and sample:
 ```
 $ git clone git://github.com/koriym/Ray.Aop.git
 $ wget http://getcomposer.org/composer.phar
-$ php composer.phar install
+$ php composer.phar update
 $ phpunit
 $ php doc/sample-01-quick-weave/main.php
 // Charged.
@@ -145,7 +145,7 @@ If you're using [Composer](https://github.com/composer/composer) to manage depen
 
 	{
 		"require": {
-			"Ray/Aop": ">=0.1"
+			"ray/aop": "*"
 		}
 	}
 
