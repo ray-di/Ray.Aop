@@ -1,5 +1,5 @@
 {
-    "name": "Ray/Aop",
+    "name": "ray/aop",
     "type": "library",
     "description": "Aspect oriented programing framework",
     "keywords": ["aop", "method interception"],
@@ -15,8 +15,6 @@
     "require": {
         "php": ">=5.4.0",
         "doctrine/common": "2.3.*-dev"
-    },
-    "replace": {
     },
     "autoload": {
         "psr-0": { "Ray\\Aop": "src/" }
