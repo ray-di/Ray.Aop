@@ -1,20 +1,21 @@
 <?php
 /**
- * Ray.Aop
+ * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @package    Ray.Aop
+ * @subpackage Exception
+ * @license    http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop\Exception;
 
-use Ray\Aop\Exception;
+use LogicException;
 
 /**
  * Undefined property
  *
- * @package Ray.Aop
- * @author  Akihito Koriyama <akihito.koriyama@gmail.com>
+ * @package    Ray.Aop
+ * @subpackage Exception
  */
-class UndefinedProperty extends Exception
+class UndefinedProperty extends LogicException implements Exception
 {
 }

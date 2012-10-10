@@ -1,6 +1,6 @@
 <?php
 /**
- * Ray
+ * This file is part of the Ray.Aop package
  *
  * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
@@ -10,6 +10,7 @@ namespace Ray\Aop;
 use Ray\Aop\Exception\UndefinedProperty;
 use ArrayAccess;
 use RuntimeException;
+use BadFunctionCallException;
 
 /**
  * Weaver
@@ -17,7 +18,6 @@ use RuntimeException;
  * The proxy object to call intercepted method.
  *
  * @package Ray.Aop
- * @author  Akihito Koriyama<akihito.koriyama@gmail.com>
  */
 class Weaver implements Weave, ArrayAccess
 {
@@ -43,7 +43,7 @@ class Weaver implements Weave, ArrayAccess
     protected $interceptors;
 
     /**
-     * Constractor
+     * Constructor
      *
      * @param object $object
      * @param Bind   $bind
@@ -55,46 +55,58 @@ class Weaver implements Weave, ArrayAccess
     }
 
     /**
-     * The magic method to call intercepted method.
-     *
-     * @param string $method
-     * @param array  $params
-     *
-     * @return mixed
-     * @throws \BadFunctionCallException
+     * (non-PHPDoc)
+     * @see \Ray\Aop\Weave::___getObject()
+     */
+    public function ___getObject()
+    {
+        return $this->object;
+    }
+
+    /**
+     * (non-PHPDoc)
+     * @see \Ray\Aop\Weave::___getBind()
+     */
+    public function ___getBind()
+    {
+        return $this->bind;
+    }
+
+    /**
+     * (non-PHPDoc)
+     * @see \Ray\Aop\Weave::__call()
      */
     public function  __call($method, array $params)
     {
         if (!method_exists($this->object, $method)) {
-            throw new \BadFunctionCallException($method);
+            throw new BadFunctionCallException($method);
         }
         // direct call
-        if (! isset($this->bind[$method])) {
+        if (!isset($this->bind[$method])) {
             return call_user_func_array(array($this->object, $method), $params);
         }
         // interceptor weaved call
         $interceptors = $this->bind[$method];
         $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
+        /** @noinspection PhpParamsInspection */
         $invocation = new ReflectiveMethodInvocation(
-                array($this->object, $method),
-                $params,
-                $interceptors,
-                $annotation
+            [
+                $this->object,
+                $method
+            ],
+            $params,
+            $interceptors,
+            $annotation
         );
 
         return $invocation->proceed();
     }
 
     /**
-     * Invoke with callable parameter.
-     *
-     * @param mixed  $getParams Callable
-     * @param string $method
-     * @param array  $query
-     *
-     * @return mixed
+     * (non-PHPDoc)
+     * @see \Ray\Aop\Weave::__call()
      */
-    public function __invoke($getParams, $method, array $query)
+    public function __invoke(Callable $getParams, $method, array $query)
     {
         return $this->__call($method, $getParams($this->object, $method, $query));
     }
@@ -103,6 +115,8 @@ class Weaver implements Weave, ArrayAccess
      * Return public property
      *
      * @param string $name
+     *
+     * @throws UndefinedProperty
      */
     public function __get($name)
     {
@@ -114,15 +128,15 @@ class Weaver implements Weave, ArrayAccess
 
     /**
      * Set public property
-     * 
+     *
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      */
-    public function __set($name , $value)
+    public function __set($name, $value)
     {
         $this->object->$name = $value;
     }
-    
+
     /**
      * Return string
      *
@@ -130,17 +144,20 @@ class Weaver implements Weave, ArrayAccess
      */
     public function __toString()
     {
-        return (string) $this->object;
+        return (string)$this->object;
     }
 
     /**
      * Return offsetExists
      *
-     * @param string $name key
+     * @param mixed $offset
+     *
+     * @return bool
+     * @throws \RuntimeException
      */
     public function offsetExists($offset)
     {
-        if (! $this->object instanceof ArrayAccess) {
+        if (!$this->object instanceof ArrayAccess) {
             throw new RuntimeException('ArrayAccess not allowed.');
         }
 
@@ -150,11 +167,14 @@ class Weaver implements Weave, ArrayAccess
     /**
      * Return offset exists
      *
-     * @param string $name key
+     * @param mixed $offset
+     *
+     * @return mixed
+     * @throws \RuntimeException
      */
     public function offsetGet($offset)
     {
-        if (! $this->object instanceof ArrayAccess) {
+        if (!$this->object instanceof ArrayAccess) {
             throw new RuntimeException('ArrayAccess not allowed.');
         }
 
@@ -164,11 +184,14 @@ class Weaver implements Weave, ArrayAccess
     /**
      * Set
      *
-     * @param string $name key
+     * @param string $offset key
+     * @param mixed  $value
+     *
+     * @throws RuntimeException
      */
     public function offsetSet($offset, $value)
     {
-        if (! $this->object instanceof ArrayAccess) {
+        if (!$this->object instanceof ArrayAccess) {
             throw new RuntimeException('ArrayAccess not allowed.');
         }
         $this->object[$offset] = $value;
@@ -177,30 +200,10 @@ class Weaver implements Weave, ArrayAccess
     /**
      * Unset
      *
-     * @param string $name key
+     * @param string $offset key
      */
     public function offsetUnset($offset)
     {
         unset($this->object[$offset]);
-    }
-
-    /**
-     * Get target object
-     *
-     * @return \Ray\Aop\mixed
-     */
-    public function ___getObject()
-    {
-        return $this->object;
-    }
-
-    /**
-     * Get target object
-     *
-     * @return \Ray\Aop\mixed
-     */
-    public function ___getBind()
-    {
-        return $this->bind;
     }
 }

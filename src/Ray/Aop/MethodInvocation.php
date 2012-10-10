@@ -1,6 +1,6 @@
 <?php
 /**
- * Ray
+ * This file is part of the Ray.Aop package
  *
  * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
@@ -17,8 +17,8 @@ use Ray\Aop\Invocation;
  * interceptor.
  *
  * @package Ray.Aop
- * @see MethodInterceptor
- * @see http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInvocation.html
+ * @see     MethodInterceptor
+ * @see     http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInvocation.html
  */
 interface MethodInvocation extends Invocation
 {
@@ -26,7 +26,7 @@ interface MethodInvocation extends Invocation
     /**
      * Gets the method being called.
      *
-     * <p>This method is a frienly implementation of the {@link
+     * <p>This method is a friendly implementation of the {@link
      * Joinpoint#getStaticPart()} method (same result).
      *
      * @return \ReflectionMethod method being called.

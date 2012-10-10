@@ -1,6 +1,6 @@
 <?php
 /**
- * Ray
+ * This file is part of the Ray.Aop package
  *
  * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
@@ -8,12 +8,12 @@
 namespace Ray\Aop;
 
 use Ray\Aop\MethodInvocation;
+use ReflectionMethod;
 
 /**
  * Ray's implementation of AOP Alliance MethodInvocation interface.
  *
  * @package Ray.Aop
- * @author  Akihito Koriyama<akihito.koriyama@gmail.com>
  */
 class ReflectiveMethodInvocation implements MethodInvocation
 {
@@ -55,16 +55,16 @@ class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * Constructor
      *
-     * @param object $target       Callable
+     * @param object $target
      * @param array  $args
      * @param array  $interceptors
-     * @param string $annotation
+     * @param array $annotation
      */
     public function __construct($target, array $args, array $interceptors = [], $annotation = [])
     {
         $this->object = $target[0];
         $this->args = $args;
-        $this->method = new \ReflectionMethod($target[0], $target[1]);
+        $this->method = new ReflectionMethod($target[0], $target[1]);
         $this->interceptors = $interceptors;
         $this->annotation = $annotation;
     }

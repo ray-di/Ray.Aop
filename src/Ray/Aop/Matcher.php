@@ -1,8 +1,8 @@
 <?php
 /**
- * Ray
+ * This file is part of the Ray.Aop package
  *
- * @package Ray.Di
+ * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -17,6 +17,7 @@ use ReflectionClass;
  *
  * @package Ray.Aop
  */
+/** @noinspection PhpDocMissingReturnTagInspection */
 class Matcher implements Matchable
 {
     /**
@@ -79,7 +80,7 @@ class Matcher implements Matchable
     /**
      * Any match
      *
-     * @return Ray\Di\Matcher
+     * @return Matcher
      */
     public function any()
     {
@@ -95,10 +96,11 @@ class Matcher implements Matchable
      * @param string $annotationName
      *
      * @return array
+     * @throws InvalidAnnotation
      */
     public function annotatedWith($annotationName)
     {
-        if (! class_exists($annotationName)) {
+        if (!class_exists($annotationName)) {
             throw new InvalidAnnotation($annotationName);
         }
         $this->method = __FUNCTION__;
@@ -108,7 +110,7 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return subclass matche result
+     * Return subclass matched result
      *
      * @param string $superClass
      *
@@ -143,20 +145,48 @@ class Matcher implements Matchable
      * @param string $name   class or method name
      * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      *
-     * @return Ray\Di\Matcher
+     * @return Matcher
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isAny($name, $target)
     {
         if ($target === self::TARGET_CLASS) {
             return true;
         }
-        if (substr($name, 0 ,2) === '__') {
+        if (substr($name, 0, 2) === '__') {
             return false;
         }
-        if (in_array($name, ['offsetExists', 'offsetGet', 'offsetSet', 'offsetUnset', 'append', 'getArrayCopy', 'count', 'getFlags', 'setFlags', 'asort', 'ksort', 'uasort', 'uksort', 'natsort', 'natcasesort', 'unserialize', 'serialize', 'getIterator', 'exchangeArray', 'setIteratorClass', 'getIterator', 'getIteratorClass'])) {
+        if (in_array(
+            $name,
+            [
+                'offsetExists',
+                'offsetGet',
+                'offsetSet',
+                'offsetUnset',
+                'append',
+                'getArrayCopy',
+                'count',
+                'getFlags',
+                'setFlags',
+                'asort',
+                'ksort',
+                'uasort',
+                'uksort',
+                'natsort',
+                'natcasesort',
+                'unserialize',
+                'serialize',
+                'getIterator',
+                'exchangeArray',
+                'setIteratorClass',
+                'getIterator',
+                'getIteratorClass'
+            ]
+        )
+        ) {
             return false;
         }
 
@@ -166,15 +196,16 @@ class Matcher implements Matchable
     /**
      * Return match result
      *
-     * Return Match object if annotate bindings, which cotainin multiple results.
-     * Otherwise returl bool.
+     * Return Match object if annotate bindings, which containing multiple results.
+     * Otherwise return bool.
      *
      * @param string $class
      * @param bool   $target         self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $annotationName
      *
-     * @return boolean | \Ray\Aop\Matched[]
+     * @return bool | Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isAnnotatedWith($class, $target, $annotationName)
     {
@@ -211,6 +242,7 @@ class Matcher implements Matchable
      * @return bool
      * @throws InvalidArgumentException
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isSubclassesOf($class, $target, $superClass)
     {
@@ -233,12 +265,17 @@ class Matcher implements Matchable
      * Return prefix match
      *
      * @param string $name
-     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
-     * @param string $prefix
+     * @param string $target
+     * @param string $startWith
+     *
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isStartWith($name, $target, $startWith)
     {
-        $result = (strpos($name, $startWith) === 0) ? true :false;
+        unset($target);
+        $result = (strpos($name, $startWith) === 0) ? true : false;
 
         return $result;
     }
@@ -256,9 +293,9 @@ class Matcher implements Matchable
         $args = [$class, $target];
         array_push($args, $this->args);
         $method = 'is' . $this->method;
-        $matchd = call_user_func_array([$this, $method], $args);
+        $matched = call_user_func_array([$this, $method], $args);
 
-        return $matchd;
+        return $matched;
     }
 
     /**

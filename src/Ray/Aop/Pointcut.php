@@ -1,8 +1,8 @@
 <?php
 /**
- * Ray
+ * This file is part of the Ray.Aop package
  *
- * @package Ray.Di
+ * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -15,9 +15,9 @@ namespace Ray\Aop;
 final class Pointcut
 {
     /**
-     * Class matccher
+     * Class matcher
      *
-     * @var Mathcer
+     * @var Matcher
      */
     public $classMatcher;
 

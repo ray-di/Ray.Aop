@@ -1,6 +1,6 @@
 <?php
 /**
- * Ray
+ * This file is part of the Ray.Aop package
  *
  * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
@@ -23,7 +23,7 @@ final class Matched
     public $methodName;
 
     /**
-     * Binding annotattion for match.
+     * Binding annotation for match.
      *
      * @var object
      */

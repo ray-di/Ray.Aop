@@ -1,8 +1,8 @@
 <?php
 /**
- * Ray
+ * This file is part of the Ray.Aop package
  *
- * @package Ray.Di
+ * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -13,7 +13,6 @@ use Doctrine\Common\Annotations\Reader;
  * Supports matching classes and methods.
  *
  * @package Ray.Di
- *
  */
 interface Matchable
 {
@@ -27,7 +26,7 @@ interface Matchable
     /**
      * Any match
      *
-     * @return Ray\Di\Matcher
+     * @return Matcher
      */
     public function any();
 
@@ -41,7 +40,7 @@ interface Matchable
     public function annotatedWith($annotationName);
 
     /**
-     * Return subclass matche result
+     * Return subclass matched result
      *
      * @param string $superClass
      *

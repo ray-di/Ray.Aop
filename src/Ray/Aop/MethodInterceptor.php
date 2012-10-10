@@ -1,6 +1,6 @@
 <?php
 /**
- * Ray
+ * This file is part of the Ray.Aop package
  *
  * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
@@ -14,7 +14,7 @@ namespace Ray\Aop;
  * E.g. the following class implements a tracing interceptor (traces all the calls on the intercepted method(s)):
  *
  * @package Ray.Aop
- * @link http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html
+ * @link    http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html
  */
 interface MethodInterceptor extends Interceptor
 {
@@ -25,11 +25,9 @@ interface MethodInterceptor extends Interceptor
      *
      * @param MethodInvocation $invocation the method invocation joinpoint
      *
-     * @return the result of the call to {@link
+     * @return mixed the result of the call to {@link
      * Joinpoint#proceed()}, might be intercepted by the
      * interceptor.
-     *
-     * @throws \Ray\Aop\Exception
      */
     public function invoke(MethodInvocation $invocation);
 }

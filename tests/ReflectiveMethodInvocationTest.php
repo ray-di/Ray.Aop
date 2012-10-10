@@ -2,6 +2,8 @@
 
 namespace Ray\Aop;
 
+use InvalidArgumentException;
+
 /**
  * Test class for Ray.Aop
  */
@@ -56,14 +58,6 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
         $this->invocation->proceed();
         $this->invocation->proceed();
         $this->assertSame(2, $this->mock->a);
-    }
-
-    /**
-     * @expectedException Ray\Aop\Exception
-     */
-    public function test_Exception()
-    {
-        throw new Exception;
     }
 
     public function test_getThis()
