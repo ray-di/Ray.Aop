@@ -145,7 +145,7 @@ If you're using [Composer](https://github.com/composer/composer) to manage depen
 
 	{
 		"require": {
-			"Ray/Aop": ">=0.1"
+			"ray/aop": "*"
 		}
 	}
 
