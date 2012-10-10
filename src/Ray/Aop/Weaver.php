@@ -144,7 +144,7 @@ class Weaver implements Weave, ArrayAccess
      */
     public function __toString()
     {
-        return (string)$this->object;
+        return (string) $this->object;
     }
 
     /**

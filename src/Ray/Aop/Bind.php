@@ -116,7 +116,7 @@ final class Bind extends ArrayObject implements BindInterface
      */
     private function bindByAnnotateBinding($class, Matcher $methodMatcher, array $interceptors)
     {
-        $matches = (array)$methodMatcher($class, Matcher::TARGET_METHOD);
+        $matches = (array) $methodMatcher($class, Matcher::TARGET_METHOD);
         if (!$matches) {
             return;
         }
@@ -141,7 +141,6 @@ final class Bind extends ArrayObject implements BindInterface
 
         return $interceptors;
     }
-
 
     /**
      * to String

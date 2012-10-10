@@ -44,9 +44,9 @@ interface Weave
     /**
      * Invoke with callable parameter.
      *
-     * @param Callable  $getParams
-     * @param string    $method
-     * @param array     $query
+     * @param Callable $getParams
+     * @param string   $method
+     * @param array    $query
      *
      * @return mixed
      */

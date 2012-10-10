@@ -25,7 +25,6 @@ interface BindInterface
      */
     public function bindInterceptors($method, array $interceptors, $annotation = null);
 
-
     /**
      * Get matched Interceptor
      *
