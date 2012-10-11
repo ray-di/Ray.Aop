@@ -95,7 +95,7 @@ class Matcher implements Matchable
      *
      * @param string $annotationName
      *
-     * @return array
+     * @return Matcher
      * @throws InvalidAnnotation
      */
     public function annotatedWith($annotationName)
@@ -114,7 +114,7 @@ class Matcher implements Matchable
      *
      * @param string $superClass
      *
-     * @return bool
+     * @return Matcher
      */
     public function subclassesOf($superClass)
     {
@@ -129,7 +129,7 @@ class Matcher implements Matchable
      *
      * @param string $prefix
      *
-     * @return bool
+     * @return Matcher
      */
     public function startWith($prefix)
     {
