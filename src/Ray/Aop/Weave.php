@@ -37,7 +37,7 @@ interface Weave
      * @param array  $params
      *
      * @return mixed
-     * @throws BadFunctionCallException
+     * @throws \BadFunctionCallException
      */
     public function  __call($method, array $params);
 
