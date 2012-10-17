@@ -137,6 +137,10 @@ $ php doc/sample-01-quick-weave/main.php
 // Charged.
 ```
 
+Ray.Di
+======
+[Ray.Di](https://github.com/koriym/Ray.Di) is a Guice style annotation-driven dependency injection framework. It integrates Ray.Aop AOP functionality.
+
 Installation
 ============
 
