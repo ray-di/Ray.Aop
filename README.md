@@ -5,7 +5,7 @@ Ray.Aop package provides method interception. This feature enables you to write 
 
 [![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
 
-Requiement
+Requirement
 -------------
 
  * PHP 5.4+
@@ -136,6 +136,10 @@ $ phpunit
 $ php doc/sample-01-quick-weave/main.php
 // Charged.
 ```
+
+Ray.Di
+======
+[Ray.Di](https://github.com/koriym/Ray.Di) is a Guice style annotation-driven dependency injection framework. It integrates Ray.Aop AOP functionality.
 
 Installation
 ============
