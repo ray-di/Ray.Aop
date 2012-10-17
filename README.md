@@ -5,7 +5,7 @@ Ray.Aop package provides method interception. This feature enables you to write 
 
 [![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
 
-Requiement
+Requirement
 -------------
 
  * PHP 5.4+
