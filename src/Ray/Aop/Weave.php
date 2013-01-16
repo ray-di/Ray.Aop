@@ -50,5 +50,5 @@ interface Weave
      *
      * @return mixed
      */
-    public function __invoke(Callable $getParams, $method, array $query);
+    public function __invoke($getParams, $method, array $query);
 }

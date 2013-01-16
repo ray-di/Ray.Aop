@@ -121,7 +121,8 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function test_AnyButNotArrayAccessMethod()
     {
         $any = $this->matcher->any();
-        $methods = (new \ReflectionClass('ArrayObject'))->getMethods();
+	$reflectionClass = new \ReflectionClass('ArrayObject');
+        $methods = $reflectionClass->getMethods();
         foreach ($methods as $method) {
             $result = $any($method->name, Matcher::TARGET_METHOD);
             $this->assertFalse($result);
