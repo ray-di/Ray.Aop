@@ -23,7 +23,7 @@ final class Bind extends ArrayObject implements BindInterface
      *
      * @var array [$method => $annotations]
      */
-    public $annotation = [];
+    public $annotation = array();
 
     /**
      * Bind method to interceptors
@@ -95,7 +95,8 @@ final class Bind extends ArrayObject implements BindInterface
      */
     private function bindByCallable($class, Matcher $methodMatcher, array $interceptors)
     {
-        $methods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
+        $reflectionClass = new ReflectionClass($class);
+        $methods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
             $isMethodMatch = ($methodMatcher($method->name, Matcher::TARGET_METHOD) === true);
             if ($isMethodMatch) {
@@ -151,9 +152,9 @@ final class Bind extends ArrayObject implements BindInterface
      */
     public function __toString()
     {
-        $binds = [];
+        $binds = array();
         foreach ($this as $method => $interceptors) {
-            $inspectorsInfo = [];
+            $inspectorsInfo = array();
             foreach ($interceptors as $interceptor) {
                 $inspectorsInfo[] .= get_class($interceptor);
             }

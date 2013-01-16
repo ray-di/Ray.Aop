@@ -110,26 +110,26 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
 
     public function test_offsetExists()
     {
-        $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
+        $weaver = new Weaver(new \ArrayObject(array('key' => 10)), new Bind);
         $this->assertTrue(isset($weaver['key']));
     }
 
     public function test_offsetGet()
     {
-        $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
+        $weaver = new Weaver(new \ArrayObject(array('key' => 10)), new Bind);
         $this->assertSame(10, $weaver['key']);
     }
 
     public function test_offsetSet()
     {
-        $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
+        $weaver = new Weaver(new \ArrayObject(array('key' => 10)), new Bind);
         $weaver['key'] = 20;
         $this->assertSame(20, $weaver['key']);
     }
 
     public function test_offsetUnset()
     {
-        $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
+        $weaver = new Weaver(new \ArrayObject(array('key' => 10)), new Bind);
         unset($weaver['key']);;
         $this->assertFalse(isset($weaver['key']));
     }

@@ -31,7 +31,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->bind = new Bind;
-        $this->interceptors = [new DoubleInterceptor, new DoubleInterceptor];
+        $this->interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
     }
 
     public function test_bindInterceptors()
@@ -45,7 +45,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $matcher = new Matcher(new Reader);
         $pointcut = new Pointcut($matcher->any(), $matcher->any(), $this->interceptors);
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
-        $result = $this->bind->bind($class, [$pointcut]);
+        $result = $this->bind->bind($class, array($pointcut));
         list($method, $interceptors) = each($result);
         $this->assertSame('getDobule', $method);
         $this->assertSame($this->interceptors, $interceptors);
@@ -56,7 +56,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $matcher = new Matcher(new Reader);
         $pointcut = new Pointcut($matcher->subclassesOf('Ray\Aop\parentClass'), $matcher->any(), $this->interceptors);
         $class = 'Ray\Aop\childClass';
-        $result = $this->bind->bind($class, [$pointcut]);
+        $result = $this->bind->bind($class, array($pointcut));
         list($method, $interceptors) = each($result);
         $this->assertSame('method', $method);
         $this->assertSame($this->interceptors, $interceptors);
@@ -68,7 +68,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Tests\Annotation\Marker';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
-        $result = $this->bind->bind($class, [$pointcut]);
+        $result = $this->bind->bind($class, array($pointcut));
         list($method, $interceptors) = each($result);
         $this->assertSame('getDobule', $method);
         $this->assertSame($this->interceptors, $interceptors);
@@ -80,7 +80,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Tests\Annotation\Marker';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
-        $bind = $this->bind->bind($class, [$pointcut]);
+        $bind = $this->bind->bind($class, array($pointcut));
         /* @var $bind Bind */
         list($method, $interceptors) = each($bind);
         $annotation = $bind->annotation[$method];
@@ -92,13 +92,13 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $matcher = new Matcher(new Reader);
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Tests\Annotation\Marker';
-        $interceptors1 = [new voidInterceptor, new DoubleInterceptor];
-        $interceptors2 = [new DoubleInterceptor, new voidInterceptor];
+        $interceptors1 = array(new voidInterceptor, new DoubleInterceptor);
+        $interceptors2 = array(new DoubleInterceptor, new voidInterceptor);
 
         $pointcut1 = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $interceptors1);
         $pointcut2 = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $interceptors2);
-        $this->bind->bind($class, [$pointcut1]);
-        $result = $this->bind->bind($class, [$pointcut2]);
+        $this->bind->bind($class, array($pointcut1));
+        $result = $this->bind->bind($class, array($pointcut2));
         list($method, $interceptors) = each($result);
         $this->assertSame('getDobule', $method);
         $this->assertInstanceOf('Ray\Aop\voidInterceptor', $interceptors[0]);
@@ -116,7 +116,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Tests\Annotation\XXXXXXX';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
-        $result = $this->bind->bind($class, [$pointcut]);
+        $result = $this->bind->bind($class, array($pointcut));
         list($method, $interceptors) = each($result);
         $this->assertSame('getDobule', $method);
         $this->assertSame($this->interceptors, $interceptors);
@@ -133,7 +133,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $matcher = new Matcher(new Reader);
         $pointcut = new Pointcut($matcher->subclassesOf('Ray\Aop\parentClass'), $matcher->any(), $this->interceptors);
         $class = 'Ray\Aop\childClass';
-        $this->bind->bind($class, [$pointcut]);
+        $this->bind->bind($class, array($pointcut));
         $this->assertTrue($this->bind->hasBinding());
     }
 
@@ -160,7 +160,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Tests\Annotation\Resource';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
-        $this->bind->bind($class, [$pointcut]);
+        $this->bind->bind($class, array($pointcut));
         $this->assertSame(0, (count($this->bind)));
     }
 

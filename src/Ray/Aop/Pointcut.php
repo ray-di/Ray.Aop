@@ -33,7 +33,7 @@ final class Pointcut
      *
      * @var Interceptor[]
      */
-    public $interceptors = [];
+    public $interceptors = array();
 
     /**
      * Constructor

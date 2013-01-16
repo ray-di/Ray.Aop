@@ -8,7 +8,7 @@ Ray.Aop package provides method interception. This feature enables you to write 
 Requirement
 -------------
 
- * PHP 5.4+
+ * PHP 5.3+
  
 Getting Started
 ===============

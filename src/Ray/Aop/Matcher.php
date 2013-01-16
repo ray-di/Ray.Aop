@@ -161,7 +161,7 @@ class Matcher implements Matchable
         }
         if (in_array(
             $name,
-            [
+            array(
                 'offsetExists',
                 'offsetGet',
                 'offsetSet',
@@ -184,7 +184,7 @@ class Matcher implements Matchable
                 'setIteratorClass',
                 'getIterator',
                 'getIteratorClass'
-            ]
+            )
         )
         ) {
             return false;
@@ -216,8 +216,9 @@ class Matcher implements Matchable
 
             return $hasAnnotation;
         }
-        $methods = (new ReflectionClass($class))->getMethods();
-        $result = [];
+        $reflectionClass = new ReflectionClass($class);
+        $methods = $reflectionClass->getMethods();
+        $result = array();
         foreach ($methods as $method) {
             new $annotationName;
             $annotation = $reader->getMethodAnnotation($method, $annotationName);
@@ -250,7 +251,8 @@ class Matcher implements Matchable
             throw new InvalidArgumentException($class);
         }
         try {
-            $isSubClass = (new ReflectionClass($class))->isSubclassOf($superClass);
+            $reflectionClass = new ReflectionClass($class);
+            $isSubClass = $reflectionClass->isSubclassOf($superClass);
             if ($isSubClass === false) {
                 $isSubClass = ($class === $superClass);
             }
@@ -290,10 +292,10 @@ class Matcher implements Matchable
      */
     public function __invoke($class, $target)
     {
-        $args = [$class, $target];
+        $args = array($class, $target);
         array_push($args, $this->args);
         $method = 'is' . $this->method;
-        $matched = call_user_func_array([$this, $method], $args);
+        $matched = call_user_func_array(array($this, $method), $args);
 
         return $matched;
     }

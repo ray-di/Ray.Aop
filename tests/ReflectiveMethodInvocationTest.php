@@ -70,7 +70,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     {
         $mock = new MockMethod;
         $callable = array($mock, 'add');
-        $invocation = new ReflectiveMethodInvocation($callable, [], [], new \Ray\Aop\Tests\Annotation\Marker);
+        $invocation = new ReflectiveMethodInvocation($callable, array(), array(), new \Ray\Aop\Tests\Annotation\Marker);
         $annotations = $invocation->getAnnotation();
         $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $annotations);
     }

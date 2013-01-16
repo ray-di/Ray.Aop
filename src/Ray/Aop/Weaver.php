@@ -90,10 +90,10 @@ class Weaver implements Weave, ArrayAccess
         $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
         /** @noinspection PhpParamsInspection */
         $invocation = new ReflectiveMethodInvocation(
-            [
+            array(
                 $this->object,
                 $method
-            ],
+            ),
             $params,
             $interceptors,
             $annotation
@@ -106,8 +106,9 @@ class Weaver implements Weave, ArrayAccess
      * (non-PHPDoc)
      * @see \Ray\Aop\Weave::__call()
      */
-    public function __invoke(Callable $getParams, $method, array $query)
+    public function __invoke($getParams, $method, array $query)
     {
+        if (!is_callable($getParams)) throw new InvalidArgumentException('expecting a callable');
         return $this->__call($method, $getParams($this->object, $method, $query));
     }
 
