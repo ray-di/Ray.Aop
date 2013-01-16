@@ -216,7 +216,7 @@ class Matcher implements Matchable
 
             return $hasAnnotation;
         }
-	$reflectionClass = new ReflectionClass($class);
+        $reflectionClass = new ReflectionClass($class);
         $methods = $reflectionClass->getMethods();
         $result = array();
         foreach ($methods as $method) {

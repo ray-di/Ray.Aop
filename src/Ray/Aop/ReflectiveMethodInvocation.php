@@ -62,7 +62,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function __construct($target, array $args, array $interceptors = array(), $annotation = array())
     {
-	if (!is_callable($target)) throw new InvalidArgumentException('expecting a callable');
+        if (!is_callable($target)) throw new InvalidArgumentException('expecting a callable');
 
         $this->object = $target[0];
         $this->args = $args;

@@ -108,7 +108,7 @@ class Weaver implements Weave, ArrayAccess
      */
     public function __invoke($getParams, $method, array $query)
     {
-	if (!is_callable($getParams)) throw new InvalidArgumentException('expecting a callable');
+        if (!is_callable($getParams)) throw new InvalidArgumentException('expecting a callable');
         return $this->__call($method, $getParams($this->object, $method, $query));
     }
 

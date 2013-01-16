@@ -95,7 +95,7 @@ final class Bind extends ArrayObject implements BindInterface
      */
     private function bindByCallable($class, Matcher $methodMatcher, array $interceptors)
     {
-	$reflectionClass = new ReflectionClass($class);
+        $reflectionClass = new ReflectionClass($class);
         $methods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
             $isMethodMatch = ($methodMatcher($method->name, Matcher::TARGET_METHOD) === true);
