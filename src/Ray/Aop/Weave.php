@@ -17,6 +17,14 @@ namespace Ray\Aop;
 interface Weave
 {
     /**
+     * Constructor
+     *
+     * @param object $object
+     * @param Bind   $bind
+     */
+    public function __construct($object, Bind $bind);
+
+    /**
      * Get target object
      *
      * @return object
@@ -51,4 +59,6 @@ interface Weave
      * @return mixed
      */
     public function __invoke(Callable $getParams, $method, array $query);
+
+
 }

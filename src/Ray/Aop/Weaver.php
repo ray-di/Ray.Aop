@@ -43,10 +43,7 @@ class Weaver implements Weave, ArrayAccess
     protected $interceptors;
 
     /**
-     * Constructor
-     *
-     * @param object $object
-     * @param Bind   $bind
+     * {@inheritdoc}
      */
     public function __construct($object, Bind $bind)
     {
