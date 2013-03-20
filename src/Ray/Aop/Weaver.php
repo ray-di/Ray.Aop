@@ -55,8 +55,7 @@ class Weaver implements Weave, ArrayAccess
     }
 
     /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\Weave::___getObject()
+     * {@inheritdoc}
      */
     public function ___getObject()
     {
@@ -64,8 +63,7 @@ class Weaver implements Weave, ArrayAccess
     }
 
     /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\Weave::___getBind()
+     * {@inheritdoc}
      */
     public function ___getBind()
     {
@@ -73,8 +71,7 @@ class Weaver implements Weave, ArrayAccess
     }
 
     /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\Weave::__call()
+     * {@inheritdoc}
      */
     public function __invoke(Callable $getParams, $method, array $query)
     {
@@ -82,8 +79,7 @@ class Weaver implements Weave, ArrayAccess
     }
 
     /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\Weave::__call()
+     * {@inheritdoc}
      */
     public function  __call($method, array $params)
     {

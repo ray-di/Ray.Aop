@@ -70,8 +70,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Ray\Aop.MethodInvocation::getMethod()
+     * {@inheritdoc}
      */
     public function getMethod()
     {
@@ -79,8 +78,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Ray\Aop.Invocation::getArguments()
+     * {@inheritdoc}
      */
     public function getArguments()
     {
@@ -88,8 +86,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Ray\Aop.Joinpoint::proceed()
+     * {@inheritdoc}
      */
     public function proceed()
     {
@@ -102,8 +99,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Ray\Aop.Joinpoint::getThis()
+     * {@inheritdoc}
      */
     public function getThis()
     {
@@ -111,9 +107,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * Return method annotation
-     *
-     * @return object Annotation
+     * {@inheritdoc}
      */
     public function getAnnotation()
     {
