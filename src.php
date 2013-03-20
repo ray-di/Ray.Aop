@@ -15,9 +15,12 @@ require __DIR__ . '/src/Ray/Aop/Matchable.php';
 require __DIR__ . '/src/Ray/Aop/Matcher.php';
 require __DIR__ . '/src/Ray/Aop/Matched.php';
 require __DIR__ . '/src/Ray/Aop/Pointcut.php';
+require __DIR__ . '/src/Ray/Aop/NamedArgsInterface.php';
+require __DIR__ . '/src/Ray/Aop/NamedArgs.php';
 
 require __DIR__ . '/src/Ray/Aop/Exception/Exception.php';
 require __DIR__ . '/src/Ray/Aop/Exception/InvalidArgument.php';
 require __DIR__ . '/src/Ray/Aop/Exception/InvalidSubclassMatch.php';
 require __DIR__ . '/src/Ray/Aop/Exception/InvalidAnnotation.php';
 require __DIR__ . '/src/Ray/Aop/Exception/UndefinedProperty.php';
+require __DIR__ . '/src/Ray/Aop/Exception/DuplicatedNamedParam.php';
