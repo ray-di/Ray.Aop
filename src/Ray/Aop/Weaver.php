@@ -7,10 +7,10 @@
  */
 namespace Ray\Aop;
 
-use Ray\Aop\Exception\UndefinedProperty;
 use ArrayAccess;
-use RuntimeException;
 use BadFunctionCallException;
+use Ray\Aop\Exception\UndefinedProperty;
+use RuntimeException;
 
 /**
  * Weaver
@@ -76,6 +76,15 @@ class Weaver implements Weave, ArrayAccess
      * (non-PHPDoc)
      * @see \Ray\Aop\Weave::__call()
      */
+    public function __invoke(Callable $getParams, $method, array $query)
+    {
+        return $this->__call($method, $getParams($this->object, $method, $query));
+    }
+
+    /**
+     * (non-PHPDoc)
+     * @see \Ray\Aop\Weave::__call()
+     */
     public function  __call($method, array $params)
     {
         if (!method_exists($this->object, $method)) {
@@ -89,26 +98,12 @@ class Weaver implements Weave, ArrayAccess
         $interceptors = $this->bind[$method];
         $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
         /** @noinspection PhpParamsInspection */
-        $invocation = new ReflectiveMethodInvocation(
-            [
+        $invocation = new ReflectiveMethodInvocation([
                 $this->object,
                 $method
-            ],
-            $params,
-            $interceptors,
-            $annotation
-        );
+            ], $params, $interceptors, $annotation);
 
         return $invocation->proceed();
-    }
-
-    /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\Weave::__call()
-     */
-    public function __invoke(Callable $getParams, $method, array $query)
-    {
-        return $this->__call($method, $getParams($this->object, $method, $query));
     }
 
     /**
@@ -144,7 +139,7 @@ class Weaver implements Weave, ArrayAccess
      */
     public function __toString()
     {
-        return (string) $this->object;
+        return (string)$this->object;
     }
 
     /**

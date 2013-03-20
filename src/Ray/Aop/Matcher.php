@@ -8,8 +8,8 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\Reader;
-use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
 use Ray\Aop\Exception\InvalidAnnotation;
+use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
 use ReflectionClass;
 
 /**
