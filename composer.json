@@ -1,6 +1,5 @@
 {
     "name": "ray/aop",
-    "type": "library",
     "description": "Aspect oriented programing framework",
     "keywords": ["aop",  "aspect", "annotation", "method interception"],
     "homepage": "https://github.com/koriym/Ray.Aop",
