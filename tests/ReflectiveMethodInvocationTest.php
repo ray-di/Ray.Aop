@@ -2,8 +2,6 @@
 
 namespace Ray\Aop;
 
-use InvalidArgumentException;
-
 /**
  * Test class for Ray.Aop
  */
@@ -25,7 +23,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function test_New()
     {
         $actual = $this->invocation;
-        $this->assertInstanceOf('\Ray\Aop\ReflectiveMethodInvocation', $this->invocation);
+        $this->assertInstanceOf('\Ray\Aop\ReflectiveMethodInvocation', $actual);
     }
 
     public function test_getMethod()
@@ -71,7 +69,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     {
         $mock = new MockMethod;
         $callable = array($mock, 'add');
-        $invocation = new ReflectiveMethodInvocation($callable, [], [], [new \Ray\Aop\Tests\Annotation\Marker]);
+        $invocation = new ReflectiveMethodInvocation($callable, [], [], [new Tests\Annotation\Marker]);
         $annotations = $invocation->getAnnotation();
         $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $annotations[0]);
     }

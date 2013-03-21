@@ -39,6 +39,6 @@ class NamedArgsTest extends \PHPUnit_Framework_TestCase {
     public function test_duplicatedParamName()
     {
         $invocation = new ReflectiveMethodInvocation([new MockMethod, 'duplicatedParamName'], [1, 2]);
-        $namedArgs = $this->args->get($invocation);
+        $this->args->get($invocation);
     }
 }
