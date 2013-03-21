@@ -15,11 +15,13 @@ class childClass extends parentClass
 
 /**
  * Test class for Ray.Aop
+ * @property mixed interceptors
  */
 
 class BindTest extends \PHPUnit_Framework_TestCase
 {
     protected $invocation;
+    protected $bind;
 
     /**
      * target method is:

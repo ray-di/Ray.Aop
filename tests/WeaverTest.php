@@ -8,6 +8,7 @@ namespace Ray\Aop;
 class WeaverTest extends \PHPUnit_Framework_TestCase
 {
     protected $invocation;
+    protected $weaver;
 
     /**
      * target method is:
@@ -166,6 +167,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
      */
     public function test_offsetUnsetException()
     {
+        /** @noinspection PhpUndefinedVariableInspection */
         unset($weaver['key']);
     }
 
