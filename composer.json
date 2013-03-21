@@ -1,15 +1,13 @@
 {
     "name": "ray/aop",
-    "type": "library",
     "description": "Aspect oriented programing framework",
     "keywords": ["aop",  "aspect", "annotation", "method interception"],
     "homepage": "https://github.com/koriym/Ray.Aop",
-    "version": "1.0.0-beta3",
     "license": "BSD-3-Clause",
     "authors": [
         {
-            "name": "Akihito Koriyama",
-            "email": "akihito.koriyama@gmail.com"
+            "name": "Ray.Aop Contributors",
+            "homepage": "https://github.com/koriym/Ray.Aop/graphs/contributors"
         }
     ],
     "require": {
