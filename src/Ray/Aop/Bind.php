@@ -148,9 +148,6 @@ final class Bind extends ArrayObject implements BindInterface
      * @param string  $class
      * @param Matcher $methodMatcher
      * @param array   $interceptors
-     *
-     * @return void
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function bindByAnnotateBinding($class, Matcher $methodMatcher, array $interceptors)
     {

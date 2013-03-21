@@ -27,7 +27,8 @@ class MockMethod
     }
 
     /**
-     * @param  unknown_type $c
+     * @param  int $c
+     * 
      * @return number
      *
      * @Log
