@@ -11,7 +11,7 @@ class MethodInterceptorChangeTargetObjectTest extends \PHPUnit_Framework_TestCas
     protected $invocation;
 
     /**
-     * taget method is:
+     * target method is:
      *
      * $mock = new MockMethod;
      * $mock->add(2);

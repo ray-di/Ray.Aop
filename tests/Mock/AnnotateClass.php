@@ -17,7 +17,7 @@ class AnnotateClass
     /**
      * @Marker
      */
-    public function getDobule($a)
+    public function getDouble($a)
     {
         return $a * 2;
     }

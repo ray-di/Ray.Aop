@@ -4,8 +4,8 @@ namespace Ray\Aop;
 use Doctrine\Common\Annotations\AnnotationReader as Reader;
 
 class MatcherTestSuperClass {}
-class MatcherTestChildeClass extends MatcherTestSuperClass{}
-class MatcherTestIsoleteClass {}
+class MatcherTestChildClass extends MatcherTestSuperClass{}
+class MatcherTestIsolateClass {}
 
 /**
 * Test class for Ray.Aop
@@ -29,7 +29,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function test_Any()
     {
         $any = $this->matcher->any();
-        $result = $any('anyClassEvenDoesntExists', 'Ray\Aop\Tests\Mock\AnnotateClass');
+        $result = $any('anyClassEvenDoesNotExists', 'Ray\Aop\Tests\Mock\AnnotateClass');
         $this->assertTrue($result);
     }
 
@@ -42,7 +42,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
-    public function test_annotatedWithClassReturnMathcerClass()
+    public function test_annotatedWithClassReturnMatcherClass()
     {
         $annotation = 'Ray\Aop\Tests\Annotation\Resource';
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
@@ -60,14 +60,14 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $matchedArray = $matcher($class, Matcher::TARGET_METHOD);
         $matchedFirst = $matchedArray[0];
         $this->assertInstanceOf('Ray\Aop\Matched', $matchedFirst);
-        $this->assertSame('getDobule', $matchedFirst->methodName);
+        $this->assertSame('getDouble', $matchedFirst->methodName);
         $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $matchedFirst->annotation);
     }
 
     public function test_SubclassesOf()
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
-        $class = 'Ray\Aop\MatcherTestChildeClass';
+        $class = 'Ray\Aop\MatcherTestChildClass';
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertTrue($result);
     }
@@ -83,7 +83,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function test_SubclassesOfFalse()
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
-        $class = 'Ray\Aop\MatcherTestChildeXXXX';
+        $class = 'Ray\Aop\MatcherTestChildXXXX';
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertFalse($result);
     }
@@ -106,7 +106,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-* start '__' prefix method doesn't match
+* start '__' prefix method does not match
 */
     public function test_AnyButNotStartWithDoubleUnderscore()
     {
@@ -116,7 +116,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-* ArrayObject interface method doesn't match
+* ArrayObject interface method does not match
 */
     public function test_AnyButNotArrayAccessMethod()
     {
