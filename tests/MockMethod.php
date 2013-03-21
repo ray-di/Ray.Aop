@@ -28,7 +28,7 @@ class MockMethod
 
     /**
      * @param  int $c
-     * 
+     *
      * @return number
      *
      * @Log

@@ -89,7 +89,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-* @expectedException Ray\Aop\Exception\InvalidArgument
+* @expectedException \Ray\Aop\Exception\InvalidArgument
 */
     public function test_SubclassesOfThrowExceptionIfTargetIsMethod()
     {

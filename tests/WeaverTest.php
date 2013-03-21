@@ -36,7 +36,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException BadFunctionCallException
+     * @expectedException \BadFunctionCallException
      */
     public function test_NonExistMethodNameException()
     {
@@ -93,7 +93,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Ray\Aop\Exception\UndefinedProperty
+     * @expectedException \Ray\Aop\Exception\UndefinedProperty
      *
      */
     public function test__getNotExist()
@@ -135,7 +135,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function test_offsetExistsException()
     {
@@ -144,7 +144,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function test_offsetGetException()
     {
@@ -153,7 +153,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function test_offsetSetException()
     {
@@ -162,7 +162,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException PHPUnit_Framework_Error_Notice
+     * @expectedException \PHPUnit_Framework_Error_Notice
      */
     public function test_offsetUnsetException()
     {

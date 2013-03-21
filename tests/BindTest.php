@@ -108,7 +108,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Ray\Aop\Exception\InvalidAnnotation
+     * @expectedException \Ray\Aop\Exception\InvalidAnnotation
      */
     public function test_bindAnyAnnotatedWithInvalidAnnotationName()
     {
