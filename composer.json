@@ -16,7 +16,6 @@
         "php": ">=5.4.0",
         "doctrine/annotations": "1.*"
     },
-    "minimum-stability": "dev",
     "autoload": {
         "psr-0": { "Ray\\Aop": "src/" }
     }
