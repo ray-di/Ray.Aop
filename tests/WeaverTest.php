@@ -41,7 +41,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
      */
     public function test_NonExistMethodNameException()
     {
-        $actual = $this->weaver->xxxxx(2);
+        $this->weaver->xxxxx(2);
     }
 
     public function test_MatcherWeave()
@@ -67,6 +67,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
      */
     public function test_invoke()
     {
+        /** @noinspection PhpUnusedParameterInspection */
         $function = function($object, $method, $params){
             return array($params[0] * 2);
         };
@@ -80,6 +81,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
      */
     public function test_invoke2()
     {
+        /** @noinspection PhpUnusedParameterInspection */
         $function = function($object, $method, $params){
             return array($params[0] * 2);
         };
@@ -141,6 +143,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function test_offsetExistsException()
     {
         $weaver = $this->weaver;
+        /** @noinspection PhpExpressionResultUnusedInspection */
         isset($weaver['key']);
     }
 

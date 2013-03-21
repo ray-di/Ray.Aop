@@ -20,7 +20,9 @@ class childClass extends parentClass
 
 class BindTest extends \PHPUnit_Framework_TestCase
 {
-    protected $invocation;
+    /**
+     * @var Bind
+     */
     protected $bind;
 
     /**
@@ -48,6 +50,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $pointcut = new Pointcut($matcher->any(), $matcher->any(), $this->interceptors);
         $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
         $result = $this->bind->bind($class, [$pointcut]);
+        /** @noinspection PhpParamsInspection */
         list($method, $interceptors) = each($result);
         $this->assertSame('getDouble', $method);
         $this->assertSame($this->interceptors, $interceptors);
@@ -59,6 +62,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $pointcut = new Pointcut($matcher->subclassesOf('Ray\Aop\parentClass'), $matcher->any(), $this->interceptors);
         $class = 'Ray\Aop\childClass';
         $result = $this->bind->bind($class, [$pointcut]);
+        /** @noinspection PhpParamsInspection */
         list($method, $interceptors) = each($result);
         $this->assertSame('method', $method);
         $this->assertSame($this->interceptors, $interceptors);
@@ -71,6 +75,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $annotationName = 'Ray\Aop\Tests\Annotation\Marker';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
         $result = $this->bind->bind($class, [$pointcut]);
+        /** @noinspection PhpParamsInspection */
         list($method, $interceptors) = each($result);
         $this->assertSame('getDouble', $method);
         $this->assertSame($this->interceptors, $interceptors);
@@ -84,7 +89,8 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
         $bind = $this->bind->bind($class, [$pointcut]);
         /* @var $bind Bind */
-        list($method, $interceptors) = each($bind);
+        /** @noinspection PhpParamsInspection */
+        list($method,) = each($bind);
         $annotation = $bind->annotation[$method];
         $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $annotation);
     }
@@ -101,6 +107,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $pointcut2 = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $interceptors2);
         $this->bind->bind($class, [$pointcut1]);
         $result = $this->bind->bind($class, [$pointcut2]);
+        /** @noinspection PhpParamsInspection */
         list($method, $interceptors) = each($result);
         $this->assertSame('getDouble', $method);
         $this->assertInstanceOf('Ray\Aop\voidInterceptor', $interceptors[0]);
@@ -119,6 +126,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $annotationName = 'Ray\Aop\Tests\Annotation\AnnotationNotExistXXX';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
         $result = $this->bind->bind($class, [$pointcut]);
+        /** @noinspection PhpParamsInspection */
         list($method, $interceptors) = each($result);
         $this->assertSame('getDouble', $method);
         $this->assertSame($this->interceptors, $interceptors);
@@ -179,6 +187,6 @@ class BindTest extends \PHPUnit_Framework_TestCase
     public function test_unserialize($data)
     {
         $data = unserialize($data);
-        $this->assertTrue($data instanceof \Ray\Aop\Bind);
+        $this->assertTrue($data instanceof Bind);
     }
 }

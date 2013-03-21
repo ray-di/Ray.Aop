@@ -2,8 +2,10 @@
 
 namespace Ray\Aop\Tests\Mock;
 
-use Ray\Aop\Tests\Annotation\Resource;
-use Ray\Aop\Tests\Annotation\Marker;
+use /** @noinspection PhpUnusedAliasInspection */
+    Ray\Aop\Tests\Annotation\Resource;
+use /** @noinspection PhpUnusedAliasInspection */
+    Ray\Aop\Tests\Annotation\Marker;
 
 /**
  * Test class for Ray.Aop

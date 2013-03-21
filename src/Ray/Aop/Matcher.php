@@ -4,6 +4,7 @@
  *
  * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @noinspection PhpUnusedPrivateMethodInspection
  */
 namespace Ray\Aop;
 
@@ -149,7 +150,6 @@ class Matcher implements Matchable
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isAny($name, $target)
     {

@@ -6,5 +6,7 @@ class voidInterceptor implements MethodInterceptor
     public function invoke(MethodInvocation $invocation)
     {
         $result = $invocation->proceed();
+
+        return $result;
     }
 }
