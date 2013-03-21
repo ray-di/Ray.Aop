@@ -13,7 +13,7 @@ use Ray\Aop\MethodInvocation;
 /**
  * Return named argument
  *
- * @package    BEAR.Sunday
+ * @package Ray.Aop
  */
 class NamedArgs implements NamedArgsInterface
 {
