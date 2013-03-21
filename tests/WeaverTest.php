@@ -8,6 +8,7 @@ namespace Ray\Aop;
 class WeaverTest extends \PHPUnit_Framework_TestCase
 {
     protected $invocation;
+
     protected $weaver;
 
     /**
@@ -56,7 +57,10 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function test_MatcherWeaveWithMultipleInterceptor()
     {
         $bind = new Bind;
-        $bind->bindInterceptors('getDouble', array(new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor));
+        $bind->bindInterceptors(
+            'getDouble',
+            array(new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor)
+        );
         $this->weaver = new Weaver(new MockMethod, $bind);
         $actual = $this->weaver->getDouble(2);
         $this->assertSame(64, $actual);
@@ -68,7 +72,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function test_invoke()
     {
         /** @noinspection PhpUnusedParameterInspection */
-        $function = function($object, $method, $params){
+        $function = function ($object, $method, $params) {
             return array($params[0] * 2);
         };
         $weaver = $this->weaver;
@@ -82,7 +86,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function test_invoke2()
     {
         /** @noinspection PhpUnusedParameterInspection */
-        $function = function($object, $method, $params){
+        $function = function ($object, $method, $params) {
             return array($params[0] * 2);
         };
         $actual = $this->weaver->__invoke($function, 'getDouble', array(2));
@@ -107,7 +111,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
 
     public function test_toString()
     {
-        $string = (string) $this->weaver;
+        $string = (string)$this->weaver;
         $this->assertSame('toStringString', $string);
     }
 
@@ -133,7 +137,8 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function test_offsetUnset()
     {
         $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
-        unset($weaver['key']);;
+        unset($weaver['key']);
+        ;
         $this->assertFalse(isset($weaver['key']));
     }
 
@@ -191,7 +196,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $bind = $this->weaver->___getBind();
         $this->assertInstanceOf('Ray\Aop\Bind', $bind);
     }
-    
+
     public function test_addPublicProperty()
     {
         $this->weaver->a = 1;

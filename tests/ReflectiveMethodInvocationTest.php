@@ -8,6 +8,7 @@ namespace Ray\Aop;
 class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
 {
     protected $invocation;
+
     protected $mock;
 
     protected function setUp()

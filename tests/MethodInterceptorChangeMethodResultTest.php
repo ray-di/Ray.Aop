@@ -8,7 +8,9 @@ namespace Ray\Aop;
 class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCase
 {
     protected $invocation;
+
     protected $mock;
+
     protected $interceptor;
 
     /**

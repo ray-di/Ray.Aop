@@ -3,13 +3,21 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader as Reader;
 
-class MatcherTestSuperClass {}
-class MatcherTestChildClass extends MatcherTestSuperClass{}
-class MatcherTestIsolateClass {}
+class MatcherTestSuperClass
+{
+}
+
+class MatcherTestChildClass extends MatcherTestSuperClass
+{
+}
+
+class MatcherTestIsolateClass
+{
+}
 
 /**
-* Test class for Ray.Aop
-*/
+ * Test class for Ray.Aop
+ */
 class MatcherTest extends \PHPUnit_Framework_TestCase
 {
     protected $matcher;
@@ -89,8 +97,8 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-* @expectedException \Ray\Aop\Exception\InvalidArgument
-*/
+     * @expectedException \Ray\Aop\Exception\InvalidArgument
+     */
     public function test_SubclassesOfThrowExceptionIfTargetIsMethod()
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
@@ -102,12 +110,12 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function test_toString()
     {
         $matcher = clone $this->matcher;
-        $this->assertSame(':null', (string) $matcher);
+        $this->assertSame(':null', (string)$matcher);
     }
 
     /**
-* start '__' prefix method does not match
-*/
+     * start '__' prefix method does not match
+     */
     public function test_AnyButNotStartWithDoubleUnderscore()
     {
         $any = $this->matcher->any();
@@ -116,8 +124,8 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-* ArrayObject interface method does not match
-*/
+     * ArrayObject interface method does not match
+     */
     public function test_AnyButNotArrayAccessMethod()
     {
         $any = $this->matcher->any();

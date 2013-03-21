@@ -4,7 +4,9 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader as Reader;
 
-class parentClass{}
+class parentClass
+{
+}
 
 class childClass extends parentClass
 {
@@ -135,7 +137,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
     public function test_toString()
     {
         $this->bind->bindInterceptors('getDouble', $this->interceptors);
-        $this->assertInternalType('string', (string) $this->bind);
+        $this->assertInternalType('string', (string)$this->bind);
     }
 
     public function test_hasBindingReturnTrue()
@@ -178,6 +180,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
     {
         $serialized = serialize($this->bind);
         $this->assertInternalType('string', $serialized);
+
         return $serialized;
     }
 

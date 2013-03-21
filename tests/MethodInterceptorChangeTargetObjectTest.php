@@ -1,6 +1,7 @@
 <?php
 
 namespace Ray\Aop;
+
 require_once __DIR__ . '/MockMethodInterceptor.php';
 
 /**
@@ -9,7 +10,9 @@ require_once __DIR__ . '/MockMethodInterceptor.php';
 class MethodInterceptorChangeTargetObjectTest extends \PHPUnit_Framework_TestCase
 {
     protected $invocation;
+
     protected $interceptor;
+
     protected $mock;
 
     /**
