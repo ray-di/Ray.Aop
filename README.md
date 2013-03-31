@@ -130,11 +130,11 @@ Here's how to install Ray.Aop from source to run the unit tests and sample:
 
 ```
 $ git clone git://github.com/koriym/Ray.Aop.git
+$ cd Ray.Aop
 $ wget http://getcomposer.org/composer.phar
-$ php composer.phar update
-$ phpunit
+$ php composer.phar install
 $ php doc/sample-01-quick-weave/main.php
-// Charged.
+// Charged. | chargeOrder not allowed on weekends!
 ```
 
 Ray.Di
@@ -149,7 +149,7 @@ If you're using [Composer](https://github.com/composer/composer) to manage depen
 
 	{
 		"require": {
-			"ray/aop": "*"
+			"ray/aop": "1.*"
 		}
 	}
 
