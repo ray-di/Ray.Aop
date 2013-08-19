@@ -1,0 +1,235 @@
+<?php
+
+/**
+ * This file is part of the Ray.Aop package
+ *
+ * @package Ray.Aop
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ */
+namespace Ray\Aop;
+
+use PHPParser_BuilderFactory;
+use PHPParser_Lexer;
+use PHPParser_Node_Expr_MethodCall;
+use PHPParser_Node_Expr_PropertyFetch;
+use PHPParser_Node_Expr_Variable;
+use PHPParser_Parser;
+use PHPParser_PrettyPrinter_Zend;
+use PHPParser_PrettyPrinterAbstract;
+use ReflectionClass;
+use ReflectionMethod;
+use TokenReflection\ReflectionParameter;
+
+/**
+ * This file is part of the Ray.Aop package
+ *
+ * @package Ray.Aop
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ */
+final class Compiler implements CompilerInterface
+{
+    /**
+     * @var \PHPParser_Parser
+     */
+    private $parser;
+
+    /**
+     * @var \PHPParser_BuilderFactory
+     */
+    private $factory;
+
+    /**
+     * @var string
+     */
+    private $classDir;
+
+    /**
+     * @param PHPParser_Parser                $parser
+     * @param PHPParser_BuilderFactory        $factory
+     * @param PHPParser_PrettyPrinterAbstract $printer
+     * @param string                          $classDir
+     */
+    public function __construct(
+        PHPParser_Parser $parser = null,
+        PHPParser_BuilderFactory $factory = null,
+        PHPParser_PrettyPrinterAbstract $printer = null,
+        $classDir = null
+    ) {
+        ini_set('xdebug.max_nesting_level', 2000);
+        $this->parser = $parser ? : new PHPParser_Parser(new PHPParser_Lexer);
+        $this->factory = $factory ? : new PHPParser_BuilderFactory;
+        $this->printer = $printer ? : new PHPParser_PrettyPrinter_Zend;
+        $this->classDir = $classDir ? : sys_get_temp_dir();
+    }
+
+    /**
+     * Return new aspect weaved object instance
+     *
+     * @param       $class
+     * @param array $args
+     * @param Bind  $bind
+     *
+     * @return object
+     */
+    public function newInstance($class, array $args = [], Bind $bind)
+    {
+        $class = $this->compile($class, $bind);
+        $instance = (new ReflectionClass($class))->newInstanceArgs($args);
+        $instance->bind = $bind;
+
+        return $instance;
+    }
+
+    /**
+     * @param      $class
+     * @param Bind $bind
+     *
+     * @return string
+     */
+    public function compile($class, Bind $bind)
+    {
+        $file = (new ReflectionClass($class))->getFileName();
+        $fileContents = file_get_contents($file);
+        $stmts = $this->parser->parse($fileContents);
+        $nodeDumper = new \PHPParser_NodeDumper;
+
+        $class = new ReflectionClass($class);
+        $newClassName = $this->getClassName($class, $bind);
+        $node = $this->getClass($newClassName, $class, $bind)->addStmts(
+            $this->getMethods($class, $bind)
+        )->getNode();
+        $stmts = array($node);
+        $code = '<?php ' . PHP_EOL . $this->printer->prettyPrint($stmts);
+        $file = $this->classDir . "{$newClassName}.php";
+        file_put_contents($file, $code);
+        include $file;
+
+        return $newClassName;
+
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     * @param Bind             $bind
+     *
+     * @return string
+     */
+    private function getClassName(\ReflectionClass $class, Bind $bind)
+    {
+        $className = $class->getShortName() . '_ray' . spl_object_hash($bind);
+
+        return $className;
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return \PHPParser_Builder_Class
+     */
+    private function getClass($newClassName, \ReflectionClass $class, Bind $bind)
+    {
+        $parentClass = $class->name;
+        $builder = $this->factory->class($newClassName)->extend($parentClass)->addStmt(
+                $this->factory->property('___initialized')->makePrivate()->setDefault(false)
+            )->addStmt(
+                $this->factory->property('bind')->makePublic()
+            );
+
+        return $builder;
+    }
+
+    /**
+     * @param ReflectionClass $class
+     * @param Bind            $bind
+     *
+     * @return array
+     */
+    private function getMethods(ReflectionClass $class, Bind $bind)
+    {
+        $stmts = [];
+        $methods = $class->getMethods();
+        $weavedMethod = array_keys((array)$bind);
+        foreach ($methods as $method) {
+            if (in_array($method->name, $weavedMethod)) {
+                $stmts[] = $this->getMethod($method);
+            }
+        }
+
+        return $stmts;
+    }
+
+    /**
+     * @param \ReflectionMethod $method
+     *
+     * @return \PHPParser_Builder_Method
+     */
+    private function getMethod(\ReflectionMethod $method)
+    {
+        $methodStmt = $this->factory->method($method->name);
+        $params = $method->getParameters();
+        foreach ($params as $param) {
+            /** @var $param \ReflectionParameter */
+            $paramStmt = $this->factory->param($param->name);
+            $typeHint = $param->getClass();
+            if ($typeHint) {
+                $paramStmt->setTypeHint($typeHint->name);
+            }
+            if ($param->isDefaultValueAvailable()) {
+                $paramStmt->setDefault($param->getDefaultValue());
+            }
+            $methodStmt->addParam(
+                $paramStmt
+            );
+        }
+        $methodInsideStatements = $this->getMethodInsideStatement();
+        $methodStmt->addStmts($methodInsideStatements);
+
+        return $methodStmt;
+    }
+
+    /**
+     * @return \PHPParser_Node[]
+     */
+    private function getMethodInsideStatement()
+    {
+        $code = $this->getWeavedMethodTemplate();
+        $parser = new \PHPParser_Parser(new \PHPParser_Lexer);
+        $node = $parser->parse($code)[0];
+        /** @var $node \PHPParser_Node_Stmt_Class */
+        $node = $node->getMethods()[1];
+
+        /** @var $node \PHPParser_Node_Stmt_ClassMethod */
+
+        return $node->stmts;
+    }
+
+    /**
+     * @param $method
+     * @param $args
+     *
+     * @return \PHPParser_Node_Expr_MethodCall
+     */
+    private function getMethodCall(ReflectionMethod $method)
+    {
+        $weaver = new PHPParser_Node_Expr_PropertyFetch(new PHPParser_Node_Expr_Variable('this'), 'weaver');
+        $params = $method->getParameters();
+        $args = [];
+        foreach ($params as $param) {
+            /** @var $param \ReflectionParameter */
+            $args[] = [new PHPParser_Node_Expr_Variable($param->name)];
+        }
+        $methodCall = new PHPParser_Node_Expr_MethodCall($weaver, $method->name, $args);
+
+        return $methodCall;
+
+    }
+
+    /**
+     * @return string
+     */
+    private function getWeavedMethodTemplate()
+    {
+
+        return file_get_contents(__DIR__ . '/Compiler/Template.php');
+    }
+}
