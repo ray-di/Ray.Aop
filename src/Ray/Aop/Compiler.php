@@ -10,9 +10,6 @@ namespace Ray\Aop;
 
 use PHPParser_BuilderFactory;
 use PHPParser_Lexer;
-use PHPParser_Node_Expr_MethodCall;
-use PHPParser_Node_Expr_PropertyFetch;
-use PHPParser_Node_Expr_Variable;
 use PHPParser_Parser;
 use PHPParser_PrettyPrinter_Zend;
 use PHPParser_PrettyPrinterAbstract;
@@ -50,16 +47,16 @@ final class Compiler implements CompilerInterface
      * @param string                          $classDir
      */
     public function __construct(
+        $classDir = null,
         PHPParser_Parser $parser = null,
         PHPParser_BuilderFactory $factory = null,
-        PHPParser_PrettyPrinterAbstract $printer = null,
-        $classDir = null
+        PHPParser_PrettyPrinterAbstract $printer = null
     ) {
         ini_set('xdebug.max_nesting_level', 2000);
+        $this->classDir = $classDir ? : sys_get_temp_dir();
         $this->parser = $parser ? : new PHPParser_Parser(new PHPParser_Lexer);
         $this->factory = $factory ? : new PHPParser_BuilderFactory;
         $this->printer = $printer ? : new PHPParser_PrettyPrinter_Zend;
-        $this->classDir = $classDir ? : sys_get_temp_dir();
     }
 
     /**
@@ -75,7 +72,7 @@ final class Compiler implements CompilerInterface
     {
         $class = $this->compile($class, $bind);
         $instance = (new ReflectionClass($class))->newInstanceArgs($args);
-        $instance->bind = $bind;
+        $instance->___bind = $bind;
 
         return $instance;
     }
@@ -88,24 +85,23 @@ final class Compiler implements CompilerInterface
      */
     public function compile($class, Bind $bind)
     {
-        $file = (new ReflectionClass($class))->getFileName();
-        $fileContents = file_get_contents($file);
-        $stmts = $this->parser->parse($fileContents);
-        $nodeDumper = new \PHPParser_NodeDumper;
-
         $class = new ReflectionClass($class);
         $newClassName = $this->getClassName($class, $bind);
-        $node = $this->getClass($newClassName, $class, $bind)->addStmts(
-            $this->getMethods($class, $bind)
-        )->getNode();
-        $stmts = array($node);
+        $file = $this->classDir . "/{$newClassName}.php";
+        if (file_exists($file)) {
+            include_once $file;
+            return $newClassName;
+        }
+        $stmts = [
+            $this->getClass($newClassName, $class, $bind)
+                ->addStmts($this->getMethods($class, $bind))
+                ->getNode()
+        ];
         $code = '<?php ' . PHP_EOL . $this->printer->prettyPrint($stmts);
-        $file = $this->classDir . "{$newClassName}.php";
         file_put_contents($file, $code);
-        include $file;
+        include_once $file;
 
         return $newClassName;
-
     }
 
     /**
@@ -116,7 +112,7 @@ final class Compiler implements CompilerInterface
      */
     private function getClassName(\ReflectionClass $class, Bind $bind)
     {
-        $className = $class->getShortName() . '_ray' . spl_object_hash($bind);
+        $className = $class->getShortName() . '_ray' . md5(serialize($bind));
 
         return $className;
     }
@@ -130,9 +126,9 @@ final class Compiler implements CompilerInterface
     {
         $parentClass = $class->name;
         $builder = $this->factory->class($newClassName)->extend($parentClass)->addStmt(
-                $this->factory->property('___initialized')->makePrivate()->setDefault(false)
-            )->addStmt(
-                $this->factory->property('bind')->makePublic()
+            $this->factory->property('___intercept')->makePrivate()->setDefault(true)
+        )->addStmt(
+                $this->factory->property('___bind')->makePublic()
             );
 
         return $builder;
@@ -196,32 +192,11 @@ final class Compiler implements CompilerInterface
         $parser = new \PHPParser_Parser(new \PHPParser_Lexer);
         $node = $parser->parse($code)[0];
         /** @var $node \PHPParser_Node_Stmt_Class */
-        $node = $node->getMethods()[1];
+        $node = $node->getMethods()[0];
 
         /** @var $node \PHPParser_Node_Stmt_ClassMethod */
 
         return $node->stmts;
-    }
-
-    /**
-     * @param $method
-     * @param $args
-     *
-     * @return \PHPParser_Node_Expr_MethodCall
-     */
-    private function getMethodCall(ReflectionMethod $method)
-    {
-        $weaver = new PHPParser_Node_Expr_PropertyFetch(new PHPParser_Node_Expr_Variable('this'), 'weaver');
-        $params = $method->getParameters();
-        $args = [];
-        foreach ($params as $param) {
-            /** @var $param \ReflectionParameter */
-            $args[] = [new PHPParser_Node_Expr_Variable($param->name)];
-        }
-        $methodCall = new PHPParser_Node_Expr_MethodCall($weaver, $method->name, $args);
-
-        return $methodCall;
-
     }
 
     /**

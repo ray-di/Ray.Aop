@@ -2,6 +2,8 @@
 
 namespace Ray\Aop;
 
+use Ray\Aop\Interceptor\DoubleInterceptor;
+
 /**
  * Test class for Ray.Aop
  */
@@ -14,7 +16,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     /**
      * target method is:
      *
-     * $mock = new MockMethod;
+     * $mock = new Mock;
      * $mock->add(2);
      */
     protected function setUp()
@@ -25,13 +27,13 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $this->weaver = new Weaver(new MockMethod, $bind);
     }
 
-    public function test_WithInterceptors()
+    public function testWithInterceptors()
     {
         $actual = $this->weaver->getDouble(2);
         $this->assertSame(16, $actual);
     }
 
-    public function test_WithoutInterceptor()
+    public function testWithoutInterceptor()
     {
         $actual = $this->weaver->getSub(3, 2);
         $this->assertSame(1, $actual);
@@ -45,7 +47,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $this->weaver->xxxxx(2);
     }
 
-    public function test_MatcherWeave()
+    public function testMatcherWeave()
     {
         $bind = new Bind;
         $bind->bindInterceptors('getDouble', array(new DoubleInterceptor));
@@ -54,7 +56,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(8, $actual);
     }
 
-    public function test_MatcherWeaveWithMultipleInterceptor()
+    public function testMatcherWeaveWithMultipleInterceptor()
     {
         $bind = new Bind;
         $bind->bindInterceptors(
@@ -69,7 +71,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     /**
      * Use invoke for "named parameter" or "validation" or whatever you want modify/check parameters.
      */
-    public function test_invoke()
+    public function testInvoke()
     {
         /** @noinspection PhpUnusedParameterInspection */
         $function = function ($object, $method, $params) {
@@ -83,7 +85,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     /**
      * Use invoke for "named parameter" or "validation" or whatever you want modify/check parameters.
      */
-    public function test_invoke2()
+    public function testInvoke2()
     {
         /** @noinspection PhpUnusedParameterInspection */
         $function = function ($object, $method, $params) {
@@ -93,7 +95,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(32, $actual);
     }
 
-    public function test__get()
+    public function testGet()
     {
         $weaver = $this->weaver;
         $this->assertSame('hello', $weaver->msg);
@@ -103,49 +105,48 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Ray\Aop\Exception\UndefinedProperty
      *
      */
-    public function test__getNotExist()
+    public function testGetNotExist()
     {
         $weaver = $this->weaver;
         $weaver->not_exists;
     }
 
-    public function test_toString()
+    public function testToString()
     {
         $string = (string)$this->weaver;
         $this->assertSame('toStringString', $string);
     }
 
-    public function test_offsetExists()
+    public function testOffsetExists()
     {
         $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
         $this->assertTrue(isset($weaver['key']));
     }
 
-    public function test_offsetGet()
+    public function testOffsetGet()
     {
         $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
         $this->assertSame(10, $weaver['key']);
     }
 
-    public function test_offsetSet()
+    public function testOffsetSet()
     {
         $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
         $weaver['key'] = 20;
         $this->assertSame(20, $weaver['key']);
     }
 
-    public function test_offsetUnset()
+    public function testOffsetUnset()
     {
         $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
-        unset($weaver['key']);
-        ;
+        unset($weaver['key']);;
         $this->assertFalse(isset($weaver['key']));
     }
 
     /**
      * @expectedException \RuntimeException
      */
-    public function test_offsetExistsException()
+    public function testOffsetExistsException()
     {
         $weaver = $this->weaver;
         /** @noinspection PhpExpressionResultUnusedInspection */
@@ -155,7 +156,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \RuntimeException
      */
-    public function test_offsetGetException()
+    public function testOffsetGetException()
     {
         $weaver = $this->weaver;
         $weaver['key'];
@@ -164,7 +165,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \RuntimeException
      */
-    public function test_offsetSetException()
+    public function testOffsetSetException()
     {
         $weaver = $this->weaver;
         $weaver['key'] = 20;
@@ -173,7 +174,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \PHPUnit_Framework_Error_Notice
      */
-    public function test_offsetUnsetException()
+    public function testOffsetUnsetException()
     {
         /** @noinspection PhpUndefinedVariableInspection */
         unset($weaver['key']);
@@ -197,7 +198,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Ray\Aop\Bind', $bind);
     }
 
-    public function test_addPublicProperty()
+    public function testAddPublicProperty()
     {
         $this->weaver->a = 1;
         $object = $this->weaver->___getObject();

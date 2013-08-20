@@ -8,7 +8,6 @@
 
 namespace Ray\Aop;
 
-
 class NamedArgsTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -27,7 +26,7 @@ class NamedArgsTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Ray\Aop\NamedArgs', $this->args);
     }
 
-    public function test_get()
+    public function testGet()
     {
         $invocation = new ReflectiveMethodInvocation([new MockMethod, 'getSub'], [1, 2]);
         $namedArgs = $this->args->get($invocation);
@@ -37,7 +36,7 @@ class NamedArgsTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Ray\Aop\Exception\DuplicatedNamedParam
      */
-    public function test_duplicatedParamName()
+    public function testDuplicatedParamName()
     {
         $invocation = new ReflectiveMethodInvocation([new MockMethod, 'duplicatedParamName'], [1, 2]);
         $this->args->get($invocation);

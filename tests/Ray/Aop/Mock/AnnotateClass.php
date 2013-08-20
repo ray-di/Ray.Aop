@@ -1,11 +1,11 @@
 <?php
 
-namespace Ray\Aop\Tests\Mock;
+namespace Ray\Aop\Mock;
 
 use /** @noinspection PhpUnusedAliasInspection */
-    Ray\Aop\Tests\Annotation\Resource;
+    Ray\Aop\Annotation\Resource;
 use /** @noinspection PhpUnusedAliasInspection */
-    Ray\Aop\Tests\Annotation\Marker;
+    Ray\Aop\Annotation\Marker;
 
 /**
  * Test class for Ray.Aop

@@ -1,12 +1,14 @@
 <?php
 
-namespace Ray\Aop\Mock;
+namespace Ray\Aop;
 
 /**
  * Test class for Ray.Aop
  */
 class MockMethod
 {
+    public $a = 0;
+
     public $msg = "hello";
 
     public function add($n)
@@ -14,7 +16,7 @@ class MockMethod
         $this->a += $n;
     }
 
-    public function returnSame($a)
+    public function returnAsIs($a)
     {
         return $a;
     }

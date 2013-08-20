@@ -18,7 +18,7 @@ class MethodInterceptorChangeTargetObjectTest extends \PHPUnit_Framework_TestCas
     /**
      * target method is:
      *
-     * $mock = new MockMethod;
+     * $mock = new Mock;
      * $mock->add(2);
      */
     protected function setUp()
@@ -28,7 +28,7 @@ class MethodInterceptorChangeTargetObjectTest extends \PHPUnit_Framework_TestCas
         $this->invocation = new ReflectiveMethodInvocation(array($this->mock, 'add'), array(2));
     }
 
-    public function test_invoke()
+    public function testInvoke()
     {
         $this->interceptor->invoke($this->invocation);
         $expect = 2;
@@ -36,7 +36,7 @@ class MethodInterceptorChangeTargetObjectTest extends \PHPUnit_Framework_TestCas
         $this->assertSame($expect, $actual);
     }
 
-    public function test_invoke_twice()
+    public function testInvokeTwice()
     {
         $this->interceptor->invoke($this->invocation);
         $this->interceptor->invoke($this->invocation);
