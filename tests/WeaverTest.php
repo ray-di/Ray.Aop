@@ -14,7 +14,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     /**
      * target method is:
      *
-     * $mock = new MockMethod;
+     * $mock = new Mock;
      * $mock->add(2);
      */
     protected function setUp()

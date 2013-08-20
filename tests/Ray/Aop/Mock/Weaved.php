@@ -6,9 +6,9 @@ namespace Ray\Aop\Mock;
 /**
  * Test class for Ray.Aop
  */
-class Weaved extends MockMethod
+class Weaved extends Mock
 {
-    private $___initialized = false;
+    private $___intercept = true;
 
     public function ___postConstruct(\Ray\Aop\Bind $bind)
     {
@@ -18,11 +18,11 @@ class Weaved extends MockMethod
     public function returnSame($a)
     {
         // direct call
-        if ($this->___initialized || !isset($this->bind[__FUNCTION__])) {
+        if (!$this->___intercept || !isset($this->bind[__FUNCTION__])) {
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
-        $this->___initialized = true;
+        $this->___intercept = true;
 
         // interceptor weaved call
         $interceptors = $this->bind[__FUNCTION__];
