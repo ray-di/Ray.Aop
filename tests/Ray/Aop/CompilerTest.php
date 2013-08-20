@@ -16,7 +16,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->compiler = new Compiler;
+        $this->compiler = new Compiler(__DIR__ . '/Weaved');
         $this->bind = new Bind;
         $matcher = new Matcher(new AnnotationReader);
         $pointcut = new Pointcut(
