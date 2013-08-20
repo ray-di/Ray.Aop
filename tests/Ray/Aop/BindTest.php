@@ -42,13 +42,13 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->interceptors = [new DoubleInterceptor, new DoubleInterceptor];
     }
 
-    public function test_bindInterceptors()
+    public function testBindInterceptors()
     {
         $this->bind->bindInterceptors('getDouble', $this->interceptors);
         $this->assertSame($this->bind['getDouble'], $this->interceptors);
     }
 
-    public function test_bindAnyAny()
+    public function testBindAnyAny()
     {
         $matcher = new Matcher(new Reader);
         $pointcut = new Pointcut($matcher->any(), $matcher->any(), $this->interceptors);
@@ -60,7 +60,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->interceptors, $interceptors);
     }
 
-    public function test_bindAnySubClassOf()
+    public function testBindAnySubClassOf()
     {
         $matcher = new Matcher(new Reader);
         $pointcut = new Pointcut($matcher->subclassesOf('Ray\Aop\parentClass'), $matcher->any(), $this->interceptors);
@@ -72,7 +72,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->interceptors, $interceptors);
     }
 
-    public function test_bindAnyAnnotatedWith()
+    public function testBindAnyAnnotatedWith()
     {
         $matcher = new Matcher(new Reader);
         $class = 'Ray\Aop\Mock\AnnotateClass';
@@ -85,7 +85,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->interceptors, $interceptors);
     }
 
-    public function test_bindAnyAnnotatedWithAnnotation()
+    public function testBindAnyAnnotatedWithAnnotation()
     {
         $matcher = new Matcher(new Reader);
         $class = 'Ray\Aop\Mock\AnnotateClass';
@@ -99,7 +99,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Ray\Aop\Annotation\Marker', $annotation);
     }
 
-    public function test_bindAnyAnnotatedWithDoubleBind()
+    public function testBindAnyAnnotatedWithDoubleBind()
     {
         $matcher = new Matcher(new Reader);
         $class = 'Ray\Aop\Mock\AnnotateClass';
@@ -123,7 +123,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Ray\Aop\Exception\InvalidAnnotation
      */
-    public function test_bindAnyAnnotatedWithInvalidAnnotationName()
+    public function testBindAnyAnnotatedWithInvalidAnnotationName()
     {
         $matcher = new Matcher(new Reader);
         $class = 'Ray\Aop\Mock\AnnotateClass';
@@ -136,13 +136,13 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->interceptors, $interceptors);
     }
 
-    public function test_toString()
+    public function testToString()
     {
         $this->bind->bindInterceptors('getDouble', $this->interceptors);
         $this->assertInternalType('string', (string)$this->bind);
     }
 
-    public function test_hasBindingReturnTrue()
+    public function testHasBindingReturnTrue()
     {
         $matcher = new Matcher(new Reader);
         $pointcut = new Pointcut($matcher->subclassesOf('Ray\Aop\parentClass'), $matcher->any(), $this->interceptors);
@@ -151,12 +151,12 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->bind->hasBinding());
     }
 
-    public function test_hasBindingReturnFalse()
+    public function testHasBindingReturnFalse()
     {
         $this->assertFalse($this->bind->hasBinding());
     }
 
-    public function test_invoke()
+    public function testInvoke()
     {
         $this->bind->bindInterceptors('getDouble', $this->interceptors);
         $bind = $this->bind;
@@ -166,9 +166,9 @@ class BindTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Annotation does not match, no bindig.
+     * Annotation does not match, no binding.
      */
-    public function test_bindByAnnotateBindig()
+    public function testBindByAnnotateBinding()
     {
         $matcher = new Matcher(new Reader);
         $class = 'Ray\Aop\Mock\AnnotateClass';
@@ -178,7 +178,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(0, (count($this->bind)));
     }
 
-    public function test_serializable()
+    public function testSerializable()
     {
         $serialized = serialize($this->bind);
         $this->assertInternalType('string', $serialized);
@@ -187,9 +187,9 @@ class BindTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends test_serializable
+     * @depends testSerializable
      */
-    public function test_unserialize($data)
+    public function testUnserialize($data)
     {
         $data = unserialize($data);
         $this->assertTrue($data instanceof Bind);

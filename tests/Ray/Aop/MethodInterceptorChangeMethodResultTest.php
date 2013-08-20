@@ -15,6 +15,34 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
 
     protected $interceptor;
 
+    public function testInvoke()
+    {
+        $actual = $this->interceptor->invoke($this->invocation);
+        $expect = 8;
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testInvokeWithInterceptors()
+    {
+        $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
+        $target = array($this->mock, 'getDouble');
+        $args = array(2);
+        $this->invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
+        $actual = $this->interceptor->invoke($this->invocation);
+        $expect = 32;
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testInvokeWithDoubleInterceptors()
+    {
+        $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
+        $target = array($this->mock, 'getDouble');
+        $args = array(2);
+        $invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
+        $actual = $invocation->proceed();
+        $this->assertSame(16, $actual);
+    }
+
     /**
      * target method is:
      *
@@ -28,33 +56,5 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
         $target = array($this->mock, 'getDouble');
         $args = array(2);
         $this->invocation = new ReflectiveMethodInvocation($target, $args);
-    }
-
-    public function test_invoke()
-    {
-        $actual = $this->interceptor->invoke($this->invocation);
-        $expect = 8;
-        $this->assertSame($expect, $actual);
-    }
-
-    public function test_invoke_with_interceptors()
-    {
-        $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
-        $target = array($this->mock, 'getDouble');
-        $args = array(2);
-        $this->invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
-        $actual = $this->interceptor->invoke($this->invocation);
-        $expect = 32;
-        $this->assertSame($expect, $actual);
-    }
-
-    public function test_invoke_with_double_interceptors()
-    {
-        $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
-        $target = array($this->mock, 'getDouble');
-        $args = array(2);
-        $invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
-        $actual = $invocation->proceed();
-        $this->assertSame(16, $actual);
     }
 }
