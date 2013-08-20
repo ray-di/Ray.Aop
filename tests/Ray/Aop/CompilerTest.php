@@ -3,8 +3,8 @@
 namespace Ray\Aop;
 
 use Ray\Aop\Mock\Num;
-use Ray\Aop\Mock\Weaved;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Ray\Aop\Interceptor\DoubleInterceptor;
 
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {

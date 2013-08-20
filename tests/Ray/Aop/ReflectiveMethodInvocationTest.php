@@ -2,6 +2,8 @@
 
 namespace Ray\Aop;
 
+use Ray\Aop\Annotation\Marker;
+
 /**
  * Test class for Ray.Aop
  */
@@ -70,8 +72,8 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     {
         $mock = new MockMethod;
         $callable = array($mock, 'add');
-        $invocation = new ReflectiveMethodInvocation($callable, [], [], [new Tests\Annotation\Marker]);
+        $invocation = new ReflectiveMethodInvocation($callable, [], [], [new Marker]);
         $annotations = $invocation->getAnnotation();
-        $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $annotations[0]);
+        $this->assertInstanceOf('Ray\Aop\Annotation\Marker', $annotations[0]);
     }
 }

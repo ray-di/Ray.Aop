@@ -5,7 +5,7 @@ namespace Ray\Aop\Compiler;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Bind;
 use Weaved;
-use Ray\Aop\DoubleInterceptor;
+use Ray\Aop\Interceptor\DoubleInterceptor;
 use Ray\Aop\Matcher;
 use Ray\Aop\Pointcut;
 

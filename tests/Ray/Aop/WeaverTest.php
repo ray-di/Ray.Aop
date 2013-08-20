@@ -2,6 +2,8 @@
 
 namespace Ray\Aop;
 
+use Ray\Aop\Interceptor\DoubleInterceptor;
+
 /**
  * Test class for Ray.Aop
  */

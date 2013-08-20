@@ -3,6 +3,8 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader as Reader;
+use Ray\Aop\Interceptor\DoubleInterceptor;
+use Ray\Aop\Interceptor\voidInterceptor;
 
 class parentClass
 {
@@ -50,7 +52,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
     {
         $matcher = new Matcher(new Reader);
         $pointcut = new Pointcut($matcher->any(), $matcher->any(), $this->interceptors);
-        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
+        $class = 'Ray\Aop\Mock\AnnotateClass';
         $result = $this->bind->bind($class, [$pointcut]);
         /** @noinspection PhpParamsInspection */
         list($method, $interceptors) = each($result);
@@ -73,8 +75,8 @@ class BindTest extends \PHPUnit_Framework_TestCase
     public function test_bindAnyAnnotatedWith()
     {
         $matcher = new Matcher(new Reader);
-        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
-        $annotationName = 'Ray\Aop\Tests\Annotation\Marker';
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotationName = 'Ray\Aop\Annotation\Marker';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
         $result = $this->bind->bind($class, [$pointcut]);
         /** @noinspection PhpParamsInspection */
@@ -86,22 +88,22 @@ class BindTest extends \PHPUnit_Framework_TestCase
     public function test_bindAnyAnnotatedWithAnnotation()
     {
         $matcher = new Matcher(new Reader);
-        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
-        $annotationName = 'Ray\Aop\Tests\Annotation\Marker';
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotationName = 'Ray\Aop\Annotation\Marker';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
         $bind = $this->bind->bind($class, [$pointcut]);
         /* @var $bind Bind */
         /** @noinspection PhpParamsInspection */
         list($method,) = each($bind);
         $annotation = $bind->annotation[$method];
-        $this->assertInstanceOf('Ray\Aop\Tests\Annotation\Marker', $annotation);
+        $this->assertInstanceOf('Ray\Aop\Annotation\Marker', $annotation);
     }
 
     public function test_bindAnyAnnotatedWithDoubleBind()
     {
         $matcher = new Matcher(new Reader);
-        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
-        $annotationName = 'Ray\Aop\Tests\Annotation\Marker';
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotationName = 'Ray\Aop\Annotation\Marker';
         $interceptors1 = [new voidInterceptor, new DoubleInterceptor];
         $interceptors2 = [new DoubleInterceptor, new voidInterceptor];
 
@@ -112,10 +114,10 @@ class BindTest extends \PHPUnit_Framework_TestCase
         /** @noinspection PhpParamsInspection */
         list($method, $interceptors) = each($result);
         $this->assertSame('getDouble', $method);
-        $this->assertInstanceOf('Ray\Aop\voidInterceptor', $interceptors[0]);
-        $this->assertInstanceOf('Ray\Aop\DoubleInterceptor', $interceptors[1]);
-        $this->assertInstanceOf('Ray\Aop\DoubleInterceptor', $interceptors[2]);
-        $this->assertInstanceOf('Ray\Aop\voidInterceptor', $interceptors[3]);
+        $this->assertInstanceOf('Ray\Aop\Interceptor\voidInterceptor', $interceptors[0]);
+        $this->assertInstanceOf('Ray\Aop\Interceptor\DoubleInterceptor', $interceptors[1]);
+        $this->assertInstanceOf('Ray\Aop\Interceptor\DoubleInterceptor', $interceptors[2]);
+        $this->assertInstanceOf('Ray\Aop\Interceptor\voidInterceptor', $interceptors[3]);
     }
 
     /**
@@ -124,8 +126,8 @@ class BindTest extends \PHPUnit_Framework_TestCase
     public function test_bindAnyAnnotatedWithInvalidAnnotationName()
     {
         $matcher = new Matcher(new Reader);
-        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
-        $annotationName = 'Ray\Aop\Tests\Annotation\AnnotationNotExistXXX';
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotationName = 'Ray\Aop\Annotation\AnnotationNotExistXXX';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
         $result = $this->bind->bind($class, [$pointcut]);
         /** @noinspection PhpParamsInspection */
@@ -160,7 +162,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $bind = $this->bind;
         $interceptors = $bind('getDouble');
         $this->assertSame(2, count($interceptors));
-        $this->assertInstanceOf('Ray\Aop\DoubleInterceptor', $interceptors[0]);
+        $this->assertInstanceOf('Ray\Aop\Interceptor\DoubleInterceptor', $interceptors[0]);
     }
 
     /**
@@ -169,8 +171,8 @@ class BindTest extends \PHPUnit_Framework_TestCase
     public function test_bindByAnnotateBindig()
     {
         $matcher = new Matcher(new Reader);
-        $class = 'Ray\Aop\Tests\Mock\AnnotateClass';
-        $annotationName = 'Ray\Aop\Tests\Annotation\Resource';
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotationName = 'Ray\Aop\Annotation\Resource';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
         $this->bind->bind($class, [$pointcut]);
         $this->assertSame(0, (count($this->bind)));

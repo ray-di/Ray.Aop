@@ -1,5 +1,8 @@
 <?php
-namespace Ray\Aop;
+namespace Ray\Aop\Interceptor;
+
+use Ray\Aop\MethodInterceptor;
+use Ray\Aop\MethodInvocation;
 
 class DoubleInterceptor implements MethodInterceptor
 {
