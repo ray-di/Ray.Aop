@@ -4,8 +4,8 @@ namespace Ray\Aop\Sample;
 
 require dirname(__DIR__) . '/bootstrap.php';
 
-use Ray\Aop\Weaver,
-    Ray\Aop\Bind;
+use Ray\Aop\Bind;
+use Ray\Aop\Compiler;
 
 $bind1 = new Bind;
 $bind1->bindInterceptors('chargeOrder', array());
@@ -18,11 +18,12 @@ $bind3->bindInterceptors('chargeOrder', array(new EmptyInterceptor, new EmptyInt
 $bind4 = new Bind;
 $bind4->bindInterceptors('chargeOrder', array(new EmptyInterceptor, new EmptyInterceptor, new EmptyInterceptor, new EmptyInterceptor));
 
-$billing0 = new Weaver(new RealBillingService, new Bind);
-$billing1 = new Weaver(new RealBillingService, $bind1);
-$billing2 = new Weaver(new RealBillingService, $bind2);
-$billing3 = new Weaver(new RealBillingService, $bind3);
-$billing4 = new Weaver(new RealBillingService, $bind4);
+$billing0 = (new Compiler)->newInstance('Ray\Aop\Sample\RealBillingService', [], new Bind);
+$billing1 = (new Compiler)->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind1);
+$billing2 = (new Compiler)->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind2);
+$billing3 = (new Compiler)->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind3);
+$billing4 = (new Compiler)->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind4);
+
 //
 ob_start();
 

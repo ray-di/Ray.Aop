@@ -4,14 +4,14 @@ namespace Ray\Aop\Sample;
 
 require dirname(__DIR__) . '/bootstrap.php';
 
-use Ray\Aop\Weaver,
-    Ray\Aop\Bind;
+use Ray\Aop\Bind;
+use Ray\Aop\Compiler;
 
-$bind = new Bind;
-$bind->bindInterceptors('chargeOrder', array(new Timer, new intercepterA, new intercepterB));
-$weavedBilling = new Weaver(new RealBillingService, $bind);
+$bind = (new Bind)->bindInterceptors('chargeOrder', array(new Timer, new intercepterA, new intercepterB));
+$billingService = (new Compiler)->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
+
 try {
-    $weavedBilling->chargeOrder();
+    $billingService->chargeOrder();
 } catch (\RuntimeException $e) {
     echo $e->getMessage() . "\n";
     exit(1);
