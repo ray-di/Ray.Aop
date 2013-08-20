@@ -2,9 +2,9 @@
 
 namespace Ray\Aop;
 
-use Ray\Aop\Mock\Num;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Interceptor\DoubleInterceptor;
+use Ray\Aop\Mock\Num;
 
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,11 +19,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $this->compiler = new Compiler(__DIR__ . '/Weaved');
         $this->bind = new Bind;
         $matcher = new Matcher(new AnnotationReader);
-        $pointcut = new Pointcut(
-            $matcher->any(),
-            $matcher->startWith('return'),
-            [new DoubleInterceptor]
-        );
+        $pointcut = new Pointcut($matcher->any(), $matcher->startWith('return'), [new DoubleInterceptor]);
         $this->bind->bind('Ray\Aop\Mock\Weaved', [$pointcut]);
     }
 
@@ -58,7 +54,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $weaved->___bind = $this->bind;
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
-
     }
 
     public function testNewInstance()

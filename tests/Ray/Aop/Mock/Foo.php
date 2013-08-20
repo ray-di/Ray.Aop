@@ -28,7 +28,6 @@ class Foo implements addInterface, squareInterface
     {
         return $num * $num;
     }
-
 }
 
 class Foo_weaved

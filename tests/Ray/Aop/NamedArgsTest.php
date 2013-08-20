@@ -8,7 +8,6 @@
 
 namespace Ray\Aop;
 
-
 class NamedArgsTest extends \PHPUnit_Framework_TestCase
 {
 

@@ -4,10 +4,10 @@ namespace Ray\Aop\Compiler;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Bind;
-use Weaved;
 use Ray\Aop\Interceptor\DoubleInterceptor;
 use Ray\Aop\Matcher;
 use Ray\Aop\Pointcut;
+use Weaved;
 
 class TemplateTest extends \PHPUnit_Framework_TestCase
 {
@@ -47,11 +47,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     public function testMatcherWeave()
     {
         $matcher = new Matcher(new AnnotationReader);
-        $pointcut = new Pointcut(
-            $matcher->any(),
-            $matcher->any(),
-            [new DoubleInterceptor]
-        );
+        $pointcut = new Pointcut($matcher->any(), $matcher->any(), [new DoubleInterceptor]);
         $bind = new Bind;
         $bind->bind('Weaved', [$pointcut]);
         $this->weaved->___bind = $bind;

@@ -139,8 +139,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function testOffsetUnset()
     {
         $weaver = new Weaver(new \ArrayObject(['key' => 10]), new Bind);
-        unset($weaver['key']);
-        ;
+        unset($weaver['key']);;
         $this->assertFalse(isset($weaver['key']));
     }
 

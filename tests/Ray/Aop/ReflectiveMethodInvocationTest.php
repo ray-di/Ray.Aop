@@ -33,7 +33,6 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     {
         $methodReflection = $this->invocation->getMethod();
         $this->assertInstanceOf('\ReflectionMethod', $methodReflection);
-
     }
 
     public function testGetMethodMethodName()
