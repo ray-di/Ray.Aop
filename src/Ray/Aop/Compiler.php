@@ -97,8 +97,8 @@ final class Compiler implements CompilerInterface
                 ->addStmts($this->getMethods($class, $bind))
                 ->getNode()
         ];
-        $code = '<?php ' . PHP_EOL . $this->printer->prettyPrint($stmts);
-        file_put_contents($file, $code);
+        $code = $this->printer->prettyPrint($stmts);
+        file_put_contents($file, '<?php ' . PHP_EOL . $code);
         include_once $file;
 
         return $newClassName;
@@ -125,9 +125,13 @@ final class Compiler implements CompilerInterface
     private function getClass($newClassName, \ReflectionClass $class, Bind $bind)
     {
         $parentClass = $class->name;
-        $builder = $this->factory->class($newClassName)->extend($parentClass)->addStmt(
-            $this->factory->property('___intercept')->makePrivate()->setDefault(true)
-        )->addStmt(
+        $builder = $this->factory
+            ->class($newClassName)
+            ->extend($parentClass)
+            ->implement('Ray\Aop\WeavedInterface')
+            ->addStmt(
+                $this->factory->property('___intercept')->makePrivate()->setDefault(true)
+            )->addStmt(
                 $this->factory->property('___bind')->makePublic()
             );
 
