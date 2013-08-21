@@ -87,11 +87,10 @@ final class Compiler implements CompilerInterface
     {
         $class = new ReflectionClass($class);
         $newClassName = $this->getClassName($class, $bind);
-        $file = $this->classDir . "/{$newClassName}.php";
-        if (file_exists($file)) {
-            include_once $file;
+        if (class_exists($newClassName, false)) {
             return $newClassName;
         }
+        $file = $this->classDir . "/{$newClassName}.php";
         $stmts = [
             $this->getClass($newClassName, $class, $bind)
                 ->addStmts($this->getMethods($class, $bind))
@@ -112,7 +111,7 @@ final class Compiler implements CompilerInterface
      */
     private function getClassName(\ReflectionClass $class, Bind $bind)
     {
-        $className = $class->getShortName() . '_ray' . md5(serialize($bind));
+        $className = str_replace('\\', '', $class->getName()) . 'RaY' . md5($bind);
 
         return $className;
     }
