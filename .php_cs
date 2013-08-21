@@ -8,6 +8,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->exclude('cs')
     ->exclude('tmp')
     ->exclude('build')
+    ->exclude('Weaved')
     ->in(__DIR__ . '/src')
 ;
 
