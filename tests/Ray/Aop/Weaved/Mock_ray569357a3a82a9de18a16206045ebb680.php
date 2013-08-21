@@ -1,4 +1,4 @@
-<?php 
+<?php
 class Mock_ray569357a3a82a9de18a16206045ebb680 extends Ray\Aop\Mock\Mock
 {
     private $___intercept = true;

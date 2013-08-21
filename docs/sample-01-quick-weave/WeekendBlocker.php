@@ -12,7 +12,7 @@ class WeekendBlocker implements MethodInterceptor
         $today = getdate();
         if ($today['weekday'][0] === 'S') {
             throw new \RuntimeException(
-          		$invocation->getMethod()->getName() . " not allowed on weekends!"
+                  $invocation->getMethod()->getName() . " not allowed on weekends!"
             );
         }
         return $invocation->proceed();
