@@ -111,7 +111,7 @@ final class Compiler implements CompilerInterface
      */
     private function getClassName(\ReflectionClass $class, Bind $bind)
     {
-        $className = str_replace('\\', '', $class->getName()) . 'RaY' . md5($bind);
+        $className = str_replace('\\', '', $class->getName()) . 'Ray' . spl_object_hash($bind) . 'Aop';
 
         return $className;
     }
