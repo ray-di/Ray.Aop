@@ -1,6 +1,4 @@
 <?php
-require dirname(__DIR__) . '/src.php';
-
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 require __DIR__ . '/sample-01-quick-weave/BillingService.php';
