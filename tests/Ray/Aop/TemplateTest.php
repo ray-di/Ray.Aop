@@ -25,7 +25,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     public function testImplicitBiding()
     {
         $bind = (new Bind)->bindInterceptors('returnSame', [new DoubleInterceptor]);
-        $this->weaved->___bind = $bind;
+        $this->weaved->rayAopBind = $bind;
         $result = $this->weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
@@ -33,7 +33,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     public function testImplicitBidingDoubleInterceptor()
     {
         $bind = (new Bind)->bindInterceptors('returnSame', [new DoubleInterceptor, new DoubleInterceptor]);
-        $this->weaved->___bind = $bind;
+        $this->weaved->rayAopBind = $bind;
         $result = $this->weaved->returnSame(1);
         $this->assertSame(4, $result);
     }
@@ -50,7 +50,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
         $pointcut = new Pointcut($matcher->any(), $matcher->any(), [new DoubleInterceptor]);
         $bind = new Bind;
         $bind->bind('Weaved', [$pointcut]);
-        $this->weaved->___bind = $bind;
+        $this->weaved->rayAopBind = $bind;
         $actual = $this->weaved->returnSame(1);
         $this->assertSame(2, $actual);
     }

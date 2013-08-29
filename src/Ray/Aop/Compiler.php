@@ -72,7 +72,7 @@ final class Compiler implements CompilerInterface
     {
         $class = $this->compile($class, $bind);
         $instance = (new ReflectionClass($class))->newInstanceArgs($args);
-        $instance->___bind = $bind;
+        $instance->rayAopBind = $bind;
 
         return $instance;
     }
@@ -129,9 +129,9 @@ final class Compiler implements CompilerInterface
             ->extend($parentClass)
             ->implement('Ray\Aop\WeavedInterface')
             ->addStmt(
-                $this->factory->property('___intercept')->makePrivate()->setDefault(true)
+                $this->factory->property('rayAopIntercept')->makePrivate()->setDefault(true)
             )->addStmt(
-                $this->factory->property('___bind')->makePublic()
+                $this->factory->property('rayAopBind')->makePublic()
             );
 
         return $builder;

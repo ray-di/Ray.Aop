@@ -51,7 +51,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function testBuildClassWeaved($class)
     {
         $weaved = new $class;
-        $weaved->___bind = $this->bind;
+        $weaved->rayAopBind = $this->bind;
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
