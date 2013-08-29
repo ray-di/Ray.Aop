@@ -12,3 +12,5 @@ cache.properties
 build
 *.log
 Weaved
+
+composer.phar
