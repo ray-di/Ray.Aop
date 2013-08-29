@@ -92,7 +92,7 @@ final class Compiler implements CompilerInterface
         }
         $file = $this->classDir . "/{$newClassName}.php";
         $stmts = [
-            $this->getClass($newClassName, $class, $bind)
+            $this->getClass($newClassName, $class)
                 ->addStmts($this->getMethods($class, $bind))
                 ->getNode()
         ];
@@ -121,7 +121,7 @@ final class Compiler implements CompilerInterface
      *
      * @return \PHPParser_Builder_Class
      */
-    private function getClass($newClassName, \ReflectionClass $class, Bind $bind)
+    private function getClass($newClassName, \ReflectionClass $class)
     {
         $parentClass = $class->name;
         $builder = $this->factory

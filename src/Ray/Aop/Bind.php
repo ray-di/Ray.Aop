@@ -56,10 +56,14 @@ final class Bind extends ArrayObject implements BindInterface
             /** @var $pointcut Pointcut */
             $classMatcher = $pointcut->classMatcher;
             $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
-            if ($isClassMatch === true) {
-                $method = ($pointcut->methodMatcher->isAnnotateBinding()) ? 'bindByAnnotateBinding' : 'bindByCallable';
-                $this->$method($class, $pointcut->methodMatcher, $pointcut->interceptors);
+            if ($isClassMatch !== true) {
+                continue;
             }
+            if ($pointcut->methodMatcher->isAnnotateBinding()) {
+                $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
+                continue;
+            }
+            $this->bindByCallable($class, $pointcut->methodMatcher, $pointcut->interceptors);
         }
 
         return $this;
@@ -111,7 +115,6 @@ final class Bind extends ArrayObject implements BindInterface
      * @param array   $interceptors
      *
      * @return void
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function bindByCallable($class, Matcher $methodMatcher, array $interceptors)
     {
@@ -144,6 +147,8 @@ final class Bind extends ArrayObject implements BindInterface
      * @param string  $class
      * @param Matcher $methodMatcher
      * @param array   $interceptors
+     *
+     * @return void
      */
     private function bindByAnnotateBinding($class, Matcher $methodMatcher, array $interceptors)
     {
