@@ -18,6 +18,7 @@ use RuntimeException;
  * The proxy object to call intercepted method.
  *
  * @package Ray.Aop
+ * @deprecated
  */
 class Weaver implements Weave, ArrayAccess
 {
