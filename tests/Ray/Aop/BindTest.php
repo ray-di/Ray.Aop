@@ -194,4 +194,14 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $data = unserialize($data);
         $this->assertTrue($data instanceof Bind);
     }
+
+    public function testNotClassMatch()
+    {
+        $matcher = new Matcher(new Reader);
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotationName = 'Ray\Aop\Annotation\Resource';
+        $pointcut = new Pointcut($matcher->startWith('XXX'), $matcher->startWith('XXX'), $this->interceptors);
+        $this->bind->bind($class, [$pointcut]);
+        $this->assertSame(0, (count($this->bind)));
+    }
 }

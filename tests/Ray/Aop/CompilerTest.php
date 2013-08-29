@@ -36,6 +36,14 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         return $class;
     }
 
+    public function testBuildClassTwice()
+    {
+        $class1 = $this->compiler->compile('\Ray\Aop\Mock\Mock', $this->bind);
+        $class2 = $this->compiler->compile('\Ray\Aop\Mock\Mock', $this->bind);
+        $this->assertTrue(class_exists($class1));
+        $this->assertSame($class1, $class2);
+    }
+
     /**
      * @depends testBuildClass
      */
