@@ -15,6 +15,16 @@ namespace Ray\Aop;
 interface CompilerInterface
 {
     /**
+     * Compile
+     *
+     * @param string $class
+     * @param Bind   $bind
+     *
+     * @return string
+     */
+    public function compile($class, Bind $bind);
+
+    /**
      * Return new aspect weaved object instance
      *
      * @param string $class

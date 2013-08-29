@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the Ray.Aop package
  *
@@ -41,10 +40,10 @@ final class Compiler implements CompilerInterface
     private $classDir;
 
     /**
+     * @param null                            $classDir
      * @param PHPParser_Parser                $parser
      * @param PHPParser_BuilderFactory        $factory
      * @param PHPParser_PrettyPrinterAbstract $printer
-     * @param string                          $classDir
      */
     public function __construct(
         $classDir = null,
@@ -60,28 +59,7 @@ final class Compiler implements CompilerInterface
     }
 
     /**
-     * Return new aspect weaved object instance
-     *
-     * @param       $class
-     * @param array $args
-     * @param Bind  $bind
-     *
-     * @return object
-     */
-    public function newInstance($class, array $args = [], Bind $bind)
-    {
-        $class = $this->compile($class, $bind);
-        $instance = (new ReflectionClass($class))->newInstanceArgs($args);
-        $instance->rayAopBind = $bind;
-
-        return $instance;
-    }
-
-    /**
-     * @param      $class
-     * @param Bind $bind
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function compile($class, Bind $bind)
     {
@@ -104,6 +82,18 @@ final class Compiler implements CompilerInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function newInstance($class, array $args = [], Bind $bind)
+    {
+        $class = $this->compile($class, $bind);
+        $instance = (new ReflectionClass($class))->newInstanceArgs($args);
+        $instance->rayAopBind = $bind;
+
+        return $instance;
+    }
+
+    /**
      * @param \ReflectionClass $class
      * @param Bind             $bind
      *
@@ -117,7 +107,10 @@ final class Compiler implements CompilerInterface
     }
 
     /**
-     * @param \ReflectionClass $class
+     * Return class statement
+     *
+     * @param string          $newClassName
+     * @param ReflectionClass $class
      *
      * @return \PHPParser_Builder_Class
      */
