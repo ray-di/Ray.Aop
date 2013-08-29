@@ -8,6 +8,8 @@ use Ray\Aop\Mock\Num;
 
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {
+    private $bind;
+
     /**
      * @var Compiler
      */

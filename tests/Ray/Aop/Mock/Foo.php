@@ -33,6 +33,9 @@ class Foo implements addInterface, squareInterface
 class Foo_weaved
 {
 
+    public $object;
+    private $bind;
+
     public function set($object, Bind $bind)
     {
         $this->object = $object;
