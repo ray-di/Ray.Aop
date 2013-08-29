@@ -130,11 +130,7 @@ final class Bind extends ArrayObject implements BindInterface
      */
     public function bindInterceptors($method, array $interceptors, $annotation = null)
     {
-        if (!isset($this[$method])) {
-            $this[$method] = $interceptors;
-        } else {
-            $this[$method] = array_merge($this[$method], $interceptors);
-        }
+        $this[$method] = !isset($this[$method]) ? $interceptors : array_merge($this[$method], $interceptors);
         if ($annotation) {
             $this->annotation[$method] = $annotation;
         }
