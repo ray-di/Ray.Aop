@@ -25,6 +25,11 @@ use TokenReflection\ReflectionParameter;
 final class Compiler implements CompilerInterface
 {
     /**
+     * @var string
+     */
+    public $classDir;
+
+    /**
      * @var \PHPParser_Parser
      */
     private $parser;
@@ -33,11 +38,6 @@ final class Compiler implements CompilerInterface
      * @var \PHPParser_BuilderFactory
      */
     private $factory;
-
-    /**
-     * @var string
-     */
-    private $classDir;
 
     /**
      * @param null                            $classDir
