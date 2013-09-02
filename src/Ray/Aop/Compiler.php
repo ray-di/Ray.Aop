@@ -84,7 +84,7 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      */
-    public function newInstance($class, array $args = [], Bind $bind)
+    public function newInstance($class, array $args, Bind $bind)
     {
         $class = $this->compile($class, $bind);
         $instance = (new ReflectionClass($class))->newInstanceArgs($args);

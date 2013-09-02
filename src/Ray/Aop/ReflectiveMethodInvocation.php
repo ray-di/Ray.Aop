@@ -65,7 +65,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
      * @param array    $interceptors
      * @param mixed    $annotation
      */
-    public function __construct(Callable $target, array $args, array $interceptors = [], $annotation = null)
+    public function __construct(callable $target, array $args, array $interceptors = [], $annotation = null)
     {
         $this->object = $target[0];
         $this->args = $args;

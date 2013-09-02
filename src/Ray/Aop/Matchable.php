@@ -57,5 +57,4 @@ interface Matchable
      * @return bool | array [$matcher, method]
      */
     public function __invoke($class, $target);
-
 }

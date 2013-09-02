@@ -33,5 +33,5 @@ interface CompilerInterface
      *
      * @return object
      */
-    public function newInstance($class, array $args =[], Bind $bind);
+    public function newInstance($class, array $args, Bind $bind);
 }

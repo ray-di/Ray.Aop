@@ -47,7 +47,7 @@ interface Weave
      * @return mixed
      * @throws \BadFunctionCallException
      */
-    public function  __call($method, array $params);
+    public function __call($method, array $params);
 
     /**
      * Invoke with callable parameter.
@@ -58,7 +58,5 @@ interface Weave
      *
      * @return mixed
      */
-    public function __invoke(Callable $getParams, $method, array $query);
-
-
+    public function __invoke(callable $getParams, $method, array $query);
 }
