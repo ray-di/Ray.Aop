@@ -51,7 +51,6 @@ final class Compiler implements CompilerInterface
         PHPParser_BuilderFactory $factory = null,
         PHPParser_PrettyPrinterAbstract $printer = null
     ) {
-        ini_set('xdebug.max_nesting_level', 2000);
         $this->classDir = $classDir ? : sys_get_temp_dir();
         $this->parser = $parser ? : new PHPParser_Parser(new PHPParser_Lexer);
         $this->factory = $factory ? : new PHPParser_BuilderFactory;

@@ -2,6 +2,9 @@
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
+//This ensures that there will be no errors when traversing highly nested node trees.
+ini_set('xdebug.max_nesting_level', 2000);
+
 // vendor
 $loader = require dirname(__DIR__) . '/vendor/autoload.php';
 /** @var $loader \Composer\Autoload\ClassLoader */

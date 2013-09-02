@@ -175,4 +175,12 @@ curl -sS https://getcomposer.org/installer | php
 php composer.phar require ray/di:*
 ```
 
+### ini_set
+
+You may want to set the `xdebug.max_nesting_level` ini option to a higher value:
+
+```php
+ini_set('xdebug.max_nesting_level', 2000);
+```
+
 * The most part of this documentation is taken from [Guice/AOP](https://code.google.com/p/google-guice/wiki/AOP)
