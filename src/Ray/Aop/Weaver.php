@@ -19,6 +19,7 @@ use RuntimeException;
  *
  * @package Ray.Aop
  * @deprecated
+ * @SuppressWarnings(PHPMD)
  */
 class Weaver implements Weave, ArrayAccess
 {
