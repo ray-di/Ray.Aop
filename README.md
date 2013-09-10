@@ -85,7 +85,8 @@ $pointcut = new Pointcut(
 );
 $bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
 
-$billing = (new Compiler)->newInstance('RealBillingService', [], $bind);
+$compiler = require dirname(__DIR__) . '/scripts/instance.php';
+$billing = $compiler->newInstance('RealBillingService', [], $bind);
 try {
     echo $billing->chargeOrder();
 } catch (\RuntimeException $e) {
@@ -116,8 +117,9 @@ Explicit method name match
 <?php
 	$bind = new Bind;
 	$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-	
-	$billing = (new Compiler)->newInstance('RealBillingService', [], $bind);
+
+    $compiler = require dirname(__DIR__) . '/scripts/instance.php';
+	$billing = $compiler->newInstance('RealBillingService', [], $bind);
 	try {
 	   echo $billing->chargeOrder();
 	} catch (\RuntimeException $e) {

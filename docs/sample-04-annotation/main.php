@@ -3,7 +3,6 @@ namespace Ray\Aop\Sample;
 
 use Ray\Aop\Pointcut;
 use Ray\Aop\Matcher;
-use Ray\Aop\Weaver;
 use Ray\Aop\Bind;
 use Ray\Aop\Compiler;
 
@@ -19,7 +18,8 @@ $pointcut = new Pointcut(
     $interceptors
 );
 $bind = (new Bind)->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
-$billingService = (new Compiler)->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
+$compiler = require dirname(dirname(__DIR__)) . '/scripts/instance.php';
+$billingService = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
 try {
     echo $billingService->chargeOrder();
 } catch (\RuntimeException $e) {
