@@ -40,21 +40,21 @@ final class Compiler implements CompilerInterface
     private $factory;
 
     /**
-     * @param null                            $classDir
+     * @param string                          $classDir
      * @param PHPParser_Parser                $parser
      * @param PHPParser_BuilderFactory        $factory
      * @param PHPParser_PrettyPrinterAbstract $printer
      */
     public function __construct(
-        $classDir = null,
-        PHPParser_Parser $parser = null,
-        PHPParser_BuilderFactory $factory = null,
-        PHPParser_PrettyPrinterAbstract $printer = null
+        $classDir,
+        PHPParser_PrettyPrinterAbstract $printer,
+        PHPParser_Parser $parser,
+        PHPParser_BuilderFactory $factory
     ) {
-        $this->classDir = $classDir ? : sys_get_temp_dir();
-        $this->parser = $parser ? : new PHPParser_Parser(new PHPParser_Lexer);
-        $this->factory = $factory ? : new PHPParser_BuilderFactory;
-        $this->printer = $printer ? : new PHPParser_PrettyPrinter_Zend;
+        $this->classDir = $classDir;
+        $this->printer = $printer;
+        $this->parser = $parser;
+        $this->factory = $factory;
     }
 
     /**

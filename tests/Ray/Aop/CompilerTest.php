@@ -5,20 +5,32 @@ namespace Ray\Aop;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Interceptor\DoubleInterceptor;
 use Ray\Aop\Mock\Num;
+use PHPParser_Lexer;
+use PHPParser_Parser;
+use PHPParser_PrettyPrinter_Default;
+use PHPParser_BuilderFactory;
 
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Bind
+     */
     private $bind;
 
     /**
      * @var Compiler
      */
-    protected $compiler;
+    private $compiler;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->compiler = new Compiler(__DIR__ . '/Weaved');
+        $this->compiler = new Compiler(
+            __DIR__ . '/Weaved',
+            new PHPParser_PrettyPrinter_Default,
+            new PHPParser_Parser(new PHPParser_Lexer),
+            new PHPParser_BuilderFactory
+        );
         $this->bind = new Bind;
         $matcher = new Matcher(new AnnotationReader);
         $pointcut = new Pointcut($matcher->any(), $matcher->startWith('return'), [new DoubleInterceptor]);
