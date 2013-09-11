@@ -1,14 +1,15 @@
-Ray.Aop
+Aspect Oriented Framework for PHP
 =======
 
-Ray.Aop package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
+[![Latest Stable Version](https://poser.pugx.org/ray/aop/v/stable.png)](https://packagist.org/packages/ray/aop)
+[![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
+
+**Ray.Aop** package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
 [Matcher](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_Matchable.html) is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there's factory class to satisfy the common scenarios.
 
 [MethodInterceptors](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_MethodInterceptor.html) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
 
-[![Latest Stable Version](https://poser.pugx.org/ray/aop/v/stable.png)](https://packagist.org/packages/ray/aop)
-[![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
 
 
 Example: Forbidding method calls on weekends
@@ -19,7 +20,6 @@ To illustrate how method interceptors work with Ray.Aop, we'll forbid calls to o
 To mark select methods as weekdays-only, we define an annotation .
 (Ray.Aop supports Doctrine Annotation)
 
-週末だけにするためのアノテーションを定義します。
 
 ```php
 <?php
@@ -34,9 +34,7 @@ final class NotOnWeekends
 }
 ```
 
-...and apply it to the methods that need to be intercepted: 
-
-インターセプトさせるメソッドに適用します。
+...and apply it to the methods that need to be intercepted:
 
 ```php
 <?php
@@ -50,8 +48,6 @@ class RealBillingService
 ```
 
 Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling $invocation->proceed():
-
-次に、MethodInterceptorインターフェイスを実装します。元のメソッドを実行するためには$invocation->proceed()と実行します。 
 
 ```php
 <?php
@@ -70,8 +66,6 @@ class WeekendBlocker implements MethodInterceptor
 }
 ```
 Finally, we configure everything.In this case we match any class, but only the methods with our @NotOnWeekends annotation:
-
-設定完了しました。このコードでは「どのクラスでも」「メソッドに@NotOnWeekendsアノテーション」という条件にマッチします。
 
 ```php
 <?php
@@ -95,8 +89,6 @@ try {
 }
 ```
 Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:
-
-全てをまとめ（土曜日まで待って）、メソッドをコールするとインターセプターにより拒否されます。
 
 ```php
 <?php
@@ -135,9 +127,9 @@ Behind the scenes, method interception is implemented by generating code at runt
 
 This approach imposes limits on what classes and methods can be intercepted:
 
- * Classes must be non-final
- * Methods must be public
- * Methods must be non-final
+ * Classes must be *non-final*
+ * Methods must be *public*
+ * Methods must be *non-final*
 
 AOP Alliance
 ------------
@@ -174,7 +166,7 @@ Ray.Di is a Guice style annotation-driven dependency injection framework. It int
 curl -sS https://getcomposer.org/installer | php
 
 # Add Ray.Aop as a dependency
-php composer.phar require ray/di:*
+php composer.phar require ray/aop:*
 ```
 
 ### ini_set
