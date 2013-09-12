@@ -6,6 +6,9 @@
  */
 namespace Ray\Aop\Exception;
 
-class InvalidSubclassMatch extends InvalidArgument implements ExceptionInterface
+/**
+ * Generic exception
+ */
+interface ExceptionInterface
 {
 }
