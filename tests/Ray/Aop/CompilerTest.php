@@ -101,7 +101,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @depends testNewInstance
      */
-    public function estMethodReturnValue($weaved)
+    public function testMethodReturnValue($weaved)
     {
         $num = new Num;
         $num->value = 1;
