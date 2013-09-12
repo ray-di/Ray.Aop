@@ -2,7 +2,6 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -23,8 +22,7 @@ namespace Ray\Aop;
  * joinpoint. It is passed to the interceptors that are installed on
  * the static joinpoint.
  *
- * @package Ray.Aop
- * @see     Interceptor
+ * @see Interceptor
  */
 interface Joinpoint
 {

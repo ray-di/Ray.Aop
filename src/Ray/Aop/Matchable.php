@@ -2,27 +2,15 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\Reader;
-
 /**
- * Supports matching classes and methods.
- *
- * @package Ray.Di
+ * Supports matching classes and methods
  */
 interface Matchable
 {
-    /**
-     * Constructor
-     *
-     * @param Reader $reader
-     */
-    public function __construct(Reader $reader);
-
     /**
      * Any match
      *
@@ -47,6 +35,15 @@ interface Matchable
      * @return bool
      */
     public function subclassesOf($superClass);
+
+    /**
+     * Return prefix match result
+     *
+     * @param string $prefix
+     *
+     * @return Matcher
+     */
+    public function startWith($prefix);
 
     /**
      * Return match result

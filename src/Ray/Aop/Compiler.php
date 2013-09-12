@@ -2,7 +2,6 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -17,12 +16,9 @@ use ReflectionMethod;
 use TokenReflection\ReflectionParameter;
 
 /**
- * This file is part of the Ray.Aop package
- *
- * @package Ray.Aop
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * Aspect weave compiler
  */
-final class Compiler implements CompilerInterface
+class Compiler implements CompilerInterface
 {
     /**
      * @var string
@@ -94,6 +90,8 @@ final class Compiler implements CompilerInterface
     }
 
     /**
+     * Return new class name
+     *
      * @param \ReflectionClass $class
      * @param Bind             $bind
      *
@@ -157,6 +155,8 @@ final class Compiler implements CompilerInterface
     }
 
     /**
+     * Return method statements
+     *
      * @param ReflectionClass $class
      * @param Bind            $bind
      *
@@ -177,6 +177,8 @@ final class Compiler implements CompilerInterface
     }
 
     /**
+     * Return method statement
+     *
      * @param \ReflectionMethod $method
      *
      * @return \PHPParser_Builder_Method

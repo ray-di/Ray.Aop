@@ -2,7 +2,6 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -10,20 +9,11 @@ namespace Ray\Aop;
 /**
  * Weaver
  *
- * The proxy object to call intercepted method.
+ * The proxy object to call intercepted method
  *
- * @package Ray.Aop
  */
 interface Weave
 {
-    /**
-     * Constructor
-     *
-     * @param object $object
-     * @param Bind   $bind
-     */
-    public function __construct($object, Bind $bind);
-
     /**
      * Get target object
      *

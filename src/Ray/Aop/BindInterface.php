@@ -2,18 +2,32 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
 
 /**
  * Bind method name to interceptors
- *
- * @package Ray.Aop
  */
 interface BindInterface
 {
+    /**
+     * Return has binding
+     *
+     * @return bool
+     */
+    public function hasBinding();
+
+    /**
+     * Make pointcuts to binding information
+     *
+     * @param string $class
+     * @param array  $pointcuts
+     *
+     * @return Bind
+     */
+    public function bind($class, array $pointcuts);
+
     /**
      * Bind method to interceptors
      *
@@ -34,13 +48,11 @@ interface BindInterface
      */
     public function __invoke($name);
 
+
     /**
-     * Make pointcuts to binding information
+     * to String for logging
      *
-     * @param string $class
-     * @param array  $pointcuts
-     *
-     * @return Bind
+     * @return string
      */
-    public function bind($class, array $pointcuts);
+    public function __toString();
 }

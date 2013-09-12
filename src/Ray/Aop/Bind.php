@@ -11,11 +11,6 @@ use ArrayObject;
 use ReflectionClass;
 use ReflectionMethod;
 
-/**
- * Bind method name to interceptors
- *
- * @package Ray.Aop
- */
 final class Bind extends ArrayObject implements BindInterface
 {
     /**
@@ -26,18 +21,7 @@ final class Bind extends ArrayObject implements BindInterface
     public $annotation = [];
 
     /**
-     * Bind method to interceptors
-     *
-     * @param string $method
-     * @param array  $interceptors
-     * @param object $annotation   Binding annotation if annotate bind
-     *
-     * @return Bind
-     */
-
-    /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\BindInterface::hasBinding()
+     * {@inheritdoc}
      */
     public function hasBinding()
     {
@@ -47,8 +31,7 @@ final class Bind extends ArrayObject implements BindInterface
     }
 
     /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\BindInterface::bind()
+     * {@inheritdoc}
      */
     public function bind($class, array $pointcuts)
     {
@@ -70,11 +53,20 @@ final class Bind extends ArrayObject implements BindInterface
     }
 
     /**
-     * Get matched Interceptor
-     *
-     * @param string $name class name
-     *
-     * @return mixed string|boolean matched method name
+     * {@inheritdoc}
+     */
+    public function bindInterceptors($method, array $interceptors, $annotation = null)
+    {
+        $this[$method] = !isset($this[$method]) ? $interceptors : array_merge($this[$method], $interceptors);
+        if ($annotation) {
+            $this->annotation[$method] = $annotation;
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function __invoke($name)
     {
@@ -85,11 +77,7 @@ final class Bind extends ArrayObject implements BindInterface
     }
 
     /**
-     * to String
-     *
-     * for logging
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -125,20 +113,6 @@ final class Bind extends ArrayObject implements BindInterface
                 $this->bindInterceptors($method->name, $interceptors);
             }
         }
-    }
-
-    /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\BindInterface::bindInterceptors()
-     */
-    public function bindInterceptors($method, array $interceptors, $annotation = null)
-    {
-        $this[$method] = !isset($this[$method]) ? $interceptors : array_merge($this[$method], $interceptors);
-        if ($annotation) {
-            $this->annotation[$method] = $annotation;
-        }
-
-        return $this;
     }
 
     /**

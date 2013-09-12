@@ -11,8 +11,6 @@ use Ray\Aop\MethodInvocation;
 
 /**
  * Interface for named parameter in interceptor
- *
- * @package    Ray.Aop
  */
 interface NamedArgsInterface
 {

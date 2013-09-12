@@ -13,13 +13,9 @@ use Ray\Aop\Exception\UndefinedProperty;
 use RuntimeException;
 
 /**
- * Weaver
+ * Weaver (Method proxy)
  *
- * The proxy object to call intercepted method.
- *
- * @package Ray.Aop
  * @deprecated
- * @SuppressWarnings(PHPMD)
  */
 class Weaver implements Weave, ArrayAccess
 {
