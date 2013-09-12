@@ -88,7 +88,6 @@ class Weaver implements Weave, ArrayAccess
         // interceptor weaved call
         $interceptors = $this->bind[$method];
         $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
-        /** @noinspection PhpParamsInspection */
         $invocation = new ReflectiveMethodInvocation([$this->object, $method], $params, $interceptors, $annotation);
 
         return $invocation->proceed();

@@ -178,7 +178,6 @@ class Matcher implements Matchable
      *
      * @return bool | Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isAnnotatedWith($class, $target, $annotationName)
     {
@@ -215,7 +214,6 @@ class Matcher implements Matchable
      * @return bool
      * @throws InvalidArgumentException
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isSubclassesOf($class, $target, $superClass)
     {
@@ -243,7 +241,6 @@ class Matcher implements Matchable
      *
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isStartWith($name, $target, $startWith)
     {
