@@ -17,5 +17,8 @@
     },
     "autoload": {
         "psr-0": { "Ray\\Aop": "src/" }
+    },
+    "suggest": {
+        "ray/di": "DI framework supports Ray.Aop"
     }
 }
