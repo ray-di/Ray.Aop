@@ -66,7 +66,6 @@ class Compiler implements CompilerInterface
         $file = $this->classDir . "/{$newClassName}.php";
         $stmts = [
             $this->getClass($newClassName, $class)
-                ->addStmts($this->getPrivateProperties($class))
                 ->addStmts($this->getMethods($class, $bind))
                 ->getNode()
         ];
@@ -129,32 +128,6 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Return private statements of private properties
-     *
-     * @param ReflectionClass $class
-     *
-     * @return \PHPParser_Builder_Property[]
-     */
-    private function getPrivateProperties(ReflectionClass $class)
-    {
-        $stmts = [];
-        $defaultProperties = $class->getDefaultProperties();
-        $properties = $class->getProperties();
-        foreach ($properties as $property) {
-            if (! $property->isPrivate()) {
-                continue;
-            }
-            $propertyStmt = $this->factory->property($property->name)->makePrivate();
-            if (isset($defaultProperties[$property->name])) {
-                $propertyStmt->setDefault($defaultProperties[$property->name]);
-            }
-            $stmts[] = $propertyStmt;
-        }
-
-        return $stmts;
-    }
-
-    /**
      * Return method statements
      *
      * @param ReflectionClass $class
@@ -166,9 +139,8 @@ class Compiler implements CompilerInterface
     {
         $stmts = [];
         $methods = $class->getMethods();
-        $weavedMethod = array_keys((array)$bind);
         foreach ($methods as $method) {
-            if (in_array($method->name, $weavedMethod)) {
+            if ($method->isPublic()) {
                 $stmts[] = $this->getMethod($method);
             }
         }
