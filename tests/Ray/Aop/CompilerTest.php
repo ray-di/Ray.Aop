@@ -108,4 +108,12 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
+
+    public function testGetPrivateVal()
+    {
+        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
+        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $val = $weaved->getPrivateVal();
+        $this->assertSame($val, 1);
+    }
 }

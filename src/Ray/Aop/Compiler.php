@@ -70,6 +70,7 @@ final class Compiler implements CompilerInterface
         $file = $this->classDir . "/{$newClassName}.php";
         $stmts = [
             $this->getClass($newClassName, $class)
+                ->addStmts($this->getPrivateProperties($class))
                 ->addStmts($this->getMethods($class, $bind))
                 ->getNode()
         ];
@@ -130,10 +131,36 @@ final class Compiler implements CompilerInterface
     }
 
     /**
+     * Return private statements of private properties
+     *
+     * @param ReflectionClass $class
+     *
+     * @return \PHPParser_Builder_Property[]
+     */
+    private function getPrivateProperties(ReflectionClass $class)
+    {
+        $stmts = [];
+        $defaultProperties = $class->getDefaultProperties();
+        $properties = $class->getProperties();
+        foreach ($properties as $property) {
+            if (! $property->isPrivate()) {
+                continue;
+            }
+            $propertyStmt = $this->factory->property($property->name)->makePrivate();
+            if (isset($defaultProperties[$property->name])) {
+                $propertyStmt->setDefault($defaultProperties[$property->name]);
+            }
+            $stmts[] = $propertyStmt;
+        }
+
+        return $stmts;
+    }
+
+    /**
      * @param ReflectionClass $class
      * @param Bind            $bind
      *
-     * @return array
+     * @return \PHPParser_Builder_Method[]
      */
     private function getMethods(ReflectionClass $class, Bind $bind)
     {
