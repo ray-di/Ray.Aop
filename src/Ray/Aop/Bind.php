@@ -11,11 +11,6 @@ use ArrayObject;
 use ReflectionClass;
 use ReflectionMethod;
 
-/**
- * Bind method name to interceptors
- *
- * @package Ray.Aop
- */
 final class Bind extends ArrayObject implements BindInterface
 {
     /**
@@ -26,18 +21,7 @@ final class Bind extends ArrayObject implements BindInterface
     public $annotation = [];
 
     /**
-     * Bind method to interceptors
-     *
-     * @param string $method
-     * @param array  $interceptors
-     * @param object $annotation   Binding annotation if annotate bind
-     *
-     * @return Bind
-     */
-
-    /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\BindInterface::hasBinding()
+     * {@inheritdoc}
      */
     public function hasBinding()
     {
@@ -47,8 +31,7 @@ final class Bind extends ArrayObject implements BindInterface
     }
 
     /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\BindInterface::bind()
+     * {@inheritdoc}
      */
     public function bind($class, array $pointcuts)
     {
@@ -56,21 +39,34 @@ final class Bind extends ArrayObject implements BindInterface
             /** @var $pointcut Pointcut */
             $classMatcher = $pointcut->classMatcher;
             $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
-            if ($isClassMatch === true) {
-                $method = ($pointcut->methodMatcher->isAnnotateBinding()) ? 'bindByAnnotateBinding' : 'bindByCallable';
-                $this->$method($class, $pointcut->methodMatcher, $pointcut->interceptors);
+            if ($isClassMatch !== true) {
+                continue;
             }
+            if ($pointcut->methodMatcher->isAnnotateBinding()) {
+                $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
+                continue;
+            }
+            $this->bindByCallable($class, $pointcut->methodMatcher, $pointcut->interceptors);
         }
 
         return $this;
     }
 
     /**
-     * Get matched Interceptor
-     *
-     * @param string $name class name
-     *
-     * @return mixed string|boolean matched method name
+     * {@inheritdoc}
+     */
+    public function bindInterceptors($method, array $interceptors, $annotation = null)
+    {
+        $this[$method] = !isset($this[$method]) ? $interceptors : array_merge($this[$method], $interceptors);
+        if ($annotation) {
+            $this->annotation[$method] = $annotation;
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function __invoke($name)
     {
@@ -81,11 +77,7 @@ final class Bind extends ArrayObject implements BindInterface
     }
 
     /**
-     * to String
-     *
-     * for logging
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -111,7 +103,6 @@ final class Bind extends ArrayObject implements BindInterface
      * @param array   $interceptors
      *
      * @return void
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function bindByCallable($class, Matcher $methodMatcher, array $interceptors)
     {
@@ -125,29 +116,13 @@ final class Bind extends ArrayObject implements BindInterface
     }
 
     /**
-     * (non-PHPDoc)
-     * @see \Ray\Aop\BindInterface::bindInterceptors()
-     */
-    public function bindInterceptors($method, array $interceptors, $annotation = null)
-    {
-        if (!isset($this[$method])) {
-            $this[$method] = $interceptors;
-        } else {
-            $this[$method] = array_merge($this[$method], $interceptors);
-        }
-        if ($annotation) {
-            $this->annotation[$method] = $annotation;
-        }
-
-        return $this;
-    }
-
-    /**
      * Bind interceptor by annotation binding
      *
      * @param string  $class
      * @param Matcher $methodMatcher
      * @param array   $interceptors
+     *
+     * @return void
      */
     private function bindByAnnotateBinding($class, Matcher $methodMatcher, array $interceptors)
     {

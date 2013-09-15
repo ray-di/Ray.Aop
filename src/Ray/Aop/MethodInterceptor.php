@@ -2,7 +2,6 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -13,8 +12,7 @@ namespace Ray\Aop;
  * The user should implement the invoke(MethodInvocation) method to modify the original behavior.
  * E.g. the following class implements a tracing interceptor (traces all the calls on the intercepted method(s)):
  *
- * @package Ray.Aop
- * @link    http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html
+ * @link http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html
  */
 interface MethodInterceptor extends Interceptor
 {

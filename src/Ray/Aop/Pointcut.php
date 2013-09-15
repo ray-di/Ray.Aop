@@ -9,8 +9,6 @@ namespace Ray\Aop;
 
 /**
  * Pointcut
- *
- * @package Ray.Di
  */
 final class Pointcut
 {

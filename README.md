@@ -1,22 +1,25 @@
-Ray.Aop
+Aspect Oriented Framework for PHP
 =======
 
-Ray.Aop package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
-
+[![Latest Stable Version](https://poser.pugx.org/ray/aop/v/stable.png)](https://packagist.org/packages/ray/aop)
 [![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
 
-Requirement
--------------
+**Ray.Aop** package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
- * PHP 5.4+
- 
-Getting Started
-===============
+A [Matcher](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_Matchable.html) is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there's factory class to satisfy the common scenarios.
 
-To mark select methods as weekdays-only, we define an annotation .
-(Ray.Aop supports Doctrine Annotation)
+[MethodInterceptors](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_MethodInterceptor.html) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
 
-週末だけにするためのアノテーションを定義します。
+
+
+Example: Forbidding method calls on weekends
+--------------------------------------------
+
+To illustrate how method interceptors work with Ray.Aop, we'll forbid calls to our pizza billing system on weekends. The delivery guys only work Monday thru Friday so we'll prevent pizza from being ordered when it can't be delivered! This example is structurally similar to use of AOP for authorization.
+
+To mark select methods as weekdays-only, we define an annotation.
+(Ray.Aop uses Doctrine Annotations)
+
 
 ```php
 <?php
@@ -31,9 +34,7 @@ final class NotOnWeekends
 }
 ```
 
-...and apply it to the methods that need to be intercepted: 
-
-インターセプトさせるメソッドに適用します。
+...and apply it to the methods that need to be intercepted:
 
 ```php
 <?php
@@ -47,8 +48,6 @@ class RealBillingService
 ```
 
 Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling $invocation->proceed():
-
-次に、MethodInterceptorインターフェイスを実装します。元のメソッドを実行するためには$invocation->proceed()と実行します。 
 
 ```php
 <?php
@@ -66,9 +65,7 @@ class WeekendBlocker implements MethodInterceptor
     }
 }
 ```
-Finally, we configure everything.In this case we match any class, but only the methods with our @NotOnWeekends annotation:
-
-設定完了しました。このコードでは「どのクラスでも」「メソッドに@NotOnWeekendsアノテーション」という条件にマッチします。
+Finally, we configure everything. In this case we match any class, but only the methods with our @NotOnWeekends annotation:
 
 ```php
 <?php
@@ -82,7 +79,8 @@ $pointcut = new Pointcut(
 );
 $bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
 
-$billing = new Weaver(new RealBillingService, $bind);
+$compiler = require dirname(__DIR__) . '/scripts/instance.php';
+$billing = $compiler->newInstance('RealBillingService', [], $bind);
 try {
     echo $billing->chargeOrder();
 } catch (\RuntimeException $e) {
@@ -91,8 +89,6 @@ try {
 }
 ```
 Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:
-
-全てをまとめ（土曜日まで待って）、メソッドをコールするとインターセプターにより拒否されます。
 
 ```php
 <?php
@@ -113,15 +109,31 @@ Explicit method name match
 <?php
 	$bind = new Bind;
 	$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-	
-	$billingService = new Weaver(new RealBillingService, $bind);
+
+    $compiler = require dirname(__DIR__) . '/scripts/instance.php';
+	$billing = $compiler->newInstance('RealBillingService', [], $bind);
 	try {
-	   echo $billingService->chargeOrder();
+	   echo $billing->chargeOrder();
 	} catch (\RuntimeException $e) {
 	   echo $e->getMessage() . "\n";
 	   exit(1);
 	}
 ```
+
+Limitations
+-----------
+
+Behind the scenes, method interception is implemented by generating code at runtime. Ray.Aop dynamically creates a subclass that applies interceptors by overriding methods.
+
+This approach imposes limits on what classes and methods can be intercepted:
+
+ * Classes must be *non-final*
+ * Methods must be *public*
+ * Methods must be *non-final*
+
+AOP Alliance
+------------
+The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html). 
 
 Testing Ray.Aop
 ===============
@@ -137,23 +149,32 @@ $ php doc/sample-01-quick-weave/main.php
 // Charged. | chargeOrder not allowed on weekends!
 ```
 
-Ray.Di
-======
-[Ray.Di](https://github.com/koriym/Ray.Di) is a Guice style annotation-driven dependency injection framework. It integrates Ray.Aop AOP functionality.
+Requirement
+-------------
+
+ * PHP 5.4+
 
 Installation
 ============
 
-### Install with Composer
-If you're using [Composer](https://github.com/composer/composer) to manage dependencies, you can add Ray.Aop with it.
+### Installing via Composer
 
-	{
-		"require": {
-			"ray/aop": "1.*"
-		}
-	}
+The recommended way to install Ray.Aop is through [Composer](http://getcomposer.org) and the recommended way to use Ray.Aop is thorouh [Ray.Di](https://github.com/koriym/Ray.Di).
+Ray.Di is a Guice style annotation-driven dependency injection framework. It integrates Ray.Aop AOP functionality.
+```bash
+# Install Composer
+curl -sS https://getcomposer.org/installer | php
 
+# Add Ray.Aop as a dependency
+php composer.phar require ray/aop:*
+```
 
-AOP Alliance
-------------
-The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html). 
+### ini_set
+
+You may want to set the `xdebug.max_nesting_level` ini option to a higher value:
+
+```php
+ini_set('xdebug.max_nesting_level', 2000);
+```
+
+* This documentation for the most part is taken from [Guice/AOP](https://code.google.com/p/google-guice/wiki/AOP).

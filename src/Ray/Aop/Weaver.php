@@ -13,11 +13,9 @@ use Ray\Aop\Exception\UndefinedProperty;
 use RuntimeException;
 
 /**
- * Weaver
+ * Weaver (Method proxy)
  *
- * The proxy object to call intercepted method.
- *
- * @package Ray.Aop
+ * @deprecated
  */
 class Weaver implements Weave, ArrayAccess
 {
@@ -70,7 +68,7 @@ class Weaver implements Weave, ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function __invoke(Callable $getParams, $method, array $query)
+    public function __invoke(callable $getParams, $method, array $query)
     {
         return $this->__call($method, $getParams($this->object, $method, $query));
     }
@@ -78,7 +76,7 @@ class Weaver implements Weave, ArrayAccess
     /**
      * {@inheritdoc}
      */
-    public function  __call($method, array $params)
+    public function __call($method, array $params)
     {
         if (!method_exists($this->object, $method)) {
             throw new BadFunctionCallException($method);
@@ -90,11 +88,7 @@ class Weaver implements Weave, ArrayAccess
         // interceptor weaved call
         $interceptors = $this->bind[$method];
         $annotation = (isset($this->bind->annotation[$method])) ? $this->bind->annotation[$method] : null;
-        /** @noinspection PhpParamsInspection */
-        $invocation = new ReflectiveMethodInvocation([
-            $this->object,
-            $method
-        ], $params, $interceptors, $annotation);
+        $invocation = new ReflectiveMethodInvocation([$this->object, $method], $params, $interceptors, $annotation);
 
         return $invocation->proceed();
     }

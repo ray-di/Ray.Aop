@@ -1,7 +1,7 @@
 {
     "name": "ray/aop",
-    "description": "Aspect oriented programing framework",
-    "keywords": ["aop",  "aspect", "annotation", "method interception"],
+    "description": "Aspect oriented framework",
+    "keywords": ["aop",  "aspect", "annotation"],
     "homepage": "https://github.com/koriym/Ray.Aop",
     "license": "BSD-3-Clause",
     "authors": [
@@ -12,9 +12,13 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "doctrine/annotations": "1.*"
+        "doctrine/annotations": "1.*",
+        "nikic/php-parser": "*"
     },
     "autoload": {
         "psr-0": { "Ray\\Aop": "src/" }
+    },
+    "suggest": {
+        "ray/di": "DI framework supports Ray.Aop"
     }
 }

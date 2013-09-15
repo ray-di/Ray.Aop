@@ -2,9 +2,7 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * @noinspection PhpUnusedPrivateMethodInspection
  */
 namespace Ray\Aop;
 
@@ -13,12 +11,6 @@ use Ray\Aop\Exception\InvalidAnnotation;
 use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
 use ReflectionClass;
 
-/**
- * Matcher
- *
- * @package Ray.Aop
- */
-/** @noinspection PhpDocMissingReturnTagInspection */
 class Matcher implements Matchable
 {
     /**
@@ -57,8 +49,6 @@ class Matcher implements Matchable
     private $args;
 
     /**
-     * Constructor
-     *
      * @param Reader $reader
      */
     public function __construct(Reader $reader)
@@ -67,21 +57,7 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return is annotate bindings
-     *
-     * @return boolean
-     */
-    public function isAnnotateBinding()
-    {
-        $isAnnotateBinding = $this->method === 'annotatedWith';
-
-        return $isAnnotateBinding;
-    }
-
-    /**
-     * Any match
-     *
-     * @return Matcher
+     * {@inheritdoc}
      */
     public function any()
     {
@@ -92,12 +68,7 @@ class Matcher implements Matchable
     }
 
     /**
-     * Match binding annotation
-     *
-     * @param string $annotationName
-     *
-     * @return Matcher
-     * @throws InvalidAnnotation
+     * {@inheritdoc}
      */
     public function annotatedWith($annotationName)
     {
@@ -111,11 +82,7 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return subclass matched result
-     *
-     * @param string $superClass
-     *
-     * @return Matcher
+     * {@inheritdoc}
      */
     public function subclassesOf($superClass)
     {
@@ -126,11 +93,7 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return prefix match result
-     *
-     * @param string $prefix
-     *
-     * @return Matcher
+     * {@inheritdoc}
      */
     public function startWith($prefix)
     {
@@ -138,6 +101,16 @@ class Matcher implements Matchable
         $this->args = $prefix;
 
         return clone $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAnnotateBinding()
+    {
+        $isAnnotateBinding = $this->method === 'annotatedWith';
+
+        return $isAnnotateBinding;
     }
 
     /**
@@ -205,7 +178,6 @@ class Matcher implements Matchable
      *
      * @return bool | Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isAnnotatedWith($class, $target, $annotationName)
     {
@@ -242,7 +214,6 @@ class Matcher implements Matchable
      * @return bool
      * @throws InvalidArgumentException
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isSubclassesOf($class, $target, $superClass)
     {
@@ -270,7 +241,6 @@ class Matcher implements Matchable
      *
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function isStartWith($name, $target, $startWith)
     {
@@ -299,8 +269,6 @@ class Matcher implements Matchable
     }
 
     /**
-     * __toString magic method
-     *
      * @return string
      */
     public function __toString()
