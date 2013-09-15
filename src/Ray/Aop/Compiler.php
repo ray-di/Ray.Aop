@@ -131,11 +131,10 @@ class Compiler implements CompilerInterface
      * Return method statements
      *
      * @param ReflectionClass $class
-     * @param Bind            $bind
      *
      * @return \PHPParser_Builder_Method[]
      */
-    private function getMethods(ReflectionClass $class, Bind $bind)
+    private function getMethods(ReflectionClass $class)
     {
         $stmts = [];
         $methods = $class->getMethods();
