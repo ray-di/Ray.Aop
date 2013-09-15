@@ -9,7 +9,9 @@
  * @see http://stackoverflow.com/questions/8343399/calling-a-function-with-explicit-parameters-vs-call-user-func-array
  * @see http://stackoverflow.com/questions/1796100/what-is-faster-many-ifs-or-else-if
  * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
+ *
  */
+// @codingStandardsIgnoreStart
 class Weaved extends \Ray\Aop\Mock\Mock
 {
     private $rayAopIntercept = true;
@@ -39,3 +41,4 @@ class Weaved extends \Ray\Aop\Mock\Mock
         return $invocation->proceed();
     }
 }
+// @codingStandardsIgnoreEnd
