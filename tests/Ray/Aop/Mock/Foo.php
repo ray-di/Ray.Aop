@@ -2,12 +2,12 @@
 
 namespace Ray\Aop\Mock;
 
-interface addInterface
+interface AddInterface
 {
     public function add(Num $num1, $num2);
 }
 
-interface squareInterface
+interface SquareInterface
 {
     public function square($num);
 }
@@ -17,7 +17,7 @@ class Num
     public $value = 0;
 }
 
-class Foo implements addInterface, squareInterface
+class Foo implements AddInterface, SquareInterface
 {
     public function add(Num $num1, $num2)
     {
@@ -53,10 +53,12 @@ class Foo_weaved
         $interceptors = $this->bind[__FUNCTION__];
         $annotation = (isset($this->bind->annotation[__FUNCTION__])) ? $this->bind->annotation[__FUNCTION__] : null;
         /** @noinspection PhpParamsInspection */
-        $invocation = new ReflectiveMethodInvocation([
-            $this->object,
-            __FUNCTION__
-        ], func_get_args(), $interceptors, $annotation);
+        $invocation = new ReflectiveMethodInvocation(
+            [$this->object,__FUNCTION__],
+            func_get_args(),
+            $interceptors,
+            $annotation
+        );
 
         return $invocation->proceed();
     }

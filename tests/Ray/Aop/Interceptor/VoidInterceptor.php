@@ -4,7 +4,7 @@ namespace Ray\Aop\Interceptor;
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
-class voidInterceptor implements MethodInterceptor
+class VoidInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
