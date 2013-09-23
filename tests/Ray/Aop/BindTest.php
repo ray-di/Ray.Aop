@@ -4,13 +4,13 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader as Reader;
 use Ray\Aop\Interceptor\DoubleInterceptor;
-use Ray\Aop\Interceptor\voidInterceptor;
+use Ray\Aop\Interceptor\VoidInterceptor;
 
-class parentClass
+class ParentClass
 {
 }
 
-class childClass extends parentClass
+class ChildClass extends ParentClass
 {
     public function method()
     {
@@ -104,8 +104,8 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $matcher = new Matcher(new Reader);
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Annotation\Marker';
-        $interceptors1 = [new voidInterceptor, new DoubleInterceptor];
-        $interceptors2 = [new DoubleInterceptor, new voidInterceptor];
+        $interceptors1 = [new VoidInterceptor, new DoubleInterceptor];
+        $interceptors2 = [new DoubleInterceptor, new VoidInterceptor];
 
         $pointcut1 = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $interceptors1);
         $pointcut2 = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $interceptors2);

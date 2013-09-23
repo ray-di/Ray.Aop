@@ -2,8 +2,6 @@
 
 namespace Ray\Aop;
 
-require_once __DIR__ . '/MockMethodInterceptor.php';
-
 /**
  * Test class for Ray.Aop
  */
