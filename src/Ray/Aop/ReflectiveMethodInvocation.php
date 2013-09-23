@@ -29,9 +29,9 @@ class ReflectiveMethodInvocation implements MethodInvocation
     protected $args;
 
     /**
-     * Method
+     * Current method
      *
-     * @var string
+     * @var \ReflectionMethod
      */
     protected $method;
 
@@ -64,9 +64,9 @@ class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function __construct(callable $target, array $args, array $interceptors = [], $annotation = null)
     {
+        $this->method = new ReflectionMethod($target[0], $target[1]);
         $this->object = $target[0];
         $this->args = $args;
-        $this->method = new ReflectionMethod($target[0], $target[1]);
         $this->interceptors = $interceptors;
         $this->annotation = $annotation;
     }
@@ -76,7 +76,9 @@ class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function getMethod()
     {
-        return $this->method;
+        return ($this->object instanceof WeavedInterface) ?
+            (new \ReflectionObject($this->object))->getParentClass()->getMethod($this->method->name) :
+            $this->method;
     }
 
     /**
