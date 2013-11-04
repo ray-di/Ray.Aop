@@ -111,7 +111,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function getAnnotation()
     {
