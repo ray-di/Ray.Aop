@@ -21,7 +21,7 @@ class MatcherTestIsolateClass
 class MatcherTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Matchar
+     * @var Matcher
      */
     protected $matcher;
 
@@ -186,13 +186,16 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testIsLogicalOrFalseOrFalse()
     {
-        $match = $this->matcher->logicalOr($this->matcher->subclassesOf('Ray\Aop\XXX'), $this->matcher->subclassesOf('Ray\Aop\XXX'));
+        $match = $this->matcher->logicalOr(
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\XXX')
+        );
         $class = 'Ray\Aop\MatcherTestChildClass';
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertFalse($result);
     }
 
-    public function testIsLogicalAndFalseOrTrue()
+    public function testIsLogicalAndFalseAndTrue()
     {
         $match = $this->matcher->logicalAnd(
             $this->matcher->subclassesOf('Ray\Aop\XXX'),
@@ -203,7 +206,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
-    public function testIsLogicalXorFalseOrTrue()
+    public function testIsLogicalXorFalseXorTrue()
     {
         $match = $this->matcher->logicalXor(
             $this->matcher->subclassesOf('Ray\Aop\XXX'),
