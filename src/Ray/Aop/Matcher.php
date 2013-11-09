@@ -141,7 +141,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    private function isAny($name, $target)
+    protected function isAny($name, $target)
     {
         if ($target === self::TARGET_CLASS) {
             return true;
@@ -196,7 +196,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * @return bool | Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isAnnotatedWith($class, $target, $annotationName)
+    protected function isAnnotatedWith($class, $target, $annotationName)
     {
         $reader = $this->reader;
         if ($target === self::TARGET_CLASS) {
@@ -232,7 +232,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * @throws InvalidArgumentException
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isSubclassesOf($class, $target, $superClass)
+    protected function isSubclassesOf($class, $target, $superClass)
     {
         if ($target === self::TARGET_METHOD) {
             throw new InvalidArgumentException($class);
@@ -259,7 +259,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isStartWith($name, $target, $startWith)
+    protected function isStartWith($name, $target, $startWith)
     {
         unset($target);
         $result = (strpos($name, $startWith) === 0) ? true : false;
@@ -278,7 +278,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isLogicalOr($name, $target, Matchable $matcherA, Matchable $matcherB)
+    protected function isLogicalOr($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
         $isOr = $matcherA($name, $target) || $matcherB($name, $target);
 
@@ -296,7 +296,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isLogicalAnd($name, $target, Matchable $matcherA, Matchable $matcherB)
+    protected function isLogicalAnd($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
         $isOr = $matcherA($name, $target) && $matcherB($name, $target);
 
@@ -314,7 +314,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isLogicalXor($name, $target, Matchable $matcherA, Matchable $matcherB)
+    protected function isLogicalXor($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
         $isOr = ($matcherA($name, $target) xor $matcherB($name, $target));
 
@@ -332,41 +332,10 @@ class Matcher extends AbstractMatcher implements Matchable
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isLogicalNot($name, $target, Matchable $matcher)
+    protected function isLogicalNot($name, $target, Matchable $matcher)
     {
         $isOr = !($matcher($name, $target));
 
         return $isOr;
-    }
-
-    /**
-     * Return match result
-     *
-     * @param string $class
-     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
-     *
-     * @return bool | array [$matcher, method]
-     */
-    public function __invoke($class, $target)
-    {
-        $args = [$class, $target];
-        $thisArgs = is_array($this->args) ? $this->args : [$this->args];
-        foreach ($thisArgs as $arg) {
-            $args[] = $arg;
-        }
-        $method = 'is' . $this->method;
-        $matched = call_user_func_array([$this, $method], $args);
-
-        return $matched;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        $result = $this->method . ':' . json_encode($this->args);
-
-        return $result;
     }
 }

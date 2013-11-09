@@ -42,7 +42,7 @@ final class Bind extends ArrayObject implements BindInterface
             if ($isClassMatch !== true) {
                 continue;
             }
-            if ($pointcut->methodMatcher->isAnnotateBinding()) {
+            if (method_exists($pointcut->methodMatcher, 'isAnnotateBinding') && $pointcut->methodMatcher->isAnnotateBinding()) {
                 $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
                 continue;
             }
@@ -104,7 +104,7 @@ final class Bind extends ArrayObject implements BindInterface
      *
      * @return void
      */
-    private function bindByCallable($class, Matcher $methodMatcher, array $interceptors)
+    private function bindByCallable($class, AbstractMatcher $methodMatcher, array $interceptors)
     {
         $methods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {

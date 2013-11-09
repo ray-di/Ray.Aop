@@ -13,3 +13,5 @@ require __DIR__ . '/sample-03-benchmark/EmptyInterceptor.php';
 
 require __DIR__ . '/sample-04-annotation/WeekendBlock.php';
 require __DIR__ . '/sample-04-annotation/AnnotationRealBillingService.php';
+
+require __DIR__ . '/sample-05-my-matcher/MyMatcher.php';
