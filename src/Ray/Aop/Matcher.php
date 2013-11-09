@@ -304,6 +304,7 @@ class Matcher implements Matchable
      * @param Matchable $matcherB
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function isLogicalOr($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
@@ -321,6 +322,7 @@ class Matcher implements Matchable
      * @param Matchable $matcherB
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function isLogicalAnd($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
@@ -338,6 +340,7 @@ class Matcher implements Matchable
      * @param Matchable $matcherB
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function isLogicalXor($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
@@ -355,6 +358,7 @@ class Matcher implements Matchable
      * @param Matchable $matcherB
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     private function isLogicalNot($name, $target, Matchable $matcher)
     {
