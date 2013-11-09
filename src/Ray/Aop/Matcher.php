@@ -127,6 +127,38 @@ class Matcher implements Matchable
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function logicalAnd(Matchable $matcherA, Matchable $matcherB)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = [$matcherA, $matcherB];
+
+        return clone $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function logicalXor(Matchable $matcherA, Matchable $matcherB)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = [$matcherA, $matcherB];
+
+        return clone $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function logicalNot(Matchable $matcher)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = $matcher;
+
+        return clone $this;
+    }
+    /**
      * Return isAny
      *
      * @param string $name   class or method name
@@ -276,6 +308,57 @@ class Matcher implements Matchable
     private function isLogicalOr($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
         $isOr = $matcherA($name, $target) || $matcherB($name, $target);
+
+        return $isOr;
+    }
+
+    /**
+     * Return logical and matching result
+     *
+     * @param string    $name
+     * @param bool      $target
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return bool
+     */
+    private function isLogicalAnd($name, $target, Matchable $matcherA, Matchable $matcherB)
+    {
+        $isOr = $matcherA($name, $target) && $matcherB($name, $target);
+
+        return $isOr;
+    }
+
+    /**
+     * Return logical xor matching result
+     *
+     * @param string    $name
+     * @param bool      $target
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return bool
+     */
+    private function isLogicalXor($name, $target, Matchable $matcherA, Matchable $matcherB)
+    {
+        $isOr = ($matcherA($name, $target) xor $matcherB($name, $target));
+
+        return $isOr;
+    }
+
+    /**
+     * Return logical not matching result
+     *
+     * @param string    $name
+     * @param bool      $target
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return bool
+     */
+    private function isLogicalNot($name, $target, Matchable $matcher)
+    {
+        $isOr = !($matcher($name, $target));
 
         return $isOr;
     }

@@ -191,4 +191,36 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertFalse($result);
     }
+
+    public function testIsLogicalAndFalseOrTrue()
+    {
+        $match = $this->matcher->logicalAnd(
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass')
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertFalse($result);
+    }
+
+    public function testIsLogicalXorFalseOrTrue()
+    {
+        $match = $this->matcher->logicalXor(
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass')
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertTrue($result);
+    }
+
+    public function testIsLogicalNot()
+    {
+        $match = $this->matcher->logicalNot(
+            $this->matcher->subclassesOf('Ray\Aop\XXX')
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertTrue($result);
+    }
 }

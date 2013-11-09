@@ -56,6 +56,36 @@ interface Matchable
     public function logicalOr(Matchable $matcherA, Matchable $matcherB);
 
     /**
+     * Match logical and
+     *
+     * @param Matchable $matchableA
+     * @param Matchable $matchableB
+     *
+     * @return Matchable
+     */
+    public function logicalAnd(Matchable $matcherA, Matchable $matcherB);
+
+
+    /**
+     * Match logical xor
+     *
+     * @param Matchable $matchableA
+     * @param Matchable $matchableB
+     *
+     * @return Matchable
+     */
+    public function logicalXor(Matchable $matcherA, Matchable $matcherB);
+
+    /**
+     * Match logical not
+     *
+     * @param Matchable $matcher
+     *
+     * @return Matchable
+     */
+    public function logicalNot(Matchable $matcher);
+
+    /**
      * Return match result
      *
      * @param string $class
