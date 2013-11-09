@@ -11,42 +11,14 @@ use Ray\Aop\Exception\InvalidAnnotation;
 use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
 use ReflectionClass;
 
-class Matcher implements Matchable
+class Matcher extends AbstractMatcher implements Matchable
 {
-    /**
-     * Match CLASS
-     *
-     * @var bool
-     */
-    const TARGET_CLASS = true;
-
-    /**
-     * Match Method
-     *
-     * @var bool
-     */
-    const TARGET_METHOD = false;
-
     /**
      * Annotation reader
      *
      * @var Reader
      */
     private $reader;
-
-    /**
-     * Lazy match method
-     *
-     * @var string
-     */
-    private $method;
-
-    /**
-     * Lazy match args
-     *
-     * @var array
-     */
-    private $args;
 
     /**
      * @param Reader $reader
