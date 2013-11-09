@@ -104,6 +104,8 @@ class Matcher implements Matchable
     }
 
     /**
+     * Return isAnnotateBinding
+     *
      * @return bool
      */
     public function isAnnotateBinding()
@@ -114,12 +116,12 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return match(true)
+     * Return isAny
      *
      * @param string $name   class or method name
      * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      *
-     * @return Matcher
+     * @return bool
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -167,7 +169,7 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return match result
+     * Return is annotated with
      *
      * Return Match object if annotate bindings, which containing multiple results.
      * Otherwise return bool.
@@ -205,7 +207,7 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return subclass match.
+     * Return is subclass of
      *
      * @param string $class
      * @param bool   $target     self::TARGET_CLASS | self::TARGET_METHOD

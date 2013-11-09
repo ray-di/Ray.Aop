@@ -14,7 +14,7 @@ interface Matchable
     /**
      * Any match
      *
-     * @return Matcher
+     * @return Matchable
      */
     public function any();
 
@@ -23,7 +23,7 @@ interface Matchable
      *
      * @param string $annotationName
      *
-     * @return array
+     * @return Matchable
      */
     public function annotatedWith($annotationName);
 
@@ -32,7 +32,7 @@ interface Matchable
      *
      * @param string $superClass
      *
-     * @return bool
+     * @return Matchable
      */
     public function subclassesOf($superClass);
 
@@ -41,7 +41,7 @@ interface Matchable
      *
      * @param string $prefix
      *
-     * @return Matcher
+     * @return Matchable
      */
     public function startWith($prefix);
 
