@@ -40,7 +40,7 @@ final class Pointcut
      * @param Matcher $methodMatcher
      * @param array   $interceptors
      */
-    public function __construct(Matcher $classMatcher, Matcher $methodMatcher, array $interceptors)
+    public function __construct(Matchable $classMatcher, Matchable $methodMatcher, array $interceptors)
     {
         $this->classMatcher = $classMatcher;
         $this->methodMatcher = $methodMatcher;
