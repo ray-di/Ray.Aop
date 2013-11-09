@@ -24,6 +24,8 @@
             <arg value="theseer/phpdox:dev-master" />
             <arg value="phploc/phploc:*" />
             <arg value="fabpot/php-cs-fixer:*" />
+            <arg value="covex-nn/phpcb:*" />
+            <arg value="apigen/apigen:*" />
         </exec>
     </target>
 
