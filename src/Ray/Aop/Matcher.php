@@ -116,6 +116,17 @@ class Matcher implements Matchable
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function logicalOr(Matchable $matcherA, Matchable $matcherB)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = [$matcherA, $matcherB];
+
+        return clone $this;
+    }
+
+    /**
      * Return isAny
      *
      * @param string $name   class or method name
@@ -175,7 +186,7 @@ class Matcher implements Matchable
      * Otherwise return bool.
      *
      * @param string $class
-     * @param bool   $target         self::TARGET_CLASS | self::TARGET_METHOD
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $annotationName
      *
      * @return bool | Matched[]
@@ -210,7 +221,7 @@ class Matcher implements Matchable
      * Return is subclass of
      *
      * @param string $class
-     * @param bool   $target     self::TARGET_CLASS | self::TARGET_METHOD
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $superClass
      *
      * @return bool
@@ -253,6 +264,23 @@ class Matcher implements Matchable
     }
 
     /**
+     * Return logical or matching result
+     *
+     * @param string    $name
+     * @param bool      $target
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return bool
+     */
+    private function isLogicalOr($name, $target, Matchable $matcherA, Matchable $matcherB)
+    {
+        $isOr = $matcherA($name, $target) || $matcherB($name, $target);
+
+        return $isOr;
+    }
+
+    /**
      * Return match result
      *
      * @param string $class
@@ -263,7 +291,10 @@ class Matcher implements Matchable
     public function __invoke($class, $target)
     {
         $args = [$class, $target];
-        array_push($args, $this->args);
+        $thisArgs = is_array($this->args) ? $this->args : [$this->args];
+        foreach ($thisArgs as $arg) {
+            $args[] = $arg;
+        }
         $method = 'is' . $this->method;
         $matched = call_user_func_array([$this, $method], $args);
 

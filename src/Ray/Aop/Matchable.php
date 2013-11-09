@@ -46,6 +46,16 @@ interface Matchable
     public function startWith($prefix);
 
     /**
+     * Match logical or
+     *
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return Matchable
+     */
+    public function logicalOr(Matchable $matcherA, Matchable $matcherB);
+
+    /**
      * Return match result
      *
      * @param string $class

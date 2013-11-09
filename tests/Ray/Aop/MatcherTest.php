@@ -20,6 +20,9 @@ class MatcherTestIsolateClass
  */
 class MatcherTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Matchar
+     */
     protected $matcher;
 
     protected function setUp()
@@ -148,6 +151,44 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $startWith = $this->matcher->startWith('on');
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $result = $startWith($class, Matcher::TARGET_METHOD, '__construct');
+        $this->assertFalse($result);
+    }
+
+    public function testIsLogicalOrAnyOrAny()
+    {
+        $match = $this->matcher->logicalOr($this->matcher->any(), $this->matcher->any());
+        $class = 'Ray\Aop\XXX';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertTrue($result);
+    }
+
+    public function testIsLogicalOrTrueOrTrue()
+    {
+        $match = $this->matcher->logicalOr(
+            $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass'),
+            $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass')
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertTrue($result);
+    }
+
+    public function testIsLogicalOrFalseOrTrue()
+    {
+        $match = $this->matcher->logicalOr(
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass')
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertTrue($result);
+    }
+
+    public function testIsLogicalOrFalseOrFalse()
+    {
+        $match = $this->matcher->logicalOr($this->matcher->subclassesOf('Ray\Aop\XXX'), $this->matcher->subclassesOf('Ray\Aop\XXX'));
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertFalse($result);
     }
 }
