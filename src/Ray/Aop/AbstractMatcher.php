@@ -35,7 +35,7 @@ abstract class AbstractMatcher
      *
      * @var array
      */
-    protected  $args;
+    protected $args;
 
     /**
      * Return match result
