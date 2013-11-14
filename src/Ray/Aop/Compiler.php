@@ -184,8 +184,7 @@ class Compiler implements CompilerInterface
     private function getMethodInsideStatement()
     {
         $code = $this->getWeavedMethodTemplate();
-        $parser = new \PHPParser_Parser(new \PHPParser_Lexer);
-        $node = $parser->parse($code)[0];
+        $node = $this->parser->parse($code)[0];
         /** @var $node \PHPParser_Node_Stmt_Class */
         $node = $node->getMethods()[0];
 
