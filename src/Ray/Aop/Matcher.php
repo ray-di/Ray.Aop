@@ -11,42 +11,14 @@ use Ray\Aop\Exception\InvalidAnnotation;
 use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
 use ReflectionClass;
 
-class Matcher implements Matchable
+class Matcher extends AbstractMatcher implements Matchable
 {
-    /**
-     * Match CLASS
-     *
-     * @var bool
-     */
-    const TARGET_CLASS = true;
-
-    /**
-     * Match Method
-     *
-     * @var bool
-     */
-    const TARGET_METHOD = false;
-
     /**
      * Annotation reader
      *
      * @var Reader
      */
     private $reader;
-
-    /**
-     * Lazy match method
-     *
-     * @var string
-     */
-    private $method;
-
-    /**
-     * Lazy match args
-     *
-     * @var array
-     */
-    private $args;
 
     /**
      * @param Reader $reader
@@ -104,6 +76,8 @@ class Matcher implements Matchable
     }
 
     /**
+     * Return isAnnotateBinding
+     *
      * @return bool
      */
     public function isAnnotateBinding()
@@ -114,17 +88,60 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return match(true)
+     * {@inheritdoc}
+     */
+    public function logicalOr(Matchable $matcherA, Matchable $matcherB)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = [$matcherA, $matcherB];
+
+        return clone $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function logicalAnd(Matchable $matcherA, Matchable $matcherB)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = [$matcherA, $matcherB];
+
+        return clone $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function logicalXor(Matchable $matcherA, Matchable $matcherB)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = [$matcherA, $matcherB];
+
+        return clone $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function logicalNot(Matchable $matcher)
+    {
+        $this->method = __FUNCTION__;
+        $this->args = $matcher;
+
+        return clone $this;
+    }
+    /**
+     * Return isAny
      *
      * @param string $name   class or method name
      * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      *
-     * @return Matcher
+     * @return bool
      *
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    private function isAny($name, $target)
+    protected function isAny($name, $target)
     {
         if ($target === self::TARGET_CLASS) {
             return true;
@@ -167,19 +184,19 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return match result
+     * Return is annotated with
      *
      * Return Match object if annotate bindings, which containing multiple results.
      * Otherwise return bool.
      *
      * @param string $class
-     * @param bool   $target         self::TARGET_CLASS | self::TARGET_METHOD
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $annotationName
      *
      * @return bool | Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isAnnotatedWith($class, $target, $annotationName)
+    protected function isAnnotatedWith($class, $target, $annotationName)
     {
         $reader = $this->reader;
         if ($target === self::TARGET_CLASS) {
@@ -205,17 +222,17 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return subclass match.
+     * Return is subclass of
      *
      * @param string $class
-     * @param bool   $target     self::TARGET_CLASS | self::TARGET_METHOD
+     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $superClass
      *
      * @return bool
      * @throws InvalidArgumentException
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isSubclassesOf($class, $target, $superClass)
+    protected function isSubclassesOf($class, $target, $superClass)
     {
         if ($target === self::TARGET_METHOD) {
             throw new InvalidArgumentException($class);
@@ -242,7 +259,7 @@ class Matcher implements Matchable
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    private function isStartWith($name, $target, $startWith)
+    protected function isStartWith($name, $target, $startWith)
     {
         unset($target);
         $result = (strpos($name, $startWith) === 0) ? true : false;
@@ -251,30 +268,74 @@ class Matcher implements Matchable
     }
 
     /**
-     * Return match result
+     * Return logical or matching result
      *
-     * @param string $class
-     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     * @param string    $name
+     * @param bool      $target
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
      *
-     * @return bool | array [$matcher, method]
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    public function __invoke($class, $target)
+    protected function isLogicalOr($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
-        $args = [$class, $target];
-        array_push($args, $this->args);
-        $method = 'is' . $this->method;
-        $matched = call_user_func_array([$this, $method], $args);
+        $isOr = $matcherA($name, $target) || $matcherB($name, $target);
 
-        return $matched;
+        return $isOr;
     }
 
     /**
-     * @return string
+     * Return logical and matching result
+     *
+     * @param string    $name
+     * @param bool      $target
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    public function __toString()
+    protected function isLogicalAnd($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
-        $result = $this->method . ':' . json_encode($this->args);
+        $isOr = $matcherA($name, $target) && $matcherB($name, $target);
 
-        return $result;
+        return $isOr;
+    }
+
+    /**
+     * Return logical xor matching result
+     *
+     * @param string    $name
+     * @param bool      $target
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    protected function isLogicalXor($name, $target, Matchable $matcherA, Matchable $matcherB)
+    {
+        $isOr = ($matcherA($name, $target) xor $matcherB($name, $target));
+
+        return $isOr;
+    }
+
+    /**
+     * Return logical not matching result
+     *
+     * @param string    $name
+     * @param bool      $target
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     */
+    protected function isLogicalNot($name, $target, Matchable $matcher)
+    {
+        $isOr = !($matcher($name, $target));
+
+        return $isOr;
     }
 }
