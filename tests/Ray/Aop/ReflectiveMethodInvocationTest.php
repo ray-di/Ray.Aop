@@ -3,6 +3,7 @@
 namespace Ray\Aop;
 
 use Ray\Aop\Annotation\Marker;
+use ArrayObject;
 
 /**
  * Test class for Ray.Aop
@@ -45,7 +46,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testGetArguments()
     {
         $args = $this->invocation->getArguments();
-        $this->assertSame($args, array(1));
+        $this->assertEquals($args, new ArrayObject(array(1)));
     }
 
     public function testProceed()
