@@ -18,8 +18,8 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
         $this->mock = new MockMethod;
         // this is same as $this->mock->add(1);
-        $callable = array($this->mock, 'add');
-        $args = array(1);
+        $callable = [$this->mock, 'add'];
+        $args = [1];
         $this->invocation = new ReflectiveMethodInvocation($callable, $args);
     }
 
@@ -45,7 +45,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testGetArguments()
     {
         $args = $this->invocation->getArguments();
-        $this->assertSame($args, array(1));
+        $this->assertSame($args, [1]);
     }
 
     public function testProceed()
@@ -70,7 +70,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testGetAnnotation()
     {
         $mock = new MockMethod;
-        $callable = array($mock, 'add');
+        $callable = [$mock, 'add'];
         $invocation = new ReflectiveMethodInvocation($callable, [], [], [new Marker]);
         /** @noinspection PhpDeprecationInspection */
         $annotations = $invocation->getAnnotation();

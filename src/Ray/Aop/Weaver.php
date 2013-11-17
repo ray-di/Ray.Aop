@@ -83,7 +83,7 @@ class Weaver implements Weave, ArrayAccess
         }
         // direct call
         if (!isset($this->bind[$method])) {
-            return call_user_func_array(array($this->object, $method), $params);
+            return call_user_func_array([$this->object, $method], $params);
         }
         // interceptor weaved call
         $interceptors = $this->bind[$method];

@@ -25,8 +25,8 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
     public function testInvokeWithInterceptors()
     {
         $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
-        $target = array($this->mock, 'getDouble');
-        $args = array(2);
+        $target = [$this->mock, 'getDouble'];
+        $args = [2];
         $this->invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
         $actual = $this->interceptor->invoke($this->invocation);
         $expect = 32;
@@ -35,9 +35,9 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
 
     public function testInvokeWithDoubleInterceptors()
     {
-        $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
-        $target = array($this->mock, 'getDouble');
-        $args = array(2);
+        $interceptors = [new DoubleInterceptor, new DoubleInterceptor];
+        $target = [$this->mock, 'getDouble'];
+        $args = [2];
         $invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
         $actual = $invocation->proceed();
         $this->assertSame(16, $actual);
@@ -53,8 +53,8 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
     {
         $this->mock = new MockMethod;
         $this->interceptor = new DoubleInterceptor;
-        $target = array($this->mock, 'getDouble');
-        $args = array(2);
+        $target = [$this->mock, 'getDouble'];
+        $args = [2];
         $this->invocation = new ReflectiveMethodInvocation($target, $args);
     }
 }

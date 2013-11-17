@@ -94,7 +94,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function proceed()
     {
-        if ($this->interceptors === array()) {
+        if ($this->interceptors === []) {
             return $this->method->invokeArgs($this->object, $this->args);
         }
         $interceptor = array_shift($this->interceptors);

@@ -23,7 +23,7 @@ class MethodInterceptorChangeTargetObjectTest extends \PHPUnit_Framework_TestCas
     {
         $this->interceptor = new MockMethodInterceptor;
         $this->mock = new MockMethod;
-        $this->invocation = new ReflectiveMethodInvocation(array($this->mock, 'add'), array(2));
+        $this->invocation = new ReflectiveMethodInvocation([$this->mock, 'add'], [2]);
     }
 
     public function testInvoke()
