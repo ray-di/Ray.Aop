@@ -22,3 +22,4 @@ foreach ($iterator as $file) {
         @unlink($file);
     }
 }
+    

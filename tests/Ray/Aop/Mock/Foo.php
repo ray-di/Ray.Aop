@@ -2,6 +2,9 @@
 
 namespace Ray\Aop\Mock;
 
+use Ray\Aop\Bind;
+use Ray\Aop\ReflectiveMethodInvocation;
+
 interface AddInterface
 {
     public function add(Num $num1, $num2);
@@ -10,11 +13,6 @@ interface AddInterface
 interface SquareInterface
 {
     public function square($num);
-}
-
-class Num
-{
-    public $value = 0;
 }
 
 class Foo implements AddInterface, SquareInterface
