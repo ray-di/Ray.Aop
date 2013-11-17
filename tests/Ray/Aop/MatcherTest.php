@@ -15,9 +15,6 @@ class MatcherTestIsolateClass
 {
 }
 
-/**
- * Test class for Ray.Aop
- */
 class MatcherTest extends \PHPUnit_Framework_TestCase
 {
     /**

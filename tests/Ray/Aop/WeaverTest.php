@@ -4,13 +4,11 @@ namespace Ray\Aop;
 
 use Ray\Aop\Interceptor\DoubleInterceptor;
 
-/**
- * Test class for Ray.Aop
- */
 class WeaverTest extends \PHPUnit_Framework_TestCase
 {
-    protected $invocation;
-
+    /**
+     * @var Weaver
+     */
     protected $weaver;
 
     /**

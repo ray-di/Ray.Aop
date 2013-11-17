@@ -4,13 +4,16 @@ namespace Ray\Aop;
 
 use Ray\Aop\Annotation\Marker;
 
-/**
- * Test class for Ray.Aop
- */
 class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var ReflectiveMethodInvocation
+     */
     protected $invocation;
 
+    /**
+     * @var MockMethod
+     */
     protected $mock;
 
     protected function setUp()

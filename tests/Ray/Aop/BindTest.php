@@ -17,11 +17,6 @@ class ChildClass extends ParentClass
     }
 }
 
-/**
- * Test class for Ray.Aop
- * @property mixed interceptors
- */
-
 class BindTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -30,11 +25,10 @@ class BindTest extends \PHPUnit_Framework_TestCase
     protected $bind;
 
     /**
-     * target method is:
-     *
-     * $mock = new Mock;
-     * $mock->add(2);
+     * @var array
      */
+    protected $interceptors;
+
     protected function setUp()
     {
         parent::setUp();

@@ -2,23 +2,23 @@
 
 namespace Ray\Aop;
 
-/**
- * Test class for Ray.Aop
- */
 class MethodInterceptorChangeTargetObjectTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var ReflectiveMethodInvocation
+     */
     protected $invocation;
 
+    /**
+     * @var MockMethodInterceptor
+     */
     protected $interceptor;
 
+    /**
+     * @var MockMethod
+     */
     protected $mock;
 
-    /**
-     * target method is:
-     *
-     * $mock = new Mock;
-     * $mock->add(2);
-     */
     protected function setUp()
     {
         $this->interceptor = new MockMethodInterceptor;
