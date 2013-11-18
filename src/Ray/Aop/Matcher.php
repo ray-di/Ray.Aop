@@ -298,9 +298,9 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     protected function isLogicalAnd($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
-        $isOr = $matcherA($name, $target) && $matcherB($name, $target);
+        $isAnd = $matcherA($name, $target) && $matcherB($name, $target);
 
-        return $isOr;
+        return $isAnd;
     }
 
     /**
@@ -316,9 +316,9 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     protected function isLogicalXor($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
-        $isOr = ($matcherA($name, $target) xor $matcherB($name, $target));
+        $isXor = ($matcherA($name, $target) xor $matcherB($name, $target));
 
-        return $isOr;
+        return $isXor;
     }
 
     /**
@@ -334,8 +334,8 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     protected function isLogicalNot($name, $target, Matchable $matcher)
     {
-        $isOr = !($matcher($name, $target));
+        $isNot = !($matcher($name, $target));
 
-        return $isOr;
+        return $isNot;
     }
 }
