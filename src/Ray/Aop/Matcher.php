@@ -93,7 +93,7 @@ class Matcher extends AbstractMatcher implements Matchable
     public function logicalOr(Matchable $matcherA, Matchable $matcherB)
     {
         $this->method = __FUNCTION__;
-        $this->args = [$matcherA, $matcherB];
+        $this->args = func_get_args();
 
         return clone $this;
     }
@@ -104,7 +104,7 @@ class Matcher extends AbstractMatcher implements Matchable
     public function logicalAnd(Matchable $matcherA, Matchable $matcherB)
     {
         $this->method = __FUNCTION__;
-        $this->args = [$matcherA, $matcherB];
+        $this->args = func_get_args();
 
         return clone $this;
     }
@@ -115,7 +115,7 @@ class Matcher extends AbstractMatcher implements Matchable
     public function logicalXor(Matchable $matcherA, Matchable $matcherB)
     {
         $this->method = __FUNCTION__;
-        $this->args = [$matcherA, $matcherB];
+        $this->args = func_get_args();
 
         return clone $this;
     }
@@ -130,6 +130,7 @@ class Matcher extends AbstractMatcher implements Matchable
 
         return clone $this;
     }
+
     /**
      * Return isAny
      *
@@ -280,7 +281,16 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     protected function isLogicalOr($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
-        $isOr = $matcherA($name, $target) || $matcherB($name, $target);
+        // a or b
+        $isOr = ($matcherA($name, $target) or $matcherB($name, $target));
+        if (func_num_args() <= 4) {
+            return $isOr;
+        }
+        // a or b or c ...
+        $args = array_slice(func_get_args(), 4);
+        foreach ($args as $arg) {
+            $isOr = ($isOr or $arg($name, $target));
+        }
 
         return $isOr;
     }
@@ -298,7 +308,14 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     protected function isLogicalAnd($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
-        $isAnd = $matcherA($name, $target) && $matcherB($name, $target);
+        $isAnd = ($matcherA($name, $target) and $matcherB($name, $target));
+        if (func_num_args() <= 4) {
+            return $isAnd;
+        }
+        $args = array_slice(func_get_args(), 4);
+        foreach ($args as $arg) {
+            $isAnd = ($isAnd and $arg($name, $target));
+        }
 
         return $isAnd;
     }
@@ -317,6 +334,13 @@ class Matcher extends AbstractMatcher implements Matchable
     protected function isLogicalXor($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
         $isXor = ($matcherA($name, $target) xor $matcherB($name, $target));
+        if (func_num_args() <= 4) {
+            return $isXor;
+        }
+        $args = array_slice(func_get_args(), 4);
+        foreach ($args as $arg) {
+            $isXor = ($isXor xor $arg($name, $target));
+        }
 
         return $isXor;
     }

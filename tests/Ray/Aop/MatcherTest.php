@@ -223,4 +223,54 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertTrue($result);
     }
+
+    public function testIsLogicalThreeArguments()
+    {
+        $match = $this->matcher->logicalOr(
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->any()
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertTrue($result);
+    }
+
+    public function testIsLogicalOrFourArgs()
+    {
+        $match = $this->matcher->logicalOr(
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->any()
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertTrue($result);
+    }
+
+    public function testIsLogicalAndThreeArgs()
+    {
+        $match = $this->matcher->logicalAnd(
+            $this->matcher->any(),
+            $this->matcher->any(),
+            $this->matcher->subclassesOf('Ray\Aop\XXX')
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertFalse($result);
+    }
+
+    public function testIsLogicalXorTreeArgs()
+    {
+        $match = $this->matcher->logicalXor(
+            $this->matcher->any(),
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\XXX'),
+            $this->matcher->subclassesOf('Ray\Aop\XXX')
+        );
+        $class = 'Ray\Aop\MatcherTestChildClass';
+        $result = $match($class, Matcher::TARGET_CLASS);
+        $this->assertTrue($result);
+    }
 }
