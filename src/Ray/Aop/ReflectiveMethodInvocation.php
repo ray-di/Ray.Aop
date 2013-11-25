@@ -6,7 +6,6 @@
  */
 namespace Ray\Aop;
 
-use Ray\Aop\MethodInvocation;
 use ReflectionMethod;
 
 /**

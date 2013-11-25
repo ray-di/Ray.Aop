@@ -7,13 +7,10 @@
 namespace Ray\Aop;
 
 use PHPParser_BuilderFactory;
-use PHPParser_Lexer;
 use PHPParser_Parser;
-use PHPParser_PrettyPrinter_Zend;
 use PHPParser_PrettyPrinterAbstract;
 use ReflectionClass;
 use ReflectionMethod;
-use TokenReflection\ReflectionParameter;
 
 /**
  * Aspect weave compiler

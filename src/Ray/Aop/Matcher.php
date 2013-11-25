@@ -350,11 +350,9 @@ class Matcher extends AbstractMatcher implements Matchable
      *
      * @param string    $name
      * @param bool      $target
-     * @param Matchable $matcherA
-     * @param Matchable $matcherB
+     * @param Matchable $matcher
      *
      * @return bool
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     protected function isLogicalNot($name, $target, Matchable $matcher)
     {

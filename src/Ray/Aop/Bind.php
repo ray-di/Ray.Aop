@@ -98,11 +98,9 @@ final class Bind extends ArrayObject implements BindInterface
     /**
      * Bind interceptor by callable matcher
      *
-     * @param string  $class
-     * @param Matcher $methodMatcher
-     * @param array   $interceptors
-     *
-     * @return void
+     * @param                 $class
+     * @param AbstractMatcher $methodMatcher
+     * @param array           $interceptors
      */
     private function bindByCallable($class, AbstractMatcher $methodMatcher, array $interceptors)
     {
@@ -118,11 +116,9 @@ final class Bind extends ArrayObject implements BindInterface
     /**
      * Bind interceptor by annotation binding
      *
-     * @param string  $class
+     * @param         $class
      * @param Matcher $methodMatcher
      * @param array   $interceptors
-     *
-     * @return void
      */
     private function bindByAnnotateBinding($class, Matcher $methodMatcher, array $interceptors)
     {

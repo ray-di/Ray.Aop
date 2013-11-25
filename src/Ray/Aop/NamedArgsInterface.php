@@ -7,8 +7,6 @@
  */
 namespace Ray\Aop;
 
-use Ray\Aop\MethodInvocation;
-
 /**
  * Interface for named parameter in interceptor
  */

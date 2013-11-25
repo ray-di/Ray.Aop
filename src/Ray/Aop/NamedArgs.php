@@ -7,7 +7,6 @@
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\DuplicatedNamedParam;
-use Ray\Aop\MethodInvocation;
 
 class NamedArgs implements NamedArgsInterface
 {

@@ -63,16 +63,23 @@ interface Matchable
      *
      * @return Matchable
      */
+
+    /**
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
+     *
+     * @return mixed
+     */
     public function logicalAnd(Matchable $matcherA, Matchable $matcherB);
 
 
     /**
      * Match logical xor
      *
-     * @param Matchable $matchableA
-     * @param Matchable $matchableB
+     * @param Matchable $matcherA
+     * @param Matchable $matcherB
      *
-     * @return Matchable
+     * @return self
      */
     public function logicalXor(Matchable $matcherA, Matchable $matcherB);
 
