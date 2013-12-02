@@ -1,4 +1,6 @@
 <?php
+// @codingStandardsIgnoreStart
+// @codeCoverageIgnoreStart
 
 /**
  * Weaved class template
@@ -11,7 +13,6 @@
  * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
  *
  */
-// @codingStandardsIgnoreStart
 class Weaved extends \Ray\Aop\Mock\Mock
 {
     private $rayAopIntercept = true;
@@ -19,20 +20,15 @@ class Weaved extends \Ray\Aop\Mock\Mock
 
     public function returnSame($a)
     {
-        // native call
         if (! isset($this->rayAopBind[__FUNCTION__])){
-            // @codeCoverageIgnoreStart
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
-            // @codeCoverageIgnoreEnd
         }
 
-        // proceed source method from interceptor
         if (! $this->rayAopIntercept) {
             $this->rayAopIntercept = true;
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
-        // proceed next interceptor
         $this->rayAopIntercept = false;
         $interceptors = $this->rayAopBind[__FUNCTION__];
         $annotation = (isset($this->rayAopBind->annotation[__FUNCTION__])) ? $this->rayAopBind->annotation[__FUNCTION__] : null;
@@ -41,4 +37,5 @@ class Weaved extends \Ray\Aop\Mock\Mock
         return $invocation->proceed();
     }
 }
+// @codeCoverageIgnoreEnd
 // @codingStandardsIgnoreEnd
