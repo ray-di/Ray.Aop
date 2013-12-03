@@ -98,6 +98,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(2, $result);
     }
 
+
     /**
      * @depends testNewInstance
      */
@@ -116,4 +117,26 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $val = $weaved->getPrivateVal();
         $this->assertSame($val, 1);
     }
+
+    public function testClassDocComment()
+    {
+        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
+        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $docComment = (new \ReflectionClass($weaved))->getDocComment();
+        $expected = (new \ReflectionClass('Ray\Aop\Mock\Mock'))->getDocComment();
+        $this->assertContains('/**', $docComment);
+        $this->assertSame($expected, $docComment);
+    }
+
+    public function testMethodDocComment()
+    {
+        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
+        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $docComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
+        $expected = (new \ReflectionClass('Ray\Aop\Mock\Mock'))->getMethods()[0]->getDocComment();
+
+        $this->assertContains('/**', $docComment);
+        $this->assertSame($expected, $docComment);
+    }
+
 }
