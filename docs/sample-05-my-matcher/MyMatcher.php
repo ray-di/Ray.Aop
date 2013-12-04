@@ -13,8 +13,7 @@ class MyMatcher extends AbstractMatcher
      */
     public function contain($contain)
     {
-        $this->method = __FUNCTION__;
-        $this->args = $contain;
+        $this->createMatcher(__FUNCTION__, $contain);
 
         return clone $this;
 

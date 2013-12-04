@@ -37,6 +37,15 @@ abstract class AbstractMatcher
      */
     protected $args;
 
+
+    protected function createMatcher($method, $args)
+    {
+        $this->method = $method;
+        $this->args = $args;
+
+        return clone $this;
+    }
+
     /**
      * Return match result
      *

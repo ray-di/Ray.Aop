@@ -33,10 +33,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function any()
     {
-        $this->method = __FUNCTION__;
-        $this->args = null;
-
-        return clone $this;
+        return $this->createMatcher(__FUNCTION__, null);
     }
 
     /**
@@ -47,10 +44,8 @@ class Matcher extends AbstractMatcher implements Matchable
         if (!class_exists($annotationName)) {
             throw new InvalidAnnotation($annotationName);
         }
-        $this->method = __FUNCTION__;
-        $this->args = $annotationName;
 
-        return clone $this;
+        return $this->createMatcher(__FUNCTION__, $annotationName);
     }
 
     /**
@@ -58,10 +53,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function subclassesOf($superClass)
     {
-        $this->method = __FUNCTION__;
-        $this->args = $superClass;
-
-        return clone $this;
+        return $this->createMatcher(__FUNCTION__, $superClass);
     }
 
     /**
@@ -69,10 +61,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function startWith($prefix)
     {
-        $this->method = __FUNCTION__;
-        $this->args = $prefix;
-
-        return clone $this;
+        return $this->createMatcher(__FUNCTION__, $prefix);
     }
 
     /**
