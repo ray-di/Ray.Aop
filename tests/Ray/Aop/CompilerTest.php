@@ -141,7 +141,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testNoDocComment()
     {
-        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\MockNoDOc', [], $this->bind);
+        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\MockNoDoc', [], $this->bind);
         /* @var $weaved \Ray\Aop\Mock\Mock */
         $classDocComment = (new \ReflectionClass($weaved))->getDocComment();
         $methodDocComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
