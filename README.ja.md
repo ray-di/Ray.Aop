@@ -6,9 +6,9 @@ Aspect Oriented Framework for PHP
 
 **Ray.Aop** パッケージはメソッドインターセプションの機能を提供します。マッチするメソッドが実行される度に実行されるコードを記述する事ができます。トランザクション、セキュリティやログといった横断的な”アスペクト”に向いています。なぜならインターセプターが問題をオブジェクトというよりアスペクトに分けるからです。これらの用法はアスペクトオリエンティッドプログラム(AOP)と呼ばれます。
 
-[Matcher](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_Matchable.html) は値を受け取ったり拒否したりするシンプルなインターフェイスです。例えばRay.Aopでは２つの **Matcher** が必要です:１つはどのクラスに適用するかを決め、もう一つはそのクラスのどのメソッドに適用するかを決めます。これらを簡単に利用するためのファクトリークラスがあります。
+[Matcher](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.Matchable.html) は値を受け取ったり拒否したりするシンプルなインターフェイスです。例えばRay.Aopでは２つの **Matcher** が必要です:１つはどのクラスに適用するかを決め、もう一つはそのクラスのどのメソッドに適用するかを決めます。これらを簡単に利用するためのファクトリークラスがあります。
 
-[MethodInterceptors](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_MethodInterceptor.html) はマッチしたメソッドが呼ばれる度に実行されます。呼び出しやメソッド、それらの引き数、インスタンスを調べる事ができます。横断的なロジックと委譲されたメソッドが実行されます。最後に返り値を調べて返します。インターセプターは沢山のメソッドに適用され沢山のコールを受け取るので、実装は効果的で透過的なものになります。
+[MethodInterceptors](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.MethodInterceptor.html) はマッチしたメソッドが呼ばれる度に実行されます。呼び出しやメソッド、それらの引き数、インスタンスを調べる事ができます。横断的なロジックと委譲されたメソッドが実行されます。最後に返り値を調べて返します。インターセプターは沢山のメソッドに適用され沢山のコールを受け取るので、実装は効果的で透過的なものになります。
 
 
 Example: Forbidding method calls on weekends
@@ -117,6 +117,48 @@ Explicit method name match
 	   echo $e->getMessage() . "\n";
 	   exit(1);
 	}
+```
+
+My matcher
+----------
+独自のMatcherを作成することができます。
+クラス名やメソッド名に特定の文字列が含まれているかをマッチする`contains`マッチャーを作成するには、
+インターフェイスとなる`contains`メソッドと実際にマッチを判断した結果を返す`isContains`メソッドの２つが必要です。
+
+```php
+use Ray\Aop\AbstractMatcher;
+
+class MyMatcher extends AbstractMatcher
+{
+    /**
+     * @param $contain
+     *
+     * @return MyMatcher
+     */
+    public function contains($contain)
+    {
+        $this->createMatcher(__FUNCTION__, $contain);
+
+        return clone $this;
+
+    }
+
+    /**
+     * Return isContain
+     *
+     * @param $name    class or method name
+     * @param $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
+     * @param $contain
+     *
+     * @return bool
+     */
+    protected function isContains($name, $target, $contain)
+    {
+        $result = (strpos($name, $contain) !== false);
+
+        return $result;
+    }
+}
 ```
 
 Limitations

@@ -120,6 +120,49 @@ Explicit method name match
 	}
 ```
 
+Own matcher
+-----------
+You can have your own matcher.
+To create `contains` matcher, You need to provide a class which have two method. One is `contains` for interface.
+The other one is `isContains` which return the result of the `contains` match.
+
+
+```php
+use Ray\Aop\AbstractMatcher;
+
+class MyMatcher extends AbstractMatcher
+{
+    /**
+     * @param $contain
+     *
+     * @return MyMatcher
+     */
+    public function contains($contain)
+    {
+        $this->createMatcher(__FUNCTION__, $contain);
+
+        return clone $this;
+
+    }
+
+    /**
+     * Return isContains
+     *
+     * @param $name    class or method name
+     * @param $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
+     * @param $contain
+     *
+     * @return bool
+     */
+    protected function isContains($name, $target, $contain)
+    {
+        $result = (strpos($name, $contain) !== false);
+
+        return $result;
+    }
+}
+```
+
 Limitations
 -----------
 

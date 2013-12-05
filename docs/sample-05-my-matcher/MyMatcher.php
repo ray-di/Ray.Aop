@@ -11,7 +11,7 @@ class MyMatcher extends AbstractMatcher
      *
      * @return MyMatcher
      */
-    public function contain($contain)
+    public function contains($contain)
     {
         $this->createMatcher(__FUNCTION__, $contain);
 
@@ -22,13 +22,13 @@ class MyMatcher extends AbstractMatcher
     /**
      * Return isContain
      *
-     * @param $name    method name
+     * @param $name    class or method name
      * @param $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
      * @param $contain
      *
      * @return bool
      */
-    protected function isContain($name, $target, $contain)
+    protected function isContains($name, $target, $contain)
     {
         unset($target);
         $result = (strpos($name, $contain) !== false);
