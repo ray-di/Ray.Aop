@@ -15,7 +15,7 @@ $myMatcher = new MyMatcher;
 $interceptors = [new WeekendBlocker];
 $pointcut = new Pointcut(
     $matcher->any(),
-    $myMatcher->contain('charge'),
+    $myMatcher->contains('charge'),
     $interceptors
 );
 $bind = (new Bind)->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
