@@ -11,7 +11,7 @@ class Timer implements MethodInterceptor
     {
         echo "Timer start\n";
         $mTime = microtime(true);
-        $result = $invocation->proceed();
+        $invocation->proceed();
         $time = microtime(true) - $mTime;
         echo "Time stop, time is =[" . sprintf('%01.6f', $time) . "] sec\n\n";
     }

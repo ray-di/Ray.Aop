@@ -18,7 +18,7 @@ $pointcut = new Pointcut(
     $interceptors
 );
 $bind = (new Bind)->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
-$compiler = require dirname(dirname(__DIR__)) . '/scripts/instance.php';
+$compiler = require dirname(dirname(dirname(__DIR__))) . '/scripts/instance.php';
 $billingService = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
 try {
     echo $billingService->chargeOrder();

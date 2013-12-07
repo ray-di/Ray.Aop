@@ -1,6 +1,9 @@
 <?php
-// show spl methods (which are invalid to bind)
+/**
+ * display all spl(ArrayObject) methods
+ */
 $methods = (new ReflectionClass('ArrayObject'))->getMethods();
+$result = [];
 foreach ($methods as $method) {
     $result[] = $method->name;
 }
