@@ -18,7 +18,7 @@ $bind3->bindInterceptors('chargeOrder', array(new EmptyInterceptor, new EmptyInt
 $bind4 = new Bind;
 $bind4->bindInterceptors('chargeOrder', array(new EmptyInterceptor, new EmptyInterceptor, new EmptyInterceptor, new EmptyInterceptor));
 
-$compiler = require dirname(dirname(__DIR__)) . '/scripts/instance.php';
+$compiler = require dirname(dirname(dirname(__DIR__))) . '/scripts/instance.php';
 
 $billing0 = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], new Bind);
 $billing1 = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind1);

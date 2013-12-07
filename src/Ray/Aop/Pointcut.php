@@ -34,13 +34,11 @@ final class Pointcut
     public $interceptors = [];
 
     /**
-     * Constructor
-     *
-     * @param Matcher $classMatcher
-     * @param Matcher $methodMatcher
-     * @param array   $interceptors
+     * @param AbstractMatcher $classMatcher
+     * @param AbstractMatcher $methodMatcher
+     * @param array           $interceptors
      */
-    public function __construct(Matcher $classMatcher, Matcher $methodMatcher, array $interceptors)
+    public function __construct(AbstractMatcher $classMatcher, AbstractMatcher $methodMatcher, array $interceptors)
     {
         $this->classMatcher = $classMatcher;
         $this->methodMatcher = $methodMatcher;

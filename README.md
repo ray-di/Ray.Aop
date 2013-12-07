@@ -2,13 +2,13 @@ Aspect Oriented Framework for PHP
 =======
 
 [![Latest Stable Version](https://poser.pugx.org/ray/aop/v/stable.png)](https://packagist.org/packages/ray/aop)
-[![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
+[![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png?branch=master)](http://travis-ci.org/koriym/Ray.Aop)
 
 **Ray.Aop** package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
-A [Matcher](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_Matchable.html) is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there's factory class to satisfy the common scenarios.
+A [Matcher](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.Matchable.html) is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there's factory class to satisfy the common scenarios.
 
-[MethodInterceptors](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_MethodInterceptor.html) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
+[MethodInterceptors](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.MethodInterceptor.html) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
 
 
 
@@ -118,6 +118,49 @@ Explicit method name match
 	   echo $e->getMessage() . "\n";
 	   exit(1);
 	}
+```
+
+Own matcher
+-----------
+You can have your own matcher.
+To create `contains` matcher, You need to provide a class which have two method. One is `contains` for interface.
+The other one is `isContains` which return the result of the `contains` match.
+
+
+```php
+use Ray\Aop\AbstractMatcher;
+
+class MyMatcher extends AbstractMatcher
+{
+    /**
+     * @param $contain
+     *
+     * @return MyMatcher
+     */
+    public function contains($contain)
+    {
+        $this->createMatcher(__FUNCTION__, $contain);
+
+        return clone $this;
+
+    }
+
+    /**
+     * Return isContains
+     *
+     * @param $name    class or method name
+     * @param $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
+     * @param $contain
+     *
+     * @return bool
+     */
+    protected function isContains($name, $target, $contain)
+    {
+        $result = (strpos($name, $contain) !== false);
+
+        return $result;
+    }
+}
 ```
 
 Limitations

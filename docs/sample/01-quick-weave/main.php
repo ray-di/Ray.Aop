@@ -9,7 +9,7 @@ use Ray\Aop\Bind;
 
 $bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
 
-$compiler = require dirname(dirname(__DIR__)) . '/scripts/instance.php';
+$compiler = require dirname(dirname(dirname(__DIR__))) . '/scripts/instance.php';
 $billingService = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
 
 try {

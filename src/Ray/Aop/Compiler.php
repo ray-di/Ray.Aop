@@ -7,16 +7,17 @@
 namespace Ray\Aop;
 
 use PHPParser_BuilderFactory;
-use PHPParser_Lexer;
 use PHPParser_Parser;
-use PHPParser_PrettyPrinter_Zend;
 use PHPParser_PrettyPrinterAbstract;
 use ReflectionClass;
 use ReflectionMethod;
-use TokenReflection\ReflectionParameter;
+use PHPParser_Comment_Doc;
+use PHPParser_Builder_Class;
+use PHPParser_Node_Stmt_Class;
+use PHPParser_Builder_Method;
 
 /**
- * Aspect weave compiler
+ * AOP compiler
  */
 class Compiler implements CompilerInterface
 {
@@ -58,18 +59,18 @@ class Compiler implements CompilerInterface
      */
     public function compile($class, Bind $bind)
     {
-        $class = new ReflectionClass($class);
-        $newClassName = $this->getClassName($class, $bind);
+        $refClass = new ReflectionClass($class);
+        $newClassName = $this->getClassName($refClass, $bind);
         if (class_exists($newClassName, false)) {
             return $newClassName;
         }
         $file = $this->classDir . "/{$newClassName}.php";
-        $stmts = [
-            $this->getClass($newClassName, $class)
-                ->addStmts($this->getMethods($class, $bind))
-                ->getNode()
-        ];
-        $code = $this->printer->prettyPrint($stmts);
+        $stmt = $this
+                ->getClass($newClassName, $refClass)
+                ->addStmts($this->getMethods($refClass, $bind))
+                ->getNode();
+        $stmt = $this->addClassDocComment($stmt, $refClass);
+        $code = $this->printer->prettyPrint([$stmt]);
         file_put_contents($file, '<?php ' . PHP_EOL . $code);
         include_once $file;
 
@@ -128,6 +129,24 @@ class Compiler implements CompilerInterface
     }
 
     /**
+     * Add class doc comment
+     *
+     * @param PHPParser_Node_Stmt_Class $node
+     * @param ReflectionClass           $class
+     *
+     * @return PHPParser_Node_Stmt_Class
+     */
+    private function addClassDocComment(PHPParser_Node_Stmt_Class $node, \ReflectionClass $class)
+    {
+        $docComment = $class->getDocComment();
+        if ($docComment) {
+            $node->setAttribute('comments', [new PHPParser_Comment_Doc($docComment)]);
+        }
+
+        return $node;
+    }
+
+    /**
      * Return method statements
      *
      * @param ReflectionClass $class
@@ -139,6 +158,7 @@ class Compiler implements CompilerInterface
         $stmts = [];
         $methods = $class->getMethods();
         foreach ($methods as $method) {
+            /** @var $method ReflectionMethod */
             if ($method->isPublic()) {
                 $stmts[] = $this->getMethod($method);
             }
@@ -174,8 +194,27 @@ class Compiler implements CompilerInterface
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
         $methodStmt->addStmts($methodInsideStatements);
+        $node = $this->addMethodDocComment($methodStmt, $method);
 
-        return $methodStmt;
+        return $node;
+    }
+
+    /**
+     * Add method doc comment
+     *
+     * @param PHPParser_Builder_Method $methodStmt
+     * @param ReflectionMethod         $method
+     *
+     * @return \PHPParser_Node_Stmt_ClassMethod
+     */
+    private function addMethodDocComment(PHPParser_Builder_Method $methodStmt, \ReflectionMethod $method)
+    {
+        $node = $methodStmt->getNode();
+        $docComment = $method->getDocComment();
+        if ($docComment) {
+            $node->setAttribute('comments', [new PHPParser_Comment_Doc($docComment)]);
+        }
+        return $node;
     }
 
     /**
@@ -184,12 +223,9 @@ class Compiler implements CompilerInterface
     private function getMethodInsideStatement()
     {
         $code = $this->getWeavedMethodTemplate();
-        $parser = new \PHPParser_Parser(new \PHPParser_Lexer);
-        $node = $parser->parse($code)[0];
+        $node = $this->parser->parse($code)[0];
         /** @var $node \PHPParser_Node_Stmt_Class */
         $node = $node->getMethods()[0];
-
-        /** @var $node \PHPParser_Node_Stmt_ClassMethod */
 
         return $node->stmts;
     }

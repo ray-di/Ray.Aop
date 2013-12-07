@@ -4,13 +4,16 @@ namespace Ray\Aop;
 
 use Ray\Aop\Annotation\Marker;
 
-/**
- * Test class for Ray.Aop
- */
 class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var ReflectiveMethodInvocation
+     */
     protected $invocation;
 
+    /**
+     * @var MockMethod
+     */
     protected $mock;
 
     protected function setUp()
@@ -18,8 +21,8 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
         $this->mock = new MockMethod;
         // this is same as $this->mock->add(1);
-        $callable = array($this->mock, 'add');
-        $args = array(1);
+        $callable = [$this->mock, 'add'];
+        $args = [1];
         $this->invocation = new ReflectiveMethodInvocation($callable, $args);
     }
 
@@ -45,7 +48,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testGetArguments()
     {
         $args = $this->invocation->getArguments();
-        $this->assertSame($args, array(1));
+        $this->assertSame((array)$args, [1]);
     }
 
     public function testProceed()
@@ -70,8 +73,9 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testGetAnnotation()
     {
         $mock = new MockMethod;
-        $callable = array($mock, 'add');
+        $callable = [$mock, 'add'];
         $invocation = new ReflectiveMethodInvocation($callable, [], [], [new Marker]);
+        /** @noinspection PhpDeprecationInspection */
         $annotations = $invocation->getAnnotation();
         $this->assertInstanceOf('Ray\Aop\Annotation\Marker', $annotations[0]);
     }

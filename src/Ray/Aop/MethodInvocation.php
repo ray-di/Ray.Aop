@@ -6,8 +6,6 @@
  */
 namespace Ray\Aop;
 
-use Ray\Aop\Invocation;
-
 /**
  * Description of an invocation to a method, given to an interceptor
  * upon method-call.

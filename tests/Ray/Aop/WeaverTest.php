@@ -4,13 +4,11 @@ namespace Ray\Aop;
 
 use Ray\Aop\Interceptor\DoubleInterceptor;
 
-/**
- * Test class for Ray.Aop
- */
 class WeaverTest extends \PHPUnit_Framework_TestCase
 {
-    protected $invocation;
-
+    /**
+     * @var Weaver
+     */
     protected $weaver;
 
     /**
@@ -23,7 +21,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $bind = new Bind;
-        $bind->bindInterceptors('getDouble', array(new DoubleInterceptor, new DoubleInterceptor));
+        $bind->bindInterceptors('getDouble', [new DoubleInterceptor, new DoubleInterceptor]);
         $this->weaver = new Weaver(new MockMethod, $bind);
     }
 
@@ -50,7 +48,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     public function testMatcherWeave()
     {
         $bind = new Bind;
-        $bind->bindInterceptors('getDouble', array(new DoubleInterceptor));
+        $bind->bindInterceptors('getDouble', [new DoubleInterceptor]);
         $this->weaver = new Weaver(new MockMethod, $bind);
         $actual = $this->weaver->getDouble(2);
         $this->assertSame(8, $actual);
@@ -61,7 +59,7 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
         $bind = new Bind;
         $bind->bindInterceptors(
             'getDouble',
-            array(new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor)
+            [new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor, new DoubleInterceptor]
         );
         $this->weaver = new Weaver(new MockMethod, $bind);
         $actual = $this->weaver->getDouble(2);
@@ -75,10 +73,10 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     {
         /** @noinspection PhpUnusedParameterInspection */
         $function = function ($object, $method, $params) {
-            return array($params[0] * 2);
+            return [$params[0] * 2];
         };
         $weaver = $this->weaver;
-        $actual = $weaver($function, 'getDouble', array(2));
+        $actual = $weaver($function, 'getDouble', [2]);
         $this->assertSame(32, $actual);
     }
 
@@ -89,9 +87,9 @@ class WeaverTest extends \PHPUnit_Framework_TestCase
     {
         /** @noinspection PhpUnusedParameterInspection */
         $function = function ($object, $method, $params) {
-            return array($params[0] * 2);
+            return [$params[0] * 2];
         };
-        $actual = $this->weaver->__invoke($function, 'getDouble', array(2));
+        $actual = $this->weaver->__invoke($function, 'getDouble', [2]);
         $this->assertSame(32, $actual);
     }
 

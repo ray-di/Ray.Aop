@@ -6,8 +6,8 @@
  */
 namespace Ray\Aop;
 
-use Ray\Aop\MethodInvocation;
 use ReflectionMethod;
+use ArrayObject;
 
 /**
  * Ray's implementation of AOP Alliance MethodInvocation interface.
@@ -66,7 +66,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     {
         $this->method = new ReflectionMethod($target[0], $target[1]);
         $this->object = $target[0];
-        $this->args = $args;
+        $this->args = new ArrayObject($args);
         $this->interceptors = $interceptors;
         $this->annotation = $annotation;
     }
@@ -95,7 +95,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     public function proceed()
     {
         if ($this->interceptors === array()) {
-            return $this->method->invokeArgs($this->object, $this->args);
+            return $this->method->invokeArgs($this->object, $this->args->getArrayCopy());
         }
         $interceptor = array_shift($this->interceptors);
 
@@ -111,7 +111,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function getAnnotation()
     {

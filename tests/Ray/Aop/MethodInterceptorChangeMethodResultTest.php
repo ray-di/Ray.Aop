@@ -4,16 +4,31 @@ namespace Ray\Aop;
 
 use Ray\Aop\Interceptor\DoubleInterceptor;
 
-/**
- * Test class for Ray.Aop
- */
 class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCase
 {
-    protected $invocation;
-
+    /**
+     * @var MockMethod
+     */
     protected $mock;
 
+    /**
+     * @var ReflectiveMethodInvocation
+     */
+    protected $invocation;
+
+    /**
+     * @var DoubleInterceptor
+     */
     protected $interceptor;
+
+    protected function setUp()
+    {
+        $this->mock = new MockMethod;
+        $this->interceptor = new DoubleInterceptor;
+        $target = [$this->mock, 'getDouble'];
+        $args = [2];
+        $this->invocation = new ReflectiveMethodInvocation($target, $args);
+    }
 
     public function testInvoke()
     {
@@ -24,37 +39,23 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
 
     public function testInvokeWithInterceptors()
     {
-        $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
-        $target = array($this->mock, 'getDouble');
-        $args = array(2);
-        $this->invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
-        $actual = $this->interceptor->invoke($this->invocation);
+        $interceptors = [new DoubleInterceptor, new DoubleInterceptor];
+        $target = [$this->mock, 'getDouble'];
+        $args = [2];
+        $invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
+        $actual = $this->interceptor->invoke($invocation);
         $expect = 32;
         $this->assertSame($expect, $actual);
     }
 
     public function testInvokeWithDoubleInterceptors()
     {
-        $interceptors = array(new DoubleInterceptor, new DoubleInterceptor);
-        $target = array($this->mock, 'getDouble');
-        $args = array(2);
+        $interceptors = [new DoubleInterceptor, new DoubleInterceptor];
+        $target = [$this->mock, 'getDouble'];
+        $args = [2];
         $invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
         $actual = $invocation->proceed();
         $this->assertSame(16, $actual);
     }
 
-    /**
-     * target method is:
-     *
-     * $mock = new Mock;
-     * $mock->add(2);
-     */
-    protected function setUp()
-    {
-        $this->mock = new MockMethod;
-        $this->interceptor = new DoubleInterceptor;
-        $target = array($this->mock, 'getDouble');
-        $args = array(2);
-        $this->invocation = new ReflectiveMethodInvocation($target, $args);
-    }
 }

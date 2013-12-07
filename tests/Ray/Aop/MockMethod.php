@@ -2,9 +2,6 @@
 
 namespace Ray\Aop;
 
-/**
- * Test class for Ray.Aop
- */
 class MockMethod
 {
     public $a = 0;
