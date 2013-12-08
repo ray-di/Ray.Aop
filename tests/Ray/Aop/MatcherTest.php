@@ -116,7 +116,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     /**
      * start '__' prefix method does not match
      */
-    public function testAnyButNotStartWithDoubleUnderscore()
+    public function testAnyButNotstartsWithDoubleUnderscore()
     {
         $any = $this->matcher->any();
         $result = $any('__construct', Matcher::TARGET_METHOD);
@@ -136,20 +136,29 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testIsStartWithMethodTrue()
+    public function testIsstartsWithMethodTrue()
     {
-        $startWith = $this->matcher->startWith('get');
-        $result = $startWith('getSub', Matcher::TARGET_METHOD);
+        $startsWith = $this->matcher->startsWith('get');
+        $result = $startsWith('getSub', Matcher::TARGET_METHOD);
         $this->assertTrue($result);
     }
 
-    public function testIsStartWithMethodFalse()
+    public function testIsstartsWithMethodFalse()
     {
-        $startWith = $this->matcher->startWith('on');
+        $startsWith = $this->matcher->startsWith('on');
         $class = 'Ray\Aop\Mock\AnnotateClass';
-        $result = $startWith($class, Matcher::TARGET_METHOD, '__construct');
+        $result = $startsWith($class, Matcher::TARGET_METHOD, '__construct');
         $this->assertFalse($result);
     }
+
+    public function testIsStartWith()
+    {
+        $startsWith = $this->matcher->startWith('on');
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $result = $startsWith($class, Matcher::TARGET_METHOD, '__construct');
+        $this->assertFalse($result);
+    }
+
 
     public function testIsLogicalOrAnyOrAny()
     {

@@ -57,9 +57,17 @@ class Matcher extends AbstractMatcher implements Matchable
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated
      */
     public function startWith($prefix)
+    {
+        return $this->startsWith($prefix);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function startsWith($prefix)
     {
         return $this->createMatcher(__FUNCTION__, $prefix);
     }
@@ -244,15 +252,15 @@ class Matcher extends AbstractMatcher implements Matchable
      *
      * @param string $name
      * @param string $target
-     * @param string $startWith
+     * @param string $startsWith
      *
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    protected function isStartWith($name, $target, $startWith)
+    protected function isStartsWith($name, $target, $startsWith)
     {
         unset($target);
-        $result = (strpos($name, $startWith) === 0) ? true : false;
+        $result = (strpos($name, $startsWith) === 0) ? true : false;
 
         return $result;
     }

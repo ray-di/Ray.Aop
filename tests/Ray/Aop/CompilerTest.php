@@ -33,7 +33,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         );
         $this->bind = new Bind;
         $matcher = new Matcher(new AnnotationReader);
-        $pointcut = new Pointcut($matcher->any(), $matcher->startWith('return'), [new DoubleInterceptor]);
+        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new DoubleInterceptor]);
         $this->bind->bind('Ray\Aop\Mock\Weaved', [$pointcut]);
     }
 

@@ -43,7 +43,7 @@ interface Matchable
      *
      * @return Matchable
      */
-    public function startWith($prefix);
+    public function startsWith($prefix);
 
     /**
      * Match logical or
