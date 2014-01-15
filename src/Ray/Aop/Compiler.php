@@ -242,12 +242,11 @@ final class Compiler implements CompilerInterface, Serializable
     {
         unset($this->factory);
         unset($this->parser);
-
-        return serialize($this->classDir);
+        return serialize([$this->classDir, $this->printer]);
     }
 
     public function unserialize($data)
     {
-        $this->classDir = unserialize($data);
+        list($this->classDir, $this->printer) = unserialize($data);
     }
 }

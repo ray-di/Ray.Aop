@@ -148,4 +148,11 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($methodDocComment);
     }
 
+    public function testSerialize()
+    {
+        $compiler = unserialize(serialize($this->compiler));
+        $class = $compiler->compile('\Ray\Aop\Mock\Mock', $this->bind);
+        $this->assertTrue(class_exists($class));
+    }
+
 }
