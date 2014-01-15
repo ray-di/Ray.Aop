@@ -27,9 +27,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
         $this->compiler = new Compiler(
             __DIR__ . '/Weaved',
-            new PHPParser_PrettyPrinter_Default,
-            new PHPParser_Parser(new PHPParser_Lexer),
-            new PHPParser_BuilderFactory
+            new PHPParser_PrettyPrinter_Default
         );
         $this->bind = new Bind;
         $matcher = new Matcher(new AnnotationReader);
