@@ -98,7 +98,7 @@ final class Compiler implements CompilerInterface, Serializable
      */
     private function getClassName(\ReflectionClass $class, Bind $bind)
     {
-        $className = str_replace('\\', '', $class->getName()) . 'Ray' . spl_object_hash($bind) . 'Aop';
+        $className = str_replace('\\', '_', $class->getName()) . '_' . md5($bind);
 
         return $className;
     }
