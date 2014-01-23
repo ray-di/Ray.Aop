@@ -10,6 +10,5 @@ vendor
 cache.properties
 build
 *.log
-
 composer.phar
-RayAopMockMock*
+tests/Ray/Aop/Weaved/

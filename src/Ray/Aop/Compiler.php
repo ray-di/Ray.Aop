@@ -15,11 +15,13 @@ use PHPParser_Comment_Doc;
 use PHPParser_Builder_Class;
 use PHPParser_Node_Stmt_Class;
 use PHPParser_Builder_Method;
+use PHPParser_Lexer;
+use Serializable;
 
 /**
  * AOP compiler
  */
-class Compiler implements CompilerInterface
+final class Compiler implements CompilerInterface, Serializable
 {
     /**
      * @var string
@@ -38,20 +40,14 @@ class Compiler implements CompilerInterface
 
     /**
      * @param string                          $classDir
-     * @param PHPParser_Parser                $parser
-     * @param PHPParser_BuilderFactory        $factory
      * @param PHPParser_PrettyPrinterAbstract $printer
      */
     public function __construct(
         $classDir,
-        PHPParser_PrettyPrinterAbstract $printer,
-        PHPParser_Parser $parser,
-        PHPParser_BuilderFactory $factory
+        PHPParser_PrettyPrinterAbstract $printer
     ) {
         $this->classDir = $classDir;
         $this->printer = $printer;
-        $this->parser = $parser;
-        $this->factory = $factory;
     }
 
     /**
@@ -59,6 +55,9 @@ class Compiler implements CompilerInterface
      */
     public function compile($class, Bind $bind)
     {
+        $this->parser = new PHPParser_Parser(new PHPParser_Lexer);
+        $this->factory = new PHPParser_BuilderFactory;
+
         $refClass = new ReflectionClass($class);
         $newClassName = $this->getClassName($refClass, $bind);
         if (class_exists($newClassName, false)) {
@@ -99,7 +98,7 @@ class Compiler implements CompilerInterface
      */
     private function getClassName(\ReflectionClass $class, Bind $bind)
     {
-        $className = str_replace('\\', '', $class->getName()) . 'Ray' . spl_object_hash($bind) . 'Aop';
+        $className = str_replace('\\', '_', $class->getName()) . '_' . md5($bind) .'RayAop';
 
         return $className;
     }
@@ -237,5 +236,17 @@ class Compiler implements CompilerInterface
     {
 
         return file_get_contents(__DIR__ . '/Compiler/Template.php');
+    }
+
+    public function serialize()
+    {
+        unset($this->factory);
+        unset($this->parser);
+        return serialize([$this->classDir, $this->printer]);
+    }
+
+    public function unserialize($data)
+    {
+        list($this->classDir, $this->printer) = unserialize($data);
     }
 }
