@@ -34,7 +34,10 @@ class Weaved extends \Ray\Aop\Mock\Mock
         $annotation = (isset($this->rayAopBind->annotation[__FUNCTION__])) ? $this->rayAopBind->annotation[__FUNCTION__] : null;
         $invocation = new \Ray\Aop\ReflectiveMethodInvocation([$this,__FUNCTION__], func_get_args(), $interceptors, $annotation);
 
-        return $invocation->proceed();
+        $result = $invocation->proceed();
+        $this->rayAopIntercept = true;
+
+        return $result;
     }
 }
 // @codeCoverageIgnoreEnd
