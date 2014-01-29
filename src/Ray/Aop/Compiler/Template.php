@@ -20,24 +20,25 @@ class Weaved extends \Ray\Aop\Mock\Mock
 
     public function returnSame($a)
     {
-        if (! isset($this->rayAopBind[__FUNCTION__])){
+        if (isset($this->rayAopBind[__FUNCTION__]) === false){
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
-        if (! $this->rayAopIntercept) {
+        if ($this->rayAopIntercept === false) {
             $this->rayAopIntercept = true;
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
         $this->rayAopIntercept = false;
-        $interceptors = $this->rayAopBind[__FUNCTION__];
-        $annotation = (isset($this->rayAopBind->annotation[__FUNCTION__])) ? $this->rayAopBind->annotation[__FUNCTION__] : null;
-        $invocation = new \Ray\Aop\ReflectiveMethodInvocation([$this,__FUNCTION__], func_get_args(), $interceptors, $annotation);
-
-        $result = $invocation->proceed();
+        $invocationResult = (new \Ray\Aop\ReflectiveMethodInvocation(
+            [$this,__FUNCTION__],
+            func_get_args(),
+            $this->rayAopBind[__FUNCTION__],
+            (isset($this->rayAopBind->annotation[__FUNCTION__])) ? $this->rayAopBind->annotation[__FUNCTION__] : null
+        ))->proceed();
         $this->rayAopIntercept = true;
 
-        return $result;
+        return $invocationResult;
     }
 }
 // @codeCoverageIgnoreEnd
