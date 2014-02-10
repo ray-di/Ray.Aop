@@ -39,6 +39,11 @@ final class Compiler implements CompilerInterface, Serializable
     private $factory;
 
     /**
+     * @var \PHPParser_PrettyPrinterAbstract
+     */
+    private $printer;
+
+    /**
      * @param string                          $classDir
      * @param PHPParser_PrettyPrinterAbstract $printer
      */
