@@ -66,7 +66,7 @@ final class Compiler implements CompilerInterface, Serializable
         $file = $this->classDir . "/{$newClassName}.php";
         $stmt = $this
                 ->getClass($newClassName, $refClass)
-                ->addStmts($this->getMethods($refClass, $bind))
+                ->addStmts($this->getMethods($refClass))
                 ->getNode();
         $stmt = $this->addClassDocComment($stmt, $refClass);
         $code = $this->printer->prettyPrint([$stmt]);
