@@ -17,6 +17,7 @@ use PHPParser_Node_Stmt_Class;
 use PHPParser_Builder_Method;
 use PHPParser_Lexer;
 use Serializable;
+use ReflectionParameter;
 
 /**
  * AOP compiler
@@ -183,24 +184,36 @@ final class Compiler implements CompilerInterface, Serializable
         $methodStmt = $this->factory->method($method->name);
         $params = $method->getParameters();
         foreach ($params as $param) {
-            /** @var $param \ReflectionParameter */
-            $paramStmt = $this->factory->param($param->name);
-            $typeHint = $param->getClass();
-            if ($typeHint) {
-                $paramStmt->setTypeHint($typeHint->name);
-            }
-            if ($param->isDefaultValueAvailable()) {
-                $paramStmt->setDefault($param->getDefaultValue());
-            }
-            $methodStmt->addParam(
-                $paramStmt
-            );
+            $methodStmt = $this->getMethodStatement($param, $methodStmt);
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
         $methodStmt->addStmts($methodInsideStatements);
         $node = $this->addMethodDocComment($methodStmt, $method);
 
         return $node;
+    }
+
+    /**
+     * Return parameter reflection
+     * @param ReflectionParameter      $param
+     * @param PHPParser_Builder_Method $methodStmt
+     *
+     * @return PHPParser_Builder_Method
+     */
+    private function getMethodStatement(ReflectionParameter $param, PHPParser_Builder_Method $methodStmt)
+    {
+        /** @var $param \ReflectionParameter */
+        $paramStmt = $this->factory->param($param->name);
+        $typeHint = $param->getClass();
+        if ($typeHint) {
+            $paramStmt->setTypeHint($typeHint->name);
+        }
+        if ($param->isDefaultValueAvailable()) {
+            $paramStmt->setDefault($param->getDefaultValue());
+        }
+        $methodStmt->addParam($paramStmt);
+
+        return $methodStmt;
     }
 
     /**

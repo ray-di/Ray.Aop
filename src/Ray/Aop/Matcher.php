@@ -147,38 +147,31 @@ class Matcher extends AbstractMatcher implements Matchable
         if (substr($name, 0, 2) === '__') {
             return false;
         }
-        if (in_array(
-            $name,
-            [
-                'offsetExists',
-                'offsetGet',
-                'offsetSet',
-                'offsetUnset',
-                'append',
-                'getArrayCopy',
-                'count',
-                'getFlags',
-                'setFlags',
-                'asort',
-                'ksort',
-                'uasort',
-                'uksort',
-                'natsort',
-                'natcasesort',
-                'unserialize',
-                'serialize',
-                'getIterator',
-                'exchangeArray',
-                'setIteratorClass',
-                'getIterator',
-                'getIteratorClass'
-            ]
-        )
-        ) {
-            return false;
-        }
-
-        return true;
+        $builtinMethods = [
+            'offsetExists',
+            'offsetGet',
+            'offsetSet',
+            'offsetUnset',
+            'append',
+            'getArrayCopy',
+            'count',
+            'getFlags',
+            'setFlags',
+            'asort',
+            'ksort',
+            'uasort',
+            'uksort',
+            'natsort',
+            'natcasesort',
+            'unserialize',
+            'serialize',
+            'getIterator',
+            'exchangeArray',
+            'setIteratorClass',
+            'getIterator',
+            'getIteratorClass'
+        ];
+        return in_array($name, $builtinMethods) ? false : true;
     }
 
     /**
@@ -196,18 +189,32 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     protected function isAnnotatedWith($class, $target, $annotationName)
     {
-        $reader = $this->reader;
         if ($target === self::TARGET_CLASS) {
-            $annotation = $reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
+            $annotation = $this->reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
             $hasAnnotation = $annotation ? true : false;
 
             return $hasAnnotation;
         }
+        $result = $this->setAnnotations($class, $annotationName);
+
+        return $result;
+    }
+
+    /**
+     * Set annotations
+     * 
+     * @param $class
+     * @param $annotationName
+     *
+     * @return array
+     */
+    private function setAnnotations($class, $annotationName)
+    {
         $methods = (new ReflectionClass($class))->getMethods();
         $result = [];
         foreach ($methods as $method) {
             new $annotationName;
-            $annotation = $reader->getMethodAnnotation($method, $annotationName);
+            $annotation = $this->reader->getMethodAnnotation($method, $annotationName);
             if ($annotation) {
                 $matched = new Matched;
                 $matched->methodName = $method->name;
