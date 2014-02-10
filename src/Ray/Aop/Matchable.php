@@ -68,7 +68,7 @@ interface Matchable
      * @param Matchable $matcherA
      * @param Matchable $matcherB
      *
-     * @return mixed
+     * @return Matcher
      */
     public function logicalAnd(Matchable $matcherA, Matchable $matcherB);
 

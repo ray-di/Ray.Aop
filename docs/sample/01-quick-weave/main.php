@@ -4,7 +4,6 @@ namespace Ray\Aop\Sample;
 
 require dirname(__DIR__) . '/bootstrap.php';
 
-use Ray\Aop\Compiler;
 use Ray\Aop\Bind;
 
 $bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
