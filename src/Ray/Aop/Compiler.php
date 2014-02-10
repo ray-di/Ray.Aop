@@ -69,11 +69,23 @@ final class Compiler implements CompilerInterface, Serializable
         if (class_exists($newClassName, false)) {
             return $newClassName;
         }
+
+        return $this->createFile($newClassName, $refClass);
+    }
+
+    /**
+     * @param string          $newClassName
+     * @param ReflectionClass $refClass
+     *
+     * @return string
+     */
+    private function createFile($newClassName, ReflectionClass $refClass)
+    {
         $file = $this->classDir . "/{$newClassName}.php";
         $stmt = $this
-                ->getClass($newClassName, $refClass)
-                ->addStmts($this->getMethods($refClass))
-                ->getNode();
+            ->getClass($newClassName, $refClass)
+            ->addStmts($this->getMethods($refClass))
+            ->getNode();
         $stmt = $this->addClassDocComment($stmt, $refClass);
         $code = $this->printer->prettyPrint([$stmt]);
         file_put_contents($file, '<?php ' . PHP_EOL . $code);
