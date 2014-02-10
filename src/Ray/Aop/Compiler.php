@@ -171,7 +171,7 @@ final class Compiler implements CompilerInterface, Serializable
      *
      * @param \ReflectionMethod $method
      *
-     * @return \PHPParser_Builder_Method
+     * @return \PHPParser_Node_Stmt_ClassMethod
      */
     private function getMethod(\ReflectionMethod $method)
     {

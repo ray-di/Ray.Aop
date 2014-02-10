@@ -4,7 +4,6 @@ namespace Ray\Aop\Sample;
 use Ray\Aop\Pointcut;
 use Ray\Aop\Matcher;
 use Ray\Aop\Bind;
-use Ray\Aop\Compiler;
 
 require dirname(__DIR__) . '/bootstrap.php';
 

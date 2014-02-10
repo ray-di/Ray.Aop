@@ -2,8 +2,8 @@
 
 namespace Ray\Aop\Sample;
 
-use Ray\Aop\MethodInterceptor,
-    Ray\Aop\MethodInvocation;
+use Ray\Aop\MethodInterceptor;
+use Ray\Aop\MethodInvocation;
 
 class Timer implements MethodInterceptor
 {

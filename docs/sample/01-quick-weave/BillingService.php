@@ -6,6 +6,7 @@ interface BillingService
 {
     /**
      * @WeekendBlock
+     * @return void
      */
     public function chargeOrder();
 }
