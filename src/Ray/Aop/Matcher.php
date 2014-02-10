@@ -14,6 +14,34 @@ use ReflectionClass;
 class Matcher extends AbstractMatcher implements Matchable
 {
     /**
+     * @var array
+     */
+    protected $builtinMethods = [
+       'offsetExists',
+       'offsetGet',
+       'offsetSet',
+       'offsetUnset',
+       'append',
+       'getArrayCopy',
+       'count',
+       'getFlags',
+       'setFlags',
+       'asort',
+       'ksort',
+       'uasort',
+       'uksort',
+       'natsort',
+       'natcasesort',
+       'unserialize',
+       'serialize',
+       'getIterator',
+       'exchangeArray',
+       'setIteratorClass',
+       'getIterator',
+       'getIteratorClass'
+   ];
+
+    /**
      * Annotation reader
      *
      * @var Reader
@@ -147,31 +175,7 @@ class Matcher extends AbstractMatcher implements Matchable
         if (substr($name, 0, 2) === '__') {
             return false;
         }
-        $builtinMethods = [
-            'offsetExists',
-            'offsetGet',
-            'offsetSet',
-            'offsetUnset',
-            'append',
-            'getArrayCopy',
-            'count',
-            'getFlags',
-            'setFlags',
-            'asort',
-            'ksort',
-            'uasort',
-            'uksort',
-            'natsort',
-            'natcasesort',
-            'unserialize',
-            'serialize',
-            'getIterator',
-            'exchangeArray',
-            'setIteratorClass',
-            'getIterator',
-            'getIteratorClass'
-        ];
-        return in_array($name, $builtinMethods) ? false : true;
+        return in_array($name, $this->builtinMethods) ? false : true;
     }
 
     /**
@@ -202,7 +206,7 @@ class Matcher extends AbstractMatcher implements Matchable
 
     /**
      * Set annotations
-     * 
+     *
      * @param $class
      * @param $annotationName
      *
