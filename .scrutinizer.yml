@@ -1,2 +1,25 @@
+inherit: true
+
+filter:
+    excluded_paths:
+        - 'docs/*'
 tools:
+    php_code_sniffer: true
+    php_cpd: true
+    php_loc: true
+    php_mess_detector:
+        config:
+            ruleset: ./phpmd.xml
+    php_code_sniffer:
+        config:
+            ruleset: ./phpcs.xml
+    php_cs_fixer:
+        enabled: true
+        config:
+          level: psr2
+          fixers:
+            psr0: false
+    php_pdepend: true
+    php_analyzer: true
+    sensiolabs_security_checker: true
     external_code_coverage: true
