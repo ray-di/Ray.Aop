@@ -59,6 +59,14 @@ final class Compiler implements CompilerInterface, Serializable
     /**
      * {@inheritdoc}
      */
+    public function getAopClassDir()
+    {
+        return $this->classDir;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function compile($class, Bind $bind)
     {
         $this->parser = new PHPParser_Parser(new PHPParser_Lexer);

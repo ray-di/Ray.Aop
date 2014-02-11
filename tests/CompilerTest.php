@@ -167,4 +167,10 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(class_exists($class));
     }
 
+    public function testGetAopClassDir()
+    {
+        $dir = $this->compiler->getAopClassDir();
+        $this->assertSame(__DIR__ . '/Weaved', $dir);
+    }
+
 }

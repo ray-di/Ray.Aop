@@ -31,4 +31,11 @@ interface CompilerInterface
      * @return object
      */
     public function newInstance($class, array $args, Bind $bind);
+
+    /**
+     * Return aop class directory
+     *
+     * @return string
+     */
+    public function getAopClassDir();
 }
