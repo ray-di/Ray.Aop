@@ -8,13 +8,13 @@ ini_set('xdebug.max_nesting_level', 2000);
 // vendor
 $loader = require dirname(__DIR__) . '/vendor/autoload.php';
 /** @var $loader \Composer\Autoload\ClassLoader */
-$loader->add('Ray\Aop', [__DIR__]);
+$loader->addPsr4('Ray\Aop\\', [__DIR__]);
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 
-require dirname(__DIR__) . '/src/Ray/Aop/Compiler/Template.php';
+require dirname(__DIR__) . '/src/Compiler/Template.php';
 
 // remove compiled files
-$path = __DIR__ . '/Ray/Aop/Weaved';
+$path = __DIR__ . '/Weaved';
 $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
 foreach ($iterator as $file) {
     /* @var $file \SplFileInfo */
