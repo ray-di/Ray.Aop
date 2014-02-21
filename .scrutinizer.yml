@@ -1,5 +1,5 @@
 filter:
-    excluded_paths: [docs/*, vendor/*, tests/*]
+    excluded_paths: [docs/*, vendor/*, tests/*, src/Compiler/Template.php]
     paths: [src/*]
 
 before_commands:
