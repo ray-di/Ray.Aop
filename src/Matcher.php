@@ -39,7 +39,7 @@ class Matcher extends AbstractMatcher implements Matchable
        'setIteratorClass',
        'getIterator',
        'getIteratorClass'
-   ];
+    ];
 
     /**
      * Annotation reader
