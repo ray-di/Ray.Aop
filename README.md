@@ -6,13 +6,13 @@ Aspect Oriented Framework for PHP
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/koriym/Ray.Aop/badges/quality-score.png?s=bb5414751b994336b6310caf61029ac09b907779)](https://scrutinizer-ci.com/g/koriym/Ray.Aop/)
 [![Code Coverage](https://scrutinizer-ci.com/g/koriym/Ray.Aop/badges/coverage.png?s=5604fdfae48a5a31242d3e46018515e2f30083d7)](https://scrutinizer-ci.com/g/koriym/Ray.Aop/)
 
+[[Japanese]](https://github.com/koriym/Ray.Aop/blob/develop/README.ja.md)
+
 **Ray.Aop** package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
 A [Matcher](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.Matchable.html) is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there's factory class to satisfy the common scenarios.
 
 [MethodInterceptors](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.MethodInterceptor.html) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
-
-
 
 Example: Forbidding method calls on weekends
 --------------------------------------------
@@ -178,7 +178,7 @@ This approach imposes limits on what classes and methods can be intercepted:
 
 AOP Alliance
 ------------
-The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html). 
+The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html).
 
 Testing Ray.Aop
 ===============
