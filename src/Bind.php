@@ -37,21 +37,32 @@ final class Bind extends ArrayObject implements BindInterface
     {
         foreach ($pointcuts as $pointcut) {
             /** @var $pointcut Pointcut */
-            $classMatcher = $pointcut->classMatcher;
-            $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
-            if ($isClassMatch !== true) {
-                continue;
-            }
-            if (method_exists($pointcut->methodMatcher, 'isAnnotateBinding') && $pointcut->methodMatcher->isAnnotateBinding()) {
-                $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
-                continue;
-            }
-            $this->bindByCallable($class, $pointcut->methodMatcher, $pointcut->interceptors);
+            $this->bindPointcut($class, $pointcut);
         }
 
         return $this;
     }
 
+    /**
+     * @param string    $class
+     * @param Pointcut $pointcut
+     *
+     * @return void
+     */
+    private function bindPointcut($class, Pointcut $pointcut)
+    {
+        $classMatcher = $pointcut->classMatcher;
+        $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
+        if ($isClassMatch !== true) {
+            return;
+        }
+        if (method_exists($pointcut->methodMatcher, 'isAnnotateBinding') && $pointcut->methodMatcher->isAnnotateBinding()) {
+            $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
+            return;
+        }
+        $this->bindByCallable($class, $pointcut->methodMatcher, $pointcut->interceptors);
+
+    }
     /**
      * {@inheritdoc}
      */
