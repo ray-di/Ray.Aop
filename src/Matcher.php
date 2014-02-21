@@ -207,8 +207,8 @@ class Matcher extends AbstractMatcher implements Matchable
     /**
      * Set annotations
      *
-     * @param $class
-     * @param $annotationName
+     * @param string $class
+     * @param string $annotationName
      *
      * @return array
      */

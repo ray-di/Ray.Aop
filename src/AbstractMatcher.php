@@ -37,6 +37,12 @@ abstract class AbstractMatcher
     protected $args;
 
 
+    /**
+     * @param string $method
+     * @param mixed  $args
+     *
+     * @return AbstractMatcher
+     */
     protected function createMatcher($method, $args)
     {
         $this->method = $method;
