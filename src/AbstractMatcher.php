@@ -38,8 +38,8 @@ abstract class AbstractMatcher
 
 
     /**
-     * @param string $method
-     * @param mixed  $args
+     * @param string      $method
+     * @param null|string $args
      *
      * @return AbstractMatcher
      */

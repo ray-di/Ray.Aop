@@ -14,14 +14,14 @@ final class Pointcut
     /**
      * Class matcher
      *
-     * @var Matcher
+     * @var AbstractMatcher
      */
     public $classMatcher;
 
     /**
      * Method matcher
      *
-     * @var Matcher
+     * @var AbstractMatcher
      */
     public $methodMatcher;
 
