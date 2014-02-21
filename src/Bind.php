@@ -31,6 +31,7 @@ final class Bind extends ArrayObject implements BindInterface
 
     /**
      * {@inheritdoc}
+     * @SuppressWarnings(PHPMD.ConstructorWithNameAsEnclosingClass)
      */
     public function bind($class, array $pointcuts)
     {
