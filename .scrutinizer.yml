@@ -8,6 +8,8 @@ before_commands:
 tools:
     php_mess_detector:
         enabled: true
+        config:
+            ruleset: ./phpmd.xml
     php_code_sniffer:
         enabled: true
         config:
