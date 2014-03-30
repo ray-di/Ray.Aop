@@ -1,14 +1,13 @@
 <?php
-
-namespace Ray\Aop\Sample;
+namespace Ray\Aop\Interceptor;
 
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
-class EmptyInterceptor implements MethodInterceptor
+class AbortProceedInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
-        $invocation->proceed();
+        return 20;
     }
 }

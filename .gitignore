@@ -12,3 +12,4 @@ build
 *.log
 composer.phar
 tests/Ray/Aop/Weaved/
+*RayAop.php

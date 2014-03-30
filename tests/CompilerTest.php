@@ -4,6 +4,7 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Interceptor\DoubleInterceptor;
+use Ray\Aop\Interceptor\AbortProceedInterceptor;
 use Ray\Aop\Mock\Num;
 use PHPParser_Lexer;
 use PHPParser_Parser;
@@ -116,6 +117,17 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($val, 1);
     }
 
+    public function testCallAbortProceedInterceptorTwice()
+    {
+        $matcher = new Matcher(new AnnotationReader);
+        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new AbortProceedInterceptor]);
+        $this->bind->bind('Ray\Aop\Mock\Weaved', [$pointcut]);
+        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
+        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $this->assertSame(40, $weaved->returnSame(1));
+        $this->assertSame(40, $weaved->returnSame(1));
+    }
+
     public function testClassDocComment()
     {
         $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
@@ -153,6 +165,12 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $compiler = unserialize(serialize($this->compiler));
         $class = $compiler->compile('\Ray\Aop\Mock\Mock', $this->bind);
         $this->assertTrue(class_exists($class));
+    }
+
+    public function testGetAopClassDir()
+    {
+        $dir = $this->compiler->getAopClassDir();
+        $this->assertSame(__DIR__ . '/Weaved', $dir);
     }
 
 }

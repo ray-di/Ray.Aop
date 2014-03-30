@@ -2,7 +2,6 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -38,6 +37,12 @@ abstract class AbstractMatcher
     protected $args;
 
 
+    /**
+     * @param string      $method
+     * @param null|string $args
+     *
+     * @return AbstractMatcher
+     */
     protected function createMatcher($method, $args)
     {
         $this->method = $method;

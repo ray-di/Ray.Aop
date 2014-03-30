@@ -2,7 +2,6 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package Ray.Aop
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
 namespace Ray\Aop;
@@ -32,26 +31,38 @@ final class Bind extends ArrayObject implements BindInterface
 
     /**
      * {@inheritdoc}
+     * @SuppressWarnings(PHPMD.ConstructorWithNameAsEnclosingClass)
      */
     public function bind($class, array $pointcuts)
     {
         foreach ($pointcuts as $pointcut) {
             /** @var $pointcut Pointcut */
-            $classMatcher = $pointcut->classMatcher;
-            $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
-            if ($isClassMatch !== true) {
-                continue;
-            }
-            if (method_exists($pointcut->methodMatcher, 'isAnnotateBinding') && $pointcut->methodMatcher->isAnnotateBinding()) {
-                $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
-                continue;
-            }
-            $this->bindByCallable($class, $pointcut->methodMatcher, $pointcut->interceptors);
+            $this->bindPointcut($class, $pointcut);
         }
 
         return $this;
     }
 
+    /**
+     * @param string    $class
+     * @param Pointcut $pointcut
+     *
+     * @return void
+     */
+    private function bindPointcut($class, Pointcut $pointcut)
+    {
+        $classMatcher = $pointcut->classMatcher;
+        $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
+        if ($isClassMatch !== true) {
+            return;
+        }
+        if (method_exists($pointcut->methodMatcher, 'isAnnotateBinding') && $pointcut->methodMatcher->isAnnotateBinding()) {
+            $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
+            return;
+        }
+        $this->bindByCallable($class, $pointcut->methodMatcher, $pointcut->interceptors);
+
+    }
     /**
      * {@inheritdoc}
      */
@@ -98,7 +109,7 @@ final class Bind extends ArrayObject implements BindInterface
     /**
      * Bind interceptor by callable matcher
      *
-     * @param                 $class
+     * @param string          $class
      * @param AbstractMatcher $methodMatcher
      * @param array           $interceptors
      */
@@ -116,11 +127,11 @@ final class Bind extends ArrayObject implements BindInterface
     /**
      * Bind interceptor by annotation binding
      *
-     * @param         $class
+     * @param string  $class
      * @param Matcher $methodMatcher
      * @param array   $interceptors
      */
-    private function bindByAnnotateBinding($class, Matcher $methodMatcher, array $interceptors)
+    private function bindByAnnotateBinding($class, AbstractMatcher $methodMatcher, array $interceptors)
     {
         $matches = (array)$methodMatcher($class, Matcher::TARGET_METHOD);
         if (!$matches) {

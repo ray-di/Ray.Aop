@@ -5,7 +5,6 @@ namespace Ray\Aop\Sample;
 require dirname(__DIR__) . '/bootstrap.php';
 
 use Ray\Aop\Bind;
-use Ray\Aop\Compiler;
 
 $bind1 = new Bind;
 $bind1->bindInterceptors('chargeOrder', array());

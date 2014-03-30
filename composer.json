@@ -16,7 +16,7 @@
         "nikic/php-parser": "*"
     },
     "autoload": {
-        "psr-0": { "Ray\\Aop": "src/" }
+        "psr-4": { "Ray\\Aop\\": "src/" }
     },
     "suggest": {
         "ray/di": "DI framework supports Ray.Aop"

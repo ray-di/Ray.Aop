@@ -17,6 +17,7 @@ use PHPParser_Node_Stmt_Class;
 use PHPParser_Builder_Method;
 use PHPParser_Lexer;
 use Serializable;
+use ReflectionParameter;
 
 /**
  * AOP compiler
@@ -39,6 +40,11 @@ final class Compiler implements CompilerInterface, Serializable
     private $factory;
 
     /**
+     * @var \PHPParser_PrettyPrinterAbstract
+     */
+    private $printer;
+
+    /**
      * @param string                          $classDir
      * @param PHPParser_PrettyPrinterAbstract $printer
      */
@@ -48,6 +54,14 @@ final class Compiler implements CompilerInterface, Serializable
     ) {
         $this->classDir = $classDir;
         $this->printer = $printer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAopClassDir()
+    {
+        return $this->classDir;
     }
 
     /**
@@ -63,11 +77,23 @@ final class Compiler implements CompilerInterface, Serializable
         if (class_exists($newClassName, false)) {
             return $newClassName;
         }
+
+        return $this->createFile($newClassName, $refClass);
+    }
+
+    /**
+     * @param string          $newClassName
+     * @param ReflectionClass $refClass
+     *
+     * @return string
+     */
+    private function createFile($newClassName, ReflectionClass $refClass)
+    {
         $file = $this->classDir . "/{$newClassName}.php";
         $stmt = $this
-                ->getClass($newClassName, $refClass)
-                ->addStmts($this->getMethods($refClass, $bind))
-                ->getNode();
+            ->getClass($newClassName, $refClass)
+            ->addStmts($this->getMethods($refClass))
+            ->getNode();
         $stmt = $this->addClassDocComment($stmt, $refClass);
         $code = $this->printer->prettyPrint([$stmt]);
         file_put_contents($file, '<?php ' . PHP_EOL . $code);
@@ -98,7 +124,7 @@ final class Compiler implements CompilerInterface, Serializable
      */
     private function getClassName(\ReflectionClass $class, Bind $bind)
     {
-        $className = str_replace('\\', '_', $class->getName()) . '_' . md5($bind) .'RayAop';
+        $className = str_replace('\\', '_', $class->name) . '_' . md5($bind) .'RayAop';
 
         return $className;
     }
@@ -171,31 +197,43 @@ final class Compiler implements CompilerInterface, Serializable
      *
      * @param \ReflectionMethod $method
      *
-     * @return \PHPParser_Builder_Method
+     * @return \PHPParser_Node_Stmt_ClassMethod
      */
     private function getMethod(\ReflectionMethod $method)
     {
         $methodStmt = $this->factory->method($method->name);
         $params = $method->getParameters();
         foreach ($params as $param) {
-            /** @var $param \ReflectionParameter */
-            $paramStmt = $this->factory->param($param->name);
-            $typeHint = $param->getClass();
-            if ($typeHint) {
-                $paramStmt->setTypeHint($typeHint->name);
-            }
-            if ($param->isDefaultValueAvailable()) {
-                $paramStmt->setDefault($param->getDefaultValue());
-            }
-            $methodStmt->addParam(
-                $paramStmt
-            );
+            $methodStmt = $this->getMethodStatement($param, $methodStmt);
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
         $methodStmt->addStmts($methodInsideStatements);
         $node = $this->addMethodDocComment($methodStmt, $method);
 
         return $node;
+    }
+
+    /**
+     * Return parameter reflection
+     * @param ReflectionParameter      $param
+     * @param PHPParser_Builder_Method $methodStmt
+     *
+     * @return PHPParser_Builder_Method
+     */
+    private function getMethodStatement(ReflectionParameter $param, PHPParser_Builder_Method $methodStmt)
+    {
+        /** @var $param \ReflectionParameter */
+        $paramStmt = $this->factory->param($param->name);
+        $typeHint = $param->getClass();
+        if ($typeHint) {
+            $paramStmt->setTypeHint($typeHint->name);
+        }
+        if ($param->isDefaultValueAvailable()) {
+            $paramStmt->setDefault($param->getDefaultValue());
+        }
+        $methodStmt->addParam($paramStmt);
+
+        return $methodStmt;
     }
 
     /**
