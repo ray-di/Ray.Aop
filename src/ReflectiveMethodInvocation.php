@@ -24,7 +24,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * Parameters
      *
-     * @var array
+     * @var ArrayObject
      */
     protected $args;
 

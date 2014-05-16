@@ -15,15 +15,14 @@ class NamedArgs implements NamedArgsInterface
      */
     public function get(MethodInvocation $invocation)
     {
-        $args = $invocation->getArguments();
+        $args = $invocation->getArguments()->getArrayCopy();
         $params = $invocation->getMethod()->getParameters();
-        $i = 0;
         $namedArgs = [];
         foreach ($params as $param) {
             if (isset($namedArgs[$param->name])) {
                 throw new DuplicatedNamedParam($param->name);
             }
-            $namedArgs[$param->name] = $args[$i++];
+            $namedArgs[$param->name] = array_shift($args);
         }
 
         return $namedArgs;
