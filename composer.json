@@ -13,12 +13,17 @@
     "require": {
         "php": ">=5.4.0",
         "doctrine/annotations": "1.*",
-        "nikic/php-parser": "*"
+        "nikic/php-parser": "0.*"
     },
     "autoload": {
         "psr-4": { "Ray\\Aop\\": "src/" }
     },
     "suggest": {
         "ray/di": "DI framework supports Ray.Aop"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.2-dev"
+        }
     }
 }

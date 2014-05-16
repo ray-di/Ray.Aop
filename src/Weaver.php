@@ -14,6 +14,8 @@ use RuntimeException;
 /**
  * Weaver (Method proxy)
  *
+ * Replaced to Compiler. This exists only for backwards compatibility.
+ *
  * @deprecated
  */
 class Weaver implements Weave, ArrayAccess
