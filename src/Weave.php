@@ -7,9 +7,11 @@
 namespace Ray\Aop;
 
 /**
- * Weaver
+ * Weaver Interface
  *
- * The proxy object to call intercepted method
+ * Replaced to Compiler. This exists only for backwards compatibility.
+ *
+ * @deprecated
  *
  */
 interface Weave
