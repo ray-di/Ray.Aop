@@ -20,5 +20,10 @@
     },
     "suggest": {
         "ray/di": "DI framework supports Ray.Aop"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.2-dev"
+        }
     }
 }
