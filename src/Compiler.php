@@ -74,7 +74,7 @@ final class Compiler implements CompilerInterface, Serializable
 
         $refClass = new ReflectionClass($class);
         $newClassName = $this->getClassName($refClass, $bind);
-        if (class_exists($newClassName, false)) {
+        if (class_exists($newClassName)) {
             return $newClassName;
         }
 
