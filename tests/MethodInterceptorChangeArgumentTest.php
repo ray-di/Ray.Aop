@@ -58,4 +58,3 @@ class MethodInterceptorChangeArgumentTest extends \PHPUnit_Framework_TestCase
         $this->invocation = new ReflectiveMethodInvocation($target, $args);
     }
 }
-
