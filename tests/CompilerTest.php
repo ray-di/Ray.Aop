@@ -11,7 +11,7 @@ use PHPParser_Parser;
 use PHPParser_PrettyPrinter_Default;
 use PHPParser_BuilderFactory;
 
-class BuilderTest extends \PHPUnit_Framework_TestCase
+class CompilerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Bind

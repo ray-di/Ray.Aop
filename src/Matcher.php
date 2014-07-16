@@ -49,7 +49,7 @@ class Matcher extends AbstractMatcher implements Matchable
      *
      * @var Reader
      */
-    static private $annotationReader;
+    private static $annotationReader;
 
     /**
      * @var Reader
