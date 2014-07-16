@@ -6,6 +6,9 @@
  */
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\CachedReader;
+use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\Annotations\Reader;
 use Ray\Aop\Exception\InvalidAnnotation;
 use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
@@ -46,14 +49,30 @@ class Matcher extends AbstractMatcher implements Matchable
      *
      * @var Reader
      */
-    private $reader;
+    static private $annotationReader;
+
+    /**
+     * @var Reader
+     */
+    protected $reader;
 
     /**
      * @param Reader $reader
      */
-    public function __construct(Reader $reader)
+    public function __construct(Reader $reader = null)
     {
-        $this->reader = $reader;
+        if (is_null(self::$annotationReader)) {
+            self::$annotationReader = $reader ?: new AnnotationReader;
+        }
+        $this->reader = self::$annotationReader;
+    }
+
+    /**
+     * @param Reader $reader
+     */
+    public static function setAnnotationReader(Reader $reader)
+    {
+        self::$annotationReader = $reader;
     }
 
     /**
