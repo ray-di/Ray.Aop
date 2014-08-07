@@ -197,4 +197,37 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->bind->bind($class, [$pointcut]);
         $this->assertSame(0, (count($this->bind)));
     }
+
+    /**
+     * @return array
+     */
+    public function logicalMethodMatchers()
+    {
+        $matcher = new Matcher(new Reader);
+
+        return [
+            [$matcher->logicalOr($matcher->annotatedWith('Ray\Aop\Annotation\Resource'), $matcher->annotatedWith('Ray\Aop\Annotation\Marker'))],
+            [$matcher->logicalAnd($matcher->annotatedWith('Ray\Aop\Annotation\Marker'), $matcher->startsWith('getDouble'))],
+            [$matcher->logicalXor($matcher->annotatedWith('Ray\Aop\Annotation\Marker'), $matcher->annotatedWith('Ray\Aop\Annotation\Resource'))],
+            [$matcher->logicalNot($matcher->annotatedWith('Ray\Aop\Annotation\Resource'))],
+        ];
+    }
+
+    /**
+     * @param Matchable $logicalMethodMatcher
+     * @dataProvider logicalMethodMatchers
+     */
+    public function testBindByLogicalBindingAsMethodMatcher(Matchable $logicalMethodMatcher)
+    {
+        $matcher = new Matcher(new Reader);
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $pointcut = new Pointcut($matcher->any(), $logicalMethodMatcher, $this->interceptors);
+
+        $result = $this->bind->bind($class, [$pointcut]);
+
+        /** @noinspection PhpParamsInspection */
+        list($method, $interceptors) = each($result);
+        $this->assertSame('getDouble', $method);
+        $this->assertSame($this->interceptors, $interceptors);
+    }
 }
