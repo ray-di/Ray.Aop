@@ -188,6 +188,9 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     protected function isAny($name, $target)
     {
+        if ($name instanceof \ReflectionMethod) {
+            $name = $name->name;
+        }
         if ($target === self::TARGET_CLASS) {
             return true;
         }
@@ -208,19 +211,37 @@ class Matcher extends AbstractMatcher implements Matchable
      * @param string $annotationName
      *
      * @return bool | Matched[]
+     * @throws InvalidArgumentException
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
     protected function isAnnotatedWith($class, $target, $annotationName)
     {
-        if ($target === self::TARGET_CLASS) {
-            $annotation = $this->reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
-            $hasAnnotation = $annotation ? true : false;
+        if ($class instanceof \ReflectionMethod) {
+            if ($target === self::TARGET_CLASS) {
+                throw new InvalidArgumentException($class->name);
+            } else {
+                new $annotationName;
+                $annotation = $this->reader->getMethodAnnotation($class, $annotationName);
+                if ($annotation) {
+                    $matched = new Matched;
+                    $matched->methodName = $class->name;
+                    $matched->annotation = $annotation;
 
-            return $hasAnnotation;
+                    return [$matched];
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            if ($target === self::TARGET_CLASS) {
+                $annotation = $this->reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
+                $hasAnnotation = $annotation ? true : false;
+
+                return $hasAnnotation;
+            } else {
+                return $this->setAnnotations($class, $annotationName);
+            }
         }
-        $result = $this->setAnnotations($class, $annotationName);
-
-        return $result;
     }
 
     /**
@@ -262,6 +283,9 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     protected function isSubclassesOf($class, $target, $superClass)
     {
+        if ($class instanceof \ReflectionMethod) {
+            throw new InvalidArgumentException($class->name);
+        }
         if ($target === self::TARGET_METHOD) {
             throw new InvalidArgumentException($class);
         }
@@ -290,6 +314,9 @@ class Matcher extends AbstractMatcher implements Matchable
     protected function isStartsWith($name, $target, $startsWith)
     {
         unset($target);
+        if ($name instanceof \ReflectionMethod) {
+            $name = $name->name;
+        }
         $result = (strpos($name, $startsWith) === 0) ? true : false;
 
         return $result;

@@ -117,7 +117,7 @@ final class Bind extends ArrayObject implements BindInterface
     {
         $methods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
-            $isMethodMatch = ($methodMatcher($method->name, Matcher::TARGET_METHOD) === true);
+            $isMethodMatch = ($methodMatcher($method, Matcher::TARGET_METHOD) === true);
             if ($isMethodMatch) {
                 $this->bindInterceptors($method->name, $interceptors);
             }
