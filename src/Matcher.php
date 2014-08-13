@@ -178,8 +178,8 @@ class Matcher extends AbstractMatcher implements Matchable
     /**
      * Return isAny
      *
-     * @param string $name   class or method name
-     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     * @param mixed $name string(class name) | ReflectionMethod
+     * @param bool  $target self::TARGET_CLASS | self::TARGET_METHOD
      *
      * @return bool
      *
@@ -206,7 +206,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * Return Match object if annotate bindings, which containing multiple results.
      * Otherwise return bool.
      *
-     * @param string $class
+     * @param mixed  $class string(class name) | ReflectionMethod
      * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
      * @param string $annotationName
      *
