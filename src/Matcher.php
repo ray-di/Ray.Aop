@@ -217,7 +217,7 @@ class Matcher extends AbstractMatcher implements Matchable
     protected function isAnnotatedWith($class, $target, $annotationName)
     {
         if ($class instanceof \ReflectionMethod) {
-            return $this->isAnnotatedWithReflectionMethod($target, $class, $annotationName);
+            return $this->isAnnotatedMethod($target, $class, $annotationName);
         }
         if ($target !== self::TARGET_CLASS) {
             return $this->setAnnotations($class, $annotationName);
@@ -236,7 +236,7 @@ class Matcher extends AbstractMatcher implements Matchable
      * @return array|bool
      * @throws Exception\InvalidArgument
      */
-    private function isAnnotatedWithReflectionMethod($target, $class, $annotationName)
+    private function isAnnotatedMethod($target, $class, $annotationName)
     {
         if ($target === self::TARGET_CLASS) {
             throw new InvalidArgumentException($class->name);
