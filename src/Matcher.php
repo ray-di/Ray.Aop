@@ -229,25 +229,25 @@ class Matcher extends AbstractMatcher implements Matchable
     }
 
     /**
-     * @param string $target
-     * @param string $class
-     * @param string $annotationName
+     * @param bool              $target
+     * @param \ReflectionMethod $method
+     * @param string            $annotationName
      *
      * @return array|bool
      * @throws Exception\InvalidArgument
      */
-    private function isAnnotatedMethod($target, $class, $annotationName)
+    private function isAnnotatedMethod($target, $method, $annotationName)
     {
         if ($target === self::TARGET_CLASS) {
-            throw new InvalidArgumentException($class->name);
+            throw new InvalidArgumentException($method->name);
         }
         new $annotationName;
-        $annotation = $this->reader->getMethodAnnotation($class, $annotationName);
+        $annotation = $this->reader->getMethodAnnotation($method, $annotationName);
         if (! $annotation) {
             return false;
         }
         $matched = new Matched;
-        $matched->methodName = $class->name;
+        $matched->methodName = $method->name;
         $matched->annotation = $annotation;
 
         return [$matched];
