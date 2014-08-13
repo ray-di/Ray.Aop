@@ -230,4 +230,25 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('getDouble', $method);
         $this->assertSame($this->interceptors, $interceptors);
     }
+
+    public function testBindByMethodLogicalBinding()
+    {
+        $matcher = new Matcher(new Reader);
+        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $pointcut = new Pointcut(
+            $matcher->any(),
+            $matcher->logicalOr(
+                $matcher->annotatedWith('Ray\Aop\Annotation\Resource'),
+                $matcher->any()
+            ),
+            $this->interceptors
+        );
+
+        $result = $this->bind->bind($class, [$pointcut]);
+
+        /** @noinspection PhpParamsInspection */
+        list($method, $interceptors) = each($result);
+        $this->assertSame('getDouble', $method);
+        $this->assertSame($this->interceptors, $interceptors);
+    }
 }

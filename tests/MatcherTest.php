@@ -9,6 +9,7 @@ class MatcherTestSuperClass
 
 class MatcherTestChildClass extends MatcherTestSuperClass
 {
+    public function get(){}
 }
 
 class MatcherTestIsolateClass
@@ -289,4 +290,21 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $result = $this->matcher->setAnnotationReader($reader);
         $this->assertNull($result);
     }
+
+    /**
+     * @expectedException \Ray\Aop\Exception\InvalidArgument
+     */
+    public function testIsSubclassesOfException()
+    {
+        $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
+        $method = new \ReflectionMethod('Ray\Aop\MatcherTestChildClass', 'get');
+        $match($method, Matcher::TARGET_METHOD);
+    }
+
+    public function testNoAnnotationReaderConstruct()
+    {
+        $matcher = new Matcher;
+        $this->assertInstanceOf('Ray\Aop\Matcher', $matcher);
+    }
+
 }
