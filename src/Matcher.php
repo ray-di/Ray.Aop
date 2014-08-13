@@ -217,31 +217,40 @@ class Matcher extends AbstractMatcher implements Matchable
     protected function isAnnotatedWith($class, $target, $annotationName)
     {
         if ($class instanceof \ReflectionMethod) {
-            if ($target === self::TARGET_CLASS) {
-                throw new InvalidArgumentException($class->name);
-            } else {
-                new $annotationName;
-                $annotation = $this->reader->getMethodAnnotation($class, $annotationName);
-                if ($annotation) {
-                    $matched = new Matched;
-                    $matched->methodName = $class->name;
-                    $matched->annotation = $annotation;
-
-                    return [$matched];
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            if ($target === self::TARGET_CLASS) {
-                $annotation = $this->reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
-                $hasAnnotation = $annotation ? true : false;
-
-                return $hasAnnotation;
-            } else {
-                return $this->setAnnotations($class, $annotationName);
-            }
+            return $this->isAnnotatedWithReflectionMethod($target, $class, $annotationName);
         }
+        if ($target !== self::TARGET_CLASS) {
+            return $this->setAnnotations($class, $annotationName);
+        }
+        $annotation = $this->reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
+        $hasAnnotation = $annotation ? true : false;
+
+        return $hasAnnotation;
+    }
+
+    /**
+     * @param string $target
+     * @param string $class
+     * @param string $annotationName
+     *
+     * @return array|bool
+     * @throws Exception\InvalidArgument
+     */
+    private function isAnnotatedWithReflectionMethod($target, $class, $annotationName)
+    {
+        if ($target === self::TARGET_CLASS) {
+            throw new InvalidArgumentException($class->name);
+        }
+        new $annotationName;
+        $annotation = $this->reader->getMethodAnnotation($class, $annotationName);
+        if (! $annotation) {
+            return false;
+        }
+        $matched = new Matched;
+        $matched->methodName = $class->name;
+        $matched->annotation = $annotation;
+
+        return [$matched];
     }
 
     /**
