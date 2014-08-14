@@ -60,7 +60,7 @@ final class Bind extends ArrayObject implements BindInterface
             $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
             return;
         }
-        $this->bindByCallable($class, $pointcut->methodMatcher, $pointcut->interceptors);
+        $this->methodMatchBind($class, $pointcut->methodMatcher, $pointcut->interceptors);
 
     }
     /**
@@ -107,13 +107,13 @@ final class Bind extends ArrayObject implements BindInterface
     }
 
     /**
-     * Bind interceptor by callable matcher
+     * Bind interceptor by callable matcher matching
      *
      * @param string          $class
      * @param AbstractMatcher $methodMatcher
      * @param array           $interceptors
      */
-    private function bindByCallable($class, AbstractMatcher $methodMatcher, array $interceptors)
+    private function methodMatchBind($class, AbstractMatcher $methodMatcher, array $interceptors)
     {
         $methods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
