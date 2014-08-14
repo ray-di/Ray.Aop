@@ -1,13 +1,10 @@
 <?php
-namespace Ray\Aop\Sample;
+namespace Ray\Aop;
 
-use Ray\Aop\Pointcut;
-use Ray\Aop\Matcher;
-use Ray\Aop\Bind;
+use Ray\Aop\Sample\WeekendBlocker;
+use Ray\Aop\Sample\MyMatcher;
 
 require dirname(__DIR__) . '/bootstrap.php';
-
-use Doctrine\Common\Annotations\AnnotationReader as Reader;
 
 $matcher = new Matcher;
 $myMatcher = new MyMatcher;
@@ -18,7 +15,7 @@ $pointcut = new Pointcut(
     $interceptors
 );
 $bind = (new Bind)->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
-$compiler = require dirname(dirname(dirname(__DIR__))) . '/scripts/instance.php';
+$compiler = new Compiler(sys_get_temp_dir());
 $billingService = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
 try {
     echo $billingService->chargeOrder();
