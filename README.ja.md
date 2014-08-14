@@ -146,9 +146,9 @@ class MyMatcher extends AbstractMatcher
     /**
      * Return isContain
      *
-     * @param $name    class or method name
-     * @param $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
-     * @param $contain
+     * @param mixed  $name    class name string or method reflection
+     * @param bool   $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
+     * @param string $contain
      *
      * @return bool
      */
