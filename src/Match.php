@@ -73,18 +73,6 @@ class Match
     }
 
     /**
-     * Return isAnnotateBinding
-     *
-     * @return bool
-     */
-    public function isAnnotateBinding()
-    {
-        $isAnnotateBinding = $this->method === 'annotatedWith';
-
-        return $isAnnotateBinding;
-    }
-
-    /**
      * Return isAny
      *
      * @param mixed $name string(class name) | ReflectionMethod
