@@ -38,12 +38,12 @@ abstract class AbstractMatcher
 
 
     /**
-     * @param string      $method
-     * @param null|string $args
+     * @param string $method
+     * @param array  $args
      *
      * @return AbstractMatcher
      */
-    protected function createMatcher($method, $args)
+    protected function createMatcher($method, array $args)
     {
         $this->method = $method;
         $this->args = $args;
@@ -62,7 +62,9 @@ abstract class AbstractMatcher
     public function __invoke($class, $target)
     {
         $args = array_merge([$class, $target], $this->args);
-        $matched = call_user_func_array([new Match, 'is' . $this->method], $args);
+        $method = 'is' . $this->method;
+        $match = method_exists($this, $method) ? $this : new Match;
+        $matched = call_user_func_array([$match, $method], $args);
 
         return $matched;
     }
