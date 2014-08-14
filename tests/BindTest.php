@@ -44,7 +44,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testBindAnyAny()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->any(), $this->interceptors);
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $result = $this->bind->bind($class, [$pointcut]);
@@ -56,7 +56,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testBindAnySubClassOf()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->subclassesOf('Ray\Aop\parentClass'), $matcher->any(), $this->interceptors);
         $class = 'Ray\Aop\childClass';
         $result = $this->bind->bind($class, [$pointcut]);
@@ -68,7 +68,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testBindAnyAnnotatedWith()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Annotation\Marker';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
@@ -81,7 +81,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testBindAnyAnnotatedWithAnnotation()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Annotation\Marker';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
@@ -95,7 +95,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testBindAnyAnnotatedWithDoubleBind()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Annotation\Marker';
         $interceptors1 = [new VoidInterceptor, new DoubleInterceptor];
@@ -119,7 +119,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
      */
     public function testBindAnyAnnotatedWithInvalidAnnotationName()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Annotation\AnnotationNotExistXXX';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
@@ -138,7 +138,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testHasBindingReturnTrue()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->subclassesOf('Ray\Aop\parentClass'), $matcher->any(), $this->interceptors);
         $class = 'Ray\Aop\childClass';
         $this->bind->bind($class, [$pointcut]);
@@ -164,7 +164,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
      */
     public function testBindByAnnotateBinding()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $annotationName = 'Ray\Aop\Annotation\Resource';
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith($annotationName), $this->interceptors);
@@ -191,7 +191,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testNotClassMatch()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $pointcut = new Pointcut($matcher->startsWith('XXX'), $matcher->startsWith('XXX'), $this->interceptors);
         $this->bind->bind($class, [$pointcut]);
@@ -203,7 +203,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
      */
     public function logicalMethodMatchers()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
 
         return [
             [$matcher->logicalOr($matcher->annotatedWith('Ray\Aop\Annotation\Resource'), $matcher->annotatedWith('Ray\Aop\Annotation\Marker'))],
@@ -219,7 +219,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
      */
     public function testBindByLogicalBindingAsMethodMatcher(Matchable $logicalMethodMatcher)
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $pointcut = new Pointcut($matcher->any(), $logicalMethodMatcher, $this->interceptors);
 
@@ -233,7 +233,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testBindByMethodLogicalBinding()
     {
-        $matcher = new Matcher(new Reader);
+        $matcher = new Matcher;
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $pointcut = new Pointcut(
             $matcher->any(),

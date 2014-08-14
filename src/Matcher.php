@@ -6,29 +6,16 @@
  */
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\CachedReader;
-use Doctrine\Common\Annotations\FileCacheReader;
-use Doctrine\Common\Annotations\Reader;
 use Ray\Aop\Exception\InvalidAnnotation;
-use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
-use ReflectionClass;
 
 class Matcher extends AbstractMatcher implements Matchable
 {
-    /**
-     * @param Reader $reader
-     */
-    public function __construct(Reader $reader = null)
-    {
-    }
-
     /**
      * {@inheritdoc}
      */
     public function any()
     {
-        return $this->createMatcher(__FUNCTION__, null);
+        return $this->createMatcher(__FUNCTION__, [null]);
     }
 
     /**
@@ -40,7 +27,7 @@ class Matcher extends AbstractMatcher implements Matchable
             throw new InvalidAnnotation($annotationName);
         }
 
-        return $this->createMatcher(__FUNCTION__, $annotationName);
+        return $this->createMatcher(__FUNCTION__, [$annotationName]);
     }
 
     /**
@@ -48,7 +35,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function subclassesOf($superClass)
     {
-        return $this->createMatcher(__FUNCTION__, $superClass);
+        return $this->createMatcher(__FUNCTION__, [$superClass]);
     }
 
     /**
@@ -64,7 +51,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function startsWith($prefix)
     {
-        return $this->createMatcher(__FUNCTION__, $prefix);
+        return $this->createMatcher(__FUNCTION__, [$prefix]);
     }
 
     /**
@@ -106,7 +93,7 @@ class Matcher extends AbstractMatcher implements Matchable
     public function logicalNot(Matchable $matcher)
     {
         $this->method = __FUNCTION__;
-        $this->args = $matcher;
+        $this->args = [$matcher];
 
         return clone $this;
     }
@@ -122,6 +109,4 @@ class Matcher extends AbstractMatcher implements Matchable
 
         return $isAnnotateBinding;
     }
-
-
 }

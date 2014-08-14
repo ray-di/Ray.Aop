@@ -73,18 +73,6 @@ class Match
     }
 
     /**
-     * Return isAnnotateBinding
-     *
-     * @return bool
-     */
-    public function isAnnotateBinding()
-    {
-        $isAnnotateBinding = $this->method === 'annotatedWith';
-
-        return $isAnnotateBinding;
-    }
-
-    /**
      * Return isAny
      *
      * @param mixed $name string(class name) | ReflectionMethod
@@ -115,22 +103,22 @@ class Match
      * Return Match object if annotate bindings, which containing multiple results.
      * Otherwise return bool.
      *
-     * @param mixed  $class string(class name) | ReflectionMethod
+     * @param mixed  $name string(class name) | ReflectionMethod
      * @param bool   $target AbstractMatcher::TARGET_CLASS | AbstractMatcher::TARGET_METHOD
      * @param string $annotationName
      *
      * @return bool | Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      */
-    public function isAnnotatedWith($class, $target, $annotationName)
+    public function isAnnotatedWith($name, $target, $annotationName)
     {
-        if ($class instanceof \ReflectionMethod) {
-            return $this->isAnnotatedMethod($target, $class, $annotationName);
+        if ($name instanceof \ReflectionMethod) {
+            return $this->isAnnotatedMethod($target, $name, $annotationName);
         }
         if ($target !== AbstractMatcher::TARGET_CLASS) {
-            return $this->setAnnotations($class, $annotationName);
+            return $this->setAnnotations($name, $annotationName);
         }
-        $annotation = $this->reader->getClassAnnotation(new ReflectionClass($class), $annotationName);
+        $annotation = $this->reader->getClassAnnotation(new ReflectionClass($name), $annotationName);
         $hasAnnotation = $annotation ? true : false;
 
         return $hasAnnotation;
@@ -221,7 +209,7 @@ class Match
     /**
      * Return prefix match
      *
-     * @param string $name
+     * @param mixed  $name string (class name) or ReflectionMethod
      * @param string $target
      * @param string $startsWith
      *
@@ -242,7 +230,7 @@ class Match
     /**
      * Return logical or matching result
      *
-     * @param string    $name
+     * @param mixed     $name
      * @param bool      $target
      * @param Matchable $matcherA
      * @param Matchable $matcherB
@@ -269,7 +257,7 @@ class Match
     /**
      * Return logical and matching result
      *
-     * @param string    $name
+     * @param mixed     $name
      * @param bool      $target
      * @param Matchable $matcherA
      * @param Matchable $matcherB
@@ -294,7 +282,7 @@ class Match
     /**
      * Return logical xor matching result
      *
-     * @param string    $name
+     * @param mixed     $name
      * @param bool      $target
      * @param Matchable $matcherA
      * @param Matchable $matcherB
@@ -319,7 +307,7 @@ class Match
     /**
      * Return logical not matching result
      *
-     * @param string    $name
+     * @param mixed     $name
      * @param bool      $target
      * @param Matchable $matcher
      *
@@ -331,6 +319,4 @@ class Match
 
         return $isNot;
     }
-
-
 }

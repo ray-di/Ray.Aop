@@ -18,6 +18,7 @@ use PHPParser_Builder_Method;
 use PHPParser_Lexer;
 use Serializable;
 use ReflectionParameter;
+use PHPParser_PrettyPrinter_Default;
 
 /**
  * AOP compiler
@@ -50,10 +51,10 @@ final class Compiler implements CompilerInterface, Serializable
      */
     public function __construct(
         $classDir,
-        PHPParser_PrettyPrinterAbstract $printer
+        PHPParser_PrettyPrinterAbstract $printer = null
     ) {
         $this->classDir = $classDir;
-        $this->printer = $printer;
+        $this->printer = $printer ?: new PHPParser_PrettyPrinter_Default;
     }
 
     /**
