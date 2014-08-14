@@ -7,6 +7,7 @@
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\InvalidAnnotation;
+use Doctrine\Common\Annotations\Reader;
 
 class Matcher extends AbstractMatcher implements Matchable
 {
@@ -108,5 +109,15 @@ class Matcher extends AbstractMatcher implements Matchable
         $isAnnotateBinding = $this->method === 'annotatedWith';
 
         return $isAnnotateBinding;
+    }
+
+    /**
+     * @param Reader $reader
+     *
+     * @deprecated
+     */
+    public static function setAnnotationReader(Reader $reader)
+    {
+        Match::setAnnotationReader($reader);
     }
 }
