@@ -61,14 +61,8 @@ abstract class AbstractMatcher
      */
     public function __invoke($class, $target)
     {
-        $args = [$class, $target];
-        $thisArgs = is_array($this->args) ? $this->args : [$this->args];
-        foreach ($thisArgs as $arg) {
-            $args[] = $arg;
-        }
-        $method = 'is' . $this->method;
-        $match = new Match;
-        $matched = call_user_func_array([$match, $method], $args);
+        $args = array_merge([$class, $target], $this->args);
+        $matched = call_user_func_array([new Match, 'is' . $this->method], $args);
 
         return $matched;
     }
