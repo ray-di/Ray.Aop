@@ -67,7 +67,8 @@ abstract class AbstractMatcher
             $args[] = $arg;
         }
         $method = 'is' . $this->method;
-        $matched = call_user_func_array([$this, $method], $args);
+        $match = new Match;
+        $matched = call_user_func_array([$match, $method], $args);
 
         return $matched;
     }
