@@ -6,13 +6,7 @@
  */
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\CachedReader;
-use Doctrine\Common\Annotations\FileCacheReader;
-use Doctrine\Common\Annotations\Reader;
 use Ray\Aop\Exception\InvalidAnnotation;
-use Ray\Aop\Exception\InvalidArgument as InvalidArgumentException;
-use ReflectionClass;
 
 class Matcher extends AbstractMatcher implements Matchable
 {
