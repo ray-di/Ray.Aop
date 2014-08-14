@@ -68,7 +68,7 @@ class WeekendBlocker implements MethodInterceptor
 ```php
 <?php
 $bind = new Bind;
-$matcher = new Matcher(new Reader);
+$matcher = new Matcher;
 $interceptors = [new WeekendBlocker];
 $pointcut = new Pointcut(
 		$matcher->any(),

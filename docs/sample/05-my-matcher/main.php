@@ -9,7 +9,7 @@ require dirname(__DIR__) . '/bootstrap.php';
 
 use Doctrine\Common\Annotations\AnnotationReader as Reader;
 
-$matcher = new Matcher(new Reader);
+$matcher = new Matcher;
 $myMatcher = new MyMatcher;
 $interceptors = [new WeekendBlocker];
 $pointcut = new Pointcut(
