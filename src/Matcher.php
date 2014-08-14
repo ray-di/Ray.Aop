@@ -17,26 +17,10 @@ use ReflectionClass;
 class Matcher extends AbstractMatcher implements Matchable
 {
     /**
-     * Annotation reader
-     *
-     * @var Reader
-     */
-    private static $annotationReader;
-
-    /**
-     * @var Reader
-     */
-    protected $reader;
-
-    /**
      * @param Reader $reader
      */
     public function __construct(Reader $reader = null)
     {
-        if (is_null(self::$annotationReader)) {
-            self::$annotationReader = $reader ?: new AnnotationReader;
-        }
-        $this->reader = self::$annotationReader;
     }
 
     /**

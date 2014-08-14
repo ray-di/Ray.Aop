@@ -72,7 +72,7 @@ Finally, we configure everything. In this case we match any class, but only the 
 ```php
 <?php
 $bind = new Bind;
-$matcher = new Matcher(new Reader);
+$matcher = new Matcher;
 $interceptors = [new WeekendBlocker];
 $pointcut = new Pointcut(
 		$matcher->any(),
