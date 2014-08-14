@@ -17,13 +17,6 @@ use ReflectionClass;
 class Matcher extends AbstractMatcher implements Matchable
 {
     /**
-     * @param Reader $reader
-     */
-    public function __construct(Reader $reader = null)
-    {
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function any()
@@ -122,6 +115,4 @@ class Matcher extends AbstractMatcher implements Matchable
 
         return $isAnnotateBinding;
     }
-
-
 }
