@@ -1,13 +1,15 @@
 <?php
 
-namespace Ray\Aop\Sample;
+namespace Ray\Aop;
 
 require dirname(__DIR__) . '/bootstrap.php';
 
-use Ray\Aop\Bind;
+use Ray\Aop\Sample\Timer;
+use Ray\Aop\Sample\interceptorA;
+use Ray\Aop\Sample\interceptorB;
 
 $bind = (new Bind)->bindInterceptors('chargeOrder', array(new Timer, new interceptorA, new interceptorB));
-$compiler = require dirname(dirname(dirname(__DIR__))) . '/scripts/instance.php';
+$compiler = new Compiler(sys_get_temp_dir());
 
 $billingService = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
 

@@ -68,7 +68,7 @@ class WeekendBlocker implements MethodInterceptor
 ```php
 <?php
 $bind = new Bind;
-$matcher = new Matcher(new Reader);
+$matcher = new Matcher;
 $interceptors = [new WeekendBlocker];
 $pointcut = new Pointcut(
 		$matcher->any(),
@@ -77,7 +77,7 @@ $pointcut = new Pointcut(
 );
 $bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
 
-$compiler = require dirname(__DIR__) . '/scripts/instance.php';
+$compiler = new Compiler(sys_get_temp_dir());
 $billing = $compiler->newInstance('RealBillingService', [], $bind);
 try {
     echo $billing->chargeOrder();
@@ -109,7 +109,7 @@ Explicit method name match
 	$bind = new Bind;
 	$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
 
-    $compiler = require dirname(__DIR__) . '/scripts/instance.php';
+    $compiler = new Compiler(sys_get_temp_dir());
 	$billing = $compiler->newInstance('RealBillingService', [], $bind);
 	try {
 	   echo $billing->chargeOrder();
@@ -146,9 +146,9 @@ class MyMatcher extends AbstractMatcher
     /**
      * Return isContain
      *
-     * @param $name    class or method name
-     * @param $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
-     * @param $contain
+     * @param mixed  $name    class name string or method reflection
+     * @param bool   $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
+     * @param string $contain
      *
      * @return bool
      */
