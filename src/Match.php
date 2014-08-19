@@ -134,10 +134,6 @@ class Match
      */
     private function isAnnotatedMethod($target, $method, $annotationName)
     {
-        if ($target === AbstractMatcher::TARGET_CLASS) {
-            throw new InvalidArgument($method->name);
-        }
-        new $annotationName;
         $annotation = $this->reader->getMethodAnnotation($method, $annotationName);
         if (! $annotation) {
             return false;
