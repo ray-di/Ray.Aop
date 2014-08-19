@@ -125,7 +125,6 @@ class Match
     }
 
     /**
-     * @param bool              $target
      * @param \ReflectionMethod $method
      * @param string            $annotationName
      *
