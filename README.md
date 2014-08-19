@@ -186,12 +186,15 @@ Testing Ray.Aop
 Here's how to install Ray.Aop from source to run the unit tests and sample:
 
 ```
-$ git clone git://github.com/koriym/Ray.Aop.git
+$ composer create-project ray/aop Ray.Aop 1.*
 $ cd Ray.Aop
-$ wget http://getcomposer.org/composer.phar
-$ php composer.phar install
-$ php doc/sample-01-quick-weave/main.php
-// Charged. | chargeOrder not allowed on weekends!
+$ phpunit
+$ cd docs
+$ php sample/01-quick-weave/main.php 
+$ php sample/02-multiple-interceptors/main.php
+$ php sample/03-benchmark/main.php
+$ php sample/04-annotation/main.php
+$ php sample/05-my-matcher/main.php 
 ```
 
 Requirement
@@ -207,11 +210,9 @@ Installation
 The recommended way to install Ray.Aop is through [Composer](http://getcomposer.org) and the recommended way to use Ray.Aop is thorouh [Ray.Di](https://github.com/koriym/Ray.Di).
 Ray.Di is a Guice style annotation-driven dependency injection framework. It integrates Ray.Aop AOP functionality.
 ```bash
-# Install Composer
-curl -sS https://getcomposer.org/installer | php
 
 # Add Ray.Aop as a dependency
-php composer.phar require ray/aop:*
+composer require ray/aop:1.*
 ```
 
 ### ini_set
