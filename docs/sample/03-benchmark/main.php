@@ -1,10 +1,11 @@
 <?php
 
-namespace Ray\Aop\Sample;
+namespace Ray\Aop;
 
 require dirname(__DIR__) . '/bootstrap.php';
 
-use Ray\Aop\Bind;
+use Ray\Aop\Sample\EmptyInterceptor;
+use Ray\Aop\Sample\RealBillingService;
 
 $bind1 = new Bind;
 $bind1->bindInterceptors('chargeOrder', array());
@@ -17,7 +18,7 @@ $bind3->bindInterceptors('chargeOrder', array(new EmptyInterceptor, new EmptyInt
 $bind4 = new Bind;
 $bind4->bindInterceptors('chargeOrder', array(new EmptyInterceptor, new EmptyInterceptor, new EmptyInterceptor, new EmptyInterceptor));
 
-$compiler = require dirname(dirname(dirname(__DIR__))) . '/scripts/instance.php';
+$compiler = new Compiler(sys_get_temp_dir());
 
 $billing0 = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], new Bind);
 $billing1 = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind1);

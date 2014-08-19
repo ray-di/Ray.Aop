@@ -1,14 +1,13 @@
 <?php
 
-namespace Ray\Aop\Sample;
+namespace Ray\Aop;
+
+use Ray\Aop\Sample\WeekendBlocker;
 
 require dirname(__DIR__) . '/bootstrap.php';
 
-use Ray\Aop\Bind;
-
 $bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-
-$compiler = require dirname(dirname(dirname(__DIR__))) . '/scripts/instance.php';
+$compiler = new Compiler(sys_get_temp_dir());
 $billingService = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
 
 try {

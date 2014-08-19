@@ -4,6 +4,8 @@ Aspect Oriented Framework for PHP
 [![Latest Stable Version](https://poser.pugx.org/ray/aop/v/stable.png)](https://packagist.org/packages/ray/aop)
 [![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
 
+[[English]](https://github.com/koriym/Ray.Aop/blob/develop/README.md)
+
 **Ray.Aop** パッケージはメソッドインターセプションの機能を提供します。マッチするメソッドが実行される度に実行されるコードを記述する事ができます。トランザクション、セキュリティやログといった横断的な”アスペクト”に向いています。なぜならインターセプターが問題をオブジェクトというよりアスペクトに分けるからです。これらの用法はアスペクトオリエンティッドプログラム(AOP)と呼ばれます。
 
 [Matcher](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.Matchable.html) は値を受け取ったり拒否したりするシンプルなインターフェイスです。例えばRay.Aopでは２つの **Matcher** が必要です:１つはどのクラスに適用するかを決め、もう一つはそのクラスのどのメソッドに適用するかを決めます。これらを簡単に利用するためのファクトリークラスがあります。
@@ -68,7 +70,7 @@ class WeekendBlocker implements MethodInterceptor
 ```php
 <?php
 $bind = new Bind;
-$matcher = new Matcher(new Reader);
+$matcher = new Matcher;
 $interceptors = [new WeekendBlocker];
 $pointcut = new Pointcut(
 		$matcher->any(),
@@ -77,7 +79,7 @@ $pointcut = new Pointcut(
 );
 $bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
 
-$compiler = require dirname(__DIR__) . '/scripts/instance.php';
+$compiler = new Compiler(sys_get_temp_dir());
 $billing = $compiler->newInstance('RealBillingService', [], $bind);
 try {
     echo $billing->chargeOrder();
@@ -109,7 +111,7 @@ Explicit method name match
 	$bind = new Bind;
 	$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
 
-    $compiler = require dirname(__DIR__) . '/scripts/instance.php';
+    $compiler = new Compiler(sys_get_temp_dir());
 	$billing = $compiler->newInstance('RealBillingService', [], $bind);
 	try {
 	   echo $billing->chargeOrder();
@@ -146,9 +148,9 @@ class MyMatcher extends AbstractMatcher
     /**
      * Return isContain
      *
-     * @param $name    class or method name
-     * @param $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
-     * @param $contain
+     * @param mixed  $name    class name string or method reflection
+     * @param bool   $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
+     * @param string $contain
      *
      * @return bool
      */
@@ -181,12 +183,15 @@ Testing Ray.Aop
 Ray.Aopをインストールしてユニットテストするためには以下のようにします。
 
 ```
-$ git clone git://github.com/koriym/Ray.Aop.git
+$ composer create-project ray/aop Ray.Aop 1.*
 $ cd Ray.Aop
-$ curl -sS https://getcomposer.org/installer | php
-$ php composer.phar install
-$ php doc/sample-01-quick-weave/main.php
-// Charged. | chargeOrder not allowed on weekends!
+$ phpunit
+$ cd docs
+$ php sample/01-quick-weave/main.php 
+$ php sample/02-multiple-interceptors/main.php
+$ php sample/03-benchmark/main.php
+$ php sample/04-annotation/main.php
+$ php sample/05-my-matcher/main.php 
 ```
 
 Requirement
@@ -199,12 +204,7 @@ Installation
 
 ### Installing via Composer
 
-Ray.Aopをインストールにするには [Composer](http://getcomposer.org)を利用する事を勧めます。
-
 ```bash
-# Install Composer
-curl -sS https://getcomposer.org/installer | php
-
 # Add Ray.Aop as a dependency
 php composer.phar require ray/aop:*
 ```
