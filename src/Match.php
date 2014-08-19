@@ -113,7 +113,7 @@ class Match
     public function isAnnotatedWith($name, $target, $annotationName)
     {
         if ($name instanceof \ReflectionMethod) {
-            return $this->isAnnotatedMethod($target, $name, $annotationName);
+            return $this->isAnnotatedMethod($name, $annotationName);
         }
         if ($target !== AbstractMatcher::TARGET_CLASS) {
             return $this->setAnnotations($name, $annotationName);
@@ -132,7 +132,7 @@ class Match
      * @return array|bool
      * @throws Exception\InvalidArgument
      */
-    private function isAnnotatedMethod($target, $method, $annotationName)
+    private function isAnnotatedMethod($method, $annotationName)
     {
         $annotation = $this->reader->getMethodAnnotation($method, $annotationName);
         if (! $annotation) {
