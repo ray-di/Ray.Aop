@@ -107,9 +107,19 @@ final class Compiler implements CompilerInterface, Serializable
      */
     public function newInstance($class, array $args, Bind $bind)
     {
+        $instance = $this->noBindNewInstance($class, $args, $bind);
+        $instance->rayAopBind = $bind;
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function noBindNewInstance($class, array $args, Bind $bind)
+    {
         $class = $this->compile($class, $bind);
         $instance = (new ReflectionClass($class))->newInstanceArgs($args);
-        $instance->rayAopBind = $bind;
 
         return $instance;
     }
