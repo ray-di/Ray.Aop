@@ -181,12 +181,15 @@ Testing Ray.Aop
 Ray.Aopをインストールしてユニットテストするためには以下のようにします。
 
 ```
-$ git clone git://github.com/koriym/Ray.Aop.git
+$ composer create-project ray/aop Ray.Aop 1.*
 $ cd Ray.Aop
-$ curl -sS https://getcomposer.org/installer | php
-$ php composer.phar install
-$ php doc/sample-01-quick-weave/main.php
-// Charged. | chargeOrder not allowed on weekends!
+$ phpunit
+$ cd docs
+$ php sample/01-quick-weave/main.php 
+$ php sample/02-multiple-interceptors/main.php
+$ php sample/03-benchmark/main.php
+$ php sample/04-annotation/main.php
+$ php sample/05-my-matcher/main.php 
 ```
 
 Requirement
@@ -199,12 +202,7 @@ Installation
 
 ### Installing via Composer
 
-Ray.Aopをインストールにするには [Composer](http://getcomposer.org)を利用する事を勧めます。
-
 ```bash
-# Install Composer
-curl -sS https://getcomposer.org/installer | php
-
 # Add Ray.Aop as a dependency
 php composer.phar require ray/aop:*
 ```
