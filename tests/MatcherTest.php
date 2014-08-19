@@ -286,7 +286,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAnnotationReader()
     {
-        $result = Match::setAnnotationReader(new Reader);
+        $result = Matcher::setAnnotationReader(new Reader);
         $this->assertNull($result);
     }
 

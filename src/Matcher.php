@@ -113,8 +113,6 @@ class Matcher extends AbstractMatcher implements Matchable
 
     /**
      * @param Reader $reader
-     *
-     * @deprecated
      */
     public static function setAnnotationReader(Reader $reader)
     {
