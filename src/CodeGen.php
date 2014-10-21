@@ -42,7 +42,7 @@ class CodeGen
      * @param string           $class new class name
      * @param \ReflectionClass $sourceClass
      *
-     * @return mixed
+     * @return string
      */
     public function generate($class, \ReflectionClass $sourceClass)
     {
@@ -110,7 +110,7 @@ class CodeGen
         $stmts = [];
         $methods = $class->getMethods();
         foreach ($methods as $method) {
-            /** @var $method ReflectionMethod */
+            /** @var $method \ReflectionMethod */
             if ($method->isPublic()) {
                 $stmts[] = $this->getMethod($method);
             }

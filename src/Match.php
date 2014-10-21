@@ -158,6 +158,7 @@ class Match
         $result = [];
         foreach ($methods as $method) {
             $annotation = $this->reader->getMethodAnnotation($method, $annotationName);
+            /** @var $annotation null | Annotation */
             if ($annotation) {
                 $matched = new Matched;
                 $matched->methodName = $method->name;

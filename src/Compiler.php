@@ -58,7 +58,7 @@ final class Compiler implements CompilerInterface, Serializable
         if (class_exists($newClassName)) {
             return $newClassName;
         }
-        $code = $this->codeGen->generate($newClassName, new ReflectionClass($class), $this->classDir);
+        $code = $this->codeGen->generate($newClassName, new ReflectionClass($class));
         $file = $this->classDir . "/{$newClassName}.php";
         file_put_contents($file, '<?php ' . PHP_EOL . $code);
         include_once $file;
@@ -91,8 +91,8 @@ final class Compiler implements CompilerInterface, Serializable
     /**
      * Return new class name
      *
-     * @param \ReflectionClass $class
-     * @param Bind             $bind
+     * @param string $class
+     * @param Bind   $bind
      *
      * @return string
      */

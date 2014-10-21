@@ -127,9 +127,9 @@ final class Bind extends ArrayObject implements BindInterface
     /**
      * Bind interceptor by annotation binding
      *
-     * @param string        $class
-     * @param Matcher       $methodMatcher
-     * @param Interceptor[] $interceptors
+     * @param string          $class
+     * @param AbstractMatcher $methodMatcher
+     * @param Interceptor[]   $interceptors
      */
     private function bindByAnnotateBinding($class, AbstractMatcher $methodMatcher, array $interceptors)
     {

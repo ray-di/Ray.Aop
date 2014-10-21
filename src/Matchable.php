@@ -14,16 +14,16 @@ interface Matchable
     /**
      * Any match
      *
-     * @return Matchable
+     * @return AbstractMatcher
      */
     public function any();
 
     /**
      * Match binding annotation
      *
-     * @param string $annotationName
+     * @param $annotationName
      *
-     * @return Matchable
+     * @return AbstractMatcher
      */
     public function annotatedWith($annotationName);
 
@@ -32,7 +32,7 @@ interface Matchable
      *
      * @param string $superClass
      *
-     * @return Matchable
+     * @return AbstractMatcher
      */
     public function subclassesOf($superClass);
 
@@ -41,7 +41,7 @@ interface Matchable
      *
      * @param string $prefix
      *
-     * @return Matchable
+     * @return AbstractMatcher
      */
     public function startsWith($prefix);
 
@@ -51,20 +51,13 @@ interface Matchable
      * @param Matchable $matcherA
      * @param Matchable $matcherB
      *
-     * @return Matchable
+     * @return Matcher
      */
     public function logicalOr(Matchable $matcherA, Matchable $matcherB);
 
     /**
      * Match logical and
      *
-     * @param Matchable $matchableA
-     * @param Matchable $matchableB
-     *
-     * @return Matchable
-     */
-
-    /**
      * @param Matchable $matcherA
      * @param Matchable $matcherB
      *
@@ -79,7 +72,7 @@ interface Matchable
      * @param Matchable $matcherA
      * @param Matchable $matcherB
      *
-     * @return self
+     * @return Matcher
      */
     public function logicalXor(Matchable $matcherA, Matchable $matcherB);
 
@@ -88,7 +81,7 @@ interface Matchable
      *
      * @param Matchable $matcher
      *
-     * @return Matchable
+     * @return Matcher
      */
     public function logicalNot(Matchable $matcher);
 
