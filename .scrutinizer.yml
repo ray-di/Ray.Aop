@@ -1,11 +1,14 @@
 filter:
-    excluded_paths: [docs/*, vendor/*, tests/*, src/Compiler/Template.php, src/Weaver.php]
-    paths: [src/*]
-
-before_commands:
-    - 'composer install --dev --prefer-source'
-
+    excluded_paths: [src/Compiler/Template.php, src/Weaver.php]
+    paths: ["src/*"]
 tools:
+    external_code_coverage: true
+    php_code_coverage: true
+    php_sim: true
+    php_mess_detector: true
+    php_pdepend: true
+    php_analyzer: true
+    php_cpd: true
     php_mess_detector:
         enabled: true
         config:
@@ -14,11 +17,3 @@ tools:
         enabled: true
         config:
             ruleset: ./phpcs.xml
-    php_cpd:
-        enabled: true
-        excluded_dirs: [docs/*, vendor/*, tests/*]
-    php_loc: true
-    php_pdepend: true
-    php_analyzer: true
-    sensiolabs_security_checker: true
-    external_code_coverage: true

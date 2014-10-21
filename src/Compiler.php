@@ -110,7 +110,7 @@ final class Compiler implements CompilerInterface, Serializable
 
         return $className;
     }
-    
+
     public function serialize()
     {
         return serialize([$this->classDir]);
