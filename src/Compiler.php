@@ -8,16 +8,9 @@ namespace Ray\Aop;
 
 use PHPParser_BuilderFactory;
 use PHPParser_Parser;
-use PHPParser_PrettyPrinterAbstract;
 use ReflectionClass;
-use ReflectionMethod;
-use PHPParser_Comment_Doc;
-use PHPParser_Builder_Class;
-use PHPParser_Node_Stmt_Class;
-use PHPParser_Builder_Method;
 use PHPParser_Lexer;
 use Serializable;
-use ReflectionParameter;
 use PHPParser_PrettyPrinter_Default;
 
 /**
@@ -37,7 +30,6 @@ final class Compiler implements CompilerInterface, Serializable
 
     /**
      * @param string                          $classDir
-     * @param PHPParser_PrettyPrinterAbstract $printer
      */
     public function __construct($classDir)
     {

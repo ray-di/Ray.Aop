@@ -14,7 +14,7 @@ class CodeGen
     private $parser;
 
     /**
-     * @var \PHPParser_PrettyPrinter_Default
+     * @var \PHPParser_BuilderFactory
      */
     private $factory;
 
@@ -38,6 +38,12 @@ class CodeGen
         $this->printer = $printer;
     }
 
+    /**
+     * @param string           $class new class name
+     * @param \ReflectionClass $sourceClass
+     *
+     * @return mixed
+     */
     public function generate($class, \ReflectionClass $sourceClass)
     {
         $stmt = $this
