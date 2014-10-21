@@ -31,30 +31,22 @@ final class Compiler implements CompilerInterface, Serializable
     public $classDir;
 
     /**
-     * @var \PHPParser_Parser
+     * @var CodeGen
      */
-    private $parser;
-
-    /**
-     * @var \PHPParser_BuilderFactory
-     */
-    private $factory;
-
-    /**
-     * @var \PHPParser_PrettyPrinterAbstract
-     */
-    private $printer;
+    private $codeGen;
 
     /**
      * @param string                          $classDir
      * @param PHPParser_PrettyPrinterAbstract $printer
      */
-    public function __construct(
-        $classDir,
-        PHPParser_PrettyPrinterAbstract $printer = null
-    ) {
+    public function __construct($classDir)
+    {
         $this->classDir = $classDir;
-        $this->printer = $printer ?: new PHPParser_PrettyPrinter_Default;
+        $this->codeGen = new CodeGen(
+            new PHPParser_Parser(new PHPParser_Lexer),
+            new PHPParser_BuilderFactory,
+            new PHPParser_PrettyPrinter_Default
+        );
     }
 
     /**
@@ -70,33 +62,12 @@ final class Compiler implements CompilerInterface, Serializable
      */
     public function compile($class, Bind $bind)
     {
-        $this->parser = new PHPParser_Parser(new PHPParser_Lexer);
-        $this->factory = new PHPParser_BuilderFactory;
-
-        $refClass = new ReflectionClass($class);
-        $newClassName = $this->getClassName($refClass, $bind);
+        $newClassName = $this->getClassName($class, $bind);
         if (class_exists($newClassName)) {
             return $newClassName;
         }
-
-        return $this->createFile($newClassName, $refClass);
-    }
-
-    /**
-     * @param string          $newClassName
-     * @param ReflectionClass $refClass
-     *
-     * @return string
-     */
-    private function createFile($newClassName, ReflectionClass $refClass)
-    {
+        $code = $this->codeGen->generate($newClassName, new ReflectionClass($class), $this->classDir);
         $file = $this->classDir . "/{$newClassName}.php";
-        $stmt = $this
-            ->getClass($newClassName, $refClass)
-            ->addStmts($this->getMethods($refClass))
-            ->getNode();
-        $stmt = $this->addClassDocComment($stmt, $refClass);
-        $code = $this->printer->prettyPrint([$stmt]);
         file_put_contents($file, '<?php ' . PHP_EOL . $code);
         include_once $file;
 
@@ -133,169 +104,20 @@ final class Compiler implements CompilerInterface, Serializable
      *
      * @return string
      */
-    private function getClassName(\ReflectionClass $class, Bind $bind)
+    private function getClassName($class, Bind $bind)
     {
-        $className = str_replace('\\', '_', $class->name) . '_' . md5($bind) .'RayAop';
+        $className = str_replace('\\', '_', $class) . '_' . md5($bind) .'RayAop';
 
         return $className;
     }
-
-    /**
-     * Return class statement
-     *
-     * @param string          $newClassName
-     * @param ReflectionClass $class
-     *
-     * @return \PHPParser_Builder_Class
-     */
-    private function getClass($newClassName, \ReflectionClass $class)
-    {
-        $parentClass = $class->name;
-        $builder = $this->factory
-            ->class($newClassName)
-            ->extend($parentClass)
-            ->implement('Ray\Aop\WeavedInterface')
-            ->addStmt(
-                $this->factory->property('rayAopIntercept')->makePrivate()->setDefault(true)
-            )->addStmt(
-                $this->factory->property('rayAopBind')->makePublic()
-            );
-
-        return $builder;
-    }
-
-    /**
-     * Add class doc comment
-     *
-     * @param PHPParser_Node_Stmt_Class $node
-     * @param ReflectionClass           $class
-     *
-     * @return PHPParser_Node_Stmt_Class
-     */
-    private function addClassDocComment(PHPParser_Node_Stmt_Class $node, \ReflectionClass $class)
-    {
-        $docComment = $class->getDocComment();
-        if ($docComment) {
-            $node->setAttribute('comments', [new PHPParser_Comment_Doc($docComment)]);
-        }
-
-        return $node;
-    }
-
-    /**
-     * Return method statements
-     *
-     * @param ReflectionClass $class
-     *
-     * @return \PHPParser_Builder_Method[]
-     */
-    private function getMethods(ReflectionClass $class)
-    {
-        $stmts = [];
-        $methods = $class->getMethods();
-        foreach ($methods as $method) {
-            /** @var $method ReflectionMethod */
-            if ($method->isPublic()) {
-                $stmts[] = $this->getMethod($method);
-            }
-        }
-
-        return $stmts;
-    }
-
-    /**
-     * Return method statement
-     *
-     * @param \ReflectionMethod $method
-     *
-     * @return \PHPParser_Node_Stmt_ClassMethod
-     */
-    private function getMethod(\ReflectionMethod $method)
-    {
-        $methodStmt = $this->factory->method($method->name);
-        $params = $method->getParameters();
-        foreach ($params as $param) {
-            $methodStmt = $this->getMethodStatement($param, $methodStmt);
-        }
-        $methodInsideStatements = $this->getMethodInsideStatement();
-        $methodStmt->addStmts($methodInsideStatements);
-        $node = $this->addMethodDocComment($methodStmt, $method);
-
-        return $node;
-    }
-
-    /**
-     * Return parameter reflection
-     * @param ReflectionParameter      $param
-     * @param PHPParser_Builder_Method $methodStmt
-     *
-     * @return PHPParser_Builder_Method
-     */
-    private function getMethodStatement(ReflectionParameter $param, PHPParser_Builder_Method $methodStmt)
-    {
-        /** @var $param \ReflectionParameter */
-        $paramStmt = $this->factory->param($param->name);
-        $typeHint = $param->getClass();
-        if ($typeHint) {
-            $paramStmt->setTypeHint($typeHint->name);
-        }
-        if ($param->isDefaultValueAvailable()) {
-            $paramStmt->setDefault($param->getDefaultValue());
-        }
-        $methodStmt->addParam($paramStmt);
-
-        return $methodStmt;
-    }
-
-    /**
-     * Add method doc comment
-     *
-     * @param PHPParser_Builder_Method $methodStmt
-     * @param ReflectionMethod         $method
-     *
-     * @return \PHPParser_Node_Stmt_ClassMethod
-     */
-    private function addMethodDocComment(PHPParser_Builder_Method $methodStmt, \ReflectionMethod $method)
-    {
-        $node = $methodStmt->getNode();
-        $docComment = $method->getDocComment();
-        if ($docComment) {
-            $node->setAttribute('comments', [new PHPParser_Comment_Doc($docComment)]);
-        }
-        return $node;
-    }
-
-    /**
-     * @return \PHPParser_Node[]
-     */
-    private function getMethodInsideStatement()
-    {
-        $code = $this->getWeavedMethodTemplate();
-        $node = $this->parser->parse($code)[0];
-        /** @var $node \PHPParser_Node_Stmt_Class */
-        $node = $node->getMethods()[0];
-
-        return $node->stmts;
-    }
-
-    /**
-     * @return string
-     */
-    private function getWeavedMethodTemplate()
-    {
-
-        return file_get_contents(__DIR__ . '/Compiler/Template.php');
-    }
-
+    
     public function serialize()
     {
-        unset($this->factory);
-        unset($this->parser);
-        return serialize([$this->classDir, $this->printer]);
+        return serialize([$this->classDir]);
     }
 
     public function unserialize($data)
     {
-        list($this->classDir, $this->printer) = unserialize($data);
+        list($this->classDir) = unserialize($data);
     }
 }
