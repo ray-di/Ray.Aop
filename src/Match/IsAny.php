@@ -10,6 +10,31 @@ use Ray\Aop\AbstractMatcher;
 
 final class IsAny
 {
+    private $builtinMethods = [
+        'offsetExists',
+        'offsetGet',
+        'offsetSet',
+        'offsetUnset',
+        'append',
+        'getArrayCopy',
+        'count',
+        'getFlags',
+        'setFlags',
+        'asort',
+        'ksort',
+        'uasort',
+        'uksort',
+        'natsort',
+        'natcasesort',
+        'unserialize',
+        'serialize',
+        'getIterator',
+        'exchangeArray',
+        'setIteratorClass',
+        'getIterator',
+        'getIteratorClass'
+    ];
+
     /**
      * @param string $name
      * @param string $target
@@ -21,15 +46,32 @@ final class IsAny
         if ($name instanceof \ReflectionMethod) {
             $name = $name->name;
         }
-        if ($target === AbstractMatcher::TARGET_CLASS) {
-            return true;
-        }
 
-        if ($this->isBuiltinMethod($name)) {
+        if ($target === AbstractMatcher::TARGET_METHOD && $this->isInvalidMethod($name)) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    private function isInvalidMethod($name)
+    {
+        return $this->isMagicMethod($name) || $this->isBuiltinMethod($name);
+    }
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    private function isMagicMethod($name)
+    {
+        return substr($name, 0, 2) === '__';
     }
 
     /**
@@ -39,35 +81,7 @@ final class IsAny
      */
     private function isBuiltinMethod($name)
     {
-        $isMagicMethod = substr($name, 0, 2) === '__';
-        if ($isMagicMethod) {
-            return true;
-        }
-        $builtinMethods = [
-            'offsetExists',
-            'offsetGet',
-            'offsetSet',
-            'offsetUnset',
-            'append',
-            'getArrayCopy',
-            'count',
-            'getFlags',
-            'setFlags',
-            'asort',
-            'ksort',
-            'uasort',
-            'uksort',
-            'natsort',
-            'natcasesort',
-            'unserialize',
-            'serialize',
-            'getIterator',
-            'exchangeArray',
-            'setIteratorClass',
-            'getIterator',
-            'getIteratorClass'
-        ];
-        $isBuiltin = in_array($name, $builtinMethods) ? true : false;
+        $isBuiltin = in_array($name, $this->builtinMethods);
 
         return $isBuiltin;
     }
