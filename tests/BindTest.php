@@ -89,7 +89,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         /* @var $bind Bind */
         /** @noinspection PhpParamsInspection */
         list($method,) = each($bind);
-        $annotation = $bind->annotation[$method];
+        $annotation = $this->bind->annotation[$method];
         $this->assertInstanceOf('Ray\Aop\Annotation\Marker', $annotation);
     }
 

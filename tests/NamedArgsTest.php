@@ -26,11 +26,11 @@ class NamedArgsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, $namedArgs['a']);
     }
 
-    /**
-     * @expectedException \Ray\Aop\Exception\DuplicatedNamedParam
-     */
     public function testDuplicatedParamName()
     {
+        if (! defined('HHVM_VERSION')) {
+            $this->setExpectedException('Ray\Aop\Exception\DuplicatedNamedParam');
+        }
         $invocation = new ReflectiveMethodInvocation([new MockMethod, 'duplicatedParamName'], [1, 2]);
         $this->args->get($invocation);
     }

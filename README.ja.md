@@ -46,7 +46,7 @@ class RealBillingService
     {
 ```
 
-次に、MethodInterceptorインターフェイスを実装します。元のメソッドを実行するためには **$invocation->proceed()** と実行します。 
+次に、MethodInterceptorインターフェイスを実装します。元のメソッドを実行するためには **$invocation->proceed()** と実行します。
 
 ```php
 <?php
@@ -187,17 +187,18 @@ $ composer create-project ray/aop Ray.Aop 1.*
 $ cd Ray.Aop
 $ phpunit
 $ cd docs
-$ php sample/01-quick-weave/main.php 
+$ php sample/01-quick-weave/main.php
 $ php sample/02-multiple-interceptors/main.php
 $ php sample/03-benchmark/main.php
 $ php sample/04-annotation/main.php
-$ php sample/05-my-matcher/main.php 
+$ php sample/05-my-matcher/main.php
 ```
 
 Requirement
 -------------
 
  * PHP 5.4+
+ * hhvm
 
 Installation
 ============
