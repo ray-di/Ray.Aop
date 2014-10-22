@@ -6,12 +6,16 @@
  */
 namespace Ray\Aop;
 
-use ArrayObject;
 use ReflectionClass;
 use ReflectionMethod;
 
-final class Bind extends ArrayObject implements BindInterface
+final class Bind implements \ArrayAccess, \Countable, BindInterface
 {
+    /**
+     * @var array
+     */
+    private $bind = [];
+
     /**
      * Annotated binding annotation
      *
@@ -24,7 +28,7 @@ final class Bind extends ArrayObject implements BindInterface
      */
     public function hasBinding()
     {
-        $hasImplicitBinding = (count($this)) ? true : false;
+        $hasImplicitBinding = count($this->bind) > 0;
 
         return $hasImplicitBinding;
     }
@@ -40,24 +44,25 @@ final class Bind extends ArrayObject implements BindInterface
             $this->bindPointcut($class, $pointcut);
         }
 
-        return $this;
+        return $this->bind;
     }
 
     /**
      * @param string    $class
      * @param Pointcut $pointcut
-     *
-     * @return void
      */
     private function bindPointcut($class, Pointcut $pointcut)
     {
         $classMatcher = $pointcut->classMatcher;
         $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
-        if ($isClassMatch !== true) {
+        if ($isClassMatch === false) {
+
             return;
         }
-        if (method_exists($pointcut->methodMatcher, 'isAnnotateBinding') && $pointcut->methodMatcher->isAnnotateBinding()) {
+        $isAnnotateBinding = method_exists($pointcut->methodMatcher, 'isAnnotateBinding') && $pointcut->methodMatcher->isAnnotateBinding();
+        if ($isAnnotateBinding) {
             $this->bindByAnnotateBinding($class, $pointcut->methodMatcher, $pointcut->interceptors);
+
             return;
         }
         $this->methodMatchBind($class, $pointcut->methodMatcher, $pointcut->interceptors);
@@ -68,7 +73,7 @@ final class Bind extends ArrayObject implements BindInterface
      */
     public function bindInterceptors($method, array $interceptors, $annotation = null)
     {
-        $this[$method] = !isset($this[$method]) ? $interceptors : array_merge($this[$method], $interceptors);
+        $this->bind[$method] = !isset($this->bind[$method]) ? $interceptors : array_merge($this->bind[$method], $interceptors);
         if ($annotation) {
             $this->annotation[$method] = $annotation;
         }
@@ -82,7 +87,7 @@ final class Bind extends ArrayObject implements BindInterface
     public function __invoke($name)
     {
         // pre compiled implicit matcher
-        $interceptors = isset($this[$name]) ? $this[$name] : false;
+        $interceptors = isset($this->bind[$name]) ? $this->bind[$name] : false;
 
         return $interceptors;
     }
@@ -93,7 +98,7 @@ final class Bind extends ArrayObject implements BindInterface
     public function __toString()
     {
         $binds = [];
-        foreach ($this as $method => $interceptors) {
+        foreach ($this->bind as $method => $interceptors) {
             $inspectorsInfo = [];
             foreach ($interceptors as $interceptor) {
                 $inspectorsInfo[] .= get_class($interceptor);
@@ -142,5 +147,45 @@ final class Bind extends ArrayObject implements BindInterface
                 $this->bindInterceptors($matched->methodName, $interceptors, $matched->annotation);
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->bind[$offset]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetGet($offset)
+    {
+        return $this->bind[$offset];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->bind[$offset] = $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->bind[$offset]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count()
+    {
+        return count($this->bind);
     }
 }
