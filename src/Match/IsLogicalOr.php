@@ -12,13 +12,24 @@ class IsLogicalOr
 {
     public function __invoke($name, $target, Matchable $matcherA, Matchable $matcherB)
     {
+        $args = func_num_args();
         // a or b
         $isOr = ($matcherA($name, $target) or $matcherB($name, $target));
-        if (func_num_args() <= 4) {
+        if ($args <= 4) {
             return $isOr;
         }
+        $isOr = $this->moreArgsOr(func_get_args(), $isOr, $name, $target);
+
+        return $isOr;
+    }
+
+    /**
+     * @param bool $isOr
+     */
+    public function moreArgsOr(array $args, $isOr, $name, $target)
+    {
         // a or b or c ...
-        $args = array_slice(func_get_args(), 4);
+        $args = array_slice($args, 4);
         foreach ($args as $arg) {
             $isOr = ($isOr or $arg($name, $target));
         }
