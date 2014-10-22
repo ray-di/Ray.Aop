@@ -284,12 +284,6 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
-    public function testSetAnnotationReader()
-    {
-        $result = Matcher::setAnnotationReader(new Reader);
-        $this->assertNull($result);
-    }
-
     /**
      * @expectedException \Ray\Aop\Exception\InvalidArgument
      */
