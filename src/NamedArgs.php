@@ -19,8 +19,9 @@ class NamedArgs implements NamedArgsInterface
         $params = $invocation->getMethod()->getParameters();
         $namedArgs = [];
         foreach ($params as $param) {
-            if (isset($namedArgs[$param->name])) {
-                throw new DuplicatedNamedParam($param->name);
+            $name = $param->getName();
+            if (isset($namedArgs[$name])) {
+                throw new DuplicatedNamedParam($name);
             }
             $namedArgs[$param->name] = array_shift($args);
         }
