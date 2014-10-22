@@ -19,6 +19,20 @@ class IsLogicalAnd
             return $isAnd;
         }
         $args = array_slice(func_get_args(), 4);
+        $bool = $this->moreArgs($args, $isAnd, $name, $target);
+
+        return $bool;
+    }
+
+    /**
+     * @param bool $isAnd
+     * @param string $name
+     * @param string $target
+     *
+     * @return bool
+     */
+    private function moreArgs($args, $isAnd, $name, $target)
+    {
         foreach ($args as $arg) {
             $isAnd = ($isAnd and $arg($name, $target));
         }
