@@ -62,9 +62,9 @@ abstract class AbstractMatcher
     public function __invoke($class, $target)
     {
         $args = array_merge([$class, $target], $this->args);
-        $method = 'is' . $this->method;
-        $match = method_exists($this, $method) ? $this : new Match;
-        $matched = call_user_func_array([$match, $method], $args);
+
+        $matcherClass = __NAMESPACE__ . '\Match\Is' . ucwords($this->method);
+        $matched = call_user_func_array(new $matcherClass, $args);
 
         return $matched;
     }
