@@ -11,34 +11,6 @@ use Ray\Aop\AbstractMatcher;
 final class IsAny
 {
     /**
-     * @var array
-     */
-    private $builtinMethods = [
-        'offsetExists',
-        'offsetGet',
-        'offsetSet',
-        'offsetUnset',
-        'append',
-        'getArrayCopy',
-        'count',
-        'getFlags',
-        'setFlags',
-        'asort',
-        'ksort',
-        'uasort',
-        'uksort',
-        'natsort',
-        'natcasesort',
-        'unserialize',
-        'serialize',
-        'getIterator',
-        'exchangeArray',
-        'setIteratorClass',
-        'getIterator',
-        'getIteratorClass'
-    ];
-
-    /**
      * @param string $name
      * @param string $target
      *
@@ -52,11 +24,51 @@ final class IsAny
         if ($target === AbstractMatcher::TARGET_CLASS) {
             return true;
         }
-        if (substr($name, 0, 2) === '__') {
+
+        if ($this->isBuiltinMethod($name)) {
             return false;
         }
-        $isMatch = in_array($name, $this->builtinMethods) ? false : true;
 
-        return $isMatch;
+        return true;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function isBuiltinMethod($name)
+    {
+        $isMagicMethod = substr($name, 0, 2) === '__';
+        if ($isMagicMethod) {
+            return true;
+        }
+        $builtinMethods = [
+            'offsetExists',
+            'offsetGet',
+            'offsetSet',
+            'offsetUnset',
+            'append',
+            'getArrayCopy',
+            'count',
+            'getFlags',
+            'setFlags',
+            'asort',
+            'ksort',
+            'uasort',
+            'uksort',
+            'natsort',
+            'natcasesort',
+            'unserialize',
+            'serialize',
+            'getIterator',
+            'exchangeArray',
+            'setIteratorClass',
+            'getIterator',
+            'getIteratorClass'
+        ];
+        $isBuiltin = in_array($name, $builtinMethods) ? true : false;
+
+        return $isBuiltin;
     }
 }
