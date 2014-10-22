@@ -10,30 +10,22 @@ use Ray\Aop\AbstractMatcher;
 
 final class IsAny
 {
-    private $builtinMethods = [
-        'offsetExists',
-        'offsetGet',
-        'offsetSet',
-        'offsetUnset',
-        'append',
-        'getArrayCopy',
-        'count',
-        'getFlags',
-        'setFlags',
-        'asort',
-        'ksort',
-        'uasort',
-        'uksort',
-        'natsort',
-        'natcasesort',
-        'unserialize',
-        'serialize',
-        'getIterator',
-        'exchangeArray',
-        'setIteratorClass',
-        'getIterator',
-        'getIteratorClass'
-    ];
+    private static $builtinMethods = [];
+
+    public function __construct()
+    {
+        if (! self::$builtinMethods) {
+            $this->setBuildInMethods();
+        }
+    }
+
+    private function setBuildInMethods()
+    {
+        $methods = (new \ReflectionClass('\ArrayObject'))->getMethods();
+        foreach ($methods as $method) {
+            self::$builtinMethods[] =  $method->getName();
+        }
+    }
 
     /**
      * @param string $name
@@ -81,7 +73,7 @@ final class IsAny
      */
     private function isBuiltinMethod($name)
     {
-        $isBuiltin = in_array($name, $this->builtinMethods);
+        $isBuiltin = in_array($name, self::$builtinMethods);
 
         return $isBuiltin;
     }
