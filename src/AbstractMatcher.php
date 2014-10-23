@@ -83,5 +83,4 @@ abstract class AbstractMatcher
 
         return $matched;
     }
-
 }
