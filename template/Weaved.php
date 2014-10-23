@@ -3,7 +3,7 @@
 // @codeCoverageIgnoreStart
 
 /**
- * Weaved class template
+ * FakeWeaved class template
  *
  *  - Compiler takes only the statements code method inside to create new subclass PHP code.
  *
@@ -13,7 +13,7 @@
  * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
  *
  */
-class Weaved extends \Ray\Aop\Mock\Mock
+class Weaved extends \Ray\Aop\FakeMock
 {
     private $rayAopIntercept = true;
     public $rayAopBind;

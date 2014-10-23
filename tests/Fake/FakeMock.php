@@ -1,9 +1,9 @@
 <?php
 
-namespace Ray\Aop\Mock;
+namespace Ray\Aop;
 
-/** doc comment of Mock */
-class Mock
+/** doc comment of FakeMock */
+class FakeMock
 {
     private $a = 1;
     protected $b = 2;
@@ -21,7 +21,7 @@ class Mock
         return $a - $b;
     }
 
-    public function returnValue(Num $num = null)
+    public function returnValue(FakeNum $num = null)
     {
         return $num->value;
     }

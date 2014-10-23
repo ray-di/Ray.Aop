@@ -5,7 +5,7 @@ namespace Ray\Aop;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Interceptor\DoubleInterceptor;
 use Ray\Aop\Interceptor\AbortProceedInterceptor;
-use Ray\Aop\Mock\Num;
+use Ray\Aop\FakeNum;
 use PHPParser_Lexer;
 use PHPParser_Parser;
 use PHPParser_PrettyPrinter_Default;
@@ -32,8 +32,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         );
         $this->bind = new Bind;
         $matcher = new Matcher(new AnnotationReader);
-        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new DoubleInterceptor]);
-        $this->bind->bind('Ray\Aop\Mock\Weaved', [$pointcut]);
+        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor]);
+        $this->bind->bind(FakeWeaved::class, [$pointcut]);
     }
 
     public function testNew()
@@ -43,7 +43,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildClass()
     {
-        $class = $this->compiler->compile('\Ray\Aop\Mock\Mock', $this->bind);
+        $class = $this->compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
 
         return $class;
@@ -51,8 +51,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildClassTwice()
     {
-        $class1 = $this->compiler->compile('\Ray\Aop\Mock\Mock', $this->bind);
-        $class2 = $this->compiler->compile('\Ray\Aop\Mock\Mock', $this->bind);
+        $class1 = $this->compiler->compile(FakeMock::class, $this->bind);
+        $class2 = $this->compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class1));
         $this->assertSame($class1, $class2);
     }
@@ -63,7 +63,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function testBuild($class)
     {
         $parentClass = (new \ReflectionClass($class))->getParentClass()->name;
-        $this->assertSame($parentClass, 'Ray\Aop\Mock\Mock');
+        $this->assertSame($parentClass, FakeMock::class);
     }
 
     /**
@@ -79,9 +79,9 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInstance()
     {
-        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
+        $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
         $parent = (new \ReflectionClass($weaved))->getParentClass()->name;
-        $this->assertSame($parent, 'Ray\Aop\Mock\Mock');
+        $this->assertSame($parent, FakeMock::class);
 
         return $weaved;
     }
@@ -103,7 +103,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      */
     public function testMethodReturnValue($weaved)
     {
-        $num = new Num;
+        $num = new FakeNum;
         $num->value = 1;
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
@@ -111,8 +111,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPrivateVal()
     {
-        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
-        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        /* @var $weaved \Ray\Aop\FakeMock */
         $val = $weaved->getPrivateVal();
         $this->assertSame($val, 1);
     }
@@ -120,30 +120,30 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function testCallAbortProceedInterceptorTwice()
     {
         $matcher = new Matcher(new AnnotationReader);
-        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new AbortProceedInterceptor]);
-        $this->bind->bind('Ray\Aop\Mock\Weaved', [$pointcut]);
-        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
-        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeAbortProceedInterceptor]);
+        $this->bind->bind(FakeWeaved::class, [$pointcut]);
+        $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        /* @var $weaved \Ray\Aop\FakeMock */
         $this->assertSame(40, $weaved->returnSame(1));
         $this->assertSame(40, $weaved->returnSame(1));
     }
 
     public function testClassDocComment()
     {
-        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
-        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        /* @var $weaved \Ray\Aop\FakeMock */
         $docComment = (new \ReflectionClass($weaved))->getDocComment();
-        $expected = (new \ReflectionClass('Ray\Aop\Mock\Mock'))->getDocComment();
+        $expected = (new \ReflectionClass(FakeMock::class))->getDocComment();
         $this->assertContains('/**', $docComment);
         $this->assertSame($expected, $docComment);
     }
 
     public function testMethodDocComment()
     {
-        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\Mock', [], $this->bind);
-        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        /* @var $weaved \Ray\Aop\FakeMock */
         $docComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
-        $expected = (new \ReflectionClass('Ray\Aop\Mock\Mock'))->getMethods()[0]->getDocComment();
+        $expected = (new \ReflectionClass(FakeMock::class))->getMethods()[0]->getDocComment();
 
         $this->assertContains('/**', $docComment);
         $this->assertSame($expected, $docComment);
@@ -151,8 +151,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     public function testNoDocComment()
     {
-        $weaved = $this->compiler->newInstance('Ray\Aop\Mock\MockNoDoc', [], $this->bind);
-        /* @var $weaved \Ray\Aop\Mock\Mock */
+        $weaved = $this->compiler->newInstance(FakeMockNoDoc::class, [], $this->bind);
+        /* @var $weaved \Ray\Aop\FakeMock */
         $classDocComment = (new \ReflectionClass($weaved))->getDocComment();
         $methodDocComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
 
@@ -163,7 +163,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function testSerialize()
     {
         $compiler = unserialize(serialize($this->compiler));
-        $class = $compiler->compile('\Ray\Aop\Mock\Mock', $this->bind);
+        $class = $compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
     }
 

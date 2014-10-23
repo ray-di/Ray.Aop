@@ -1,10 +1,8 @@
 <?php
-namespace Ray\Aop\Interceptor;
 
-use Ray\Aop\MethodInterceptor;
-use Ray\Aop\MethodInvocation;
+namespace Ray\Aop;
 
-class DoubleArgumentInterceptor implements MethodInterceptor
+class FakeDoubleArgumentInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {

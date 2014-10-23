@@ -1,23 +1,23 @@
 <?php
 
-namespace Ray\Aop\Mock;
+namespace Ray\Aop;
 
 use Ray\Aop\Bind;
 use Ray\Aop\ReflectiveMethodInvocation;
 
-interface AddInterface
+interface FakeAddInterface
 {
-    public function add(Num $num1, $num2);
+    public function add(FakeNum $num1, $num2);
 }
 
-interface SquareInterface
+interface FakeSquareInterface
 {
     public function square($num);
 }
 
-class Foo implements AddInterface, SquareInterface
+class FakeFoo implements FakeAddInterface, FakeSquareInterface
 {
-    public function add(Num $num1, $num2)
+    public function add(FakeNum $num1, $num2)
     {
         return $num1->value + $num2;
     }
@@ -28,7 +28,7 @@ class Foo implements AddInterface, SquareInterface
     }
 }
 
-class Foo_weaved
+class FakeFoo_weaved
 {
 
     public $object;
@@ -40,7 +40,7 @@ class Foo_weaved
         $this->bind = $bind;
     }
 
-    public function add(Num $num1, $num2)
+    public function add(FakeNum $num1, $num2)
     {
         // direct call
         if (!isset($this->bind[__FUNCTION__])) {

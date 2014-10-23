@@ -17,14 +17,14 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
     protected $invocation;
 
     /**
-     * @var DoubleInterceptor
+     * @var FakeDoubleArgumentInterceptor
      */
     protected $interceptor;
 
     protected function setUp()
     {
         $this->mock = new MockMethod;
-        $this->interceptor = new DoubleInterceptor;
+        $this->interceptor = new FakeDoubleArgumentInterceptor;
         $target = [$this->mock, 'getDouble'];
         $args = [2];
         $this->invocation = new ReflectiveMethodInvocation($target, $args);
@@ -39,7 +39,7 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
 
     public function testInvokeWithInterceptors()
     {
-        $interceptors = [new DoubleInterceptor, new DoubleInterceptor];
+        $interceptors = [new FakeDoubleArgumentInterceptor, new FakeDoubleArgumentInterceptor];
         $target = [$this->mock, 'getDouble'];
         $args = [2];
         $invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);
@@ -50,7 +50,7 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
 
     public function testInvokeWithDoubleInterceptors()
     {
-        $interceptors = [new DoubleInterceptor, new DoubleInterceptor];
+        $interceptors = [new FakeDoubleArgumentInterceptor, new FakeDoubleArgumentInterceptor];
         $target = [$this->mock, 'getDouble'];
         $args = [2];
         $invocation = new ReflectiveMethodInvocation($target, $args, $interceptors);

@@ -1,8 +1,8 @@
 <?php
 
-namespace Ray\Aop\Mock;
+namespace Ray\Aop;
 
-class MockNoDoc
+class FakeMockNoDoc
 {
     public function returnSame($a)
     {

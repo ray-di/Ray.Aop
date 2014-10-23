@@ -1,12 +1,8 @@
 <?php
 
-namespace Ray\Aop\Compiler;
+namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Ray\Aop\Bind;
-use Ray\Aop\Interceptor\DoubleInterceptor;
-use Ray\Aop\Matcher;
-use Ray\Aop\Pointcut;
 use Weaved;
 
 class TemplateTest extends \PHPUnit_Framework_TestCase
@@ -24,7 +20,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 
     public function testImplicitBiding()
     {
-        $bind = (new Bind)->bindInterceptors('returnSame', [new DoubleInterceptor]);
+        $bind = (new Bind)->bindInterceptors('returnSame', [new FakeDoubleInterceptor]);
         $this->weaved->rayAopBind = $bind;
         $result = $this->weaved->returnSame(1);
         $this->assertSame(2, $result);
@@ -32,7 +28,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 
     public function testImplicitBidingDoubleInterceptor()
     {
-        $bind = (new Bind)->bindInterceptors('returnSame', [new DoubleInterceptor, new DoubleInterceptor]);
+        $bind = (new Bind)->bindInterceptors('returnSame', [new FakeDoubleInterceptor, new FakeDoubleInterceptor]);
         $this->weaved->rayAopBind = $bind;
         $result = $this->weaved->returnSame(1);
         $this->assertSame(4, $result);
@@ -47,7 +43,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     public function testMatcherWeave()
     {
         $matcher = new Matcher(new AnnotationReader);
-        $pointcut = new Pointcut($matcher->any(), $matcher->any(), [new DoubleInterceptor]);
+        $pointcut = new Pointcut($matcher->any(), $matcher->any(), [new FakeDoubleInterceptor]);
         $bind = new Bind;
         $bind->bind('Weaved', [$pointcut]);
         $this->weaved->rayAopBind = $bind;

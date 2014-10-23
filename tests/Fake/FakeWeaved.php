@@ -1,6 +1,6 @@
 <?php
 
-namespace Ray\Aop\Mock;
+namespace Ray\Aop;
 
 use Ray\Aop\Bind;
 use Ray\Aop\ReflectiveMethodInvocation;
@@ -8,7 +8,7 @@ use Ray\Aop\ReflectiveMethodInvocation;
 /**
  * Test class for Ray.Aop
  */
-class Weaved extends Mock
+class FakeWeaved extends FakeMock
 {
     private $rayAopIntercept = true;
 

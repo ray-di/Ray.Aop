@@ -2,7 +2,7 @@
 
 namespace Ray\Aop;
 
-use Ray\Aop\Annotation\Marker;
+use Ray\Aop\FakeMarker;
 
 class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
 {
@@ -74,9 +74,9 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     {
         $mock = new MockMethod;
         $callable = [$mock, 'add'];
-        $invocation = new ReflectiveMethodInvocation($callable, [], [], [new Marker]);
+        $invocation = new ReflectiveMethodInvocation($callable, [], [], [new FakeMarker]);
         /** @noinspection PhpDeprecationInspection */
         $annotations = $invocation->getAnnotation();
-        $this->assertInstanceOf('Ray\Aop\Annotation\Marker', $annotations[0]);
+        $this->assertInstanceOf('Ray\Aop\FakeMarker', $annotations[0]);
     }
 }

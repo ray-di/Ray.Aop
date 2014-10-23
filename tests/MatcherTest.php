@@ -38,14 +38,14 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function testAny()
     {
         $any = $this->matcher->any();
-        $result = $any('anyClassEvenDoesNotExists', 'Ray\Aop\Mock\AnnotateClass');
+        $result = $any('anyClassEvenDoesNotExists', 'Ray\Aop\FakeAnnotateClass');
         $this->assertTrue($result);
     }
 
     public function testAnnotatedWithClass()
     {
-        $annotation = 'Ray\Aop\Annotation\Resource';
-        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotation = 'Ray\Aop\FakeResource';
+        $class = 'Ray\Aop\FakeAnnotateClass';
         $match = $this->matcher->annotatedWith($annotation);
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertTrue($result);
@@ -53,8 +53,8 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testAnnotatedWithClassReturnMatcherClass()
     {
-        $annotation = 'Ray\Aop\Annotation\Resource';
-        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotation = 'Ray\Aop\FakeResource';
+        $class = 'Ray\Aop\FakeAnnotateClass';
         $match = $this->matcher->annotatedWith($annotation);
         $result = $match($class, Matcher::TARGET_CLASS);
         $this->assertSame(true, $result);
@@ -62,15 +62,15 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testAnnotatedWithMethod()
     {
-        $annotation = 'Ray\Aop\Annotation\Marker';
-        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $annotation = 'Ray\Aop\FakeMarker';
+        $class = 'Ray\Aop\FakeAnnotateClass';
         $matcher = $this->matcher->annotatedWith($annotation);
         $this->assertInstanceOf('Ray\Aop\Matcher', $matcher);
         $matchedArray = $matcher($class, Matcher::TARGET_METHOD);
         $matchedFirst = $matchedArray[0];
         $this->assertInstanceOf('Ray\Aop\Matched', $matchedFirst);
         $this->assertSame('getDouble', $matchedFirst->methodName);
-        $this->assertInstanceOf('Ray\Aop\Annotation\Marker', $matchedFirst->annotation);
+        $this->assertInstanceOf('Ray\Aop\FakeMarker', $matchedFirst->annotation);
     }
 
     public function testSubclassesOf()
@@ -103,7 +103,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function testSubclassesOfThrowExceptionIfTargetIsMethod()
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
-        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $class = 'Ray\Aop\FakeAnnotateClass';
         $result = $match($class, Matcher::TARGET_METHOD);
         $this->assertFalse($result);
     }
@@ -148,7 +148,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function testIsstartsWithMethodFalse()
     {
         $startsWith = $this->matcher->startsWith('on');
-        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $class = 'Ray\Aop\FakeAnnotateClass';
         $result = $startsWith($class, Matcher::TARGET_METHOD, '__construct');
         $this->assertFalse($result);
     }
@@ -156,7 +156,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function testIsStartsWith()
     {
         $startsWith = $this->matcher->startsWith('on');
-        $class = 'Ray\Aop\Mock\AnnotateClass';
+        $class = 'Ray\Aop\FakeAnnotateClass';
         $result = $startsWith($class, Matcher::TARGET_METHOD, '__construct');
         $this->assertFalse($result);
     }
