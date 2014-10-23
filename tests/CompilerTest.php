@@ -27,7 +27,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->compiler = new Compiler(
-            __DIR__ . '/Weaved',
+            __DIR__ . '/tmp',
             new PHPParser_PrettyPrinter_Default
         );
         $this->bind = new Bind;
@@ -170,7 +170,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function testGetAopClassDir()
     {
         $dir = $this->compiler->getAopClassDir();
-        $this->assertSame(__DIR__ . '/Weaved', $dir);
+        $this->assertSame(__DIR__ . '/tmp', $dir);
     }
 
 }
