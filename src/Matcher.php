@@ -40,14 +40,6 @@ class Matcher extends AbstractMatcher implements Matchable
     }
 
     /**
-     * @deprecated
-     */
-    public function startWith($prefix)
-    {
-        return $this->startsWith($prefix);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function startsWith($prefix)

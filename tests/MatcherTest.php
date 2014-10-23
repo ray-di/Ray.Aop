@@ -153,9 +153,9 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
-    public function testIsStartWith()
+    public function testIsStartsWith()
     {
-        $startsWith = $this->matcher->startWith('on');
+        $startsWith = $this->matcher->startsWith('on');
         $class = 'Ray\Aop\Mock\AnnotateClass';
         $result = $startsWith($class, Matcher::TARGET_METHOD, '__construct');
         $this->assertFalse($result);
