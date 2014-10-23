@@ -1,20 +1,26 @@
 <?php
 
-// vendor
 $loader = require dirname(__DIR__) . '/vendor/autoload.php';
 /** @var $loader \Composer\Autoload\ClassLoader */
-$loader->addPsr4('Ray\Aop\\', [__DIR__]);
-$loader->addPsr4('Ray\Aop\\', [__DIR__ . '/Annotation']);
-$loader->addPsr4('Ray\Aop\\', [__DIR__ . '/Fake']);
-$loader->addPsr4('Ray\Aop\\', [__DIR__ . '/Interceptor']);
+$testDirs = [
+    __DIR__,
+    __DIR__ . '/Fake',
+    __DIR__ . '/Fake/Annotation',
+    __DIR__ . '/Fake/Interceptor'
+];
+$loader->addPsr4('Ray\Aop\\', $testDirs);
 $loader->add('', 'template');
 
-// remove compiled files
-$path = __DIR__ . '/tmp';
-$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
-foreach ($iterator as $file) {
-    /* @var $file \SplFileInfo */
-    if ($file->getFilename()[0] !== '.') {
-        @unlink($file);
+$clear = function ($dir) {
+    $iterator = new \RecursiveIteratorIterator(
+        new \RecursiveDirectoryIterator($dir),
+        \RecursiveIteratorIterator::SELF_FIRST
+    );
+    foreach ($iterator as $file) {
+        /* @var $file \SplFileInfo */
+        if ($file->getFilename()[0] !== '.') {
+            @unlink($file);
+        }
     }
-}
+};
+$clear(__DIR__ . '/tmp');
