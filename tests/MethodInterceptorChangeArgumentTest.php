@@ -51,7 +51,7 @@ class MethodInterceptorChangeArgumentTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->mock = new MockMethod;
+        $this->mock = new FakeClass;
         $this->interceptor = new FakeDoubleArgumentInterceptor;
         $target = array($this->mock, 'getDouble');
         $args = array(2);

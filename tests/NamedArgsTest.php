@@ -21,7 +21,7 @@ class NamedArgsTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $invocation = new ReflectiveMethodInvocation([new MockMethod, 'getSub'], [1, 2]);
+        $invocation = new ReflectiveMethodInvocation([new FakeClass, 'getSub'], [1, 2]);
         $namedArgs = $this->args->get($invocation);
         $this->assertSame(1, $namedArgs['a']);
     }
@@ -31,7 +31,7 @@ class NamedArgsTest extends \PHPUnit_Framework_TestCase
         if (! defined('HHVM_VERSION')) {
             $this->setExpectedException('Ray\Aop\Exception\DuplicatedNamedParam');
         }
-        $invocation = new ReflectiveMethodInvocation([new MockMethod, 'duplicatedParamName'], [1, 2]);
+        $invocation = new ReflectiveMethodInvocation([new FakeClass, 'duplicatedParamName'], [1, 2]);
         $this->args->get($invocation);
     }
 }

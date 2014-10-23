@@ -3,6 +3,7 @@
 namespace Ray\Aop;
 
 use Ray\Aop\FakeMarker;
+use Ray\Aop\FakeClass;
 
 class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,14 +13,14 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     protected $invocation;
 
     /**
-     * @var MockMethod
+     * @var FakeClass
      */
     protected $mock;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->mock = new MockMethod;
+        $this->mock = new FakeClass;
         // this is same as $this->mock->add(1);
         $callable = [$this->mock, 'add'];
         $args = [1];
@@ -41,7 +42,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testGetMethodMethodName()
     {
         $methodReflection = $this->invocation->getMethod();
-        $this->assertSame('Ray\Aop\MockMethod', $methodReflection->class);
+        $this->assertSame(FakeClass::class, $methodReflection->class);
         $this->assertSame('add', $methodReflection->name);
     }
 
@@ -72,7 +73,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAnnotation()
     {
-        $mock = new MockMethod;
+        $mock = new FakeClass;
         $callable = [$mock, 'add'];
         $invocation = new ReflectiveMethodInvocation($callable, [], [], [new FakeMarker]);
         /** @noinspection PhpDeprecationInspection */

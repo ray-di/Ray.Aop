@@ -1,7 +1,7 @@
 <?php
 namespace Ray\Aop;
 
-class MockMethodInterceptor implements MethodInterceptor
+class FakeMethodInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {

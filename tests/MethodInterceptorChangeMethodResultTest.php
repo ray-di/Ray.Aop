@@ -7,7 +7,7 @@ use Ray\Aop\Interceptor\DoubleInterceptor;
 class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var MockMethod
+     * @var FakeClass
      */
     protected $mock;
 
@@ -23,7 +23,7 @@ class MethodInterceptorChangeMethodResultTest extends \PHPUnit_Framework_TestCas
 
     protected function setUp()
     {
-        $this->mock = new MockMethod;
+        $this->mock = new FakeClass;
         $this->interceptor = new FakeDoubleArgumentInterceptor;
         $target = [$this->mock, 'getDouble'];
         $args = [2];

@@ -2,7 +2,7 @@
 
 namespace Ray\Aop;
 
-class MockMethod
+class FakeClass
 {
     public $a = 0;
 
