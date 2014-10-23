@@ -187,7 +187,7 @@ class CodeGen
      */
     private function getMethodInsideStatement()
     {
-        $code = file_get_contents(__DIR__ . '/Compiler/Template.php');
+        $code = file_get_contents(dirname(__DIR__) . '/template/Weaved.php');
         $node = $this->parser->parse($code)[0];
         /** @var $node \PHPParser_Node_Stmt_Class */
         $node = $node->getMethods()[0];
