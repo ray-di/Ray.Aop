@@ -6,7 +6,7 @@
  */
 namespace Ray\Aop;
 
-abstract class AbstractMatcher
+abstract class  AbstractMatcher
 {
     /**
      * Match CLASS

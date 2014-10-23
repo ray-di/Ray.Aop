@@ -1,5 +1,4 @@
 filter:
-    excluded_paths: [src/Compiler/Template.php, src/Weaver.php]
     paths: ["src/*"]
 tools:
     external_code_coverage: true
