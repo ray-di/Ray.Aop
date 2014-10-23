@@ -71,18 +71,18 @@ Finally, we configure everything. In this case we match any class, but only the 
 
 ```php
 <?php
-$bind = new Bind;
-$matcher = new Matcher;
-$interceptors = [new WeekendBlocker];
-$pointcut = new Pointcut(
-		$matcher->any(),
-		$matcher->annotatedWith('Ray\Aop\Sample\Annotation\NotOnWeekends'),
-		$interceptors
-);
-$bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
 
-$compiler = new Compiler(sys_get_temp_dir());
-$billing = $compiler->newInstance('RealBillingService', [], $bind);
+use Ray\Aop\Sample\Annotation\NotOnWeekends;
+use Ray\Aop\Sample\Annotation\RealBillingService;
+
+$pointcut = new Pointcut(
+		(new Matcher)->any(),
+		(new Matcher)->annotatedWith(NotOnWeekends::class),
+		[new WeekendBlocker]
+);
+$bind = new Bind(RealBillingService::class, [$pointcut]);
+$billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
+
 try {
     echo $billing->chargeOrder();
 } catch (\RuntimeException $e) {
@@ -186,15 +186,14 @@ Testing Ray.Aop
 Here's how to install Ray.Aop from source to run the unit tests and sample:
 
 ```
-$ composer create-project ray/aop Ray.Aop 1.*
+$ composer create-project ray/aop Ray.Aop 2.*
 $ cd Ray.Aop
 $ phpunit
-$ cd docs
-$ php sample/01-quick-weave/main.php
-$ php sample/02-multiple-interceptors/main.php
-$ php sample/03-benchmark/main.php
-$ php sample/04-annotation/main.php
-$ php sample/05-my-matcher/main.php
+$ php docs/example/01-quick-weave/main.php
+$ php docs/example/02-multiple-interceptors/main.php
+$ php docs/example/03-benchmark/main.php
+$ php docs/example/04-annotation/main.php
+$ php docs/example/05-my-matcher/main.php
 ```
 
 Requirement

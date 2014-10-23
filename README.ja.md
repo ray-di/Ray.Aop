@@ -124,37 +124,27 @@ Explicit method name match
 My matcher
 ----------
 独自のMatcherを作成することができます。
+
 クラス名やメソッド名に特定の文字列が含まれているかをマッチする`contains`マッチャーを作成するには、
-インターフェイスとなる`contains`メソッドと実際にマッチを判断した結果を返す`isContains`メソッドの２つが必要です。
+インターフェイスとなる`contains`メソッドと、実際にマッチを判断した結果を返す`__invoke`メソッドの２つが必要です。
+
+`__invoke`メソッドでは`$name`クラスまたはメソッドの名前、`$target`、クラスまたはメソッド
 
 ```php
 use Ray\Aop\AbstractMatcher;
 
+
 class MyMatcher extends AbstractMatcher
 {
-    /**
-     * @param $contain
-     *
-     * @return MyMatcher
-     */
     public function contains($contain)
     {
-        $this->createMatcher(__FUNCTION__, $contain);
-
-        return clone $this;
-
+        return new Matcher(__FUNCTION__, func_get_args());
     }
 
     /**
-     * Return isContain
-     *
-     * @param mixed  $name    class name string or method reflection
-     * @param bool   $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
-     * @param string $contain
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    protected function isContains($name, $target, $contain)
+    public function __invoke($name, $target, array $args)
     {
         $result = (strpos($name, $contain) !== false);
 
@@ -162,6 +152,8 @@ class MyMatcher extends AbstractMatcher
     }
 }
 ```
+// deleteを含んでいるメソッドにマッチします。
+(new MyMatcher)->contains('delete');
 
 Limitations
 -----------
@@ -183,15 +175,14 @@ Testing Ray.Aop
 Ray.Aopをインストールしてユニットテストするためには以下のようにします。
 
 ```
-$ composer create-project ray/aop Ray.Aop 1.*
+$ composer create-project ray/aop Ray.Aop 2.*
 $ cd Ray.Aop
 $ phpunit
-$ cd docs
-$ php sample/01-quick-weave/main.php
-$ php sample/02-multiple-interceptors/main.php
-$ php sample/03-benchmark/main.php
-$ php sample/04-annotation/main.php
-$ php sample/05-my-matcher/main.php
+$ php docs/example/01-quick-weave/main.php
+$ php docs/example/02-multiple-interceptors/main.php
+$ php docs/example/03-benchmark/main.php
+$ php docs/example/04-annotation/main.php
+$ php docs/example/05-my-matcher/main.php
 ```
 
 Requirement
