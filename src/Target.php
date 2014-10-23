@@ -4,10 +4,11 @@
  *
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
-namespace Ray\Aop\Exception;
+namespace Ray\Aop;
 
-use LogicException;
-
-class UndefinedProperty extends LogicException implements ExceptionInterface
+class Target
 {
+    const IS_CLASS = true;
+
+    const IS_METHOD = false;
 }

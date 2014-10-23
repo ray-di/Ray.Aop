@@ -8,6 +8,7 @@ namespace Ray\Aop\Match;
 
 use Ray\Aop\AbstractMatcher;
 use Ray\Aop\MatchInterface;
+use Ray\Aop\Target;
 
 final class IsAny implements MatchInterface
 {
@@ -41,7 +42,7 @@ final class IsAny implements MatchInterface
             $name = $name->getName();
         }
 
-        if ($target === AbstractMatcher::TARGET_METHOD && $this->isInvalidMethod($name)) {
+        if ($target === Target::IS_METHOD && $this->isInvalidMethod($name)) {
             return false;
         }
 

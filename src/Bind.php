@@ -44,7 +44,7 @@ final class Bind implements BindInterface
     private function bindPointcut($class, Pointcut $pointcut)
     {
         $classMatcher = $pointcut->classMatcher;
-        $isClassMatch = $classMatcher($class, Matcher::TARGET_CLASS);
+        $isClassMatch = $classMatcher($class, Target::IS_CLASS);
         if ($isClassMatch === false) {
 
             return;

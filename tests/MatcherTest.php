@@ -47,7 +47,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $annotation = 'Ray\Aop\FakeResource';
         $class = 'Ray\Aop\FakeAnnotateClass';
         $match = $this->matcher->annotatedWith($annotation);
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -56,7 +56,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $annotation = 'Ray\Aop\FakeResource';
         $class = 'Ray\Aop\FakeAnnotateClass';
         $match = $this->matcher->annotatedWith($annotation);
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertSame(true, $result);
     }
 
@@ -77,7 +77,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -85,7 +85,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
         $class = 'Ray\Aop\MatcherTestSuperClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -93,7 +93,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
         $class = 'Ray\Aop\MatcherTestChildXXXX';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertFalse($result);
     }
 
@@ -160,7 +160,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $match = $this->matcher->logicalOr($this->matcher->any(), $this->matcher->any());
         $class = 'Ray\Aop\XXX';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -171,7 +171,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass')
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -182,7 +182,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass')
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -193,7 +193,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->subclassesOf('Ray\Aop\XXX')
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertFalse($result);
     }
 
@@ -204,7 +204,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass')
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertFalse($result);
     }
 
@@ -215,7 +215,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass')
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -225,7 +225,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->subclassesOf('Ray\Aop\XXX')
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -237,7 +237,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->any()
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -250,7 +250,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->any()
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -262,7 +262,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->subclassesOf('Ray\Aop\XXX')
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertFalse($result);
     }
 
@@ -275,7 +275,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
             $this->matcher->subclassesOf('Ray\Aop\XXX')
         );
         $class = 'Ray\Aop\MatcherTestChildClass';
-        $result = $match($class, Matcher::TARGET_CLASS);
+        $result = $match($class, Target::IS_CLASS);
         $this->assertTrue($result);
     }
 
@@ -293,6 +293,14 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $matcher = new Matcher;
         $this->assertInstanceOf('Ray\Aop\Matcher', $matcher);
+    }
+
+    public function MyMatcherBind()
+    {
+        $match = (new FakeMyMatcher)->endWith('Resource');
+        $class = 'Ray\Aop\MatcherResource';
+        $result = $match($class, Target::IS_CLASS);
+        $this->assertTrue($result);
     }
 
 }

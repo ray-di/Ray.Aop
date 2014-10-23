@@ -12,6 +12,7 @@ use Ray\Aop\AbstractMatcher;
 use Doctrine\Common\Annotations\Reader;
 use Ray\Aop\Matched;
 use Ray\Aop\MatchInterface;
+use Ray\Aop\Target;
 
 final class IsAnnotatedWith implements MatchInterface
 {
@@ -43,7 +44,7 @@ final class IsAnnotatedWith implements MatchInterface
         if ($name instanceof \ReflectionMethod) {
             return $this->isAnnotatedMethod($name, $annotationName);
         }
-        if ($target !== AbstractMatcher::TARGET_CLASS) {
+        if ($target !== Target::IS_CLASS) {
             return $this->setAnnotations($name, $annotationName);
         }
         $annotation = $this->reader->getClassAnnotation(new \ReflectionClass($name), $annotationName);

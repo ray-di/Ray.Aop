@@ -9,6 +9,7 @@ namespace Ray\Aop\Match;
 use Ray\Aop\Exception\InvalidArgument;
 use Ray\Aop\AbstractMatcher;
 use Ray\Aop\MatchInterface;
+use Ray\Aop\Target;
 
 class IsSubclassesOf implements MatchInterface
 {
@@ -36,7 +37,7 @@ class IsSubclassesOf implements MatchInterface
         if ($class instanceof \ReflectionMethod) {
             throw new InvalidArgument($class->name);
         }
-        if ($target === AbstractMatcher::TARGET_METHOD) {
+        if ($target === Target::IS_METHOD) {
             throw new InvalidArgument($class);
         }
     }
