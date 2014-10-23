@@ -35,7 +35,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
     public function testBindInterceptors()
     {
         $this->bind->bindInterceptors('getDouble', $this->interceptors);
-        $this->assertSame($this->bind['getDouble'], $this->interceptors);
+        $this->assertSame($this->bind->bindings['getDouble'], $this->interceptors);
     }
 
     public function testBindAnyAny()
@@ -116,24 +116,6 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->interceptors, $interceptors);
     }
 
-    public function testToString()
-    {
-        $this->bind->bindInterceptors('getDouble', $this->interceptors);
-        $this->assertInternalType('string', (string)$this->bind);
-    }
-
-    public function testHasBindingReturnTrue()
-    {
-        $matcher = new Matcher;
-        $pointcut = new Pointcut($matcher->subclassesOf(FakeParentClass::class), $matcher->any(), $this->interceptors);
-        $this->bind->bind(FakeChildClass::class, [$pointcut]);
-        $this->assertTrue($this->bind->hasBinding());
-    }
-
-    public function testHasBindingReturnFalse()
-    {
-        $this->assertFalse($this->bind->hasBinding());
-    }
 
     public function testInvoke()
     {
@@ -152,7 +134,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith(FakeResource::class), $this->interceptors);
         $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
-        $this->assertSame(0, (count($this->bind)));
+        $this->assertSame([], $this->bind->bindings);
     }
 
     public function testSerializable()
@@ -177,7 +159,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->startsWith('XXX'), $matcher->startsWith('XXX'), $this->interceptors);
         $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
-        $this->assertSame(0, (count($this->bind)));
+        $this->assertSame([], $this->bind->bindings);
     }
 
     /**
@@ -199,7 +181,7 @@ class BindTest extends \PHPUnit_Framework_TestCase
      * @param Matchable $logicalMethodMatcher
      * @dataProvider logicalMethodMatchers
      */
-    public function testBindByLogicalBindingAsMethodMatcher(Matchable $logicalMethodMatcher)
+    public function testBindByLogicalBindingAsMethodMatcher(AbstractMatcher $logicalMethodMatcher)
     {
         $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $logicalMethodMatcher, $this->interceptors);

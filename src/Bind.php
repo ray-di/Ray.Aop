@@ -9,12 +9,12 @@ namespace Ray\Aop;
 use ReflectionClass;
 use ReflectionMethod;
 
-final class Bind implements \ArrayAccess, \Countable, BindInterface
+final class Bind implements BindInterface
 {
     /**
      * @var array
      */
-    private $bind = [];
+    public $bindings = [];
 
     /**
      * Annotated binding annotation
@@ -22,16 +22,6 @@ final class Bind implements \ArrayAccess, \Countable, BindInterface
      * @var array [$method => $annotations]
      */
     public $annotation = [];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasBinding()
-    {
-        $hasImplicitBinding = count($this->bind) > 0;
-
-        return $hasImplicitBinding;
-    }
 
     /**
      * {@inheritdoc}
@@ -44,7 +34,7 @@ final class Bind implements \ArrayAccess, \Countable, BindInterface
             $this->bindPointcut($class, $pointcut);
         }
 
-        return $this->bind;
+        return $this->bindings;
     }
 
     /**
@@ -73,7 +63,7 @@ final class Bind implements \ArrayAccess, \Countable, BindInterface
      */
     public function bindInterceptors($method, array $interceptors, $annotation = null)
     {
-        $this->bind[$method] = !isset($this->bind[$method]) ? $interceptors : array_merge($this->bind[$method], $interceptors);
+        $this->bindings[$method] = !isset($this->bindings[$method]) ? $interceptors : array_merge($this->bindings[$method], $interceptors);
         if ($annotation) {
             $this->annotation[$method] = $annotation;
         }
@@ -87,28 +77,9 @@ final class Bind implements \ArrayAccess, \Countable, BindInterface
     public function __invoke($name)
     {
         // pre compiled implicit matcher
-        $interceptors = isset($this->bind[$name]) ? $this->bind[$name] : false;
+        $interceptors = isset($this->bindings[$name]) ? $this->bindings[$name] : false;
 
         return $interceptors;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __toString()
-    {
-        $binds = [];
-        foreach ($this->bind as $method => $interceptors) {
-            $inspectorsInfo = [];
-            foreach ($interceptors as $interceptor) {
-                $inspectorsInfo[] .= get_class($interceptor);
-            }
-            $inspectorsInfo = implode(',', $inspectorsInfo);
-            $binds[] = "{$method} => " . $inspectorsInfo;
-        }
-        $result = implode(',', $binds);
-
-        return $result;
     }
 
     /**
@@ -149,43 +120,8 @@ final class Bind implements \ArrayAccess, \Countable, BindInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetExists($offset)
+    public function __toString()
     {
-        return isset($this->bind[$offset]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetGet($offset)
-    {
-        return $this->bind[$offset];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->bind[$offset] = $value;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->bind[$offset]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function count()
-    {
-        return count($this->bind);
+        return md5(serialize($this->bindings));
     }
 }

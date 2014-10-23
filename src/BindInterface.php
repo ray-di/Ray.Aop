@@ -12,13 +12,6 @@ namespace Ray\Aop;
 interface BindInterface
 {
     /**
-     * Return has binding
-     *
-     * @return bool
-     */
-    public function hasBinding();
-
-    /**
      * Make pointcuts to binding information
      *
      * @param string $class
@@ -47,12 +40,4 @@ interface BindInterface
      * @return mixed string|boolean matched method name
      */
     public function __invoke($name);
-
-
-    /**
-     * to String for logging
-     *
-     * @return string
-     */
-    public function __toString();
 }
