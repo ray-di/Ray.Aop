@@ -44,20 +44,6 @@ abstract class AbstractMatcher
     }
 
     /**
-     * @param string $method
-     * @param array  $args
-     *
-     * @return AbstractMatcher
-     */
-    protected function createMatcher($method, array $args)
-    {
-        $this->method = $method;
-        $this->args = $args;
-
-        return clone $this;
-    }
-
-    /**
      * Return match result
      *
      * @param string $class
