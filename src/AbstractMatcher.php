@@ -6,7 +6,7 @@
  */
 namespace Ray\Aop;
 
-abstract class  AbstractMatcher
+abstract class AbstractMatcher
 {
     /**
      * Match CLASS
@@ -36,6 +36,12 @@ abstract class  AbstractMatcher
      */
     protected $args;
 
+
+    public function __construct($method = null, $args = null)
+    {
+        $this->method = $method;
+        $this->args = $args;
+    }
 
     /**
      * @param string $method
@@ -67,15 +73,5 @@ abstract class  AbstractMatcher
         $matched = call_user_func_array(new $matcherClass, $args);
 
         return $matched;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        $result = $this->method . ':' . json_encode($this->args);
-
-        return $result;
     }
 }

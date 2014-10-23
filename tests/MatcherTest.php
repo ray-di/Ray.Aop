@@ -108,12 +108,6 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
-    public function testToString()
-    {
-        $matcher = clone $this->matcher;
-        $this->assertSame(':null', (string)$matcher);
-    }
-
     /**
      * start '__' prefix method does not match
      */

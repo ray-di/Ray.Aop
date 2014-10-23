@@ -7,7 +7,6 @@
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\InvalidAnnotation;
-use Doctrine\Common\Annotations\Reader;
 
 class Matcher extends AbstractMatcher implements Matchable
 {
@@ -16,7 +15,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function any()
     {
-        return $this->createMatcher(__FUNCTION__, [null]);
+        return new self(__FUNCTION__, func_get_args());
     }
 
     /**
@@ -28,7 +27,7 @@ class Matcher extends AbstractMatcher implements Matchable
             throw new InvalidAnnotation($annotationName);
         }
 
-        return $this->createMatcher(__FUNCTION__, [$annotationName]);
+        return new self(__FUNCTION__, func_get_args());
     }
 
     /**
@@ -36,7 +35,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function subclassesOf($superClass)
     {
-        return $this->createMatcher(__FUNCTION__, [$superClass]);
+        return new self(__FUNCTION__, func_get_args());
     }
 
     /**
@@ -44,7 +43,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function startsWith($prefix)
     {
-        return $this->createMatcher(__FUNCTION__, [$prefix]);
+        return new self(__FUNCTION__, func_get_args());
     }
 
     /**
@@ -52,10 +51,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function logicalOr(Matchable $matcherA, Matchable $matcherB)
     {
-        $this->method = __FUNCTION__;
-        $this->args = func_get_args();
-
-        return clone $this;
+        return new self(__FUNCTION__, func_get_args());
     }
 
     /**
@@ -63,10 +59,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function logicalAnd(Matchable $matcherA, Matchable $matcherB)
     {
-        $this->method = __FUNCTION__;
-        $this->args = func_get_args();
-
-        return clone $this;
+        return new self(__FUNCTION__, func_get_args());
     }
 
     /**
@@ -74,10 +67,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function logicalXor(Matchable $matcherA, Matchable $matcherB)
     {
-        $this->method = __FUNCTION__;
-        $this->args = func_get_args();
-
-        return clone $this;
+        return new self(__FUNCTION__, func_get_args());
     }
 
     /**
@@ -85,10 +75,7 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function logicalNot(Matchable $matcher)
     {
-        $this->method = __FUNCTION__;
-        $this->args = [$matcher];
-
-        return clone $this;
+        return new self(__FUNCTION__, func_get_args());
     }
 
     /**
@@ -98,16 +85,6 @@ class Matcher extends AbstractMatcher implements Matchable
      */
     public function isAnnotateBinding()
     {
-        $isAnnotateBinding = $this->method === 'annotatedWith';
-
-        return $isAnnotateBinding;
-    }
-
-    /**
-     * @param Reader $reader
-     */
-    public static function setAnnotationReader(Reader $reader)
-    {
-        Match::setAnnotationReader($reader);
+        return $this->method === 'annotatedWith';
     }
 }
