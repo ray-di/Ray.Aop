@@ -3,11 +3,11 @@
 namespace Ray\Aop\Sample;
 
 use Ray\Aop\MethodInterceptor;
-use Ray\Aop\MethodInvocation;
+use Ray\Aop\MethodInvocationInterface;
 
 class EmptyInterceptor implements MethodInterceptor
 {
-    public function invoke(MethodInvocation $invocation)
+    public function invoke(MethodInvocationInterface $invocation)
     {
         $invocation->proceed();
     }

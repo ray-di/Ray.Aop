@@ -18,7 +18,7 @@ $bind3->bindInterceptors('chargeOrder', array(new EmptyInterceptor, new EmptyInt
 $bind4 = new Bind;
 $bind4->bindInterceptors('chargeOrder', array(new EmptyInterceptor, new EmptyInterceptor, new EmptyInterceptor, new EmptyInterceptor));
 
-$compiler = new Compiler(sys_get_temp_dir());
+$compiler = new Compiler($_ENV['TMP_DIR']);
 
 $billing0 = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], new Bind);
 $billing1 = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind1);

@@ -3,11 +3,11 @@
 namespace Ray\Aop\Sample;
 
 use Ray\Aop\MethodInterceptor;
-use Ray\Aop\MethodInvocation;
+use Ray\Aop\MethodInvocationInterface;
 
 class Timer implements MethodInterceptor
 {
-    public function invoke(MethodInvocation $invocation)
+    public function invoke(MethodInvocationInterface $invocation)
     {
         echo "Timer start\n";
         $mTime = microtime(true);

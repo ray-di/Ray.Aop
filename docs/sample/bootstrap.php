@@ -15,3 +15,5 @@ require __DIR__ . '/04-annotation/WeekendBlock.php';
 require __DIR__ . '/04-annotation/AnnotationRealBillingService.php';
 
 require __DIR__ . '/05-my-matcher/MyMatcher.php';
+
+$_ENV['TMP_DIR'] = __DIR__ . '/tmp';

@@ -7,7 +7,7 @@ use Ray\Aop\Sample\WeekendBlocker;
 require dirname(__DIR__) . '/bootstrap.php';
 
 $bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-$compiler = new Compiler(sys_get_temp_dir());
+$compiler = new Compiler($_ENV['TMP_DIR']);
 $billingService = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
 
 try {

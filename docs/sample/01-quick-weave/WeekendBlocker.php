@@ -3,11 +3,11 @@
 namespace Ray\Aop\Sample;
 
 use Ray\Aop\MethodInterceptor;
-use Ray\Aop\MethodInvocation;
+use Ray\Aop\MethodInvocationInterface;
 
 class WeekendBlocker implements MethodInterceptor
 {
-    public function invoke(MethodInvocation $invocation)
+    public function invoke(MethodInvocationInterface $invocation)
     {
         $today = getdate();
         if ($today['weekday'][0] === 'S') {
