@@ -33,9 +33,9 @@ final class IsAnnotatedWith
      * Return Match object if annotate bindings, which containing multiple results.
      * Otherwise return bool.
      *
-     * @param mixed  $name string(class name) | ReflectionMethod
-     * @param bool   $target AbstractMatcher::TARGET_CLASS | AbstractMatcher::TARGET_METHOD
-     * @param string $annotationName
+     * @param mixed  $name           string(class name) | ReflectionMethod
+     * @param bool   $target         AbstractMatcher::TARGET_CLASS | AbstractMatcher::TARGET_METHOD
+     * @param string $annotationName annotation name
      *
      * @return bool | Matched[]
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)

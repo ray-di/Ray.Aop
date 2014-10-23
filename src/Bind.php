@@ -49,7 +49,7 @@ final class Bind implements \ArrayAccess, \Countable, BindInterface
 
     /**
      * @param string    $class
-     * @param Pointcut $pointcut
+     * @param Pointcut  $pointcut
      */
     private function bindPointcut($class, Pointcut $pointcut)
     {

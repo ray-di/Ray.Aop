@@ -33,7 +33,7 @@ interface BindInterface
      *
      * @param string $method
      * @param array  $interceptors
-     * @param object $annotation   Binding annotation if annotate bind
+     * @param object $annotation
      *
      * @return Bind
      */

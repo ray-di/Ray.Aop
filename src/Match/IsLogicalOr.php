@@ -24,7 +24,12 @@ class IsLogicalOr
     }
 
     /**
-     * @param bool $isOr
+     * @param array  $args
+     * @param bool   $isOr
+     * @param string $name
+     * @param string $target
+     *
+     * @return bool
      */
     public function moreArgsOr(array $args, $isOr, $name, $target)
     {

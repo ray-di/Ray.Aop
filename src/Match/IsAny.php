@@ -47,7 +47,7 @@ final class IsAny
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return bool
      */
@@ -57,7 +57,7 @@ final class IsAny
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return bool
      */

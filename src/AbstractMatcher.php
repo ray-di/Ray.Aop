@@ -55,7 +55,7 @@ abstract class AbstractMatcher
      * Return match result
      *
      * @param string $class
-     * @param bool   $target self::TARGET_CLASS | self::TARGET_METHOD
+     * @param bool   $target
      *
      * @return bool | array [$matcher, method]
      */

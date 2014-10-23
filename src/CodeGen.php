@@ -39,7 +39,7 @@ class CodeGen
     }
 
     /**
-     * @param string           $class new class name
+     * @param string           $class
      * @param \ReflectionClass $sourceClass
      *
      * @return string

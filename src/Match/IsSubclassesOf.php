@@ -15,7 +15,7 @@ class IsSubclassesOf
      * Return is subclass of
      *
      * @param string $class
-     * @param bool   $target AbstractMatcher::TARGET_CLASS | AbstractMatcher::TARGET_METHOD
+     * @param bool   $target
      * @param string $superClass
      *
      * @return bool

@@ -25,13 +25,14 @@ class IsLogicalAnd
     }
 
     /**
-     * @param bool $isAnd
+     * @param array  $args
+     * @param bool   $isAnd
      * @param string $name
-     * @param string $target
+     * @param bool   $target
      *
      * @return bool
      */
-    private function moreArgs($args, $isAnd, $name, $target)
+    private function moreArgs(array $args, $isAnd, $name, $target)
     {
         foreach ($args as $arg) {
             $isAnd = ($isAnd and $arg($name, $target));
