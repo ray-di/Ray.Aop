@@ -200,7 +200,7 @@ $ php sample/05-my-matcher/main.php
 Requirement
 -------------
 
- * PHP 5.4+
+ * PHP 5.5+
  * hhvm
 
 Installation
