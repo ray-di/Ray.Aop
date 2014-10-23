@@ -6,11 +6,17 @@
  */
 namespace Ray\Aop\Match;
 
-class IsStartsWith
+use Ray\Aop\MatchInterface;
+
+class IsStartsWith implements MatchInterface
 {
-    public function __invoke($name, $target, $startsWith)
+    /**
+     * {@inheritdoc}
+     */
+    public function __invoke($name, $target, array $args)
     {
         unset($target);
+        list($startsWith) = $args;
         if ($name instanceof \ReflectionMethod) {
             $name = $name->name;
         }

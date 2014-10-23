@@ -8,7 +8,7 @@ namespace Ray\Aop;
 
 use Ray\Aop\Exception\InvalidAnnotation;
 
-class Matcher extends AbstractMatcher implements Matchable
+class Matcher extends AbstractMatcher
 {
     /**
      * {@inheritdoc}
@@ -49,7 +49,7 @@ class Matcher extends AbstractMatcher implements Matchable
     /**
      * {@inheritdoc}
      */
-    public function logicalOr(Matchable $matcherA, Matchable $matcherB)
+    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
     {
         return new self(__FUNCTION__, func_get_args());
     }
@@ -57,7 +57,7 @@ class Matcher extends AbstractMatcher implements Matchable
     /**
      * {@inheritdoc}
      */
-    public function logicalAnd(Matchable $matcherA, Matchable $matcherB)
+    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
     {
         return new self(__FUNCTION__, func_get_args());
     }
@@ -65,7 +65,7 @@ class Matcher extends AbstractMatcher implements Matchable
     /**
      * {@inheritdoc}
      */
-    public function logicalXor(Matchable $matcherA, Matchable $matcherB)
+    public function logicalXor(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
     {
         return new self(__FUNCTION__, func_get_args());
     }
@@ -73,18 +73,8 @@ class Matcher extends AbstractMatcher implements Matchable
     /**
      * {@inheritdoc}
      */
-    public function logicalNot(Matchable $matcher)
+    public function logicalNot(AbstractMatcher $matcher)
     {
         return new self(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * Return isAnnotateBinding
-     *
-     * @return bool
-     */
-    public function isAnnotateBinding()
-    {
-        return $this->method === 'annotatedWith';
     }
 }

@@ -6,12 +6,16 @@
  */
 namespace Ray\Aop\Match;
 
-use Ray\Aop\Matchable;
+use Ray\Aop\MatchInterface;
 
-class IsLogicalNot
+class IsLogicalNot implements MatchInterface
 {
-    public function __invoke($name, $target, Matchable $matcher)
+    /**
+     * {@inheritdoc}
+     */
+    public function __invoke($name, $target, array $args)
     {
+        list($matcher) = $args;
         $isNot = !($matcher($name, $target));
 
         return $isNot;

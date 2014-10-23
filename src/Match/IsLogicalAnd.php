@@ -8,17 +8,20 @@
 
 namespace Ray\Aop\Match;
 
-use Ray\Aop\Matchable;
+use Ray\Aop\MatchInterface;
 
-class IsLogicalAnd
+class IsLogicalAnd implements MatchInterface
 {
-    public function __invoke($name, $target, Matchable $matcherA, Matchable $matcherB)
+    /**
+     * {@inheritdoc}
+     */
+    public function __invoke($name, $target, array $args)
     {
+        list($matcherA, $matcherB) = $args;
         $isAnd = ($matcherA($name, $target) and $matcherB($name, $target));
-        if (func_num_args() <= 4) {
+        if ($args <= 4) {
             return $isAnd;
         }
-        $args = array_slice(func_get_args(), 4);
         $bool = $this->moreArgs($args, $isAnd, $name, $target);
 
         return $bool;

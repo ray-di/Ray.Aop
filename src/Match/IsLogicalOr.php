@@ -6,19 +6,22 @@
  */
 namespace Ray\Aop\Match;
 
-use Ray\Aop\Matchable;
+use Ray\Aop\MatchInterface;
 
-class IsLogicalOr
+class IsLogicalOr implements MatchInterface
 {
-    public function __invoke($name, $target, Matchable $matcherA, Matchable $matcherB)
+    /**
+     * {@inheritdoc}
+     */
+    public function __invoke($name, $target, array $args)
     {
-        $args = func_num_args();
+        list($matcherA, $matcherB) = $args;
         // a or b
         $isOr = ($matcherA($name, $target) or $matcherB($name, $target));
         if ($args <= 4) {
             return $isOr;
         }
-        $isOr = $this->moreArgsOr(func_get_args(), $isOr, $name, $target);
+        $isOr = $this->moreArgsOr($args, $isOr, $name, $target);
 
         return $isOr;
     }
@@ -33,8 +36,6 @@ class IsLogicalOr
      */
     public function moreArgsOr(array $args, $isOr, $name, $target)
     {
-        // a or b or c ...
-        $args = array_slice($args, 4);
         foreach ($args as $arg) {
             $isOr = ($isOr or $arg($name, $target));
         }

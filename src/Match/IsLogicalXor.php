@@ -6,17 +6,21 @@
  */
 namespace Ray\Aop\Match;
 
-use Ray\Aop\Matchable;
+use Ray\Aop\MatchInterface;
 
-class IsLogicalXor
+class IsLogicalXor implements MatchInterface
 {
-    public function __invoke($name, $target, Matchable $matcherA, Matchable $matcherB)
+    /**
+     * {@inheritdoc}
+     */
+    public function __invoke($name, $target, array $args)
     {
+        list($matcherA, $matcherB) = $args;
         $isXor = ($matcherA($name, $target) xor $matcherB($name, $target));
         if (func_num_args() <= 4) {
             return $isXor;
         }
-        $args = array_slice(func_get_args(), 4);
+        $args = array_slice($args, 4);
         foreach ($args as $arg) {
             $isXor = ($isXor xor $arg($name, $target));
         }

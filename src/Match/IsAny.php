@@ -7,9 +7,13 @@
 namespace Ray\Aop\Match;
 
 use Ray\Aop\AbstractMatcher;
+use Ray\Aop\MatchInterface;
 
-final class IsAny
+final class IsAny implements MatchInterface
 {
+    /**
+     * @var array
+     */
     private static $builtinMethods = [];
 
     public function __construct()
@@ -28,15 +32,13 @@ final class IsAny
     }
 
     /**
-     * @param string $name
-     * @param string $target
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function __invoke($name, $target)
+    public function __invoke($name, $target, array $args)
     {
+        unset($args);
         if ($name instanceof \ReflectionMethod) {
-            $name = $name->name;
+            $name = $name->getName();
         }
 
         if ($target === AbstractMatcher::TARGET_METHOD && $this->isInvalidMethod($name)) {

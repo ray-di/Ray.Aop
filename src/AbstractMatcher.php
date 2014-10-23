@@ -37,6 +37,9 @@ abstract class AbstractMatcher
     protected $args;
 
 
+    /**
+     * @param string $method
+     */
     public function __construct($method = null, $args = null)
     {
         $this->method = $method;
@@ -53,11 +56,32 @@ abstract class AbstractMatcher
      */
     public function __invoke($class, $target)
     {
-        $args = array_merge([$class, $target], $this->args);
-
         $matcherClass = __NAMESPACE__ . '\Match\Is' . ucwords($this->method);
-        $matched = call_user_func_array(new $matcherClass, $args);
+        $matched = call_user_func(new $matcherClass, $class, $target, $this->args);
 
         return $matched;
     }
+
+    /**
+     * Return isAnnotateBinding
+     *
+     * @return bool
+     */
+    public function isAnnotateBinding()
+    {
+        return $this->method === 'annotatedWith';
+    }
+
+    /**
+     * @param string $name
+     * @param array  $arguments
+     */
+    public function __call($name, array $arguments)
+    {
+        $matcher = (new \ReflectionClass('Is' . ucwords($name)))->newInstance();
+        $matched = call_user_func_array($matcher, $arguments);
+
+        return $matched;
+    }
+
 }

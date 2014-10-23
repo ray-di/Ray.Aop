@@ -11,37 +11,35 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\AbstractMatcher;
 use Doctrine\Common\Annotations\Reader;
 use Ray\Aop\Matched;
+use Ray\Aop\MatchInterface;
 
-final class IsAnnotatedWith
+final class IsAnnotatedWith implements MatchInterface
 {
     /**
      * @var Reader
      */
     private $reader;
 
-    /**
-     * @param Reader $reader
-     */
-    public function __construct(Reader $reader = null)
+    public function __construct()
     {
-        $this->reader = $reader ?: new AnnotationReader;
+        $this->reader = new AnnotationReader;
     }
 
     /**
-     * Return is annotated with
+     * Return annotated match
      *
      * Return Match object if annotate bindings, which containing multiple results.
      * Otherwise return bool.
      *
-     * @param mixed  $name           string(class name) | ReflectionMethod
-     * @param bool   $target         AbstractMatcher::TARGET_CLASS | AbstractMatcher::TARGET_METHOD
-     * @param string $annotationName annotation name
+     * @param string $name
+     * @param bool   $target
+     * @param array  $args
      *
-     * @return bool | Matched[]
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @return bool
      */
-    public function __invoke($name, $target, $annotationName)
+    public function __invoke($name, $target, array $args)
     {
+        list($annotationName) = $args;
         if ($name instanceof \ReflectionMethod) {
             return $this->isAnnotatedMethod($name, $annotationName);
         }

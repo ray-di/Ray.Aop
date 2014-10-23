@@ -8,22 +8,16 @@ namespace Ray\Aop\Match;
 
 use Ray\Aop\Exception\InvalidArgument;
 use Ray\Aop\AbstractMatcher;
+use Ray\Aop\MatchInterface;
 
-class IsSubclassesOf
+class IsSubclassesOf implements MatchInterface
 {
     /**
-     * Return is subclass of
-     *
-     * @param string $class
-     * @param bool   $target
-     * @param string $superClass
-     *
-     * @return bool
-     * @throws InvalidArgument
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * {@inheritdoc}
      */
-    public function __invoke($class, $target, $superClass)
+    public function __invoke($class, $target, array $args)
     {
+        list($superClass) = $args;
         $this->validation($class, $target);
         if (! class_exists($class) || ! class_exists($superClass)) {
             return false;
@@ -35,7 +29,7 @@ class IsSubclassesOf
 
     /**
      * @param string $class
-     * @param string $target
+     * @param bool   $target
      */
     private function validation($class, $target)
     {
