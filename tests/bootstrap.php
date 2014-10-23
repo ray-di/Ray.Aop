@@ -2,13 +2,7 @@
 
 $loader = require dirname(__DIR__) . '/vendor/autoload.php';
 /** @var $loader \Composer\Autoload\ClassLoader */
-$testDirs = [
-    __DIR__,
-    __DIR__ . '/Fake',
-    __DIR__ . '/Fake/Annotation',
-    __DIR__ . '/Fake/Interceptor'
-];
-$loader->addPsr4('Ray\Aop\\', $testDirs);
+$loader->addPsr4('Ray\Aop\\', [__DIR__, __DIR__ . '/Fake']);
 $loader->add('', 'template');
 
 $clear = function ($dir) {
