@@ -8,7 +8,7 @@ use Ray\Aop\Sample\Timer;
 use Ray\Aop\Sample\interceptorA;
 use Ray\Aop\Sample\interceptorB;
 
-$bind = (new Bind)->bindInterceptors('chargeOrder', array(new Timer, new interceptorA, new interceptorB));
+$bind = (new Bind)->bindInterceptors('chargeOrder', [new Timer, new interceptorA, new interceptorB];
 $compiler = new Compiler($_ENV['TMP_DIR']);
 
 $billingService = $compiler->newInstance('Ray\Aop\Sample\RealBillingService', [], $bind);
