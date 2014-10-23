@@ -36,14 +36,19 @@ abstract class AbstractMatcher
      */
     protected $args;
 
+    /**
+     * @var string | null
+     */
+    protected $matcherClass;
 
     /**
      * @param string $method
      */
-    public function __construct($method = null, $args = null)
+    public function __construct($method = null, $args = null, $matcherClass = null)
     {
         $this->method = $method;
         $this->args = $args;
+        $this->matcherClass = $matcherClass;
     }
 
     /**
@@ -56,7 +61,7 @@ abstract class AbstractMatcher
      */
     public function __invoke($class, $target)
     {
-        $matcherClass = __NAMESPACE__ . '\Match\Is' . ucwords($this->method);
+        $matcherClass = $this->matcherClass ?: __NAMESPACE__ . '\Match\Is' . ucwords($this->method);
         $matched = call_user_func(new $matcherClass, $class, $target, $this->args);
 
         return $matched;
