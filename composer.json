@@ -1,7 +1,13 @@
 {
     "name": "ray/aop",
     "description": "Aspect oriented framework",
-    "keywords": ["aop",  "aspect", "annotation"],
+    "keywords": [
+        "aop",
+        "AOP Alliance",
+        "method invocation",
+        "code gen",
+        "annotations"
+    ],
     "homepage": "https://github.com/koriym/Ray.Aop",
     "license": "BSD-3-Clause",
     "authors": [
@@ -19,11 +25,11 @@
         "psr-4": { "Ray\\Aop\\": "src/" }
     },
     "suggest": {
-        "ray/di": "DI framework supports Ray.Aop"
+        "ray/di": "Guice style annotation-driven dependency injection framework"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.2.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     }
 }
