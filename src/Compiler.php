@@ -16,7 +16,7 @@ use PHPParser_PrettyPrinter_Default;
 /**
  * AOP compiler
  */
-final class Compiler implements CompilerInterface, Serializable
+final class Compiler implements CompilerInterface
 {
     /**
      * @var string
@@ -44,34 +44,10 @@ final class Compiler implements CompilerInterface, Serializable
     /**
      * {@inheritdoc}
      */
-    public function getAopClassDir()
-    {
-        return $this->classDir;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function compile($class, Bind $bind)
-    {
-        $newClassName = $this->getClassName($class, $bind);
-        if (class_exists($newClassName)) {
-            return $newClassName;
-        }
-        $code = $this->codeGen->generate($newClassName, new ReflectionClass($class));
-        $file = $this->classDir . "/{$newClassName}.php";
-        file_put_contents($file, '<?php ' . PHP_EOL . $code);
-        include_once $file;
-
-        return $newClassName;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function newInstance($class, array $args, Bind $bind)
     {
-        $instance = $this->noBindNewInstance($class, $args, $bind);
+        $compiledClass = $this->compile($class, $bind);
+        $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
         $instance->rayAopBind = $bind;
 
         return $instance;
@@ -80,36 +56,33 @@ final class Compiler implements CompilerInterface, Serializable
     /**
      * {@inheritdoc}
      */
-    public function noBindNewInstance($class, array $args, Bind $bind)
+    public function compile($class, Bind $bind)
     {
-        $class = $this->compile($class, $bind);
-        $instance = (new ReflectionClass($class))->newInstanceArgs($args);
+        $newClass = str_replace('\\', '_', $class) . '_' . ($bind) .'RayAop';
+        if (class_exists($newClass)) {
+            return $newClass;
+        }
+        $file = "{$this->classDir}/{$newClass}.php";
+        if (file_exists($file)) {
+            require $file;
 
-        return $instance;
+            return $newClass;
+        }
+        $this->includeGeneratedCode($newClass, new ReflectionClass($class), $file);
+
+        return $newClass;
     }
 
     /**
-     * Return new class name
-     *
-     * @param string $class
-     * @param Bind   $bind
-     *
-     * @return string
+     * @param string          $newClass
+     * @param ReflectionClass $sourceClass
+     * @param string          $file
      */
-    private function getClassName($class, Bind $bind)
+    private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, $file)
     {
-        $className = str_replace('\\', '_', $class) . '_' . md5($bind) .'RayAop';
+        $code = $this->codeGen->generate($newClass, $sourceClass);
+        file_put_contents($file, '<?php ' . PHP_EOL . $code);
 
-        return $className;
-    }
-
-    public function serialize()
-    {
-        return serialize([$this->classDir]);
-    }
-
-    public function unserialize($data)
-    {
-        list($this->classDir) = unserialize($data);
+        require $file;
     }
 }

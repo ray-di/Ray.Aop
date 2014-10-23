@@ -166,11 +166,4 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $class = $compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
     }
-
-    public function testGetAopClassDir()
-    {
-        $dir = $this->compiler->getAopClassDir();
-        $this->assertSame(__DIR__ . '/tmp', $dir);
-    }
-
 }
