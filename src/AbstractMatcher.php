@@ -9,20 +9,6 @@ namespace Ray\Aop;
 abstract class AbstractMatcher
 {
     /**
-     * Match CLASS
-     *
-     * @var bool
-     */
-    const TARGET_CLASS = true;
-
-    /**
-     * Match Method
-     *
-     * @var bool
-     */
-    const TARGET_METHOD = false;
-
-    /**
      * Lazy match method
      *
      * @var string
