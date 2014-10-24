@@ -12,28 +12,19 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     /**
      * @var FakeClass
      */
-    protected $mock;
+    protected $fake;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->mock = new FakeClass;
-        // this is same as $this->mock->add(1);
-        $callable = [$this->mock, 'add'];
-        $args = [1];
-        $this->invocation = new ReflectiveMethodInvocation($callable, $args);
-    }
-
-    public function testNew()
-    {
-        $actual = $this->invocation;
-        $this->assertInstanceOf('\Ray\Aop\ReflectiveMethodInvocation', $actual);
+        $this->fake = new FakeClass;
+        $this->invocation = new ReflectiveMethodInvocation($this->fake, new \ReflectionMethod($this->fake, 'add'), new Arguments([1]));
     }
 
     public function testGetMethod()
     {
         $methodReflection = $this->invocation->getMethod();
-        $this->assertInstanceOf('\ReflectionMethod', $methodReflection);
+        $this->assertInstanceOf(\ReflectionMethod::class, $methodReflection);
     }
 
     public function testGetMethodMethodName()
@@ -52,19 +43,36 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testProceed()
     {
         $this->invocation->proceed();
-        $this->assertSame(1, $this->mock->a);
+        $this->assertSame(1, $this->fake->a);
     }
 
     public function testProceedTwoTimes()
     {
         $this->invocation->proceed();
         $this->invocation->proceed();
-        $this->assertSame(2, $this->mock->a);
+        $this->assertSame(2, $this->fake->a);
     }
 
     public function testGetThis()
     {
         $actual = $this->invocation->getThis();
-        $this->assertSame($this->mock, $actual);
+        $this->assertSame($this->fake, $actual);
+    }
+
+    public function testGetParentMethod()
+    {
+        $fake = new FakeWeavedClass;
+        $invocation = new ReflectiveMethodInvocation($fake, new \ReflectionMethod($fake, 'add'), new Arguments([1]));
+        $method = $invocation->getMethod();
+        $this->assertSame(FakeClass::class, $method->class);
+        $this->assertSame('add', $method->name);
+    }
+
+    public function testProceedMultipleInterceptors()
+    {
+        $fake = new FakeWeavedClass;
+        $invocation = new ReflectiveMethodInvocation($fake, new \ReflectionMethod($fake, 'add'), new Arguments([1]), [new FakeVoidInterceptor, new FakeVoidInterceptor]);
+        $invocation->proceed();
+        $this->assertSame(1, $fake->a);
     }
 }
