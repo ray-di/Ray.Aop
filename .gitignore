@@ -13,3 +13,4 @@ build
 composer.phar
 tests/Ray/Aop/Weaved/
 *RayAop.php
+apigen.neon

@@ -15,7 +15,7 @@
             <arg value="global" />
             <arg value="require" />
             <arg value="h4cc/phpqatools:~1.4" />
-            <arg value="apigen/apigen:dev-master" />
+            <arg value="apigen/apigen:~4.0@dev" />
             <arg value="covex-nn/phpcb:~1.0" />
             <arg value="fabpot/php-cs-fixer:~0.4" />
         </exec>
@@ -43,7 +43,6 @@
 
     <target name="prepare" depends="clean, vendor" description="Prepare for build">
         <mkdir dir="${basedir}/build/api"/>
-        <mkdir dir="${basedir}/build/docblox"/>
         <mkdir dir="${basedir}/build/code-browser"/>
         <mkdir dir="${basedir}/build/coverage"/>
         <mkdir dir="${basedir}/build/logs"/>
@@ -160,8 +159,8 @@
     </target>
 
     <target name="apigen" description="Generate API documentation using ApiGen">
-        <exec executable="apigen.php">
-            <arg line="--source src --destination ${basedir}/build/api" />
+        <exec executable="apigen">
+            <arg line="generate ${basedir}/build/api src" />
         </exec>
     </target>
 
