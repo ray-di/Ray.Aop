@@ -17,7 +17,7 @@ interface BindInterface
      * @param string     $class
      * @param Pointcut[] $pointcuts
      *
-     * @return Bind
+     * @return array
      */
     public function bind($class, array $pointcuts);
 
