@@ -104,7 +104,7 @@ final class Bind implements BindInterface
         }
         foreach ($matches as $matched) {
             if ($matched instanceof Matched) {
-                $this->bindInterceptors($matched->methodName, $interceptors, $matched->annotation);
+                $this->bindInterceptors($matched->methodName, $interceptors);
             }
         }
     }
