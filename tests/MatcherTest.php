@@ -66,7 +66,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $class = 'Ray\Aop\FakeAnnotateClass';
         $matcher = $this->matcher->annotatedWith($annotation);
         $this->assertInstanceOf('Ray\Aop\Matcher', $matcher);
-        $matchedArray = $matcher($class, Matcher::TARGET_METHOD);
+        $matchedArray = $matcher($class, Target::IS_METHOD);
         $matchedFirst = $matchedArray[0];
         $this->assertInstanceOf('Ray\Aop\Matched', $matchedFirst);
         $this->assertSame('getDouble', $matchedFirst->methodName);
@@ -104,7 +104,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
         $class = 'Ray\Aop\FakeAnnotateClass';
-        $result = $match($class, Matcher::TARGET_METHOD);
+        $result = $match($class, Target::IS_METHOD);
         $this->assertFalse($result);
     }
 
@@ -114,7 +114,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function testAnyButNotstartsWithDoubleUnderscore()
     {
         $any = $this->matcher->any();
-        $result = $any('__construct', Matcher::TARGET_METHOD);
+        $result = $any('__construct', Target::IS_METHOD);
         $this->assertFalse($result);
     }
 
@@ -127,7 +127,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $methods = (new \ReflectionClass('ArrayObject'))->getMethods();
         foreach ($methods as $method) {
             $methodName = $method->getName();
-            $result = $any($methodName, Matcher::TARGET_METHOD);
+            $result = $any($methodName, Target::IS_METHOD);
             $this->assertFalse($result);
         }
     }
@@ -135,7 +135,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     public function testIsstartsWithMethodTrue()
     {
         $startsWith = $this->matcher->startsWith('get');
-        $result = $startsWith('getSub', Matcher::TARGET_METHOD);
+        $result = $startsWith('getSub', Target::IS_METHOD);
         $this->assertTrue($result);
     }
 
@@ -143,7 +143,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $startsWith = $this->matcher->startsWith('on');
         $class = 'Ray\Aop\FakeAnnotateClass';
-        $result = $startsWith($class, Matcher::TARGET_METHOD, '__construct');
+        $result = $startsWith($class, Target::IS_METHOD, '__construct');
         $this->assertFalse($result);
     }
 
@@ -151,7 +151,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $startsWith = $this->matcher->startsWith('on');
         $class = 'Ray\Aop\FakeAnnotateClass';
-        $result = $startsWith($class, Matcher::TARGET_METHOD, '__construct');
+        $result = $startsWith($class, Target::IS_METHOD, '__construct');
         $this->assertFalse($result);
     }
 
@@ -286,7 +286,7 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
     {
         $match = $this->matcher->subclassesOf('Ray\Aop\MatcherTestSuperClass');
         $method = new \ReflectionMethod('Ray\Aop\MatcherTestChildClass', 'get');
-        $match($method, Matcher::TARGET_METHOD);
+        $match($method, Target::IS_METHOD);
     }
 
     public function testNoAnnotationReaderConstruct()

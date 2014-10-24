@@ -82,7 +82,7 @@ final class Bind implements BindInterface
     {
         $methods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
-            $isMethodMatch = ($methodMatcher($method, Matcher::TARGET_METHOD) === true);
+            $isMethodMatch = ($methodMatcher($method, Target::IS_METHOD) === true);
             if ($isMethodMatch) {
                 $this->bindInterceptors($method->name, $interceptors);
             }
@@ -98,7 +98,7 @@ final class Bind implements BindInterface
      */
     private function bindByAnnotateBinding($class, AbstractMatcher $methodMatcher, array $interceptors)
     {
-        $matches = (array)$methodMatcher($class, Matcher::TARGET_METHOD);
+        $matches = (array)$methodMatcher($class, Target::IS_METHOD);
         if (!$matches) {
             return;
         }
