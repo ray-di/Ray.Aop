@@ -15,7 +15,6 @@ namespace Ray\Aop;
  */
 interface Invocation extends Joinpoint
 {
-
     /**
      * Get the arguments as an array object.
      *

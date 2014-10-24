@@ -26,7 +26,6 @@ namespace Ray\Aop;
  */
 interface Joinpoint
 {
-
     /**
      * Proceeds to the next interceptor in the chain.
      *

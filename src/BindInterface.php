@@ -14,8 +14,8 @@ interface BindInterface
     /**
      * Make pointcuts to binding information
      *
-     * @param string $class
-     * @param array  $pointcuts
+     * @param string     $class
+     * @param Pointcut[] $pointcuts
      *
      * @return Bind
      */
@@ -24,8 +24,8 @@ interface BindInterface
     /**
      * Bind method to interceptors
      *
-     * @param string $method
-     * @param array  $interceptors
+     * @param string        $method
+     * @param Interceptor[] $interceptors
 s     *
      * @return Bind
      */

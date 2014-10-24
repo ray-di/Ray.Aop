@@ -18,7 +18,6 @@ namespace Ray\Aop;
  */
 interface MethodInvocation extends Invocation
 {
-
     /**
      * Gets the method being called.
      *

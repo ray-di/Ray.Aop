@@ -9,21 +9,17 @@ namespace Ray\Aop;
 abstract class AbstractMatcher
 {
     /**
-     * Lazy match method
-     *
      * @var string
      */
     protected $method;
 
     /**
-     * Lazy match args
-     *
      * @var array
      */
     protected $args;
 
     /**
-     * @var string | null
+     * @var string
      */
     protected $matcherClass;
 
@@ -43,7 +39,7 @@ abstract class AbstractMatcher
      * @param string $class
      * @param bool   $target
      *
-     * @return bool | array [$matcher, method]
+     * @return bool
      */
     public function __invoke($class, $target)
     {
@@ -66,6 +62,8 @@ abstract class AbstractMatcher
     /**
      * @param string $name
      * @param array  $arguments
+     *
+     * @return bool
      */
     public function __call($name, array $arguments)
     {

@@ -9,42 +9,29 @@ namespace Ray\Aop;
 use ArrayObject;
 use ReflectionMethod;
 
-/**
- * Ray's implementation of AOP Alliance MethodInvocation interface.
- */
 class ReflectiveMethodInvocation implements MethodInvocation
 {
     /**
-     * Object
-     *
      * @var object
      */
     protected $object;
 
     /**
-     * Parameters
-     *
      * @var ArrayObject
      */
     protected $args;
 
     /**
-     * Current method
-     *
      * @var \ReflectionMethod
      */
     protected $method;
 
     /**
-     * Interceptors
-     *
-     * @var array
+     * @var Interceptor[]
      */
     protected $interceptors;
 
     /**
-     * Interceptor index
-     *
      * @var integer
      */
     protected $interceptorIndex;

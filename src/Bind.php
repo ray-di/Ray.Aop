@@ -18,7 +18,6 @@ final class Bind implements BindInterface
 
     /**
      * {@inheritdoc}
-     * @SuppressWarnings(PHPMD.ConstructorWithNameAsEnclosingClass)
      */
     public function bind($class, array $pointcuts)
     {

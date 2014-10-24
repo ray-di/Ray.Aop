@@ -9,5 +9,6 @@ namespace Ray\Aop;
 abstract class AbstractWeaved
 {
     public $rayAopIntercept;
+
     public $rayAopBind;
 }

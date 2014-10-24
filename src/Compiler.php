@@ -12,9 +12,6 @@ use PHPParser_Parser;
 use PHPParser_PrettyPrinter_Default;
 use ReflectionClass;
 
-/**
- * AOP compiler
- */
 final class Compiler implements CompilerInterface
 {
     /**
@@ -28,7 +25,7 @@ final class Compiler implements CompilerInterface
     private $codeGen;
 
     /**
-     * @param string                          $classDir
+     * @param string $classDir
      */
     public function __construct($classDir)
     {
