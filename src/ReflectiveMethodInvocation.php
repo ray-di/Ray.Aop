@@ -50,25 +50,17 @@ class ReflectiveMethodInvocation implements MethodInvocation
     protected $interceptorIndex;
 
     /**
-     * @var mixed|null
-     */
-    protected $annotation;
-
-    /**
-     * Constructor
-     *
      * @param Callable $target
      * @param array    $args
      * @param array    $interceptors
      * @param mixed    $annotation
      */
-    public function __construct(callable $target, array $args, array $interceptors = [], $annotation = null)
+    public function __construct(callable $target, array $args, array $interceptors = [])
     {
         $this->method = new ReflectionMethod($target[0], $target[1]);
         $this->object = $target[0];
         $this->args = new ArrayObject($args);
         $this->interceptors = $interceptors;
-        $this->annotation = $annotation;
     }
 
     /**
@@ -108,13 +100,5 @@ class ReflectiveMethodInvocation implements MethodInvocation
     public function getThis()
     {
         return $this->object;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getAnnotation()
-    {
-        return $this->annotation;
     }
 }

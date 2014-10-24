@@ -17,13 +17,6 @@ final class Bind implements BindInterface
     public $bindings = [];
 
     /**
-     * Annotated binding annotation
-     *
-     * @var array [$method => $annotations]
-     */
-    public $annotation = [];
-
-    /**
      * {@inheritdoc}
      * @SuppressWarnings(PHPMD.ConstructorWithNameAsEnclosingClass)
      */
@@ -61,12 +54,9 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function bindInterceptors($method, array $interceptors, $annotation = null)
+    public function bindInterceptors($method, array $interceptors)
     {
         $this->bindings[$method] = !isset($this->bindings[$method]) ? $interceptors : array_merge($this->bindings[$method], $interceptors);
-        if ($annotation) {
-            $this->annotation[$method] = $annotation;
-        }
 
         return $this;
     }

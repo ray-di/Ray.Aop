@@ -70,14 +70,4 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
         $actual = $this->invocation->getThis();
         $this->assertSame($this->mock, $actual);
     }
-
-    public function testGetAnnotation()
-    {
-        $mock = new FakeClass;
-        $callable = [$mock, 'add'];
-        $invocation = new ReflectiveMethodInvocation($callable, [], [], [new FakeMarker]);
-        /** @noinspection PhpDeprecationInspection */
-        $annotations = $invocation->getAnnotation();
-        $this->assertInstanceOf('Ray\Aop\FakeMarker', $annotations[0]);
-    }
 }

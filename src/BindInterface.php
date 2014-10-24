@@ -26,11 +26,10 @@ interface BindInterface
      *
      * @param string $method
      * @param array  $interceptors
-     * @param object $annotation
-     *
+s     *
      * @return Bind
      */
-    public function bindInterceptors($method, array $interceptors, $annotation = null);
+    public function bindInterceptors($method, array $interceptors);
 
     /**
      * Get matched Interceptor

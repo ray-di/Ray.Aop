@@ -71,18 +71,6 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->interceptors, $interceptors);
     }
 
-    public function testBindAnyAnnotatedWithAnnotation()
-    {
-        $matcher = new Matcher;
-        $pointcut = new Pointcut($matcher->any(), $matcher->annotatedWith(FakeMarker::class), $this->interceptors);
-        $bind = $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
-        /* @var $bind Bind */
-        /** @noinspection PhpParamsInspection */
-        list($method,) = each($bind);
-        $annotation = $this->bind->annotation[$method];
-        $this->assertInstanceOf('Ray\Aop\FakeMarker', $annotation);
-    }
-
     public function testBindAnyAnnotatedWithDoubleBind()
     {
         $matcher = new Matcher;
