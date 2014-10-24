@@ -2,9 +2,6 @@
 
 namespace Ray\Aop;
 
-use Ray\Aop\Bind;
-use Ray\Aop\ReflectiveMethodInvocation;
-
 /**
  * Test class for Ray.Aop
  */

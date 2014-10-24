@@ -2,9 +2,6 @@
 
 namespace Ray\Aop;
 
-use Ray\Aop\Bind;
-use Ray\Aop\ReflectiveMethodInvocation;
-
 interface FakeAddInterface
 {
     public function add(FakeNum $num1, $num2);

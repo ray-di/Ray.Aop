@@ -6,7 +6,6 @@
  */
 namespace Ray\Aop\Match;
 
-use Ray\Aop\AbstractMatcher;
 use Ray\Aop\MatchInterface;
 use Ray\Aop\Target;
 

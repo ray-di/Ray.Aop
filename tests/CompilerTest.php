@@ -3,13 +3,12 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Ray\Aop\Interceptor\DoubleInterceptor;
-use Ray\Aop\Interceptor\AbortProceedInterceptor;
-use Ray\Aop\FakeNum;
+use PHPParser_BuilderFactory;
 use PHPParser_Lexer;
 use PHPParser_Parser;
 use PHPParser_PrettyPrinter_Default;
-use PHPParser_BuilderFactory;
+use Ray\Aop\Interceptor\AbortProceedInterceptor;
+use Ray\Aop\Interceptor\DoubleInterceptor;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {

@@ -9,7 +9,7 @@ class MatcherTestSuperClass
 
 class MatcherTestChildClass extends MatcherTestSuperClass
 {
-    public function get(){}
+    public function get() {}
 }
 
 class MatcherTestIsolateClass

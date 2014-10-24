@@ -6,8 +6,8 @@
  */
 namespace Ray\Aop;
 
-use ReflectionMethod;
 use ArrayObject;
+use ReflectionMethod;
 
 /**
  * Ray's implementation of AOP Alliance MethodInvocation interface.

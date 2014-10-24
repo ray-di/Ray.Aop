@@ -2,9 +2,6 @@
 
 namespace Ray\Aop;
 
-use Ray\Aop\FakeMarker;
-use Ray\Aop\FakeClass;
-
 class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
 {
     /**

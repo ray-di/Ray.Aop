@@ -8,7 +8,6 @@ namespace Ray\Aop\Match;
 
 use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Ray\Aop\AbstractMatcher;
 use Doctrine\Common\Annotations\Reader;
 use Ray\Aop\Matched;
 use Ray\Aop\MatchInterface;
