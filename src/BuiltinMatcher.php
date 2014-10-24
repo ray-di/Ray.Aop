@@ -14,15 +14,19 @@ final class BuiltInMatcher extends AbstractMatcher
     private $matcherName;
 
     /**
-     * @var array
-     */
-    private $arguments;
-
-    /**
      * @var AbstractMatcher
      */
     private $matcher;
 
+    /**
+     * @var arrays
+     */
+    private $arguments;
+
+    /**
+     * @param string $matcherName
+     * @param array  $arguments
+     */
     public function __construct($matcherName, array $arguments)
     {
         $this->matcherName = $matcherName;
