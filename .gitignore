@@ -9,8 +9,6 @@ nbproject
 vendor
 cache.properties
 build
-*.log
 composer.phar
-tests/Ray/Aop/Weaved/
 *RayAop.php
 apigen.neon
