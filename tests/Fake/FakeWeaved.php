@@ -2,9 +2,6 @@
 
 namespace Ray\Aop;
 
-/**
- * Test class for Ray.Aop
- */
 class FakeWeaved extends FakeMock
 {
     private $rayAopIntercept = true;

@@ -6,7 +6,9 @@ namespace Ray\Aop;
 class FakeMock
 {
     private $a = 1;
+
     protected $b = 2;
+
     public $c = 3;
 
     /** doc comment of returnSame */

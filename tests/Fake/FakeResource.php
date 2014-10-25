@@ -7,13 +7,8 @@
 namespace Ray\Aop;
 
 /**
- * Log
- *
  * @Annotation
  * @Target("CLASS")
- *
- * @package    Ray.Aop
- * @subpackage Annotation
  */
 final class FakeResource
 {

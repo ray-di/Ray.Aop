@@ -7,8 +7,6 @@
 namespace Ray\Aop;
 
 /**
- * Log
- *
  * @Annotation
  * @Target("METHOD")
  */
