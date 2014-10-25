@@ -1,15 +1,15 @@
 <?php
 
-namespace Ray\Aop\Match;
+namespace Ray\Aop\Matcher;
 
 use Ray\Aop\FakeClass;
 
-class IsStartsWithTest extends \PHPUnit_Framework_TestCase
+class StartsWithMatcherTest extends \PHPUnit_Framework_TestCase
 {
     public function testMatchesClass()
     {
         $class = new \ReflectionClass(FakeClass::class);
-        $isMatched = (new IsStartsWith)->matchesClass($class, ['Ray\Aop']);
+        $isMatched = (new StartsWithMatcher)->matchesClass($class, ['Ray\Aop']);
 
         $this->assertTrue($isMatched);
     }
@@ -17,7 +17,7 @@ class IsStartsWithTest extends \PHPUnit_Framework_TestCase
     public function testMatchesMethod()
     {
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
-        $isMatched = (new IsStartsWith)->matchesMethod($method, ['get']);
+        $isMatched = (new StartsWithMatcher)->matchesMethod($method, ['get']);
 
         $this->assertTrue($isMatched);
     }
@@ -25,7 +25,7 @@ class IsStartsWithTest extends \PHPUnit_Framework_TestCase
     public function testMatchesMethodNotMatch()
     {
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
-        $isMatched = (new IsStartsWith)->matchesMethod($method, ['xxx']);
+        $isMatched = (new StartsWithMatcher)->matchesMethod($method, ['xxx']);
 
         $this->assertFalse($isMatched);
     }

@@ -67,5 +67,14 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $bindString);
         $this->assertNotSame($nullBind, $bindString);
     }
+
+    public function testMyMatcher()
+    {
+        $interceptors = [new FakeDoubleInterceptor];
+        $pointcut = new Pointcut(new FakeMatcher, (new Matcher)->any(), $interceptors);
+        $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
+        $this->assertArrayHasKey('getDouble', $this->bind->bindings);
+        $this->assertSame($this->bind->bindings['getDouble'], $interceptors);
+    }
 }
 

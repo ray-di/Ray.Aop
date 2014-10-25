@@ -1,16 +1,16 @@
 <?php
 
-namespace Ray\Aop\Match;
+namespace Ray\Aop\Matcher;
 
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeResource;
 
-class IsAnyTest extends \PHPUnit_Framework_TestCase
+class AnyMatcherTest extends \PHPUnit_Framework_TestCase
 {
     public function testMatchesClass()
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new IsAny)->matchesClass($class, [FakeResource::class]);
+        $isMatched = (new AnyMatcher)->matchesClass($class, [FakeResource::class]);
 
         $this->assertTrue($isMatched);
     }
@@ -18,7 +18,7 @@ class IsAnyTest extends \PHPUnit_Framework_TestCase
     public function testMatchesMethod()
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
-        $isMatched = (new IsAny)->matchesMethod($method, []);
+        $isMatched = (new AnyMatcher)->matchesMethod($method, []);
 
         $this->assertTrue($isMatched);
     }

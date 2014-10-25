@@ -1,17 +1,16 @@
 <?php
 
-namespace Ray\Aop\Match;
+namespace Ray\Aop\Matcher;
 
 use Ray\Aop\FakeAnnotateClass;
-use Ray\Aop\FakeMarker;
 use Ray\Aop\FakeMatcher;
 
-class IsLogicalAndTest extends \PHPUnit_Framework_TestCase
+class LogicalOrMathcerTest extends \PHPUnit_Framework_TestCase
 {
     public function testMatchesClass()
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new IsLogicalAnd)->matchesClass($class, [new FakeMatcher, new FakeMatcher]);
+        $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher, new FakeMatcher(false)]);
 
         $this->assertTrue($isMatched);
     }
@@ -19,23 +18,22 @@ class IsLogicalAndTest extends \PHPUnit_Framework_TestCase
     public function testMatchesClassFalse()
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new IsLogicalAnd)->matchesClass($class, [new FakeMatcher, new FakeMatcher(false)]);
+        $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher, new FakeMatcher(false)]);
 
-        $this->assertFalse($isMatched);
+        $this->assertTrue($isMatched);
     }
 
     public function testMatchesClassThreeConditions()
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new IsLogicalAnd)->matchesClass($class, [new FakeMatcher, new FakeMatcher, new FakeMatcher(false)]);
-
-        $this->assertFalse($isMatched);
+        $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher(false), new FakeMatcher(false), new FakeMatcher]);
+        $this->assertTrue($isMatched);
     }
 
     public function testMatchesMethod()
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
-        $isMatched = (new IsLogicalAnd)->matchesMethod($method, [new FakeMatcher, new FakeMatcher]);
+        $isMatched = (new LogicalOrMatcher)->matchesMethod($method, [new FakeMatcher, new FakeMatcher]);
 
         $this->assertTrue($isMatched);
     }

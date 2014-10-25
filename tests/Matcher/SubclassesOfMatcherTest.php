@@ -1,16 +1,16 @@
 <?php
 
-namespace Ray\Aop;
+namespace Ray\Aop\Matcher;
 
-use Ray\Aop\Match\IsSubclassesOf;
 use Ray\Aop\Exception\InvalidMatcher;
+use Ray\Aop\FakeClass;
 
-class IsSubclassesOfTest extends \PHPUnit_Framework_TestCase
+class SubclassesOfMatcherTest extends \PHPUnit_Framework_TestCase
 {
     public function testMatchesClass()
     {
         $class = new \ReflectionClass(FakeClass::class);
-        $isMatched = (new IsSubclassesOf)->matchesClass($class, [FakeClass::class]);
+        $isMatched = (new SubclassesOfMatcher)->matchesClass($class, [FakeClass::class]);
 
         $this->assertTrue($isMatched);
     }
@@ -19,6 +19,8 @@ class IsSubclassesOfTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(InvalidMatcher::class);
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
-        $isMatched = (new IsSubclassesOf)->matchesMethod($method, ['get']);
+        $isMatched = (new SubclassesOfMatcher)->matchesMethod($method, ['get']);
+
+        $this->assertTrue($isMatched);
     }
 }

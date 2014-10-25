@@ -31,8 +31,8 @@ final class BuiltInMatcher extends AbstractMatcher
     {
         $this->matcherName = $matcherName;
         $this->arguments = $arguments;
-        $matchClass = 'Ray\Aop\Match\Is' . ucwords($this->matcherName);
-        $this->matcher = (new \ReflectionClass($matchClass))->newInstance();
+        $matcher = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';
+        $this->matcher = (new \ReflectionClass($matcher))->newInstance();
 
     }
 
