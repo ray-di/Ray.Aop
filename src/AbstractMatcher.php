@@ -11,7 +11,7 @@ abstract class AbstractMatcher
     /**
      * @var array
      */
-    protected $arguments;
+    protected $arguments = [];
 
     abstract public function matchesClass(\ReflectionClass $class, array $arguments);
 

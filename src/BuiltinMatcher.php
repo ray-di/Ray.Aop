@@ -21,7 +21,7 @@ final class BuiltInMatcher extends AbstractMatcher
     /**
      * @var arrays
      */
-    private $arguments;
+    protected $arguments;
 
     /**
      * @param string $matcherName
