@@ -65,14 +65,6 @@ class Matcher
     /**
      * {@inheritdoc}
      */
-    public function logicalXor(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
-    {
-        return new BuiltInMatcher(__FUNCTION__, [$matcherA, $matcherB]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function logicalNot(AbstractMatcher $matcher)
     {
         return new BuiltInMatcher(__FUNCTION__, [$matcher]);
