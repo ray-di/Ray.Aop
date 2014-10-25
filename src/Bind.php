@@ -25,8 +25,6 @@ final class Bind implements BindInterface
             /** @var $pointcut Pointcut */
             $this->bindPointcut(new \ReflectionClass($class), $pointcut);
         }
-
-        return $this->bindings;
     }
 
     /**
