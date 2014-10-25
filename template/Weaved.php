@@ -38,8 +38,9 @@ class Weaved extends \Ray\Aop\FakeMock
 
         $this->rayAopIntercept = false;
         $invocationResult = (new \Ray\Aop\ReflectiveMethodInvocation(
-            [$this, __FUNCTION__],
-            func_get_args(),
+            $this,
+            new \ReflectionMethod($this, __FUNCTION__),
+            new \Ray\Aop\Arguments(func_get_args()),
             $this->rayAopBind->bindings[__FUNCTION__]
         ))->proceed();
         $this->rayAopIntercept = true;
