@@ -71,7 +71,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testProceedMultipleInterceptors()
     {
         $fake = new FakeWeavedClass;
-        $invocation = new ReflectiveMethodInvocation($fake, new \ReflectionMethod($fake, 'add'), new Arguments([1]), [new FakeVoidInterceptor, new FakeVoidInterceptor]);
+        $invocation = new ReflectiveMethodInvocation($fake, new \ReflectionMethod($fake, 'add'), new Arguments([1]), [new FakeInterceptor, new FakeInterceptor]);
         $invocation->proceed();
         $this->assertSame(1, $fake->a);
     }

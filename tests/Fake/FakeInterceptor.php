@@ -2,7 +2,7 @@
 
 namespace Ray\Aop;
 
-class FakeVoidInterceptor implements MethodInterceptor
+class FakeInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
