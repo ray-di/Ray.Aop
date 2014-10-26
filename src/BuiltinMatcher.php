@@ -19,7 +19,7 @@ final class BuiltInMatcher extends AbstractMatcher
     private $matcher;
 
     /**
-     * @var arrays
+     * @var array
      */
     protected $arguments;
 

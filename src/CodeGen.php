@@ -104,11 +104,9 @@ final class CodeGen
     }
 
     /**
-     * Return method statements
-     *
      * @param \ReflectionClass $class
      *
-     * @return \PHPParser\Builder\Method[]
+     * @return array
      */
     private function getMethods(\ReflectionClass $class)
     {
@@ -190,7 +188,7 @@ final class CodeGen
      */
     private function getMethodInsideStatement()
     {
-        $code = file_get_contents(dirname(__DIR__) . '/template/Weaved.php');
+        $code = file_get_contents(dirname(__DIR__) . '/src-data/CodeGenTemplate.php');
         $node = $this->parser->parse($code)[0];
         /** @var $node \PHPParser\Node\Stmt\Class_ */
         $node = $node->getMethods()[0];
