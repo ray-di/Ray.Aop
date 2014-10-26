@@ -72,7 +72,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function testBuildClassWeaved($class)
     {
         $weaved = new $class;
-        $weaved->rayAopBind = $this->bind;
+        $weaved->bind = $this->bind;
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }

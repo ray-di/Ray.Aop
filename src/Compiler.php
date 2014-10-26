@@ -44,7 +44,7 @@ final class Compiler implements CompilerInterface
     {
         $compiledClass = $this->compile($class, $bind);
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
-        $instance->rayAopBind = $bind;
+        $instance->bind = $bind;
 
         return $instance;
     }

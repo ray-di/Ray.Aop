@@ -15,35 +15,35 @@ class Weaved extends \Ray\Aop\FakeMock
     /**
      * @var bool
      */
-    private $rayAopIntercept = true;
+    private $isIntercepting = true;
 
     /**
      * @var Bind
      */
-    public $rayAopBind;
+    public $bind;
 
     /**
      * Method Template
      */
     public function returnSame($a)
     {
-        if (isset($this->rayAopBind->bindings[__FUNCTION__]) === false){
+        if (isset($this->bind->bindings[__FUNCTION__]) === false){
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
-        if ($this->rayAopIntercept === false) {
-            $this->rayAopIntercept = true;
+        if ($this->isIntercepting === false) {
+            $this->isIntercepting = true;
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
-        $this->rayAopIntercept = false;
+        $this->isIntercepting = false;
         $invocationResult = (new \Ray\Aop\ReflectiveMethodInvocation(
             $this,
             new \ReflectionMethod($this, __FUNCTION__),
             new \Ray\Aop\Arguments(func_get_args()),
-            $this->rayAopBind->bindings[__FUNCTION__]
+            $this->bind->bindings[__FUNCTION__]
         ))->proceed();
-        $this->rayAopIntercept = true;
+        $this->isIntercepting = true;
 
         return $invocationResult;
     }
