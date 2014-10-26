@@ -19,6 +19,7 @@ $bind = new Bind;
 $bind->bind(AnnotationRealBillingService::class, [$pointcut]);
 $compiler = new Compiler($_ENV['TMP_DIR']);
 $billingService = $compiler->newInstance(RealBillingService::class, [], $bind);
+
 try {
     echo $billingService->chargeOrder();
 } catch (\RuntimeException $e) {
