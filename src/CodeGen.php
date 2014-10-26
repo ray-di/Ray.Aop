@@ -28,9 +28,11 @@ final class CodeGen
      */
     private $printer;
 
+    private $codeGenMethod;
+
     /**
-     * @param \PHPParser\Parser                $parser
-     * @param \PHPParser\BuilderFactory        $factory
+     * @param \PHPParser\Parser                 $parser
+     * @param \PHPParser\BuilderFactory         $factory
      * @param \PHPParser\PrettyPrinter\Standard $printer
      */
     public function __construct(
@@ -41,6 +43,7 @@ final class CodeGen
         $this->parser = $parser;
         $this->factory = $factory;
         $this->printer = $printer;
+        $this->codeGenMethod = new CodeGenMethod($parser, $factory, $printer);
     }
 
     /**
@@ -53,7 +56,7 @@ final class CodeGen
     {
         $stmt = $this
             ->getClass($class, $sourceClass)
-            ->addStmts($this->getMethods($sourceClass))
+            ->addStmts($this->codeGenMethod->getMethods($sourceClass))
             ->getNode();
         $stmt = $this->addClassDocComment($stmt, $sourceClass);
         $code = $this->printer->prettyPrint([$stmt]);
@@ -67,7 +70,7 @@ final class CodeGen
      * @param string           $newClassName
      * @param \ReflectionClass $class
      *
-     * @return Class_
+     * @return \PhpParser\Builder\Class_
      */
     private function getClass($newClassName, \ReflectionClass $class)
     {
@@ -101,98 +104,5 @@ final class CodeGen
         }
 
         return $node;
-    }
-
-    /**
-     * @param \ReflectionClass $class
-     *
-     * @return array
-     */
-    private function getMethods(\ReflectionClass $class)
-    {
-        $stmts = [];
-        $methods = $class->getMethods();
-        foreach ($methods as $method) {
-            /** @var $method \ReflectionMethod */
-            if ($method->isPublic()) {
-                $stmts[] = $this->getMethod($method);
-            }
-        }
-
-        return $stmts;
-    }
-
-    /**
-     * Return method statement
-     *
-     * @param \ReflectionMethod $method
-     *
-     * @return \PHPParser\Node\Stmt\Class\Method_
-     */
-    private function getMethod(\ReflectionMethod $method)
-    {
-        $methodStmt = $this->factory->method($method->name);
-        $params = $method->getParameters();
-        foreach ($params as $param) {
-            $methodStmt = $this->getMethodStatement($param, $methodStmt);
-        }
-        $methodInsideStatements = $this->getMethodInsideStatement();
-        $methodStmt->addStmts($methodInsideStatements);
-        $node = $this->addMethodDocComment($methodStmt, $method);
-
-        return $node;
-    }
-
-    /**
-     * Return parameter reflection
-     *
-     * @param \ReflectionParameter      $param
-     * @param \PHPParser\Builder\Method $methodStmt
-     *
-     * @return \PHPParser\Builder\Method
-     */
-    private function getMethodStatement(\ReflectionParameter $param, \PHPParser\Builder\Method $methodStmt)
-    {
-        /** @var $param \ReflectionParameter */
-        $paramStmt = $this->factory->param($param->name);
-        $typeHint = $param->getClass();
-        if ($typeHint) {
-            $paramStmt->setTypeHint($typeHint->name);
-        }
-        if ($param->isDefaultValueAvailable()) {
-            $paramStmt->setDefault($param->getDefaultValue());
-        }
-        $methodStmt->addParam($paramStmt);
-
-        return $methodStmt;
-    }
-
-    /**
-     * @param \PHPParser\Builder\Method $methodStmt
-     * @param \ReflectionMethod         $method
-     *
-     * @return \PhpParser\Node\Stmt\ClassMethod
-     */
-    private function addMethodDocComment(\PHPParser\Builder\Method $methodStmt, \ReflectionMethod $method)
-    {
-        $node = $methodStmt->getNode();
-        $docComment = $method->getDocComment();
-        if ($docComment) {
-            $node->setAttribute('comments', [new \PHPParser\Comment\Doc($docComment)]);
-        }
-        return $node;
-    }
-
-    /**
-     * @return \PHPParser\Node[]
-     */
-    private function getMethodInsideStatement()
-    {
-        $code = file_get_contents(dirname(__DIR__) . '/src-data/CodeGenTemplate.php');
-        $node = $this->parser->parse($code)[0];
-        /** @var $node \PHPParser\Node\Stmt\Class_ */
-        $node = $node->getMethods()[0];
-
-        return $node->stmts;
     }
 }
