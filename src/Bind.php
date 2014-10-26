@@ -9,7 +9,7 @@ namespace Ray\Aop;
 use ReflectionClass;
 use ReflectionMethod;
 
-final class Bind implements BindInterface
+final class Bind
 {
     /**
      * @var array
@@ -74,17 +74,6 @@ final class Bind implements BindInterface
         $this->bindings[$method] = !isset($this->bindings[$method]) ? $interceptors : array_merge($this->bindings[$method], $interceptors);
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __invoke($name)
-    {
-        // pre compiled implicit matcher
-        $interceptors = isset($this->bindings[$name]) ? $this->bindings[$name] : false;
-
-        return $interceptors;
     }
 
     public function __toString()

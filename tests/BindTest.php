@@ -28,16 +28,6 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->bind->bindings['getDouble'], $interceptors);
     }
 
-    public function testInvoke()
-    {
-        $this->bind->bindInterceptors('getDouble', [new FakeDoubleInterceptor, new FakeDoubleInterceptor]);
-        $bind = $this->bind;
-        $interceptors = $bind('getDouble');
-        $this->assertSame(2, count($interceptors));
-        $this->assertInstanceOf(FakeDoubleInterceptor::class, $interceptors[0]);
-        $this->assertInstanceOf(FakeDoubleInterceptor::class, $interceptors[1]);
-    }
-
     public function testBind()
     {
         $interceptors = [new FakeDoubleInterceptor];
@@ -76,5 +66,13 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('getDouble', $this->bind->bindings);
         $this->assertSame($this->bind->bindings['getDouble'], $interceptors);
     }
+
+    public function testNotClassMatch()
+    {
+        $pointcut = new Pointcut(new FakeMatcher(false), (new Matcher)->any(), [new FakeDoubleInterceptor]);
+        $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
+        $this->assertArrayNotHasKey('getDouble', $this->bind->bindings);
+    }
+
 }
 
