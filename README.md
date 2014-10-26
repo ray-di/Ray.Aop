@@ -190,7 +190,7 @@ Here's how to install Ray.Aop from source to run the unit tests and sample:
 $ composer create-project ray/aop Ray.Aop 2.*
 $ cd Ray.Aop
 $ phpunit
-$ php docs/example/01-quick-weave/main.php
+$ php docs/example/01-implicit-bind/implicit-bind.php
 $ php docs/example/02-multiple-interceptors/main.php
 $ php docs/example/03-benchmark/main.php
 $ php docs/example/04-annotation/main.php
@@ -213,15 +213,8 @@ Ray.Di is a Guice style annotation-driven dependency injection framework. It int
 ```bash
 
 # Add Ray.Aop as a dependency
-composer require ray/aop:1.*
-```
+composer require ray/aop:2.*
 
-### ini_set
-
-You may want to set the `xdebug.max_nesting_level` ini option to a higher value:
-
-```php
-ini_set('xdebug.max_nesting_level', 2000);
 ```
 
 * This documentation for the most part is taken from [Guice/AOP](https://code.google.com/p/google-guice/wiki/AOP).

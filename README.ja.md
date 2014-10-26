@@ -79,7 +79,7 @@ $pointcut = new Pointcut(
 );
 $bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
 
-$compiler = new Compiler(sys_get_temp_dir());
+$compiler = new Compiler(__DIR__ . '/tmp');
 $billing = $compiler->newInstance('RealBillingService', [], $bind);
 try {
     echo $billing->chargeOrder();
@@ -162,7 +162,7 @@ $pointcut = new Pointcut(
 		[new WeekendBlocker]
 );
 $bind = new Bind(RealBillingService::class, [$pointcut]);
-$billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
+$billing = (new Compiler(__DIR__ . '/tmp'))->newInstance(RealBillingService::class, [], $bind);
 ```
 
 
@@ -189,7 +189,7 @@ Ray.Aopをインストールしてユニットテストするためには以下�
 $ composer create-project ray/aop Ray.Aop 2.*
 $ cd Ray.Aop
 $ phpunit
-$ php docs/example/01-quick-weave/main.php
+$ php docs/example/01-implicit-bind/main.php
 $ php docs/example/02-multiple-interceptors/main.php
 $ php docs/example/03-benchmark/main.php
 $ php docs/example/04-annotation/main.php
@@ -213,13 +213,5 @@ php composer.phar require ray/aop:*
 ```
 
 AOPを統合したGuiceスタイルのDIフレームワーク[Ray.Di](https://github.com/koriym/Ray.Di)でもRay.Aopを利用する事ができます。
-
-### ini_set
-
-xdebugを使ってる場合は`xdebug.max_nesting_level`の値をこのように大きな値にする必要があるかもしれません。
-
-```php
-ini_set('xdebug.max_nesting_level', 2000);
-```
 
 * The most part of this documentation is taken from [Guice/AOP](https://code.google.com/p/google-guice/wiki/AOP)
