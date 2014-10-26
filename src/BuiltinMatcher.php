@@ -6,7 +6,7 @@
  */
 namespace Ray\Aop;
 
-final class BuiltInMatcher extends AbstractMatcher
+final class BuiltinMatcher extends AbstractMatcher
 {
     /**
      * @var string

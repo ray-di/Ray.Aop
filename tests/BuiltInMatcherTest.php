@@ -2,16 +2,16 @@
 
 namespace Ray\Aop;
 
-class BuiltInMatcherTest extends \PHPUnit_Framework_TestCase
+class BuiltinMatcherTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var BuiltInMatcher
+     * @var BuiltinMatcher
      */
     private $matcher;
 
     public function setUp()
     {
-        $this->matcher = new BuiltInMatcher('startsWith', ['Ray']);
+        $this->matcher = new BuiltinMatcher('startsWith', ['Ray']);
     }
 
     public function testMatchesClass()

@@ -16,7 +16,7 @@ class Matcher
      */
     public function any()
     {
-        return new BuiltInMatcher(__FUNCTION__, []);
+        return new BuiltinMatcher(__FUNCTION__, []);
     }
 
     /**
@@ -28,7 +28,7 @@ class Matcher
             throw new InvalidAnnotation($annotationName);
         }
 
-        return new BuiltInMatcher(__FUNCTION__, [$annotationName]);
+        return new BuiltinMatcher(__FUNCTION__, [$annotationName]);
     }
 
     /**
@@ -39,7 +39,7 @@ class Matcher
         if (! class_exists($superClass)) {
             throw new InvalidArgumentException($superClass);
         }
-        return new BuiltInMatcher(__FUNCTION__, [$superClass]);
+        return new BuiltinMatcher(__FUNCTION__, [$superClass]);
     }
 
     /**
@@ -50,7 +50,7 @@ class Matcher
         if (! is_string($prefix)) {
             throw new InvalidArgumentException($prefix);
         }
-        return new BuiltInMatcher(__FUNCTION__, [$prefix]);
+        return new BuiltinMatcher(__FUNCTION__, [$prefix]);
     }
 
     /**
@@ -58,7 +58,7 @@ class Matcher
      */
     public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
     {
-        return new BuiltInMatcher(__FUNCTION__, [$matcherA, $matcherB]);
+        return new BuiltinMatcher(__FUNCTION__, [$matcherA, $matcherB]);
     }
 
     /**
@@ -66,7 +66,7 @@ class Matcher
      */
     public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
     {
-        return new BuiltInMatcher(__FUNCTION__, [$matcherA, $matcherB]);
+        return new BuiltinMatcher(__FUNCTION__, [$matcherA, $matcherB]);
     }
 
     /**
@@ -74,6 +74,6 @@ class Matcher
      */
     public function logicalNot(AbstractMatcher $matcher)
     {
-        return new BuiltInMatcher(__FUNCTION__, [$matcher]);
+        return new BuiltinMatcher(__FUNCTION__, [$matcher]);
     }
 }
