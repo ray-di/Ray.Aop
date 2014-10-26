@@ -6,6 +6,6 @@
  */
 namespace Ray\Aop\Exception;
 
-interface ExceptionInterface
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
 }
