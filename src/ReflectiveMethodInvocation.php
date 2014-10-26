@@ -6,32 +6,27 @@
  */
 namespace Ray\Aop;
 
-class ReflectiveMethodInvocation implements MethodInvocation
+final class ReflectiveMethodInvocation implements MethodInvocation
 {
     /**
      * @var object
      */
-    protected $object;
+    private $object;
 
     /**
      * @var Arguments
      */
-    protected $arguments;
+    private $arguments;
 
     /**
      * @var \ReflectionMethod
      */
-    protected $method;
+    private $method;
 
     /**
      * @var Interceptor[]
      */
-    protected $interceptors;
-
-    /**
-     * @var integer
-     */
-    protected $interceptorIndex;
+    private $interceptors;
 
     /**
      * @param Arguments         $arguments
