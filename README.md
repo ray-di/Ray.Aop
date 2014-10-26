@@ -125,44 +125,45 @@ Explicit method name match
 Own matcher
 -----------
 You can have your own matcher.
-To create `contains` matcher, You need to provide a class which have two method. One is `contains` for interface.
-The other one is `isContains` which return the result of the `contains` match.
-
+To create `contains` matcher, You need to provide a class which have two method. One is `matchesClass` for class match.
+The other one is `matchesMethod` method match. Both return the boolean result of matched.
 
 ```php
 use Ray\Aop\AbstractMatcher;
+use Ray\Aop\Matcher;
 
-class MyMatcher extends AbstractMatcher
+class IsContainsMatcher extends AbstractMatcher
 {
     /**
-     * @param $contain
-     *
-     * @return MyMatcher
+     * {@inheritdoc}
      */
-    public function contains($contain)
+    public function matchesClass(\ReflectionClass $class, array $arguments)
     {
-        $this->createMatcher(__FUNCTION__, $contain);
+        list($contains) = $arguments;
 
-        return clone $this;
-
+        return (strpos($class->name, $contains) !== false);
     }
 
     /**
-     * Return isContains
-     *
-     * @param mixed  $name    class name string or method reflection
-     * @param boll   $target  \Ray\Aop\AbstractMatcher::TARGET_CLASS | \Ray\Aop\AbstractMatcher::Target_METHOD
-     * @param string $contain
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    protected function isContains($name, $target, $contain)
+    public function matchesMethod(\ReflectionMethod $method, array $arguments)
     {
-        $result = (strpos($name, $contain) !== false);
+        list($contains) = $arguments;
 
-        return $result;
+        return (strpos($method->name, $contains) !== false);
     }
 }
+```
+
+```php
+$pointcut = new Pointcut(
+		(new Matcher)->any(),
+		new IsContainsMatcher('charge'),
+		[new WeekendBlocker]
+);
+$bind = new Bind(RealBillingService::class, [$pointcut]);
+$billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 ```
 
 Limitations

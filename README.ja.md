@@ -123,37 +123,48 @@ Explicit method name match
 
 My matcher
 ----------
-独自のMatcherを作成することができます。
+独自のMatcherを作成するためには、クラスのマッチを行う`matchesClass`メソッドとメソッドのマッチを行う`matchesMethod`を実装して
+`AbstractMatcher`クラスを継承したクラスを作成します。コンストラクタに条件を与えて利用します。
 
-クラス名やメソッド名に特定の文字列が含まれているかをマッチする`contains`マッチャーを作成するには、
-インターフェイスとなる`contains`メソッドと、実際にマッチを判断した結果を返す`__invoke`メソッドの２つが必要です。
-
-`__invoke`メソッドでは`$name`クラスまたはメソッドの名前、`$target`、クラスまたはメソッド
 
 ```php
 use Ray\Aop\AbstractMatcher;
+use Ray\Aop\Matcher;
 
-
-class MyMatcher extends AbstractMatcher
+class IsContainsMatcher extends AbstractMatcher
 {
-    public function contains($contain)
+    /**
+     * {@inheritdoc}
+     */
+    public function matchesClass(\ReflectionClass $class, array $arguments)
     {
-        return new Matcher(__FUNCTION__, func_get_args());
+        list($contains) = $arguments;
+
+        return (strpos($class->name, $contains) !== false);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function __invoke($name, $target, array $args)
+    public function matchesMethod(\ReflectionMethod $method, array $arguments)
     {
-        $result = (strpos($name, $contain) !== false);
+        list($contains) = $arguments;
 
-        return $result;
+        return (strpos($method->name, $contains) !== false);
     }
 }
 ```
-// deleteを含んでいるメソッドにマッチします。
-(new MyMatcher)->contains('delete');
+
+```php
+$pointcut = new Pointcut(
+		(new Matcher)->any(),
+		new IsContainsMatcher('charge'),
+		[new WeekendBlocker]
+);
+$bind = new Bind(RealBillingService::class, [$pointcut]);
+$billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
+```
+
 
 Limitations
 -----------
