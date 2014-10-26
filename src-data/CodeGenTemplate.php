@@ -1,6 +1,6 @@
 <?php
 /**
- * Weaved code-gen template
+ * CodeGenTemplate code-gen template
  *
  * Compiler takes only the statements in the method. Then create new inherit code with interceptors.
  *
@@ -10,7 +10,7 @@
  * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
  *
  */
-class Weaved extends \Ray\Aop\FakeMock
+class CodeGenTemplate extends \Ray\Aop\FakeMock
 {
     /**
      * @var bool
