@@ -7,6 +7,7 @@
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\InvalidAnnotation;
+use Ray\Aop\Exception\InvalidArgumentException;
 
 class Matcher
 {
@@ -23,7 +24,7 @@ class Matcher
      */
     public function annotatedWith($annotationName)
     {
-        if (!class_exists($annotationName)) {
+        if (! class_exists($annotationName)) {
             throw new InvalidAnnotation($annotationName);
         }
 
@@ -35,6 +36,9 @@ class Matcher
      */
     public function subclassesOf($superClass)
     {
+        if (! class_exists($superClass)) {
+            throw new InvalidArgumentException($superClass);
+        }
         return new BuiltInMatcher(__FUNCTION__, [$superClass]);
     }
 
@@ -43,6 +47,9 @@ class Matcher
      */
     public function startsWith($prefix)
     {
+        if (! is_string($prefix)) {
+            throw new InvalidArgumentException($prefix);
+        }
         return new BuiltInMatcher(__FUNCTION__, [$prefix]);
     }
 
