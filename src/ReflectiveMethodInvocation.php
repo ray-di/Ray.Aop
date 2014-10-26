@@ -34,8 +34,7 @@ class ReflectiveMethodInvocation implements MethodInvocation
     protected $interceptorIndex;
 
     /**
-     * @param Callable      $target
-     * @param array         $arguments
+     * @param Arguments         $arguments
      * @param Interceptor[] $interceptors
      */
     public function __construct(
