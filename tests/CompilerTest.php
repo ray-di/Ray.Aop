@@ -175,4 +175,10 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $class = require __DIR__ . '/script/compile.php';
         $this->assertStringEndsWith('RayAop', $class);
     }
+
+    public function testCompileNoBInd()
+    {
+        $class = $this->compiler->compile(FakeMock::class, new Bind);
+        $this->assertSame(FakeMock::class, $class);
+    }
 }
