@@ -189,11 +189,11 @@ Ray.Aopをインストールしてユニットテストするためには以下�
 $ composer create-project ray/aop:~2.0@dev Ray.Aop
 $ cd Ray.Aop
 $ phpunit
-$ php docs/example/01-implicit-bind/implicit-bind.php
-$ php docs/example/02-multiple-interceptors/main.php
-$ php docs/example/03-benchmark/main.php
-$ php docs/example/04-annotation/main.php
-$ php docs/example/05-my-matcher/main.php
+$ php docs/demo/01-implicit-bind/implicit-bind.php
+$ php docs/demo/02-multiple-interceptors/main.php
+$ php docs/demo/03-benchmark/main.php
+$ php docs/demo/04-annotation/main.php
+$ php docs/demo/05-my-matcher/main.php
 ```
 
 Requirement
