@@ -186,10 +186,10 @@ Testing Ray.Aop
 Ray.Aopをインストールしてユニットテストするためには以下のようにします。
 
 ```
-$ composer create-project ray/aop Ray.Aop 2.*
+$ composer create-project ray/aop:~2.0@dev Ray.Aop
 $ cd Ray.Aop
 $ phpunit
-$ php docs/example/01-implicit-bind/main.php
+$ php docs/example/01-implicit-bind/implicit-bind.php
 $ php docs/example/02-multiple-interceptors/main.php
 $ php docs/example/03-benchmark/main.php
 $ php docs/example/04-annotation/main.php
@@ -209,7 +209,7 @@ Installation
 
 ```bash
 # Add Ray.Aop as a dependency
-php composer.phar require ray/aop:*
+composer require ray/aop ~2.0@dev
 ```
 
 AOPを統合したGuiceスタイルのDIフレームワーク[Ray.Di](https://github.com/koriym/Ray.Di)でもRay.Aopを利用する事ができます。
