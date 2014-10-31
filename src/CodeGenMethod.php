@@ -41,6 +41,7 @@ final class CodeGenMethod
         $this->factory = $factory;
         $this->printer = $printer;
     }
+    
     /**
      * @param \ReflectionClass $class
      *

@@ -29,7 +29,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $interceptors;
 
     /**
-     * @param Arguments         $arguments
+     * @param Arguments     $arguments
      * @param Interceptor[] $interceptors
      */
     /**
@@ -58,6 +58,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         if ($this->object instanceof WeavedInterface) {
             return (new \ReflectionObject($this->object))->getParentClass()->getMethod($this->method->getName());
         }
+
         return $this->method;
     }
 
