@@ -43,6 +43,7 @@ final class AnyMatcher extends AbstractMatcher
      */
     public function matchesMethod(\ReflectionMethod $method, array $arguments)
     {
+        unset($arguments);
         return ! ($this->isMagicMethod($method->name) || $this->isBuiltinMethod($method->name));
     }
 

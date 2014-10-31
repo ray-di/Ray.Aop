@@ -24,13 +24,19 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $method;
 
     /**
-     * @var Interceptor[]
+     * @var MethodInterceptor[]
      */
     private $interceptors;
 
     /**
      * @param Arguments         $arguments
      * @param Interceptor[] $interceptors
+     */
+    /**
+     * @param object              $object
+     * @param \ReflectionMethod   $method
+     * @param Arguments           $arguments
+     * @param MethodInterceptor[] $interceptors
      */
     public function __construct(
         $object,

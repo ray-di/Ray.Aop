@@ -18,8 +18,8 @@ interface BindInterface
     /**
      * Bind interceptors to method
      *
-     * @param string $method
-     * @param array  $interceptors
+     * @param string              $method
+     * @param MethodInterceptor[] $interceptors
      *
      * @return $this
      */

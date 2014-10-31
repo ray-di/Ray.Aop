@@ -28,6 +28,9 @@ final class CodeGen
      */
     private $printer;
 
+    /**
+     * @var CodeGenMethod
+     */
     private $codeGenMethod;
 
     /**
