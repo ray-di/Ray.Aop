@@ -57,7 +57,7 @@ final class Compiler implements CompilerInterface
         if (! $bind->getBindings()) {
             return $class;
         }
-        $newClass = str_replace('\\', '_', $class) . '_' . ($bind) .'RayAop';
+        $newClass = str_replace('\\', '_', $class) . '_' . ($bind);
         if (class_exists($newClass)) {
             return $newClass;
         }

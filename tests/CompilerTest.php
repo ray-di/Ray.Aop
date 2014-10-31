@@ -173,7 +173,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         passthru('php ' . __DIR__ . '/script/compile.php');
         // include class file.
         $class = require __DIR__ . '/script/compile.php';
-        $this->assertStringEndsWith('RayAop', $class);
+        $isWeaved = (new \ReflectionClass($class))->implementsInterface(WeavedInterface::class);
+        $this->assertTrue($isWeaved);
     }
 
     public function testCompileNoBInd()

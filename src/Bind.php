@@ -95,6 +95,10 @@ final class Bind implements BindInterface
      */
     public function __toString()
     {
-        return md5(serialize($this->bindings));
+        $shortHash = function ($data) {
+            return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($data))))), '='), '+/', '-_');
+        };
+
+        return $shortHash(serialize($this->bindings));
     }
 }
