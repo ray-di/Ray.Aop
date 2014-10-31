@@ -3,13 +3,9 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use PhpParser\BuilderFactory;
 use PhpParser\Lexer;
-use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard as StandardPrinter;
 use Ray\Aop\Interceptor\AbortProceedInterceptor;
 use Ray\Aop\Interceptor\DoubleInterceptor;
-use TokenReflection\ReflectionClass;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {

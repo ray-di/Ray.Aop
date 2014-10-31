@@ -6,10 +6,10 @@
  */
 namespace Ray\Aop;
 
-use PhpParser\Parser;
 use PhpParser\BuilderFactory;
-use PhpParser\PrettyPrinter\Standard;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Parser;
+use PhpParser\PrettyPrinter\Standard;
 
 final class CodeGen implements CodeGenInterface
 {

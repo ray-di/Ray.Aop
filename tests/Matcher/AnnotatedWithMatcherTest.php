@@ -3,8 +3,8 @@
 namespace Ray\Aop\Matcher;
 
 use Ray\Aop\FakeAnnotateClass;
-use Ray\Aop\FakeResource;
 use Ray\Aop\FakeMarker;
+use Ray\Aop\FakeResource;
 
 class AnnotatedWithMatcherTest extends \PHPUnit_Framework_TestCase
 {

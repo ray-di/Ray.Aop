@@ -6,8 +6,8 @@
  */
 namespace Ray\Aop\Matcher;
 
-use Ray\Aop\AbstractMatcher;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Ray\Aop\AbstractMatcher;
 
 class AnnotatedWithMatcher extends AbstractMatcher
 {

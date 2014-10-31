@@ -6,8 +6,8 @@
  */
 namespace Ray\Aop;
 
-use PhpParser\Parser;
 use PhpParser\BuilderFactory;
+use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 
 final class CodeGenMethod
