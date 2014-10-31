@@ -109,10 +109,8 @@ Explicit method name match
 
 ```php
 <?php
-	$bind = new Bind;
-	$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-
-    $compiler = new Compiler(sys_get_temp_dir());
+	$bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
+    $compiler = new Compiler($tmpDir);
 	$billing = $compiler->newInstance('RealBillingService', [], $bind);
 	try {
 	   echo $billing->chargeOrder();
@@ -190,17 +188,16 @@ Here's how to install Ray.Aop from source to run the unit tests and sample:
 $ composer create-project ray/aop:~2.0@dev Ray.Aop
 $ cd Ray.Aop
 $ phpunit
-$ php docs/example/01-implicit-bind/main.php
-$ php docs/example/02-multiple-interceptors/main.php
-$ php docs/example/03-benchmark/main.php
-$ php docs/example/04-annotation/main.php
-$ php docs/example/05-my-matcher/main.php
+$ php docs/demo/01-implicit-bind.php
+$ php docs/demo/02-matcher-bind.php
+$ php docs/demo/03-annotation-bind.php
+$ php docs/demo/04-my-matcher.php
 ```
 
 Requirement
 -------------
 
- * PHP 5.5+
+ * PHP 5.4+
  * hhvm
 
 Installation
@@ -217,4 +214,4 @@ composer require ray/aop ~2.0@dev
 
 ```
 
-* This documentation for the most part is taken from [Guice/AOP](https://code.google.com/p/google-guice/wiki/AOP).
+* This documentation for the most part is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP).

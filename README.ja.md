@@ -107,11 +107,8 @@ Explicit method name match
 ---------------------------
 
 ```php
-<?php
-	$bind = new Bind;
-	$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-
-    $compiler = new Compiler(sys_get_temp_dir());
+	$bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
+    $compiler = new Compiler($tmpDir);
 	$billing = $compiler->newInstance('RealBillingService', [], $bind);
 	try {
 	   echo $billing->chargeOrder();
@@ -162,7 +159,7 @@ $pointcut = new Pointcut(
 		[new WeekendBlocker]
 );
 $bind = new Bind(RealBillingService::class, [$pointcut]);
-$billing = (new Compiler(__DIR__ . '/tmp'))->newInstance(RealBillingService::class, [], $bind);
+$billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 ```
 
 
@@ -214,4 +211,4 @@ composer require ray/aop ~2.0@dev
 
 AOPを統合したGuiceスタイルのDIフレームワーク[Ray.Di](https://github.com/koriym/Ray.Di)でもRay.Aopを利用する事ができます。
 
-* The most part of this documentation is taken from [Guice/AOP](https://code.google.com/p/google-guice/wiki/AOP)
+* The most part of this documentation is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP)
