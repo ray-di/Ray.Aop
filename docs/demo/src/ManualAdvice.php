@@ -1,6 +1,6 @@
 <?php
 
-namespace Ray\Aop\Sample;
+namespace Ray\Aop\Demo;
 
 class ManualAdvice
 {

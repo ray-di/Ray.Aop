@@ -1,8 +1,6 @@
 <?php
 
-namespace Ray\Aop\Sample;
-
-use Ray\Aop\Sample\Annotation\WeekendBlock;
+namespace Ray\Aop\Demo;
 
 class AnnotationRealBillingService implements BillingService
 {

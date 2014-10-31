@@ -1,16 +1,16 @@
 <?php
 
-namespace Ray\Aop\Sample;
+namespace Ray\Aop\Demo;
 
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
-class interceptorA implements MethodInterceptor
+class interceptorB implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
-        echo "before A\n";
+        echo "before B\n";
         $invocation->proceed();
-        echo "after A\n";
+        echo "after B\n";
     }
 }

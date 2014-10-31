@@ -1,20 +1,17 @@
 <?php
-namespace Ray\Aop;
+namespace Ray\Aop\Demo;
 
-use Ray\Aop\Sample\WeekendBlocker;
-use Ray\Aop\Sample\IsContainsMatcher;
-use Ray\Aop\Sample\AnnotationRealBillingService;
-use Ray\Aop\Sample\RealBillingService;
+use Ray\Aop\Bind;
+use Ray\Aop\Compiler;
+use Ray\Aop\Matcher;
+use Ray\Aop\Pointcut;
 
+require __DIR__ . '/bootstrap.php';
 
-require dirname(__DIR__) . '/bootstrap.php';
-
-$matcher = new Matcher;
-$interceptors = [new WeekendBlocker];
 $pointcut = new Pointcut(
-    $matcher->any(),
+    (new Matcher)->any(),
     new IsContainsMatcher('charge'),
-    $interceptors
+    [new WeekendBlocker]
 );
 $bind = new Bind;
 $bind->bind(AnnotationRealBillingService::class, [$pointcut]);
