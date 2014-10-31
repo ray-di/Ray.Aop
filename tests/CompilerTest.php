@@ -27,8 +27,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->compiler = new Compiler(
-            __DIR__ . '/tmp',
-            new StandardPrinter
+            __DIR__ . '/tmp'
         );
         $this->bind = new Bind;
         $matcher = new Matcher(new AnnotationReader);

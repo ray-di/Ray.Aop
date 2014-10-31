@@ -20,17 +20,18 @@ final class Compiler implements CompilerInterface
     public $classDir;
 
     /**
-     * @var CodeGen
+     * @var CodeGenInterface
      */
     private $codeGen;
 
     /**
-     * @param string $classDir
+     * @param string           $classDir
+     * @param CodeGenInterface $codeGen
      */
-    public function __construct($classDir)
+    public function __construct($classDir, CodeGenInterface $codeGen = null)
     {
         $this->classDir = $classDir;
-        $this->codeGen = new CodeGen(
+        $this->codeGen = $codeGen ?: new CodeGen(
             new Parser(new Lexer),
             new BuilderFactory,
             new StandardPrettyPrinter
@@ -40,7 +41,7 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      */
-    public function newInstance($class, array $args, Bind $bind)
+    public function newInstance($class, array $args, BindInterface $bind)
     {
         $compiledClass = $this->compile($class, $bind);
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
@@ -52,7 +53,7 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      */
-    public function compile($class, Bind $bind)
+    public function compile($class, BindInterface $bind)
     {
         if (! $bind->getBindings()) {
             return $class;

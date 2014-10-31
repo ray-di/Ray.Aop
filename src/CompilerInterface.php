@@ -14,7 +14,7 @@ interface CompilerInterface
      *
      * @return string
      */
-    public function compile($class, Bind $bind);
+    public function compile($class, BindInterface $bind);
 
     /**
      * Return new instance weaved interceptor(s)
@@ -25,5 +25,5 @@ interface CompilerInterface
      *
      * @return object
      */
-    public function newInstance($class, array $args, Bind $bind);
+    public function newInstance($class, array $args, BindInterface $bind);
 }

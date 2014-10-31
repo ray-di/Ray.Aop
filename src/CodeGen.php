@@ -11,7 +11,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\Node\Stmt\Class_;
 
-final class CodeGen
+final class CodeGen implements CodeGenInterface
 {
     /**
      * @var \PHPParser\Parser
