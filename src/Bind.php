@@ -9,12 +9,12 @@ namespace Ray\Aop;
 use ReflectionClass;
 use ReflectionMethod;
 
-final class Bind
+final class Bind implements BindInterface
 {
     /**
      * @var array
      */
-    public $bindings = [];
+    private $bindings = [];
 
     /**
      * {@inheritdoc}
@@ -25,6 +25,8 @@ final class Bind
             /** @var $pointcut Pointcut */
             $this->bindPointcut(new \ReflectionClass($class), $pointcut);
         }
+
+        return $this;
     }
 
     /**
@@ -66,16 +68,31 @@ final class Bind
             $this->bindInterceptors($method->name, $interceptors);
         }
     }
+
     /**
      * {@inheritdoc}
      */
     public function bindInterceptors($method, array $interceptors)
     {
-        $this->bindings[$method] = !isset($this->bindings[$method]) ? $interceptors : array_merge($this->bindings[$method], $interceptors);
+        $this->bindings[$method] = !isset($this->bindings[$method]) ? $interceptors : array_merge(
+            $this->bindings[$method],
+            $interceptors
+        );
 
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getBindings()
+    {
+        return $this->bindings;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function __toString()
     {
         return md5(serialize($this->bindings));

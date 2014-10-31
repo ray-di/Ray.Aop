@@ -44,7 +44,7 @@ final class Compiler implements CompilerInterface
     {
         $compiledClass = $this->compile($class, $bind);
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
-        $instance->bind = $bind;
+        $instance->bindings = $bind->getBindings();
 
         return $instance;
     }
@@ -54,7 +54,7 @@ final class Compiler implements CompilerInterface
      */
     public function compile($class, Bind $bind)
     {
-        if (! $bind->bindings) {
+        if (! $bind->getBindings()) {
             return $class;
         }
         $newClass = str_replace('\\', '_', $class) . '_' . ($bind) .'RayAop';

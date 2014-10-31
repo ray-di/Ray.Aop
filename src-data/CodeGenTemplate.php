@@ -10,7 +10,7 @@
  * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
  *
  */
-class CodeGenTemplate extends \Ray\Aop\FakeMock
+class CodeGenTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 {
     /**
      * @var bool
@@ -18,16 +18,18 @@ class CodeGenTemplate extends \Ray\Aop\FakeMock
     private $isIntercepting = true;
 
     /**
-     * @var Bind
+     * @var array
+     *
+     * [$methodName => [$interceptorA[]][]
      */
-    public $bind;
+    public $bindings;
 
     /**
      * Method Template
      */
     public function returnSame($a)
     {
-        if (isset($this->bind->bindings[__FUNCTION__]) === false){
+        if (isset($this->bindings[__FUNCTION__]) === false){
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
@@ -41,7 +43,7 @@ class CodeGenTemplate extends \Ray\Aop\FakeMock
             $this,
             new \ReflectionMethod($this, __FUNCTION__),
             new \Ray\Aop\Arguments(func_get_args()),
-            $this->bind->bindings[__FUNCTION__]
+            $this->bindings[__FUNCTION__]
         ))->proceed();
         $this->isIntercepting = true;
 
