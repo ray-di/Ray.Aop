@@ -3,7 +3,7 @@
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\InvalidAnnotation;
-use Ray\Aop\Exception\InvalidArgumentException;
+use Ray\Aop\Exception\InvalidArgument;
 
 class MatcherTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,13 +26,13 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testValidationForStartsWith()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->setExpectedException(InvalidArgument::class);
         (new Matcher)->startsWith(0);
     }
 
     public function testValidationForSubclassesOf()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->setExpectedException(InvalidArgument::class);
         (new Matcher)->subclassesOf('__invalid_class');
     }
 }
