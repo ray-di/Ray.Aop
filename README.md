@@ -179,39 +179,32 @@ AOP Alliance
 ------------
 The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html).
 
-Testing Ray.Aop
-===============
+Requirements
+------------
 
-Here's how to install Ray.Aop from source to run the unit tests and sample:
+* PHP 5.4+
+* hhvm
 
+Installation
+------------
+
+The recommended way to install Ray.Aop is through [Composer](https://github.com/composer/composer).
+
+```bash
+# Add Ray.Aop as a dependency
+$ composer require ray/aop ~2.0@dev
 ```
+
+Testing Ray.Aop
+---------------
+
+Here's how to install Ray.Aop from source and run the unit tests and demos.
+
+```bash
 $ composer create-project ray/aop:~2.0@dev Ray.Aop
 $ cd Ray.Aop
 $ phpunit
-$ php docs/demo/01-implicit-bind.php
-$ php docs/demo/02-matcher-bind.php
-$ php docs/demo/03-annotation-bind.php
-$ php docs/demo/04-my-matcher.php
-```
-
-Requirement
--------------
-
- * PHP 5.4+
- * hhvm
-
-Installation
-============
-
-### Installing via Composer
-
-The recommended way to install Ray.Aop is through [Composer](http://getcomposer.org) and the recommended way to use Ray.Aop is thorouh [Ray.Di](https://github.com/koriym/Ray.Di).
-Ray.Di is a Guice style annotation-driven dependency injection framework. It integrates Ray.Aop AOP functionality.
-```bash
-
-# Add Ray.Aop as a dependency
-composer require ray/aop ~2.0@dev
-
+$ php docs/demo/run.php
 ```
 
 * This documentation for the most part is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP).

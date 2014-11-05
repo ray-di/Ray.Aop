@@ -177,38 +177,32 @@ AOP Alliance
 ------------
 このメソッドインターセプターのAPIは[AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html)の部分実装です。
 
+Requirements
+------------
+
+* PHP 5.4+
+* hhvm
+
+Installation
+------------
+
+The recommended way to install Ray.Aop is through [Composer](https://github.com/composer/composer).
+
+```bash
+# Add Ray.Aop as a dependency
+$ composer require ray/aop ~2.0@dev
+```
+
 Testing Ray.Aop
 ===============
-
-Ray.Aopをインストールしてユニットテストするためには以下のようにします。
 
 ```
 $ composer create-project ray/aop:~2.0@dev Ray.Aop
 $ cd Ray.Aop
 $ phpunit
-$ php docs/demo/01-implicit-bind/implicit-bind.php
-$ php docs/demo/02-multiple-interceptors/main.php
-$ php docs/demo/03-benchmark/main.php
-$ php docs/demo/04-annotation/main.php
-$ php docs/demo/05-my-matcher/main.php
+$ php docs/demo/run.php
 ```
 
-Requirement
--------------
-
- * PHP 5.5+
- * hhvm
-
-Installation
-============
-
-### Installing via Composer
-
-```bash
-# Add Ray.Aop as a dependency
-composer require ray/aop ~2.0@dev
-```
-
-AOPを統合したGuiceスタイルのDIフレームワーク[Ray.Di](https://github.com/koriym/Ray.Di)でもRay.Aopを利用する事ができます。
+DIとAOPを統合したDIフレームワーク[Ray.Di](https://github.com/koriym/Ray.Di)もご覧ください。
 
 * The most part of this documentation is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP)
