@@ -6,7 +6,7 @@
  */
 namespace Ray\Aop;
 
-interface BIndInterface
+interface BindInterface
 {
     /**
      * Bind pointcuts

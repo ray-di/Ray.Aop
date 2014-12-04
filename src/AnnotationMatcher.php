@@ -6,7 +6,9 @@
  */
 namespace Ray\Aop;
 
-class BuiltinMatcher extends AbstractMatcher
+use Ray\Aop\Matcher\AnnotatedWithMatcher;
+
+final class AnnotationMatcher extends BuiltinMatcher
 {
     /**
      * @var array
@@ -31,8 +33,7 @@ class BuiltinMatcher extends AbstractMatcher
     {
         $this->matcherName = $matcherName;
         $this->arguments = $arguments;
-        $matcher = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';
-        $this->matcher = (new \ReflectionClass($matcher))->newInstance();
+        $this->matcher = new AnnotatedWithMatcher;
     }
 
     /**
