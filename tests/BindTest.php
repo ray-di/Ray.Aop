@@ -74,5 +74,21 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('getDouble', $this->bind->getBindings());
     }
 
+    public function testOnionAnnotation()
+    {
+        $onion1 = new FakeOnionInterceptor1;
+        $onion2 = new FakeOnionInterceptor2;
+        $onion3 = new FakeOnionInterceptor3;
+        $pointcut0 = new Pointcut((new Matcher)->any(), (new Matcher)->startsWith('XXX'), [$onion1]);
+        $pointcut1 = new Pointcut((new Matcher)->any(), (new Matcher)->annotatedWith(FakeMarker::class), [$onion1]);
+        $pointcut2 = new Pointcut((new Matcher)->any(), (new Matcher)->annotatedWith(FakeMarker2::class), [$onion2]);
+        $pointcut3 = new Pointcut((new Matcher)->any(), (new Matcher)->annotatedWith(FakeMarker3::class), [$onion3]);
+        $this->bind->bind(FakeAnnotateClass::class, [$pointcut0, $pointcut1, $pointcut2, $pointcut3]);
+        $actual = $this->bind->getBindings();
+        $expect = [
+            'getDouble' => [$onion3, $onion2, $onion1]
+        ];
+        $this->assertSame($expect, $actual);
+    }
 }
 
