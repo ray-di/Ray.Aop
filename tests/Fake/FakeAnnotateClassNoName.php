@@ -1,14 +1,12 @@
 <?php
 
-namespace Ray\Aop;
-
 use Ray\Aop\FakeMarker;
 use Ray\Aop\FakeMarker2;
 
 /**
  * @Ray\Aop\FakeResource
  */
-class FakeAnnotateClass
+class FakeAnnotateClassNoName
 {
     public $a = 0;
 
