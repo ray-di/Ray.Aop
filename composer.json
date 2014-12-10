@@ -24,6 +24,11 @@
     "autoload": {
         "psr-4": { "Ray\\Aop\\": "src/" }
     },
+    "autoload-dev": {
+        "psr-4": { "Ray\\Aop\\": "tests/" },
+        "psr-4": { "Ray\\Aop\\": "tests/Fake/" },
+        "files": ["tests/Fake/FakeAnnotateClassNoName.php"]
+    },
     "suggest": {
         "ray/di": "Guice style annotation-driven dependency injection framework"
     },
