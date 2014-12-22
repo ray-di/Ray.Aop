@@ -2,10 +2,10 @@
 
 namespace Ray\Aop;
 
-class FakeMethodInterceptor implements MethodInterceptor
+class FakeOnionInterceptor3 implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
-        $invocation->proceed();
+        return $invocation->proceed();
     }
 }

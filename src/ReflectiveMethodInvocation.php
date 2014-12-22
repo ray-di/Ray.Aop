@@ -29,10 +29,6 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $interceptors;
 
     /**
-     * @param Arguments     $arguments
-     * @param Interceptor[] $interceptors
-     */
-    /**
      * @param object              $object
      * @param \ReflectionMethod   $method
      * @param Arguments           $arguments
@@ -40,7 +36,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function __construct(
         $object,
-        $method,
+        \ReflectionMethod $method,
         Arguments $arguments,
         array $interceptors = []
     ) {
@@ -79,6 +75,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
             return $this->method->invokeArgs($this->object, $this->arguments->getArrayCopy());
         }
         $interceptor = array_shift($this->interceptors);
+        /** @var $interceptor MethodInterceptor */
 
         return $interceptor->invoke($this);
     }

@@ -2,7 +2,7 @@
 
 namespace Ray\Aop;
 
-class BuiltinMatcherTest extends \PHPUnit_Framework_TestCase
+class BuiltInMatcherTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var BuiltinMatcher

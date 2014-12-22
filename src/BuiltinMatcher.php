@@ -6,9 +6,8 @@
  */
 namespace Ray\Aop;
 
-final class BuiltinMatcher extends AbstractMatcher
+class BuiltinMatcher extends AbstractMatcher
 {
-
     /**
      * @var array
      */
@@ -34,7 +33,6 @@ final class BuiltinMatcher extends AbstractMatcher
         $this->arguments = $arguments;
         $matcher = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';
         $this->matcher = (new \ReflectionClass($matcher))->newInstance();
-
     }
 
     /**

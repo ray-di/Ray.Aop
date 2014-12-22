@@ -6,8 +6,10 @@
  */
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 use ReflectionMethod;
+use Doctrine\Common\Annotations\Reader;
 
 final class Bind implements BindInterface
 {
@@ -17,57 +19,79 @@ final class Bind implements BindInterface
     private $bindings = [];
 
     /**
-     * {@inheritdoc}
+     * @var AnnotationReader
+     */
+    private $reader;
+
+    public function __construct()
+    {
+        $this->reader = new AnnotationReader;
+    }
+
+    /**
+     * @param string $class
+     * @param array  $pointcuts
+     *
+     * @return $this
      */
     public function bind($class, array $pointcuts)
     {
-        foreach ($pointcuts as $pointcut) {
-            /** @var $pointcut Pointcut */
-            $this->bindPointcut(new \ReflectionClass($class), $pointcut);
-        }
+        $pointcuts = $this->getAnnnotationPointcuts($pointcuts);
+        $this->annotatedMethodsMatch(new \ReflectionClass($class), $pointcuts);
 
         return $this;
     }
 
     /**
      * @param ReflectionClass $class
-     * @param Pointcut        $pointcut
+     * @param array           $pointcuts
      */
-    private function bindPointcut(\ReflectionClass $class, Pointcut $pointcut)
-    {
-        $isClassMatch = $pointcut->classMatcher->matchesClass($class, $pointcut->classMatcher->getArguments());
-        if ($isClassMatch === false) {
-
-            return;
-        }
-        $this->methodsMatch($class, $pointcut->methodMatcher, $pointcut->interceptors);
-    }
-
-    /**
-     * @param ReflectionClass $class
-     * @param AbstractMatcher $methodMatcher
-     * @param Interceptor[]   $interceptors
-     */
-    private function methodsMatch(\ReflectionClass $class, AbstractMatcher $methodMatcher, array $interceptors)
+    private function annotatedMethodsMatch(\ReflectionClass $class, array &$pointcuts)
     {
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
-            $this->methodMatch($method, $methodMatcher, $interceptors);
+            $this->annotatedMethodMatch($class, $method, $pointcuts);
         }
     }
 
     /**
+     * @param ReflectionClass  $class
      * @param ReflectionMethod $method
-     * @param AbstractMatcher  $methodMatcher
-     * @param Interceptor[]    $interceptors
+     * @param array            $pointcuts
      */
-    private function methodMatch(\ReflectionMethod $method, AbstractMatcher $methodMatcher, array $interceptors)
+    private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array &$pointcuts)
     {
-        $isMethodMatch = $methodMatcher->matchesMethod($method, $methodMatcher->getArguments());
-        if ($isMethodMatch) {
-            $this->bindInterceptors($method->name, $interceptors);
+        $annotations = $this->reader->getMethodAnnotations($method);
+        foreach ($annotations as $annotation) {
+            $annotationIndex = get_class($annotation);
+            if (isset($pointcuts[$annotationIndex])) {
+                $this->annotatedMethodMatchBind($class, $method, $pointcuts[$annotationIndex]);
+                unset($pointcuts[$annotationIndex]);
+            }
+        }
+        foreach ($pointcuts as $pointcut) {
+            $this->annotatedMethodMatchBind($class, $method, $pointcut);
         }
     }
+
+    /**
+     * @param ReflectionClass  $class
+     * @param ReflectionMethod $method
+     * @param PointCut         $pointCut
+     */
+    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, PointCut $pointCut)
+    {
+        $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
+        if (! $isMethodMatch) {
+            return;
+        }
+        $isClassMatch = $pointCut->classMatcher->matchesClass($class, $pointCut->classMatcher->getArguments());
+        if (! $isClassMatch) {
+            return;
+        }
+        $this->bindInterceptors($method->name, $pointCut->interceptors);
+    }
+
 
     /**
      * {@inheritdoc}
@@ -91,7 +115,7 @@ final class Bind implements BindInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function __toString()
     {
@@ -100,5 +124,21 @@ final class Bind implements BindInterface
         };
 
         return $shortHash(serialize($this->bindings));
+    }
+
+    /**
+     * @param Pointcut[] $pointcuts
+     */
+    public function getAnnnotationPointcuts(array &$pointcuts)
+    {
+        $keyPointcuts = [];
+        foreach ($pointcuts as $key => $pointcut) {
+            if ($pointcut->methodMatcher instanceof AnnotatedMatcher) {
+                $key = $pointcut->methodMatcher->annotation;
+            }
+            $keyPointcuts[$key] = $pointcut;
+        }
+
+        return $keyPointcuts;
     }
 }

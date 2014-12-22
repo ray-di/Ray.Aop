@@ -8,8 +8,10 @@ namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+use PhpParser\Node\Stmt;
 
 final class CodeGen implements CodeGenInterface
 {
@@ -63,8 +65,29 @@ final class CodeGen implements CodeGenInterface
             ->getNode();
         $stmt = $this->addClassDocComment($stmt, $sourceClass);
         $code = $this->printer->prettyPrint([$stmt]);
+        $statements = $this->getUseStatements($sourceClass);
 
-        return $code;
+        return $statements . $code;
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return string
+     */
+    private function getUseStatements(\ReflectionClass $class)
+    {
+        $traverser = new NodeTraverser;
+        $useStmtsVisitor = new CodeGenVisitor;
+        $traverser->addVisitor($useStmtsVisitor);
+        // parse
+        $stmts = $this->parser->parse(file_get_contents($class->getFileName()));
+        // traverse
+        $traverser->traverse($stmts);
+        // pretty print
+        $code = $this->printer->prettyPrint($useStmtsVisitor());
+
+        return (string) $code;
     }
 
     /**

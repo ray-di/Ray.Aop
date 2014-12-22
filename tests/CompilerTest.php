@@ -3,9 +3,6 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use PhpParser\Lexer;
-use Ray\Aop\Interceptor\AbortProceedInterceptor;
-use Ray\Aop\Interceptor\DoubleInterceptor;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {
@@ -176,5 +173,19 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     {
         $class = $this->compiler->compile(FakeMock::class, new Bind);
         $this->assertSame(FakeMock::class, $class);
+    }
+
+    public function testAnnotation()
+    {
+        $class = $this->compiler->compile(FakeAnnotateClass::class, $this->bind);
+        $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
+        $this->assertSame(3, count($annotations));
+    }
+
+    public function testNoNamespace()
+    {
+        $class = $this->compiler->compile(\FakeAnnotateClassNoName::class, $this->bind);
+        $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
+        $this->assertSame(3, count($annotations));
     }
 }

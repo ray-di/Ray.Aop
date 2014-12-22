@@ -10,5 +10,5 @@ vendor
 cache.properties
 build
 composer.phar
-docs/demo/tmp/*
-tests/tmp/*
+composer.lock
+tmp

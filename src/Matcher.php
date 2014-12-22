@@ -28,7 +28,7 @@ class Matcher
             throw new InvalidAnnotation($annotationName);
         }
 
-        return new BuiltinMatcher(__FUNCTION__, [$annotationName]);
+        return new AnnotatedMatcher(__FUNCTION__, [$annotationName]);
     }
 
     /**
