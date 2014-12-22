@@ -23,12 +23,9 @@ final class Bind implements BindInterface
      */
     private $reader;
 
-    /**
-     * @param Reader $reader
-     */
-    public function __construct(Reader $reader = null)
+    public function __construct()
     {
-        $this->reader = $reader ?: new AnnotationReader;
+        $this->reader = new AnnotationReader;
     }
 
     /**
