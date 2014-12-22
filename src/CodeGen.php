@@ -12,7 +12,6 @@ use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\Node\Stmt;
-use PhpParser\Lexer\Emulative;
 
 final class CodeGen implements CodeGenInterface
 {

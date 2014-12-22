@@ -23,6 +23,9 @@ final class Bind implements BindInterface
      */
     private $reader;
 
+    /**
+     * @param Reader $reader
+     */
     public function __construct(Reader $reader = null)
     {
         $this->reader = $reader ?: new AnnotationReader;
@@ -38,10 +41,6 @@ final class Bind implements BindInterface
     {
         $pointcuts = $this->getAnnnotationPointcuts($pointcuts);
         $this->annotatedMethodsMatch(new \ReflectionClass($class), $pointcuts);
-//        foreach ($pointcuts as $pointcut) {
-//            /** @var $pointcut Pointcut */
-//            $this->bindPointcut(new \ReflectionClass($class), $pointcut);
-//        }
 
         return $this;
     }
@@ -119,7 +118,7 @@ final class Bind implements BindInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function __toString()
     {

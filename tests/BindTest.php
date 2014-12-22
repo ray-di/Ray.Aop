@@ -4,7 +4,6 @@ namespace Ray\Aop;
 
 class BindTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Bind
      */
@@ -91,4 +90,3 @@ class BindTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 }
-

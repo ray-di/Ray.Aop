@@ -3,7 +3,6 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use PhpParser\Lexer;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {
@@ -188,6 +187,5 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $class = $this->compiler->compile(\FakeAnnotateClassNoName::class, $this->bind);
         $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
         $this->assertSame(3, count($annotations));
-
     }
 }

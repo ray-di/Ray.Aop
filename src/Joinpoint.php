@@ -46,12 +46,4 @@ interface Joinpoint
      * @return object (can be null if the accessible object is static).
      */
     public function getThis();
-
-    /*
-     * Returns the static part of this joinpoint.
-     *
-     * <p>The static part is an accessible object on which a chain of
-     * interceptors are installed.
-     */
-    // public function getStaticPart();
 }
