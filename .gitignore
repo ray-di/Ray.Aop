@@ -11,3 +11,4 @@ cache.properties
 build
 composer.phar
 composer.lock
+tmp
