@@ -98,6 +98,12 @@ final class CodeGenMethod
         if ($typeHint) {
             $paramStmt->setTypeHint($typeHint->name);
         }
+        if ($param->isArray()) {
+            $paramStmt->setTypeHint('array');
+        }
+        if ($param->isCallable()) {
+            $paramStmt->setTypeHint('callable');
+        }
         if ($param->isDefaultValueAvailable()) {
             $paramStmt->setDefault($param->getDefaultValue());
         }
