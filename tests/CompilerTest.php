@@ -188,4 +188,12 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
         $this->assertSame(3, count($annotations));
     }
+
+    public function testArrayTypehintedAndCallable()
+    {
+        $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
+        $parent = (new \ReflectionClass($class))->getParentClass()->getName();
+        $expected = 'Ray\Aop\FakeArrayTypehinted';
+        $this->assertSame($expected, $parent);
+    }
 }
