@@ -6,7 +6,7 @@
  */
 namespace Ray\Aop;
 
-final class Pointcut
+class Pointcut
 {
     /**
      * @var AbstractMatcher

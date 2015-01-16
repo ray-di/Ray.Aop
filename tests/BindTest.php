@@ -89,4 +89,23 @@ class BindTest extends \PHPUnit_Framework_TestCase
         ];
         $this->assertSame($expect, $actual);
     }
+
+    public function testOnionAnnotationAndPriorityPointcut()
+    {
+        $onion1 = new FakeOnionInterceptor1;
+        $onion2 = new FakeOnionInterceptor2;
+        $onion3 = new FakeOnionInterceptor3;
+        $onion4 = new FakeOnionInterceptor4;
+        $pointcut0 = new Pointcut((new Matcher)->any(), (new Matcher)->startsWith('XXX'), [$onion1]);
+        $pointcut1 = new Pointcut((new Matcher)->any(), (new Matcher)->annotatedWith(FakeMarker::class), [$onion1]);
+        $pointcut2 = new Pointcut((new Matcher)->any(), (new Matcher)->annotatedWith(FakeMarker2::class), [$onion2]);
+        $pointcut3 = new Pointcut((new Matcher)->any(), (new Matcher)->annotatedWith(FakeMarker3::class), [$onion3]);
+        $pointcut4 = new PriorityPointcut((new Matcher)->annotatedWith(FakeResource::class), (new Matcher)->any(), [$onion4]);
+        $this->bind->bind(FakeAnnotateClass::class, [$pointcut0, $pointcut1, $pointcut2, $pointcut3, $pointcut4]);
+        $actual = $this->bind->getBindings();
+        $expect = [
+            'getDouble' => [$onion4, $onion3, $onion2, $onion1]
+        ];
+        $this->assertSame($expect, $actual);
+    }
 }
