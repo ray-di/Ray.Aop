@@ -1,8 +1,12 @@
-Aspect Oriented Framework for PHP
-=================================
+# Ray.Aop
+
+## Aspect Oriented Framework for PHP
 
 [![Latest Stable Version](https://poser.pugx.org/ray/aop/v/stable.png)](https://packagist.org/packages/ray/aop)
-[![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
+[![Latest Unstable Version](http://img.shields.io/badge/unstable-~2.0%40dev-green.svg)](https://packagist.org/packages/ray/aop)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/koriym/Ray.Aop/badges/quality-score.png?develop-2)](https://scrutinizer-ci.com/g/koriym/Ray.Aop/)
+[![Code Coverage](https://scrutinizer-ci.com/g/koriym/Ray.Aop/badges/coverage.png?s=5604fdfae48a5a31242d3e46018515e2f30083d7)](https://scrutinizer-ci.com/g/koriym/Ray.Aop/)
+[![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png?branch=develop-2)](http://travis-ci.org/koriym/Ray.Aop)
 
 [[English]](https://github.com/koriym/Ray.Aop/blob/develop/README.md)
 
@@ -16,7 +20,7 @@ Aspect Oriented Framework for PHP
 Example: Forbidding method calls on weekends
 --------------------------------------------
 
-メソッドインターセプターがRay.Aopでどのように機能するかを明らかにするために、終末にはピザの注文を禁止するようにしてみましょう。デリバリーは平日だけ受け付ける事にして、ピザの注文を週末には受け付けないようにします！この例はAOPで認証を使用するときにのパターンと構造的に似ています。
+メソッドインターセプターがRay.Aopでどのように機能するかを明らかにするために、週末にはピザの注文を禁止するようにしてみましょう。デリバリーは平日だけ受け付ける事にして、ピザの注文を週末には受け付けないようにします！この例はAOPで認証を使用するときにのパターンと構造的に似ています。
 
 週末だけにするための[アノテーション](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html)を定義します。
 
@@ -160,6 +164,22 @@ $pointcut = new Pointcut(
 );
 $bind = new Bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
+```
+
+Priority
+--------
+インターセプターの実行順は以下のルールで決定されます。
+
+ * 基本的にはバインドした順に実行されます。
+ * `PriorityPointcut`で定義したものが最も優先されます。
+ * アノテーションでメソッドマッチするものは`PriorityPointcut`の次に優先されます。その時アノテートされた順で優先されます。
+
+```php
+/**
+ * @Auth    // 1st
+ * @Cache   // 2nd
+ * @Log     // 3rd
+ */
 ```
 
 
