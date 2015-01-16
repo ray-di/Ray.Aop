@@ -165,6 +165,22 @@ $pointcut = new Pointcut(
 $bind = new Bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 ```
+Priority
+--------
+
+The order of interceptor invocation are determined by following rules.
+
+ * Basically, it will be invoked in bind order.
+ * `PriorityPointcut` has most priority.
+ * Annotation method match is followed by `PriorityPointcut`. Invoked in annotation order as follows.
+
+```php
+/**
+ * @Auth    // 1st
+ * @Cache   // 2nd
+ * @Log     // 3rd
+ */
+```
 
 Limitations
 -----------

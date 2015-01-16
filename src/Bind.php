@@ -57,11 +57,19 @@ final class Bind implements BindInterface
     /**
      * @param ReflectionClass  $class
      * @param ReflectionMethod $method
-     * @param array            $pointcuts
+     * @param Pointcut[]       $pointcuts
      */
     private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array &$pointcuts)
     {
         $annotations = $this->reader->getMethodAnnotations($method);
+        // priority bind
+        foreach ($pointcuts as $key => $pointcut) {
+            if ($pointcut instanceof PriorityPointcut) {
+                $this->annotatedMethodMatchBind($class, $method, $pointcut);
+                unset($pointcuts[$key]);
+            }
+        }
+        // method bind in annotation order
         foreach ($annotations as $annotation) {
             $annotationIndex = get_class($annotation);
             if (isset($pointcuts[$annotationIndex])) {
@@ -69,6 +77,7 @@ final class Bind implements BindInterface
                 unset($pointcuts[$annotationIndex]);
             }
         }
+        // default binding
         foreach ($pointcuts as $pointcut) {
             $this->annotatedMethodMatchBind($class, $method, $pointcut);
         }
