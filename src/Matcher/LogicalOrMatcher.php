@@ -29,12 +29,14 @@ class LogicalOrMatcher extends AbstractMatcher
      */
     public function matchesMethod(\ReflectionMethod $method, array $arguments)
     {
-        $isOr = false;
         foreach ($arguments as $matcher) {
             /** @var $matcher AbstractMatcher */
-            $isOr = $isOr || $matcher->matchesMethod($method, []);
+            $isMatch = $matcher->matchesMethod($method, $matcher->getArguments());
+            if ($isMatch === true) {
+                return true;
+            }
         }
 
-        return $isOr;
+        return false;
     }
 }
