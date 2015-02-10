@@ -7,7 +7,7 @@
 namespace Ray\Aop\Matcher;
 
 use Ray\Aop\AbstractMatcher;
-use Ray\Aop\Exception\InvalidAnnotation;
+use Ray\Aop\Exception\InvalidAnnotationException;
 
 class SubclassesOfMatcher extends AbstractMatcher
 {
@@ -27,6 +27,6 @@ class SubclassesOfMatcher extends AbstractMatcher
      */
     public function matchesMethod(\ReflectionMethod $method, array $arguments)
     {
-        throw new InvalidAnnotation('subclassesOf is only for class match');
+        throw new InvalidAnnotationException('subclassesOf is only for class match');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Ray\Aop\Matcher;
 
-use Ray\Aop\Exception\InvalidAnnotation;
+use Ray\Aop\Exception\InvalidAnnotationException;
 use Ray\Aop\FakeClass;
 
 class SubclassesOfMatcherTest extends \PHPUnit_Framework_TestCase
@@ -17,7 +17,7 @@ class SubclassesOfMatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testMatchesMethod()
     {
-        $this->setExpectedException(InvalidAnnotation::class);
+        $this->setExpectedException(InvalidAnnotationException::class);
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = (new SubclassesOfMatcher)->matchesMethod($method, ['get']);
 
