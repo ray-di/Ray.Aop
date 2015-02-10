@@ -69,14 +69,8 @@ final class Bind implements BindInterface
                 unset($pointcuts[$key]);
             }
         }
-        // method bind in annotation order
-        foreach ($annotations as $annotation) {
-            $annotationIndex = get_class($annotation);
-            if (isset($pointcuts[$annotationIndex])) {
-                $this->annotatedMethodMatchBind($class, $method, $pointcuts[$annotationIndex]);
-                unset($pointcuts[$annotationIndex]);
-            }
-        }
+        $pointcuts = $this->onionOrderMatch($class, $method, $pointcuts, $annotations);
+
         // default binding
         foreach ($pointcuts as $pointcut) {
             $this->annotatedMethodMatchBind($class, $method, $pointcut);
@@ -149,5 +143,31 @@ final class Bind implements BindInterface
         }
 
         return $keyPointcuts;
+    }
+
+    /**
+     * @param ReflectionClass  $class
+     * @param ReflectionMethod $method
+     * @param array            $pointcuts
+     * @param array            $annotations
+     *
+     * @return array
+     */
+    private function onionOrderMatch(
+        \ReflectionClass $class,
+        \ReflectionMethod $method,
+        array &$pointcuts,
+        $annotations
+    ) {
+        // method bind in annotation order
+        foreach ($annotations as $annotation) {
+            $annotationIndex = get_class($annotation);
+            if (isset($pointcuts[$annotationIndex])) {
+                $this->annotatedMethodMatchBind($class, $method, $pointcuts[$annotationIndex]);
+                unset($pointcuts[$annotationIndex]);
+            }
+        }
+
+        return $pointcuts;
     }
 }
