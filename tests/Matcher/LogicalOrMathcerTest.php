@@ -44,4 +44,12 @@ class LogicalOrMathcerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($isMatched);
     }
+
+    public function testMatchesMethodFalse()
+    {
+        $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
+        $isMatched = (new LogicalOrMatcher)->matchesMethod($method, [new FakeMatcher(false), new FakeMatcher(false)]);
+
+        $this->assertFalse($isMatched);
+    }
 }

@@ -15,13 +15,15 @@ class LogicalOrMatcher extends AbstractMatcher
      */
     public function matchesClass(\ReflectionClass $class, array $arguments)
     {
-        $isOr = false;
         foreach ($arguments as $matcher) {
             /** @var $matcher AbstractMatcher */
-            $isOr = $isOr || $matcher->matchesClass($class, []);
+            $isMatch =  $matcher->matchesClass($class, []);
+            if ($isMatch === true) {
+                return true;
+            }
         }
 
-        return $isOr;
+        return false;
     }
 
     /**

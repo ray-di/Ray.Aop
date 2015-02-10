@@ -12,7 +12,8 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->any());
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->annotatedWith(FakeResource::class));
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->logicalAnd(new FakeMatcher, new FakeMatcher));
-        $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->logicalOr(new FakeMatcher, new FakeMatcher));
+        $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->logicalOr(new FakeMatcher, new FakeMatcher(false)));
+
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->logicalNot(new FakeMatcher));
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->startsWith('a'));
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->subclassesOf(FakeClass::class));
