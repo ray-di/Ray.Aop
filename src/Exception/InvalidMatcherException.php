@@ -6,6 +6,6 @@
  */
 namespace Ray\Aop\Exception;
 
-class InvalidMatcher extends \InvalidArgumentException implements ExceptionInterface
+class InvalidMatcherException extends \InvalidArgumentException implements ExceptionInterface
 {
 }

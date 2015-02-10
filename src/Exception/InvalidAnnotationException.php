@@ -6,6 +6,6 @@
  */
 namespace Ray\Aop\Exception;
 
-class InvalidArgument extends \InvalidArgumentException implements ExceptionInterface
+class InvalidAnnotationException extends \InvalidArgumentException implements ExceptionInterface
 {
 }

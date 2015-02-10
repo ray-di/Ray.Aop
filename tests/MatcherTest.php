@@ -2,8 +2,8 @@
 
 namespace Ray\Aop;
 
-use Ray\Aop\Exception\InvalidAnnotation;
-use Ray\Aop\Exception\InvalidArgument;
+use Ray\Aop\Exception\InvalidAnnotationException;
+use Ray\Aop\Exception\InvalidArgumentException;
 
 class MatcherTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,19 +20,19 @@ class MatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testValidationForAnnotatedWith()
     {
-        $this->setExpectedException(InvalidAnnotation::class);
+        $this->setExpectedException(InvalidAnnotationException::class);
         (new Matcher)->annotatedWith('__invalid_class');
     }
 
     public function testValidationForStartsWith()
     {
-        $this->setExpectedException(InvalidArgument::class);
+        $this->setExpectedException(InvalidArgumentException::class);
         (new Matcher)->startsWith(0);
     }
 
     public function testValidationForSubclassesOf()
     {
-        $this->setExpectedException(InvalidArgument::class);
+        $this->setExpectedException(InvalidArgumentException::class);
         (new Matcher)->subclassesOf('__invalid_class');
     }
 }
