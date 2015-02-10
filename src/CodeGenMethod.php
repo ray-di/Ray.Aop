@@ -6,6 +6,7 @@
  */
 namespace Ray\Aop;
 
+use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -92,21 +93,12 @@ final class CodeGenMethod
      */
     private function getMethodStatement(\ReflectionParameter $param, \PHPParser\Builder\Method $methodStmt)
     {
-        /** @var $param \ReflectionParameter */
+        /** @var $paramStmt Param */
         $paramStmt = $this->factory->param($param->name);
+        /** @var $param \ReflectionParameter */
         $typeHint = $param->getClass();
-        if ($typeHint) {
-            $paramStmt->setTypeHint($typeHint->name);
-        }
-        if ($param->isArray()) {
-            $paramStmt->setTypeHint('array');
-        }
-        if ($param->isCallable()) {
-            $paramStmt->setTypeHint('callable');
-        }
-        if ($param->isDefaultValueAvailable()) {
-            $paramStmt->setDefault($param->getDefaultValue());
-        }
+        $this->setTypeHint($param, $typeHint, $paramStmt);
+        $this->setDefault($param, $paramStmt);
         $methodStmt->addParam($paramStmt);
 
         return $methodStmt;
@@ -139,5 +131,34 @@ final class CodeGenMethod
         $node = $node->getMethods()[0];
 
         return $node->stmts;
+    }
+
+    /**
+     * @param \ReflectionParameter $param
+     * @param string               $typeHint
+     * @param Param                $paramStmt
+     */
+    private function setTypeHint(\ReflectionParameter $param, $typeHint, Param $paramStmt)
+    {
+        if ($typeHint) {
+            $paramStmt->setTypeHint($typeHint->name);
+        }
+        if ($param->isArray()) {
+            $paramStmt->setTypeHint('array');
+        }
+        if ($param->isCallable()) {
+            $paramStmt->setTypeHint('callable');
+        }
+    }
+
+    /**
+     * @param \ReflectionParameter $param
+     * @param Param                $paramStmt
+     */
+    private function setDefault(\ReflectionParameter $param, $paramStmt)
+    {
+        if ($param->isDefaultValueAvailable()) {
+            $paramStmt->setDefault($param->getDefaultValue());
+        }
     }
 }
