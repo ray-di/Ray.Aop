@@ -9,8 +9,8 @@ namespace Ray\Aop;
 interface CompilerInterface
 {
     /**
-     * @param string $class
-     * @param Bind   $bind
+     * @param string        $class
+     * @param BindInterface $bind
      *
      * @return string
      */
@@ -19,9 +19,9 @@ interface CompilerInterface
     /**
      * Return new instance weaved interceptor(s)
      *
-     * @param string $class
-     * @param array  $args
-     * @param Bind   $bind
+     * @param string        $class
+     * @param array         $args
+     * @param BindInterface $bind
      *
      * @return object
      */

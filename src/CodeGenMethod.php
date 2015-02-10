@@ -10,6 +10,7 @@ use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+use PHPParser\Builder\Method;
 
 final class CodeGenMethod
 {
@@ -42,7 +43,7 @@ final class CodeGenMethod
         $this->factory = $factory;
         $this->printer = $printer;
     }
-    
+
     /**
      * @param \ReflectionClass $class
      *
@@ -105,12 +106,12 @@ final class CodeGenMethod
     }
 
     /**
-     * @param \PHPParser\Builder\Method $methodStmt
-     * @param \ReflectionMethod         $method
+     * @param Method            $methodStmt
+     * @param \ReflectionMethod $method
      *
      * @return \PhpParser\Node\Stmt\ClassMethod
      */
-    private function addMethodDocComment(\PHPParser\Builder\Method $methodStmt, \ReflectionMethod $method)
+    private function addMethodDocComment(Method $methodStmt, \ReflectionMethod $method)
     {
         $node = $methodStmt->getNode();
         $docComment = $method->getDocComment();
@@ -135,10 +136,10 @@ final class CodeGenMethod
 
     /**
      * @param \ReflectionParameter $param
-     * @param string               $typeHint
+     * @param \ReflectionClass     $typeHint
      * @param Param                $paramStmt
      */
-    private function setTypeHint(\ReflectionParameter $param, $typeHint, Param $paramStmt)
+    private function setTypeHint(\ReflectionParameter $param, \ReflectionClass $typeHint = null, Param $paramStmt)
     {
         if ($typeHint) {
             $paramStmt->setTypeHint($typeHint->name);

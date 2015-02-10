@@ -6,9 +6,9 @@
  */
 namespace Ray\Aop;
 
-use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\NodeVisitorAbstract;
 
 class CodeGenVisitor extends NodeVisitorAbstract
 {
