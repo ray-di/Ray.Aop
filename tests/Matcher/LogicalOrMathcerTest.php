@@ -30,6 +30,13 @@ class LogicalOrMathcerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($isMatched);
     }
 
+    public function testLogicalOrNotMatch()
+    {
+        $class = new \ReflectionClass(FakeAnnotateClass::class);
+        $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher(false), new FakeMatcher(false), new FakeMatcher(false)]);
+        $this->assertFalse($isMatched);
+    }
+
     public function testMatchesMethod()
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
