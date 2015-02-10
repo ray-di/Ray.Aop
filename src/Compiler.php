@@ -58,7 +58,8 @@ final class Compiler implements CompilerInterface
         if (! $bind->getBindings()) {
             return $class;
         }
-        $newClass = str_replace('\\', '_', $class) . '_' . ($bind);
+        $fileTime = filemtime((new \ReflectionClass($class))->getFileName());
+        $newClass = sprintf("%s_%s", str_replace('\\', '_', $class), $bind->toString($fileTime));
         if (class_exists($newClass)) {
             return $newClass;
         }

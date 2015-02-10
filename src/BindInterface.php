@@ -11,7 +11,10 @@ interface BindInterface
     /**
      * Bind pointcuts
      *
-     * @return $this
+     * @param string $class
+     * @param array  $pointcuts
+     *
+     * @return mixed
      */
     public function bind($class, array $pointcuts);
 
@@ -35,7 +38,11 @@ interface BindInterface
     public function getBindings();
 
     /**
+     * Return hash
+     *
+     * @param string $salt
+     *
      * @return string
      */
-    public function __toString();
+    public function toString($salt);
 }

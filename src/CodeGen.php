@@ -7,11 +7,12 @@
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use PhpParser\Node\Stmt;
+use PHPParser\Comment\Doc;
 
 final class CodeGen implements CodeGenInterface
 {
@@ -126,7 +127,7 @@ final class CodeGen implements CodeGenInterface
     {
         $docComment = $class->getDocComment();
         if ($docComment) {
-            $node->setAttribute('comments', [new \PHPParser\Comment\Doc($docComment)]);
+            $node->setAttribute('comments', [new Doc($docComment)]);
         }
 
         return $node;

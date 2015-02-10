@@ -46,13 +46,13 @@ class BindTest extends \PHPUnit_Framework_TestCase
 
     public function testToString()
     {
-        $nullBind = (string)new Bind;
+        $nullBind = (new Bind)->toString('');
         $this->assertInternalType('string', $nullBind);
 
         $interceptors = [new FakeDoubleInterceptor];
         $pointcut = new Pointcut((new Matcher)->startsWith('Ray'), (new Matcher)->startsWith('get'), $interceptors);
         $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
-        $bindString = (string)$this->bind;
+        $bindString = $this->bind->toString('');
         $this->assertInternalType('string', $bindString);
         $this->assertNotSame($nullBind, $bindString);
     }

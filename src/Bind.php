@@ -9,7 +9,6 @@ namespace Ray\Aop;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 use ReflectionMethod;
-use Doctrine\Common\Annotations\Reader;
 
 final class Bind implements BindInterface
 {
@@ -36,7 +35,7 @@ final class Bind implements BindInterface
      */
     public function bind($class, array $pointcuts)
     {
-        $pointcuts = $this->getAnnnotationPointcuts($pointcuts);
+        $pointcuts = $this->getAnnotationPointcuts($pointcuts);
         $this->annotatedMethodsMatch(new \ReflectionClass($class), $pointcuts);
 
         return $this;
@@ -118,21 +117,22 @@ final class Bind implements BindInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function __toString()
+    public function toString($salt)
     {
         $shortHash = function ($data) {
             return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($data))))), '='), '+/', '-_');
         };
 
-        return $shortHash(serialize($this->bindings));
+        return $shortHash(serialize($this->bindings) . $salt);
+
     }
 
     /**
-     * @param Pointcut[] $pointcuts
+     * @param Pointcut[] &$pointcuts
      */
-    public function getAnnnotationPointcuts(array &$pointcuts)
+    public function getAnnotationPointcuts(array &$pointcuts)
     {
         $keyPointcuts = [];
         foreach ($pointcuts as $key => $pointcut) {
