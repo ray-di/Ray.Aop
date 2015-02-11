@@ -1,9 +1,7 @@
 # Ray.Aop
 
-## Aspect Oriented Framework for PHP
+## Aspect Oriented Framework
 
-[![Latest Stable Version](https://poser.pugx.org/ray/aop/v/stable.png)](https://packagist.org/packages/ray/aop)
-[![Latest Unstable Version](http://img.shields.io/badge/unstable-~2.0%40dev-green.svg)](https://packagist.org/packages/ray/aop)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/koriym/Ray.Aop/badges/quality-score.png?develop-2)](https://scrutinizer-ci.com/g/koriym/Ray.Aop/)
 [![Code Coverage](https://scrutinizer-ci.com/g/koriym/Ray.Aop/badges/coverage.png?s=5604fdfae48a5a31242d3e46018515e2f30083d7)](https://scrutinizer-ci.com/g/koriym/Ray.Aop/)
 [![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png?branch=develop-2)](http://travis-ci.org/koriym/Ray.Aop)
