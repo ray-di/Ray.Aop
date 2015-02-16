@@ -34,7 +34,7 @@ class LogicalAndMatcher extends AbstractMatcher
         $isAnd = true;
         foreach ($arguments as $matcher) {
             /** @var $matcher AbstractMatcher */
-            $isAnd = $isAnd && $matcher->matchesMethod($method, []);
+            $isAnd = $isAnd && $matcher->matchesMethod($method, $matcher->getArguments());
         }
 
         return $isAnd;
