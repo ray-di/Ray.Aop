@@ -58,7 +58,7 @@ final class Bind implements BindInterface
      * @param ReflectionMethod $method
      * @param Pointcut[]       $pointcuts
      */
-    private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array &$pointcuts)
+    private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts)
     {
         $annotations = $this->reader->getMethodAnnotations($method);
         // priority bind
@@ -68,10 +68,10 @@ final class Bind implements BindInterface
                 unset($pointcuts[$key]);
             }
         }
-        $pointcuts = $this->onionOrderMatch($class, $method, $pointcuts, $annotations);
+        $onion = $this->onionOrderMatch($class, $method, $pointcuts, $annotations);
 
         // default binding
-        foreach ($pointcuts as $pointcut) {
+        foreach ($onion as $pointcut) {
             $this->annotatedMethodMatchBind($class, $method, $pointcut);
         }
     }
@@ -156,7 +156,7 @@ final class Bind implements BindInterface
     private function onionOrderMatch(
         \ReflectionClass $class,
         \ReflectionMethod $method,
-        array &$pointcuts,
+        array $pointcuts,
         $annotations
     ) {
         // method bind in annotation order
