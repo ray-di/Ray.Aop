@@ -1,0 +1,30 @@
+<?php
+$config = Symfony\CS\Config\Config::create();
+$config->fixers(
+    [
+        'encoding',
+        'linefeed',
+        'indentation',
+        'trailing_spaces',
+        'php_closing_tag',
+        'ternary_spaces',
+        'spaces_cast',
+        'visibility',
+        'return',
+        'function_declaration',
+        'extra_empty_lines',
+        'braces',
+        'new_with_braces',
+        'lowercase_keywords',
+        'short_array_syntax',
+        'lowercase_constants',
+        'controls_spaces',
+        'phpdoc_params',
+        'short_tag',
+        'standardize_not_equal',
+        'psr0',
+        'elseif',
+        'eof_ending'
+    ]
+);
+return $config;

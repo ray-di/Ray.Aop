@@ -8,6 +8,7 @@ namespace Ray\Aop;
 
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
+use PhpParser\Comment\Doc;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use PHPParser\Builder\Method;
@@ -92,7 +93,7 @@ final class CodeGenMethod
      *
      * @return \PHPParser\Builder\Method
      */
-    private function getMethodStatement(\ReflectionParameter $param, \PHPParser\Builder\Method $methodStmt)
+    private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt)
     {
         /** @var $paramStmt Param */
         $paramStmt = $this->factory->param($param->name);
@@ -116,8 +117,9 @@ final class CodeGenMethod
         $node = $methodStmt->getNode();
         $docComment = $method->getDocComment();
         if ($docComment) {
-            $node->setAttribute('comments', [new \PHPParser\Comment\Doc($docComment)]);
+            $node->setAttribute('comments', [new Doc($docComment)]);
         }
+
         return $node;
     }
 

@@ -78,8 +78,8 @@ final class CodeGen implements CodeGenInterface
      */
     private function getUseStatements(\ReflectionClass $class)
     {
-        $traverser = new NodeTraverser;
-        $useStmtsVisitor = new CodeGenVisitor;
+        $traverser = new NodeTraverser();
+        $useStmtsVisitor = new CodeGenVisitor();
         $traverser->addVisitor($useStmtsVisitor);
         // parse
         $stmts = $this->parser->parse(file_get_contents($class->getFileName()));

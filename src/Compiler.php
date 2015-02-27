@@ -32,9 +32,9 @@ final class Compiler implements CompilerInterface
     {
         $this->classDir = $classDir;
         $this->codeGen = $codeGen ?: new CodeGen(
-            new Parser(new Lexer),
-            new BuilderFactory,
-            new StandardPrettyPrinter
+            new Parser(new Lexer()),
+            new BuilderFactory(),
+            new StandardPrettyPrinter()
         );
     }
 
@@ -65,6 +65,7 @@ final class Compiler implements CompilerInterface
         }
         $file = "{$this->classDir}/{$newClass}.php";
         if (file_exists($file)) {
+            /** @noinspection PhpIncludeInspection */
             include $file;
 
             return $newClass;
@@ -83,7 +84,7 @@ final class Compiler implements CompilerInterface
     {
         $code = $this->codeGen->generate($newClass, $sourceClass);
         file_put_contents($file, '<?php ' . PHP_EOL . $code);
-
+        /** @noinspection PhpIncludeInspection */
         require $file;
     }
 }
