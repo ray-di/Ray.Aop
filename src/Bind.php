@@ -131,6 +131,8 @@ final class Bind implements BindInterface
 
     /**
      * @param Pointcut[] &$pointcuts
+     *
+     * @return Pointcut[]
      */
     public function getAnnotationPointcuts(array &$pointcuts)
     {
