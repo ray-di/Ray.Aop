@@ -2,11 +2,11 @@
 
 ## Aspect Oriented Framework
 
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/koriym/Ray.Aop/badges/quality-score.png?develop-2)](https://scrutinizer-ci.com/g/koriym/Ray.Aop/)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/badges/quality-score.png?b=develop-2)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=develop-2)
 [![Code Coverage](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/badges/coverage.png?b=develop-2)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=develop-2)
 [![Build Status](https://travis-ci.org/ray-di/Ray.Aop.svg?branch=develop-2)](https://travis-ci.org/ray-di/Ray.Aop)
 
-[[Japanese]](https://github.com/koriym/Ray.Aop/blob/develop/README.ja.md)
+[[Japanese]](https://github.com/koriym/Ray.Aop/blob/develop-2/README.ja.md)
 
 **Ray.Aop** package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
