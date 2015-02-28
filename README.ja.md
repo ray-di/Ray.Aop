@@ -2,10 +2,6 @@
 
 ## Aspect Oriented Framework
 
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/koriym/Ray.Aop/badges/quality-score.png?develop-2)](https://scrutinizer-ci.com/g/koriym/Ray.Aop/)
-[![Code Coverage](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/badges/coverage.png?b=develop-2)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=develop-2)
-[![Build Status](https://travis-ci.org/ray-di/Ray.Aop.svg?branch=develop-2)](https://travis-ci.org/ray-di/Ray.Aop)
-
 [[English]](https://github.com/koriym/Ray.Aop/blob/develop/README.md)
 
 **Ray.Aop** パッケージはメソッドインターセプションの機能を提供します。マッチするメソッドが実行される度に実行されるコードを記述する事ができます。トランザクション、セキュリティやログといった横断的な”アスペクト”に向いています。なぜならインターセプターが問題をオブジェクトというよりアスペクトに分けるからです。これらの用法はアスペクトオリエンティッドプログラム(AOP)と呼ばれます。
@@ -215,7 +211,7 @@ Testing Ray.Aop
 ===============
 
 ```
-$ composer create-project ray/aop:~2.0@dev Ray.Aop
+$ composer create-project ray/aop:~2.0 Ray.Aop
 $ cd Ray.Aop
 $ phpunit
 $ php docs/demo/run.php
