@@ -1,19 +1,18 @@
 {
     "name": "ray/aop",
-    "description": "Aspect oriented framework",
+    "description": "An aspect oriented framework",
     "keywords": [
         "aop",
         "AOP Alliance",
-        "method invocation",
-        "code gen",
+        "code-gen",
         "annotations"
     ],
     "homepage": "https://github.com/koriym/Ray.Aop",
     "license": "BSD-3-Clause",
     "authors": [
         {
-            "name": "Ray.Aop Contributors",
-            "homepage": "https://github.com/koriym/Ray.Aop/graphs/contributors"
+            "name": "Akihito Koriyama",
+            "email": "akihito.koriyama@gmail.com"
         }
     ],
     "require": {
@@ -30,7 +29,7 @@
         "files": ["tests/Fake/FakeAnnotateClassNoName.php"]
     },
     "suggest": {
-        "ray/di": "Guice style annotation-driven dependency injection framework"
+        "ray/di": "A dependency injection framework with Ray.Aop"
     },
     "extra": {
         "branch-alias": {
