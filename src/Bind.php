@@ -128,7 +128,7 @@ final class Bind implements BindInterface
     }
 
     /**
-     * @param Pointcut[] &$pointcuts
+     * @param Pointcut[] $pointcuts
      *
      * @return Pointcut[]
      */

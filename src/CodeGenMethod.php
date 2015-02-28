@@ -99,7 +99,7 @@ final class CodeGenMethod
         $paramStmt = $this->factory->param($param->name);
         /** @var $param \ReflectionParameter */
         $typeHint = $param->getClass();
-        $this->setTypeHint($param, $typeHint, $paramStmt);
+        $this->setTypeHint($param ,$paramStmt ,$typeHint);
         $this->setDefault($param, $paramStmt);
         $methodStmt->addParam($paramStmt);
 
@@ -138,10 +138,10 @@ final class CodeGenMethod
 
     /**
      * @param \ReflectionParameter $param
-     * @param \ReflectionClass     $typeHint
      * @param Param                $paramStmt
+     * @param \ReflectionClass     $typeHint
      */
-    private function setTypeHint(\ReflectionParameter $param, \ReflectionClass $typeHint = null, Param $paramStmt)
+    private function setTypeHint(\ReflectionParameter $param ,Param $paramStmt ,\ReflectionClass $typeHint = null)
     {
         if ($typeHint) {
             $paramStmt->setTypeHint($typeHint->name);
