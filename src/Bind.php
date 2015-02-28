@@ -24,7 +24,7 @@ final class Bind implements BindInterface
 
     public function __construct()
     {
-        $this->reader = new AnnotationReader;
+        $this->reader = new AnnotationReader();
     }
 
     /**
@@ -94,7 +94,6 @@ final class Bind implements BindInterface
         $this->bindInterceptors($method->name, $pointCut->interceptors);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -126,11 +125,10 @@ final class Bind implements BindInterface
         };
 
         return $shortHash(serialize($this->bindings) . $salt);
-
     }
 
     /**
-     * @param Pointcut[] &$pointcuts
+     * @param Pointcut[] $pointcuts
      *
      * @return Pointcut[]
      */

@@ -8,4 +8,3 @@ class FakeArrayTypehinted implements FakeArrayInterface
     {
     }
 }
-

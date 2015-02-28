@@ -28,7 +28,6 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
     }
 
-
     public function testBuildClass()
     {
         $class = $this->compiler->compile(FakeMock::class, $this->bind);
@@ -47,7 +46,6 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $class2File = (new \ReflectionClass($class1))->getFileName();
         $this->assertSame($class1File, $class2File);
     }
-
 
     /**
      * @depends testBuildClass
@@ -88,7 +86,6 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
-
 
     /**
      * @depends testNewInstance

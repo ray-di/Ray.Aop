@@ -6,12 +6,12 @@
  */
 namespace Ray\Aop;
 
+use PHPParser\Builder\Method;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use PHPParser\Builder\Method;
 
 final class CodeGenMethod
 {
@@ -55,7 +55,7 @@ final class CodeGenMethod
         $stmts = [];
         $methods = $class->getMethods();
         foreach ($methods as $method) {
-            /** @var $method \ReflectionMethod */
+            /* @var $method \ReflectionMethod */
             if ($method->isPublic()) {
                 $stmts[] = $this->getMethod($method);
             }
@@ -97,9 +97,9 @@ final class CodeGenMethod
     {
         /** @var $paramStmt Param */
         $paramStmt = $this->factory->param($param->name);
-        /** @var $param \ReflectionParameter */
+        /* @var $param \ReflectionParameter */
         $typeHint = $param->getClass();
-        $this->setTypeHint($param, $typeHint, $paramStmt);
+        $this->setTypeHint($param, $paramStmt, $typeHint);
         $this->setDefault($param, $paramStmt);
         $methodStmt->addParam($paramStmt);
 
@@ -119,6 +119,7 @@ final class CodeGenMethod
         if ($docComment) {
             $node->setAttribute('comments', [new Doc($docComment)]);
         }
+
         return $node;
     }
 
@@ -137,10 +138,10 @@ final class CodeGenMethod
 
     /**
      * @param \ReflectionParameter $param
-     * @param \ReflectionClass     $typeHint
      * @param Param                $paramStmt
+     * @param \ReflectionClass     $typeHint
      */
-    private function setTypeHint(\ReflectionParameter $param, \ReflectionClass $typeHint = null, Param $paramStmt)
+    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null)
     {
         if ($typeHint) {
             $paramStmt->setTypeHint($typeHint->name);

@@ -37,7 +37,7 @@ class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
     public function testGetArguments()
     {
         $args = $this->invocation->getArguments();
-        $this->assertSame((array)$args, [1]);
+        $this->assertSame((array) $args, [1]);
     }
 
     public function testProceed()

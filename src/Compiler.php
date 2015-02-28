@@ -32,9 +32,9 @@ final class Compiler implements CompilerInterface
     {
         $this->classDir = $classDir;
         $this->codeGen = $codeGen ?: new CodeGen(
-            new Parser(new Lexer),
-            new BuilderFactory,
-            new StandardPrettyPrinter
+            new Parser(new Lexer()),
+            new BuilderFactory(),
+            new StandardPrettyPrinter()
         );
     }
 

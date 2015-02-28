@@ -39,6 +39,7 @@ class Matcher
         if (! class_exists($superClass)) {
             throw new InvalidArgumentException($superClass);
         }
+
         return new BuiltinMatcher(__FUNCTION__, [$superClass]);
     }
 
@@ -50,6 +51,7 @@ class Matcher
         if (! is_string($prefix)) {
             throw new InvalidArgumentException($prefix);
         }
+
         return new BuiltinMatcher(__FUNCTION__, [$prefix]);
     }
 
