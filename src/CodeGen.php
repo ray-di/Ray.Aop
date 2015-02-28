@@ -7,12 +7,12 @@
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
+use PHPParser\Comment\Doc;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use PHPParser\Comment\Doc;
 
 final class CodeGen implements CodeGenInterface
 {

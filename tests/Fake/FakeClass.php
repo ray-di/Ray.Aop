@@ -24,7 +24,7 @@ class FakeClass
     }
 
     /**
-     * @param  int $c
+     * @param int $c
      *
      * @return number
      *

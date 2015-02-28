@@ -16,7 +16,7 @@ class LogicalNotMatcher extends AbstractMatcher
     public function matchesClass(\ReflectionClass $class, array $arguments)
     {
         list($matcher) = $arguments;
-        /** @var $matcher AbstractMatcher */
+        /* @var $matcher AbstractMatcher */
         $isNot = ! $matcher->matchesClass($class, [$arguments]);
 
         return $isNot;
@@ -28,7 +28,7 @@ class LogicalNotMatcher extends AbstractMatcher
     public function matchesMethod(\ReflectionMethod $method, array $arguments)
     {
         list($matcher) = $arguments;
-        /** @var $matcher AbstractMatcher */
+        /* @var $matcher AbstractMatcher */
         $isNot = ! $matcher->matchesMethod($method, [$arguments]);
 
         return $isNot;

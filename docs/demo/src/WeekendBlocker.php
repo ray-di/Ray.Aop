@@ -15,6 +15,7 @@ class WeekendBlocker implements MethodInterceptor
                   $invocation->getMethod()->getName() . " not allowed on weekends!"
             );
         }
+
         return $invocation->proceed();
     }
 }

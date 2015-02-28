@@ -2,10 +2,8 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @package {package}
  * @license http://opensource.org/licenses/bsd-license.php BSD
  */
-
 namespace Ray\Aop\Matcher;
 
 use Ray\Aop\AbstractMatcher;
@@ -19,7 +17,7 @@ class LogicalAndMatcher extends AbstractMatcher
     {
         $isAnd = true;
         foreach ($arguments as $matcher) {
-            /** @var $matcher AbstractMatcher */
+            /* @var $matcher AbstractMatcher */
             $isAnd = $isAnd && $matcher->matchesClass($class, []);
         }
 
@@ -33,7 +31,7 @@ class LogicalAndMatcher extends AbstractMatcher
     {
         $isAnd = true;
         foreach ($arguments as $matcher) {
-            /** @var $matcher AbstractMatcher */
+            /* @var $matcher AbstractMatcher */
             $isAnd = $isAnd && $matcher->matchesMethod($method, $matcher->getArguments());
         }
 
