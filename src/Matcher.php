@@ -9,7 +9,7 @@ namespace Ray\Aop;
 use Ray\Aop\Exception\InvalidAnnotationException;
 use Ray\Aop\Exception\InvalidArgumentException;
 
-class Matcher
+class Matcher implements MatcherInterface
 {
     /**
      * {@inheritdoc}
