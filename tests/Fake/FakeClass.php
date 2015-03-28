@@ -35,10 +35,6 @@ class FakeClass
         return $c * 3;
     }
 
-    public function duplicatedParamName($a, $a)
-    {
-    }
-
     public function __toString()
     {
         return 'toStringString';
