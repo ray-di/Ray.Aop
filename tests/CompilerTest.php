@@ -3,6 +3,7 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Ray\Aop\Exception\NotWritableException;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {
@@ -192,5 +193,11 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $parent = (new \ReflectionClass($class))->getParentClass()->getName();
         $expected = 'Ray\Aop\FakeArrayTypehinted';
         $this->assertSame($expected, $parent);
+    }
+
+    public function testNotWritable()
+    {
+        $this->setExpectedException(NotWritableException::class);
+        new Compiler('./not_available');
     }
 }
