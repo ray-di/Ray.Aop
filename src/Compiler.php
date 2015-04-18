@@ -10,6 +10,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard as StandardPrettyPrinter;
+use Ray\Aop\Exception\NotWritableException;
 use ReflectionClass;
 
 final class Compiler implements CompilerInterface
@@ -30,6 +31,9 @@ final class Compiler implements CompilerInterface
      */
     public function __construct($classDir, CodeGenInterface $codeGen = null)
     {
+        if (! is_writable($classDir)) {
+            throw new NotWritableException($classDir);
+        }
         $this->classDir = $classDir;
         $this->codeGen = $codeGen ?: new CodeGen(
             new Parser(new Lexer()),
