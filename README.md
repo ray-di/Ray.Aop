@@ -2,9 +2,9 @@
 
 ## Aspect Oriented Framework
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/badges/quality-score.png?b=develop-2)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=develop-2)
-[![Code Coverage](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/badges/coverage.png?b=develop-2)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=develop-2)
-[![Build Status](https://travis-ci.org/ray-di/Ray.Aop.svg?branch=develop-2)](https://travis-ci.org/ray-di/Ray.Aop)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=develop-2)
+[![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=develop-2)
+[![Build Status](https://travis-ci.org/ray-di/Ray.Aop.svg?branch=2.x)](https://travis-ci.org/ray-di/Ray.Aop)
 
 [[Japanese]](https://github.com/koriym/Ray.Aop/blob/develop-2/README.ja.md)
 
