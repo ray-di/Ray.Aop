@@ -60,12 +60,10 @@ final class Compiler implements CompilerInterface
      */
     public function compile($class, BindInterface $bind)
     {
-        if (! $bind->getBindings() || ! $this->hasBoundMethod($class, $bind)) {
+        if ($this->hasNoBinding($class, $bind)) {
             return $class;
         }
-
-        $fileTime = filemtime((new \ReflectionClass($class))->getFileName());
-        $newClass = sprintf("%s_%s", str_replace('\\', '_', $class), $bind->toString($fileTime));
+        $newClass = $this->getNewClassName($class, $bind);
         if (class_exists($newClass)) {
             return $newClass;
         }
@@ -77,6 +75,31 @@ final class Compiler implements CompilerInterface
             return $newClass;
         }
         $this->includeGeneratedCode($newClass, new ReflectionClass($class), $file, $bind);
+
+        return $newClass;
+    }
+
+    /**
+     * @param string        $class
+     * @param BindInterface $bind
+     *
+     * @return bool
+     */
+    private function hasNoBinding($class, BindInterface $bind)
+    {
+        return  ! $bind->getBindings() && ! $this->hasBoundMethod($class, $bind);
+    }
+
+    /**
+     * @param string        $class
+     * @param BindInterface $bind
+     *
+     * @return string
+     */
+    private function getNewClassName($class, BindInterface $bind)
+    {
+        $fileTime = filemtime((new \ReflectionClass($class))->getFileName());
+        $newClass = sprintf("%s_%s", str_replace('\\', '_', $class), $bind->toString($fileTime));
 
         return $newClass;
     }
