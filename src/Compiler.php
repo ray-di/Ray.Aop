@@ -60,7 +60,7 @@ final class Compiler implements CompilerInterface
      */
     public function compile($class, BindInterface $bind)
     {
-        if ($this->hasBinding($class, $bind)) {
+        if ($this->hasNoBinding($class, $bind)) {
             return $class;
         }
         $newClass = $this->getNewClassName($class, $bind);
@@ -85,9 +85,9 @@ final class Compiler implements CompilerInterface
      *
      * @return bool
      */
-    private function hasBinding($class, BindInterface $bind)
+    private function hasNoBinding($class, BindInterface $bind)
     {
-        return $bind->getBindings() || ! $this->hasBoundMethod($class, $bind);
+        return  ! $bind->getBindings() && ! $this->hasBoundMethod($class, $bind);
     }
 
     /**
