@@ -19,4 +19,8 @@ class FakeAnnotateClassNoName
     {
         return $a * 2;
     }
+
+    public function returnSame($a)
+    {
+    }
 }

@@ -4,6 +4,7 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Exception\NotWritableException;
+use TokenReflection\ReflectionClass;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {
@@ -190,9 +191,10 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function testArrayTypehintedAndCallable()
     {
         $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
-        $parent = (new \ReflectionClass($class))->getParentClass()->getName();
-        $expected = 'Ray\Aop\FakeArrayTypehinted';
-        $this->assertSame($expected, $parent);
+        $file = file((new \ReflectionClass($class))->getFileName());
+        $expected = '    function returnSame(array $arrayParam, callable $callableParam)
+';
+        $this->assertSame($expected, $file[5]);
     }
 
     public function testNotWritable()
