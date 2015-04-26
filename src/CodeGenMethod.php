@@ -50,13 +50,15 @@ final class CodeGenMethod
      *
      * @return array
      */
-    public function getMethods(\ReflectionClass $class)
+    public function getMethods(\ReflectionClass $class, BindInterface $bind)
     {
+        $bindingMethods = array_keys($bind->getBindings());
         $stmts = [];
         $methods = $class->getMethods();
         foreach ($methods as $method) {
+            $isBindingMethod = in_array($method->getName(), $bindingMethods);
             /* @var $method \ReflectionMethod */
-            if ($method->isPublic()) {
+            if ($isBindingMethod && $method->isPublic()) {
                 $stmts[] = $this->getMethod($method);
             }
         }
