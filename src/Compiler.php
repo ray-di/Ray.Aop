@@ -12,6 +12,7 @@ use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard as StandardPrettyPrinter;
 use Ray\Aop\Exception\NotWritableException;
 use ReflectionClass;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 final class Compiler implements CompilerInterface
 {
@@ -59,9 +60,10 @@ final class Compiler implements CompilerInterface
      */
     public function compile($class, BindInterface $bind)
     {
-        if (! $bind->getBindings()) {
+        if (! $bind->getBindings() || ! $this->hasBoundMethod($class, $bind)) {
             return $class;
         }
+
         $fileTime = filemtime((new \ReflectionClass($class))->getFileName());
         $newClass = sprintf("%s_%s", str_replace('\\', '_', $class), $bind->toString($fileTime));
         if (class_exists($newClass)) {
@@ -74,9 +76,28 @@ final class Compiler implements CompilerInterface
 
             return $newClass;
         }
-        $this->includeGeneratedCode($newClass, new ReflectionClass($class), $file);
+        $this->includeGeneratedCode($newClass, new ReflectionClass($class), $file, $bind);
 
         return $newClass;
+    }
+
+    /**
+     * @param string        $class
+     * @param BindInterface $bind
+     *
+     * @return bool
+     */
+    private function hasBoundMethod($class, BindInterface $bind)
+    {
+        $bindingMethods = array_keys($bind->getBindings());
+        $hasMethod = false;
+        foreach ($bindingMethods as $bindingMethod) {
+            if (method_exists($class, $bindingMethod)) {
+                $hasMethod = true;
+            }
+        }
+
+        return $hasMethod;
     }
 
     /**
@@ -84,9 +105,9 @@ final class Compiler implements CompilerInterface
      * @param ReflectionClass $sourceClass
      * @param string          $file
      */
-    private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, $file)
+    private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, $file, BindInterface $bind)
     {
-        $code = $this->codeGen->generate($newClass, $sourceClass);
+        $code = $this->codeGen->generate($newClass, $sourceClass, $bind);
         file_put_contents($file, '<?php ' . PHP_EOL . $code);
         /** @noinspection PhpIncludeInspection */
         require $file;

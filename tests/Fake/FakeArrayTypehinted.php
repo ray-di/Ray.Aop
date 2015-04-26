@@ -2,9 +2,9 @@
 
 namespace Ray\Aop;
 
-class FakeArrayTypehinted implements FakeArrayInterface
+class FakeArrayTypehinted
 {
-    public function invoke(array $array, callable $callable)
+    public function returnSame(array $arrayParam, callable $callableParam)
     {
     }
 }

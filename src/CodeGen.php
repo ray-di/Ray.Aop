@@ -7,7 +7,7 @@
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
-use PHPParser\Comment\Doc;
+use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
@@ -58,11 +58,12 @@ final class CodeGen implements CodeGenInterface
      *
      * @return string
      */
-    public function generate($class, \ReflectionClass $sourceClass)
+    public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind)
     {
+        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind);
         $stmt = $this
             ->getClass($class, $sourceClass)
-            ->addStmts($this->codeGenMethod->getMethods($sourceClass))
+            ->addStmts($methods)
             ->getNode();
         $stmt = $this->addClassDocComment($stmt, $sourceClass);
         $code = $this->printer->prettyPrint([$stmt]);
