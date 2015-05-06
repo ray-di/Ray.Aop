@@ -12,7 +12,6 @@ use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard as StandardPrettyPrinter;
 use Ray\Aop\Exception\NotWritableException;
 use ReflectionClass;
-use Symfony\Component\Config\Definition\Exception\Exception;
 
 final class Compiler implements CompilerInterface
 {
@@ -87,7 +86,9 @@ final class Compiler implements CompilerInterface
      */
     private function hasNoBinding($class, BindInterface $bind)
     {
-        return  ! $bind->getBindings() && ! $this->hasBoundMethod($class, $bind);
+        $hasMethod = $this->hasBoundMethod($class, $bind);
+
+        return ! $bind->getBindings() && ! $hasMethod;
     }
 
     /**
