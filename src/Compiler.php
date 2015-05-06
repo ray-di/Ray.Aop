@@ -87,6 +87,7 @@ final class Compiler implements CompilerInterface
     private function hasNoBinding($class, BindInterface $bind)
     {
         $hasMethod = $this->hasBoundMethod($class, $bind);
+
         return ! $bind->getBindings() && ! $hasMethod;
     }
 
