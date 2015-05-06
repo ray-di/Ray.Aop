@@ -202,4 +202,17 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(NotWritableException::class);
         new Compiler('./not_available');
     }
+
+    public function testHasBound()
+    {
+        $this->compiler = new Compiler(
+            $_ENV['TMP_DIR']
+        );
+        $this->bind = new Bind;
+        $matcher = new Matcher;
+        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor]);
+        $this->bind->bind(FakeMock::class, [$pointcut]);
+        $class = $this->compiler->compile(FakeMock::class, $this->bind);
+        $this->assertTrue(class_exists($class));
+    }
 }
