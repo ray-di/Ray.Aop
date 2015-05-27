@@ -3,6 +3,7 @@
 namespace Ray\Aop\Matcher;
 
 use Ray\Aop\FakeAnnotateClass;
+use Ray\Aop\FakeClass;
 use Ray\Aop\FakeMatcher;
 
 class LogicalAndMatcherTest extends \PHPUnit_Framework_TestCase
@@ -10,7 +11,7 @@ class LogicalAndMatcherTest extends \PHPUnit_Framework_TestCase
     public function testMatchesClass()
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher, new FakeMatcher]);
+        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, true)]);
 
         $this->assertTrue($isMatched);
     }
@@ -18,7 +19,7 @@ class LogicalAndMatcherTest extends \PHPUnit_Framework_TestCase
     public function testMatchesClassFalse()
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher, new FakeMatcher(false)]);
+        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, false)]);
 
         $this->assertFalse($isMatched);
     }
@@ -26,7 +27,7 @@ class LogicalAndMatcherTest extends \PHPUnit_Framework_TestCase
     public function testMatchesClassThreeConditions()
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher, new FakeMatcher, new FakeMatcher(false)]);
+        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, true), new FakeMatcher(true, false)]);
 
         $this->assertFalse($isMatched);
     }
@@ -34,7 +35,7 @@ class LogicalAndMatcherTest extends \PHPUnit_Framework_TestCase
     public function testMatchesMethod()
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
-        $isMatched = (new LogicalAndMatcher)->matchesMethod($method, [new FakeMatcher, new FakeMatcher]);
+        $isMatched = (new LogicalAndMatcher)->matchesMethod($method, [new FakeMatcher(true, true), new FakeMatcher(true, true)]);
 
         $this->assertTrue($isMatched);
     }

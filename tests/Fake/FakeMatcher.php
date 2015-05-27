@@ -4,20 +4,26 @@ namespace Ray\Aop;
 
 class FakeMatcher extends AbstractMatcher
 {
-    private $return;
-
-    public function __construct($return = true)
+    public function __construct($arg1 = true, $arg2 = true)
     {
-        $this->return = $return;
+        $this->arguments = [$arg1, $arg2];
     }
 
     public function matchesClass(\ReflectionClass $class, array $arguments)
     {
-        return $this->return;
+        if (isset($arguments[1])) {
+            return $arguments[0] && $arguments[1];
+        }
+
+        return $arguments[0];
     }
 
     public function matchesMethod(\ReflectionMethod $method, array $arguments)
     {
-        return $this->return;
+        if (isset($arguments[1])) {
+            return $arguments[0] && $arguments[1];
+        }
+
+        return $arguments[0];
     }
 }

@@ -5,7 +5,7 @@ namespace Ray\Aop\Matcher;
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeMatcher;
 
-class LogicalOrMathcerTest extends \PHPUnit_Framework_TestCase
+class LogicalOrMatcherTest extends \PHPUnit_Framework_TestCase
 {
     public function testMatchesClass()
     {
@@ -33,7 +33,7 @@ class LogicalOrMathcerTest extends \PHPUnit_Framework_TestCase
     public function testLogicalOrNotMatch()
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher(false), new FakeMatcher(false), new FakeMatcher(false)]);
+        $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher(true, false), new FakeMatcher(true, false), new FakeMatcher(true, false)]);
         $this->assertFalse($isMatched);
     }
 
