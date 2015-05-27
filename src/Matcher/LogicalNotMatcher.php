@@ -17,7 +17,7 @@ class LogicalNotMatcher extends AbstractMatcher
     {
         list($matcher) = $arguments;
         /* @var $matcher AbstractMatcher */
-        $isNot = ! $matcher->matchesClass($class, [$arguments]);
+        $isNot = ! $matcher->matchesClass($class, $matcher->getArguments());
 
         return $isNot;
     }
