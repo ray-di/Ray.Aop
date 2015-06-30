@@ -217,7 +217,7 @@ Testing Ray.Aop
 Here's how to install Ray.Aop from source and run the unit tests and demos.
 
 ```bash
-$ composer create-project ray/aop:~2.0@dev Ray.Aop
+$ composer create-project ray/aop:~2.0 Ray.Aop
 $ cd Ray.Aop
 $ phpunit
 $ php docs/demo/run.php
