@@ -6,7 +6,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=2.x)
 [![Build Status](https://travis-ci.org/ray-di/Ray.Aop.svg?branch=2.x)](https://travis-ci.org/ray-di/Ray.Aop)
 
-[[Japanese]](https://github.com/koriym/Ray.Aop/blob/2.x/README.ja.md)
+[\[Japanese\]](https://github.com/ray-di/Ray.Aop/blob/2.x/README.ja.md)
 
 **Ray.Aop** package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
@@ -19,9 +19,7 @@ Example: Forbidding method calls on weekends
 
 To illustrate how method interceptors work with Ray.Aop, we'll forbid calls to our pizza billing system on weekends. The delivery guys only work Monday thru Friday so we'll prevent pizza from being ordered when it can't be delivered! This example is structurally similar to use of AOP for authorization.
 
-To mark select methods as weekdays-only, we define an annotation.
-(Ray.Aop uses Doctrine Annotations)
-
+To mark select methods as weekdays-only, we define an annotation. (Ray.Aop uses Doctrine Annotations)
 
 ```php
 <?php
@@ -49,7 +47,7 @@ class RealBillingService
     {
 ```
 
-Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling $invocation->proceed():
+Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling `$invocation->proceed()`:
 
 ```php
 <?php
@@ -60,14 +58,15 @@ class WeekendBlocker implements MethodInterceptor
         $today = getdate();
         if ($today['weekday'][0] === 'S') {
             throw new \RuntimeException(
-          		$invocation->getMethod()->getName() . " not allowed on weekends!"
+                $invocation->getMethod()->getName() . " not allowed on weekends!"
             );
         }
         return $invocation->proceed();
     }
 }
 ```
-Finally, we configure everything. In this case we match any class, but only the methods with our @NotOnWeekends annotation:
+
+Finally, we configure everything. In this case we match any class, but only the methods with our `@NotOnWeekends` annotation:
 
 ```php
 <?php
@@ -76,9 +75,9 @@ use Ray\Aop\Sample\Annotation\NotOnWeekends;
 use Ray\Aop\Sample\Annotation\RealBillingService;
 
 $pointcut = new Pointcut(
-		(new Matcher)->any(),
-		(new Matcher)->annotatedWith(NotOnWeekends::class),
-		[new WeekendBlocker]
+    (new Matcher)->any(),
+    (new Matcher)->annotatedWith(NotOnWeekends::class),
+    [new WeekendBlocker]
 );
 $bind = new Bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
@@ -90,6 +89,7 @@ try {
     exit(1);
 }
 ```
+
 Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:
 
 ```php
@@ -109,19 +109,20 @@ Explicit method name match
 
 ```php
 <?php
-	$bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
+    $bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
     $compiler = new Compiler($tmpDir);
-	$billing = $compiler->newInstance('RealBillingService', [], $bind);
-	try {
-	   echo $billing->chargeOrder();
-	} catch (\RuntimeException $e) {
-	   echo $e->getMessage() . "\n";
-	   exit(1);
-	}
+    $billing = $compiler->newInstance('RealBillingService', [], $bind);
+    try {
+        echo $billing->chargeOrder();
+    } catch (\RuntimeException $e) {
+        echo $e->getMessage() . "\n";
+        exit(1);
+    }
 ```
 
 Own matcher
 -----------
+
 You can have your own matcher.
 To create `contains` matcher, You need to provide a class which have two method. One is `matchesClass` for class match.
 The other one is `matchesMethod` method match. Both return the boolean result of matched.
@@ -163,6 +164,7 @@ $pointcut = new Pointcut(
 $bind = new Bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 ```
+
 Priority
 --------
 
@@ -193,6 +195,7 @@ This approach imposes limits on what classes and methods can be intercepted:
 
 AOP Alliance
 ------------
+
 The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html).
 
 Requirements
@@ -222,5 +225,7 @@ $ cd Ray.Aop
 $ phpunit
 $ php docs/demo/run.php
 ```
+
+See also the DI framework [Ray.Di](https://github.com/koriym/Ray.Di) which integrates DI and AOP.
 
 * This documentation for the most part is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP).
