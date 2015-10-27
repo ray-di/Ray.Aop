@@ -10,9 +10,9 @@
 
 **Ray.Aop** パッケージはメソッドインターセプションの機能を提供します。マッチするメソッドが実行される度に実行されるコードを記述する事ができます。トランザクション、セキュリティやログといった横断的な”アスペクト”に向いています。なぜならインターセプターが問題をオブジェクトというよりアスペクトに分けるからです。これらの用法はアスペクト指向プログラミング(AOP)と呼ばれます。
 
-[Matcher](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.Matchable.html) は値を受け取ったり拒否したりするシンプルなインターフェイスです。例えばRay.Aopでは２つの **Matcher** が必要です。１つはどのクラスに適用するかを決め、もう１つはそのクラスのどのメソッドに適用するかを決めます。これらを簡単に利用するためのファクトリークラスがあります。
+[Matcher](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php) は値を受け取ったり拒否したりするシンプルなインターフェイスです。例えばRay.Aopでは２つの **Matcher** が必要です。１つはどのクラスに適用するかを決め、もう１つはそのクラスのどのメソッドに適用するかを決めます。これらを簡単に利用するためのファクトリークラスがあります。
 
-[MethodInterceptors](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.MethodInterceptor.html) はマッチしたメソッドが呼ばれる度に実行されます。呼び出しやメソッド、それらの引き数、インスタンスを調べる事ができます。横断的なロジックと委譲されたメソッドが実行されます。最後に返り値を調べて返します。インターセプターは沢山のメソッドに適用され沢山のコールを受け取るので、実装は効果的で透過的なものになります。
+[MethodInterceptors](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInterceptor.php) はマッチしたメソッドが呼ばれる度に実行されます。呼び出しやメソッド、それらの引き数、インスタンスを調べる事ができます。横断的なロジックと委譲されたメソッドが実行されます。最後に返り値を調べて返します。インターセプターは沢山のメソッドに適用され沢山のコールを受け取るので、実装は効果的で透過的なものになります。
 
 例：平日のメソッドコールを禁止する
 --------------------------------
@@ -47,7 +47,7 @@ class RealBillingService
     {
 ```
 
-次に、MethodInterceptorインターフェイスを実装します。元のメソッドを実行するためには `$invocation->proceed()` と実行します。
+次に、org.aopalliance.intercept.MethodInterceptorインターフェイスを実装したインターセプターを定義します。元のメソッドを実行するためには `$invocation->proceed()` と実行します。
 
 ```php
 <?php
@@ -79,7 +79,7 @@ $pointcut = new Pointcut(
     (new Matcher)->annotatedWith(NotOnWeekends::class),
     [new WeekendBlocker]
 );
-$bind = new Bind(RealBillingService::class, [$pointcut]);
+$bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 
 try {
@@ -92,16 +92,8 @@ try {
 
 全てをまとめ（土曜日まで待って）、メソッドをコールするとインターセプターにより拒否されます。
 
-```php
-<?php
-RuntimeException: chargeOrder not allowed on weekends! in /apps/pizza/WeekendBlocker.php on line 14
-
-Call Stack:
-    0.0022     228296   1. {main}() /apps/pizza/main.php:0
-    0.0054     317424   2. Ray\Aop\Weaver->chargeOrder() /apps/pizza/main.php:14
-    0.0054     317608   3. Ray\Aop\Weaver->__call() /libs/Ray.Aop/src/Weaver.php:14
-    0.0055     318384   4. Ray\Aop\ReflectiveMethodInvocation->proceed() /libs/Ray.Aop/src/Weaver.php:68
-    0.0056     318784   5. Ray\Aop\Sample\WeekendBlocker->invoke() /libs/Ray.Aop/src/ReflectiveMethodInvocation.php:65
+```
+chargeOrder not allowed on weekends!
 ```
 
 メソッド名を指定したマッチ
@@ -124,7 +116,7 @@ Call Stack:
 ---------------
 
 独自のマッチャーを作成することもでます。
-`contaions` マッチャーを作成するためには、２つのメソッドを持つクラスを提供する必要があります。
+`contains` マッチャーを作成するためには、２つのメソッドを持つクラスを提供する必要があります。
 １つはクラスのマッチを行う`matchesClass`メソッド、もう１つはメソッドのマッチを行う`matchesMethod`です。いずれもマッチしたかどうかをブールで返します。
 
 ```php
@@ -157,11 +149,11 @@ class IsContainsMatcher extends AbstractMatcher
 
 ```php
 $pointcut = new Pointcut(
-		(new Matcher)->any(),
-		new IsContainsMatcher('charge'),
-		[new WeekendBlocker]
+    (new Matcher)->any(),
+    new IsContainsMatcher('charge'),
+    [new WeekendBlocker]
 );
-$bind = new Bind(RealBillingService::class, [$pointcut]);
+$bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 ```
 
