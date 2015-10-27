@@ -10,9 +10,9 @@
 
 **Ray.Aop** package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
-A [Matcher](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.Matchable.html) is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there's factory class to satisfy the common scenarios.
+A [Matcher](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php) is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there's factory class to satisfy the common scenarios.
 
-[MethodInterceptors](http://bearsunday.github.io/builds/Ray.Aop/api/class-Ray.Aop.MethodInterceptor.html) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
+[MethodInterceptors](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInterceptor.php) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
 
 Example: Forbidding method calls on weekends
 --------------------------------------------
@@ -79,7 +79,7 @@ $pointcut = new Pointcut(
     (new Matcher)->annotatedWith(NotOnWeekends::class),
     [new WeekendBlocker]
 );
-$bind = new Bind(RealBillingService::class, [$pointcut]);
+$bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 
 try {
@@ -92,16 +92,8 @@ try {
 
 Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:
 
-```php
-<?php
-RuntimeException: chargeOrder not allowed on weekends! in /apps/pizza/WeekendBlocker.php on line 14
-
-Call Stack:
-    0.0022     228296   1. {main}() /apps/pizza/main.php:0
-    0.0054     317424   2. Ray\Aop\Weaver->chargeOrder() /apps/pizza/main.php:14
-    0.0054     317608   3. Ray\Aop\Weaver->__call() /libs/Ray.Aop/src/Weaver.php:14
-    0.0055     318384   4. Ray\Aop\ReflectiveMethodInvocation->proceed() /libs/Ray.Aop/src/Weaver.php:68
-    0.0056     318784   5. Ray\Aop\Sample\WeekendBlocker->invoke() /libs/Ray.Aop/src/ReflectiveMethodInvocation.php:65
+```
+chargeOrder not allowed on weekends!
 ```
 
 Explicit method name match
@@ -157,11 +149,11 @@ class IsContainsMatcher extends AbstractMatcher
 
 ```php
 $pointcut = new Pointcut(
-		(new Matcher)->any(),
-		new IsContainsMatcher('charge'),
-		[new WeekendBlocker]
+    (new Matcher)->any(),
+    new IsContainsMatcher('charge'),
+    [new WeekendBlocker]
 );
-$bind = new Bind(RealBillingService::class, [$pointcut]);
+$bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 ```
 
