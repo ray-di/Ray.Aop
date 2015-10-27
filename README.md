@@ -218,6 +218,6 @@ $ phpunit
 $ php docs/demo/run.php
 ```
 
-See also the DI framework [Ray.Di](https://github.com/koriym/Ray.Di) which integrates DI and AOP.
+See also the DI framework [Ray.Di](https://github.com/ray-di/Ray.Di) which integrates DI and AOP.
 
 * This documentation for the most part is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP).

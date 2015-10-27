@@ -218,6 +218,6 @@ $ phpunit
 $ php docs/demo/run.php
 ```
 
-DIとAOPを統合したDIフレームワーク[Ray.Di](https://github.com/koriym/Ray.Di)もご覧ください。
+DIとAOPを統合したDIフレームワーク[Ray.Di](https://github.com/ray-di/Ray.Di)もご覧ください。
 
 * この文書の大部分は [Guice/AOP](https://github.com/google/guice/wiki/AOP) から借用しています。
