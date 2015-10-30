@@ -14,7 +14,7 @@ $pointcut = new Pointcut(
     (new Matcher)->startsWith('charge'),    // method match
     [new WeekendBlocker]                    // interceptors
 );
-$bind = (new Bind)->bind(AnnotationRealBillingService::class, [$pointcut]);
+$bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $compiler = new Compiler($_ENV['TMP_DIR']);
 $billingService = $compiler->newInstance(RealBillingService::class, [], $bind);
 

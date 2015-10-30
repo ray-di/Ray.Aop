@@ -14,7 +14,7 @@ $pointcut = new Pointcut(
     [new WeekendBlocker]
 );
 $bind = new Bind;
-$bind->bind(AnnotationRealBillingService::class, [$pointcut]);
+$bind->bind(RealBillingService::class, [$pointcut]);
 $compiler = new Compiler($_ENV['TMP_DIR']);
 $billingService = $compiler->newInstance(RealBillingService::class, [], $bind);
 
