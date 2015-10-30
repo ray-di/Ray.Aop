@@ -23,7 +23,7 @@ no_cache: {
     );
     $compiler = new Compiler($_ENV['TMP_DIR']);
     $bind = (new Bind)->bind(AnnotationRealBillingService::class, [$pointcut]);
-    $billingService1 = $compiler->newInstance(RealBillingService::class, [], $bind);
+    $billingService1 = $compiler->newInstance(AnnotationRealBillingService::class, [], $bind);
 }
 $time1 = microtime(true) - $start;
 
@@ -32,10 +32,10 @@ file_put_contents($cache, serialize($bind));
 $start = microtime(true);
 cache_enable: {
     $bind = unserialize(file_get_contents($cache));
-    $billingService2 = $compiler->newInstance(RealBillingService::class, [], $bind);
+    $billingService2 = $compiler->newInstance(AnnotationRealBillingService::class, [], $bind);
 }
 $time2 = microtime(true) - $start;
 
-$works = $billingService1 instanceof RealBillingService &&  $billingService2 instanceof RealBillingService;
+$works = $billingService1 instanceof AnnotationRealBillingService &&  $billingService2 instanceof AnnotationRealBillingService;
 echo($works ? 'It works!' : 'It DOES NOT work!') . PHP_EOL;
 echo 'x' . round($time1 / $time2) . ' times faster.' . PHP_EOL;
