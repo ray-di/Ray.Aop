@@ -1,15 +1,15 @@
+sudo: false
 language: php
-
 php:
   - 5.5
   - 5.6
   - hhvm
-  - 7.0
-
+  - 7
+before_script:
+  - composer self-update
+  - composer install
 script:
- - composer install --prefer-source
- - phpunit --coverage-text --coverage-clover=coverage.clover
-
+  - phpunit --coverage-clover=coverage.clover
 after_script:
- - wget https://scrutinizer-ci.com/ocular.phar
- - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
