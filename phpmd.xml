@@ -20,7 +20,11 @@
     <rule ref="rulesets/design.xml/GotoStatement" />
     <rule ref="rulesets/design.xml/NumberOfChildren" />
     <rule ref="rulesets/design.xml/DepthOfInheritance" />
-    <rule ref="rulesets/design.xml/CouplingBetweenObjects" />
+    <rule ref="rulesets/design.xml/CouplingBetweenObjects" >
+        <properties>
+            <property name="minimum" value="16"/>
+        </properties>
+    </rule>
     <!--naming-->
     <rule ref="rulesets/naming.xml/ConstantNamingConventions" />
     <rule ref="rulesets/naming.xml/BooleanGetMethodName" />
