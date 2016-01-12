@@ -39,3 +39,4 @@ $time2 = microtime(true) - $start;
 $works = $billingService1 instanceof AnnotationRealBillingService &&  $billingService2 instanceof AnnotationRealBillingService;
 echo($works ? 'It works!' : 'It DOES NOT work!') . PHP_EOL;
 echo 'x' . round($time1 / $time2) . ' times faster.' . PHP_EOL;
+unlink($cache);

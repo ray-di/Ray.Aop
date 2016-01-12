@@ -30,6 +30,14 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
     }
 
+    public function tearDown()
+    {
+        parent::tearDown();
+        foreach (new \RecursiveDirectoryIterator($_ENV['TMP_DIR'], \FilesystemIterator::SKIP_DOTS) as $file) {
+            unlink($file);
+        }
+    }
+
     public function testBuildClass()
     {
         $class = $this->compiler->compile(FakeMock::class, $this->bind);
