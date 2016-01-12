@@ -1,7 +1,6 @@
 <?php
 
-use Ray\Aop\FakeMarker;
-use Ray\Aop\FakeMarker2;
+namespace Ray\Aop;
 
 /**
  * @Ray\Aop\FakeResource

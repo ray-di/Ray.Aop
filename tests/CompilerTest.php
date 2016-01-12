@@ -191,7 +191,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     public function testNoNamespace()
     {
-        $class = $this->compiler->compile(\FakeAnnotateClassNoName::class, $this->bind);
+        $class = $this->compiler->compile(FakeAnnotateClassNoName::class, $this->bind);
         $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
         $this->assertSame(3, count($annotations));
     }
