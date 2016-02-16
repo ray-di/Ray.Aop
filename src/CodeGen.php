@@ -6,6 +6,8 @@
  */
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\IndexedReader;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt;
@@ -37,6 +39,11 @@ final class CodeGen implements CodeGenInterface
     private $codeGenMethod;
 
     /**
+     * @var AnnotationReader
+     */
+    private $reader;
+
+    /**
      * @param \PHPParser\Parser                 $parser
      * @param \PHPParser\BuilderFactory         $factory
      * @param \PHPParser\PrettyPrinter\Standard $printer
@@ -50,6 +57,7 @@ final class CodeGen implements CodeGenInterface
         $this->factory = $factory;
         $this->printer = $printer;
         $this->codeGenMethod = new CodeGenMethod($parser, $factory, $printer);
+        $this->reader = new IndexedReader(new AnnotationReader);
     }
 
     /**
@@ -102,6 +110,7 @@ final class CodeGen implements CodeGenInterface
      */
     private function getClass($newClassName, \ReflectionClass $class)
     {
+
         $parentClass = $class->name;
         $builder = $this->factory
             ->class($newClassName)
@@ -112,9 +121,9 @@ final class CodeGen implements CodeGenInterface
             )->addStmt(
                 $this->factory->property('bind')->makePublic()
             )->addStmt(
-                $this->factory->property('methodAnnotations')->setDefault([])->makePrivate()
+                $this->factory->property('methodAnnotations')->setDefault($this->getMethodAnnotations($class))->makePublic()
             )->addStmt(
-                $this->factory->property('classAnnotations')->setDefault([])->makePrivate()
+                $this->factory->property('classAnnotations')->setDefault($this->getClassAnnotation($class))->makePrivate()
             );
 
         return $builder;
@@ -136,5 +145,29 @@ final class CodeGen implements CodeGenInterface
         }
 
         return $node;
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return array
+     */
+    private function getClassAnnotation(\ReflectionClass $class)
+    {
+        $classAnnotations = $this->reader->getClassAnnotations($class);
+
+        return serialize($classAnnotations);
+    }
+
+    public function getMethodAnnotations(\ReflectionClass $class)
+    {
+        $methodsAnnotation = [];
+        $methods = $class->getMethods();
+        foreach ($methods as $method) {
+            $annotations = $this->reader->getMethodAnnotations($method);
+            $methodsAnnotation[$method->getName()] = $annotations;
+        }
+
+        return serialize($methodsAnnotation);
     }
 }
