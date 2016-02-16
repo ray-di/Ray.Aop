@@ -4,7 +4,6 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Exception\NotWritableException;
-use TokenReflection\ReflectionClass;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {
@@ -222,5 +221,18 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->bind->bind(FakeMock::class, [$pointcut]);
         $class = $this->compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
+    }
+
+    public function testMethodAnnotationReader()
+    {
+        $bind = (new Bind)->bindInterceptors('getDouble', [new FakeMethodAnnotationReaderInterceptor]);
+        $compiler = new Compiler($_ENV['TMP_DIR']);
+        $mock = $compiler->newInstance(FakeAnnotateClass::class, [], $bind);
+        /* @var $mock FakeAnnotateClass */
+        list($methodAnnotations, $methodAnnotation) = $mock->getDouble(1);
+        $this->assertInstanceOf(FakeMarker::class, $methodAnnotation);
+        $this->assertCount(3, $methodAnnotations);
+        $annotation = array_shift($methodAnnotations);
+        $this->assertInstanceOf(FakeMarker3::class, $annotation);
     }
 }
