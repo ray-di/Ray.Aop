@@ -111,6 +111,10 @@ final class CodeGen implements CodeGenInterface
                 $this->factory->property('isIntercepting')->makePrivate()->setDefault(true)
             )->addStmt(
                 $this->factory->property('bind')->makePublic()
+            )->addStmt(
+                $this->factory->property('methodAnnotations')->setDefault([])->makePrivate()
+            )->addStmt(
+                $this->factory->property('classAnnotations')->setDefault([])->makePrivate()
             );
 
         return $builder;

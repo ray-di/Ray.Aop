@@ -202,7 +202,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $file = file((new \ReflectionClass($class))->getFileName());
         $expected = '    function returnSame(array $arrayParam, callable $callableParam)
 ';
-        $this->assertSame($expected, $file[5]);
+        $this->assertSame($expected, $file[7]);
     }
 
     public function testNotWritable()
