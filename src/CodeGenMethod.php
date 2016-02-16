@@ -6,12 +6,14 @@
  */
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use PHPParser\Builder\Method;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+use Ray\Aop\Annotation\AbstractAssisted;
 
 final class CodeGenMethod
 {
@@ -30,6 +32,13 @@ final class CodeGenMethod
      */
     private $printer;
 
+    private $reader;
+
+    /**
+     * @var AbstractAssisted
+     */
+    private $assisted = [];
+
     /**
      * @param \PHPParser\Parser                 $parser
      * @param \PHPParser\BuilderFactory         $factory
@@ -43,6 +52,7 @@ final class CodeGenMethod
         $this->parser = $parser;
         $this->factory = $factory;
         $this->printer = $printer;
+        $this->reader = new AnnotationReader;
     }
 
     /**
@@ -56,6 +66,7 @@ final class CodeGenMethod
         $stmts = [];
         $methods = $class->getMethods();
         foreach ($methods as $method) {
+            $this->assisted = $this->reader->getMethodAnnotation($method, AbstractAssisted::class);
             $isBindingMethod = in_array($method->getName(), $bindingMethods);
             /* @var $method \ReflectionMethod */
             if ($isBindingMethod && $method->isPublic()) {
@@ -164,6 +175,11 @@ final class CodeGenMethod
     {
         if ($param->isDefaultValueAvailable()) {
             $paramStmt->setDefault($param->getDefaultValue());
+
+            return;
+        }
+        if ($this->assisted && in_array($param->getName(), $this->assisted->values)) {
+            $paramStmt->setDefault(null);
         }
     }
 }
