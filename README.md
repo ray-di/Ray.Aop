@@ -209,6 +209,20 @@ With the `MethodInvocation` object, you can access the target method's invocatio
  * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) -  Get method reflection
  * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L48) - Get object
  * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) - Get parameters
+ 
+An extended `ClassRefletion` and `MethodReflection` holds methos to get annotation(s).
+
+```php
+/** @var $method \Ray\Aop\ReflectionMethod */
+$method = $invocation->getMethod();
+/** @var $class \Ray\Aop\ReflectionClass */
+$class = $invocation->getMethod()->getDeclaringClass();
+```
+ 
+ * [`$method->getAnnotations()`]()     - Get method annotations
+ * [`$method->getAnnotation($name)`]() - Get method annotation
+ * [`$class->->getAnnotations()`]()    - Get class annotations
+ * [`$class->->getAnnotation($name)`]()     - Get class annotation
   
 ## AOP Alliance
 

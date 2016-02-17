@@ -210,8 +210,22 @@ class MyInterceptor implements MethodInterceptor
  * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) -  メソッドリフレクションの取得
  * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L48) - オブジェクトの取得
  * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) - 引数の取得
+
+拡張されたリフレクションはアノテーション取得のメソッドを持ちます。
  
+```php
+/** @var $method \Ray\Aop\ReflectionMethod */
+$method = $invocation->getMethod();
+/** @var $class \Ray\Aop\ReflectionClass */
+$class = $invocation->getMethod()->getDeclaringClass();
+```
+
  
+ * [`$method->getAnnotations()`]() - メソッドアノテーションの取得
+ * [`$method->getAnnotation($name)`]() 
+ * [`$class->->getAnnotations()`]() - クラスアノテーションの取得
+ * [`$class->->getAnnotation($name)`]()
+
 ## AOPアライアンス
 
 このメソッドインターセプターのAPIは[AOPアライアンス](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html)の部分実装です。
