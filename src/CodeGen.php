@@ -116,7 +116,7 @@ final class CodeGen implements CodeGenInterface
             ->class($newClassName)
             ->extend($parentClass)
             ->implement('Ray\Aop\WeavedInterface');
-        $builder = $this->addInterceptorProp($builder, $class);
+        $builder = $this->addInterceptorProp($builder);
         $builder = $this->addSerialisedAnnotationProp($builder, $class);
 
         return $builder;
@@ -154,11 +154,10 @@ final class CodeGen implements CodeGenInterface
 
     /**
      * @param Builder          $builder
-     * @param \ReflectionClass $class
      *
      * @return Builder
      */
-    private function addInterceptorProp(Builder $builder, \ReflectionClass $class)
+    private function addInterceptorProp(Builder $builder)
     {
         $builder->addStmt(
             $this->factory
