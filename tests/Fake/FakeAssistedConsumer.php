@@ -2,8 +2,6 @@
 
 namespace Ray\Aop;
 
-use Ray\Aop\FakeAssisted;
-
 /**
  * @FakeResource
  * @FakeClassAnnotation
