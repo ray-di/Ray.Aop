@@ -32,9 +32,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         parent::tearDown();
-        foreach (new \RecursiveDirectoryIterator($_ENV['TMP_DIR'], \FilesystemIterator::SKIP_DOTS) as $file) {
-            unlink($file);
-        }
+        array_map('unlink', glob("{$_ENV['TMP_DIR']}/*.php"));
     }
 
     public function testBuildClass()
