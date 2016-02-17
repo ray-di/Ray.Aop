@@ -229,10 +229,10 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $compiler = new Compiler($_ENV['TMP_DIR']);
         $mock = $compiler->newInstance(FakeAnnotateClass::class, [], $bind);
         /* @var $mock FakeAnnotateClass */
-        list($methodAnnotations, $methodAnnotation) = $mock->getDouble(1);
-        $this->assertInstanceOf(FakeMarker::class, $methodAnnotation);
-        $this->assertCount(3, $methodAnnotations);
-        $annotation = array_shift($methodAnnotations);
+        $mock->getDouble(1);
+        $this->assertInstanceOf(FakeMarker::class, FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
+        $this->assertCount(3, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
+        $annotation = array_shift(FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
         $this->assertInstanceOf(FakeMarker3::class, $annotation);
     }
 }
