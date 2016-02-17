@@ -4,7 +4,6 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Ray\Aop\Exception\NotWritableException;
-use TokenReflection\ReflectionClass;
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,9 +32,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         parent::tearDown();
-        foreach (new \RecursiveDirectoryIterator($_ENV['TMP_DIR'], \FilesystemIterator::SKIP_DOTS) as $file) {
-            unlink($file);
-        }
+        array_map('unlink', glob("{$_ENV['TMP_DIR']}/*.php"));
     }
 
     public function testBuildClass()
@@ -202,7 +199,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $file = file((new \ReflectionClass($class))->getFileName());
         $expected = '    function returnSame(array $arrayParam, callable $callableParam)
 ';
-        $this->assertSame($expected, $file[5]);
+        $this->assertSame($expected, $file[7]);
     }
 
     public function testNotWritable()
@@ -222,5 +219,40 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->bind->bind(FakeMock::class, [$pointcut]);
         $class = $this->compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
+    }
+
+    public function testMethodAnnotationReader()
+    {
+        $bind = (new Bind)->bindInterceptors('getDouble', [new FakeMethodAnnotationReaderInterceptor]);
+        $compiler = new Compiler($_ENV['TMP_DIR']);
+        $mock = $compiler->newInstance(FakeAnnotateClass::class, [], $bind);
+        /* @var $mock FakeAnnotateClass */
+        $mock->getDouble(1);
+        $this->assertInstanceOf(FakeMarker::class, FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
+        $this->assertCount(3, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
+        $annotation = array_shift(FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
+        $this->assertInstanceOf(FakeMarker3::class, $annotation);
+    }
+
+    /**
+     * @depends testMethodAnnotationReader
+     */
+    public function testClassAnnotationReader()
+    {
+        $this->assertInstanceOf(FakeClassAnnotation::class, FakeMethodAnnotationReaderInterceptor::$classAnnotation);
+        $this->assertCount(2, FakeMethodAnnotationReaderInterceptor::$classAnnotations);
+        $annotation = array_shift(FakeMethodAnnotationReaderInterceptor::$classAnnotations);
+        $this->assertInstanceOf(FakeResource::class, $annotation);
+    }
+
+    public function testMethodAnnotationReaderReturnNull()
+    {
+        $bind = (new Bind)->bindInterceptors('returnSame', [new FakeMethodAnnotationReaderInterceptor]);
+        $compiler = new Compiler($_ENV['TMP_DIR']);
+        $mock = $compiler->newInstance(FakeMock::class, [], $bind);
+        /* @var $mock FakeMock */
+        $mock->returnSame(1);
+        $this->assertNull(FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
+        $this->assertCount(0, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
     }
 }

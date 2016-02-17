@@ -3,7 +3,6 @@
 namespace Ray\Aop\Matcher;
 
 use Ray\Aop\FakeAnnotateClass;
-use Ray\Aop\FakeClass;
 use Ray\Aop\FakeMatcher;
 
 class LogicalAndMatcherTest extends \PHPUnit_Framework_TestCase

@@ -11,7 +11,6 @@ use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard as StandardPrettyPrinter;
 use Ray\Aop\Exception\NotWritableException;
-use ReflectionClass;
 
 final class Compiler implements CompilerInterface
 {

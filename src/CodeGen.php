@@ -6,10 +6,13 @@
  */
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\IndexedReader;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Builder\Class_ as Builder;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -37,6 +40,11 @@ final class CodeGen implements CodeGenInterface
     private $codeGenMethod;
 
     /**
+     * @var IndexedReader
+     */
+    private $reader;
+
+    /**
      * @param \PHPParser\Parser                 $parser
      * @param \PHPParser\BuilderFactory         $factory
      * @param \PHPParser\PrettyPrinter\Standard $printer
@@ -50,6 +58,7 @@ final class CodeGen implements CodeGenInterface
         $this->factory = $factory;
         $this->printer = $printer;
         $this->codeGenMethod = new CodeGenMethod($parser, $factory, $printer);
+        $this->reader = new IndexedReader(new AnnotationReader);
     }
 
     /**
@@ -106,12 +115,9 @@ final class CodeGen implements CodeGenInterface
         $builder = $this->factory
             ->class($newClassName)
             ->extend($parentClass)
-            ->implement('Ray\Aop\WeavedInterface')
-            ->addStmt(
-                $this->factory->property('isIntercepting')->makePrivate()->setDefault(true)
-            )->addStmt(
-                $this->factory->property('bind')->makePublic()
-            );
+            ->implement('Ray\Aop\WeavedInterface');
+        $builder = $this->addInterceptorProp($builder);
+        $builder = $this->addSerialisedAnnotationProp($builder, $class);
 
         return $builder;
     }
@@ -132,5 +138,83 @@ final class CodeGen implements CodeGenInterface
         }
 
         return $node;
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return string
+     */
+    private function getClassAnnotation(\ReflectionClass $class)
+    {
+        $classAnnotations = $this->reader->getClassAnnotations($class);
+
+        return serialize($classAnnotations);
+    }
+
+    /**
+     * @param Builder $builder
+     *
+     * @return Builder
+     */
+    private function addInterceptorProp(Builder $builder)
+    {
+        $builder->addStmt(
+            $this->factory
+                ->property('isIntercepting')
+                ->makePrivate()
+                ->setDefault(true)
+        )->addStmt(
+            $this->factory->property('bind')
+            ->makePublic()
+        );
+
+        return $builder;
+    }
+
+
+    /**
+     * Add serialised
+     *
+     * @param Builder          $builder
+     * @param \ReflectionClass $class
+     *
+     * @return Builder
+     */
+    private function addSerialisedAnnotationProp(Builder $builder, \ReflectionClass $class)
+    {
+        $builder->addStmt(
+            $this->factory
+                ->property('methodAnnotations')
+                ->setDefault($this->getMethodAnnotations($class))
+                ->makePublic()
+        )->addStmt(
+            $this->factory
+                ->property('classAnnotations')
+                ->setDefault($this->getClassAnnotation($class))
+                ->makePublic()
+        );
+
+        return $builder;
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return string
+     */
+    private function getMethodAnnotations(\ReflectionClass $class)
+    {
+        $methodsAnnotation = [];
+        $methods = $class->getMethods();
+        foreach ($methods as $method) {
+            $annotations = $this->reader->getMethodAnnotations($method);
+            if ($annotations === []) {
+                continue;
+            }
+            $methodsAnnotation[$method->getName()] = $annotations;
+        }
+
+        return serialize($methodsAnnotation);
     }
 }

@@ -6,8 +6,6 @@
  */
 namespace Ray\Aop\Exception;
 
-use Ray\Di\Exception\ExceptionInterface;
-
-class NotWritableException extends \LogicException
+class NotWritableException extends \LogicException implements ExceptionInterface
 {
 }

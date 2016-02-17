@@ -17,7 +17,7 @@ final class AnyMatcher extends AbstractMatcher
 
     public function __construct()
     {
-        if (! self::$builtinMethods) {
+        if (self::$builtinMethods === []) {
             $this->setBuildInMethods();
         }
     }

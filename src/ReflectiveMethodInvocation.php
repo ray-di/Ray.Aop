@@ -52,7 +52,11 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     public function getMethod()
     {
         if ($this->object instanceof WeavedInterface) {
-            return (new \ReflectionObject($this->object))->getParentClass()->getMethod($this->method->getName());
+            $class = (new \ReflectionObject($this->object))->getParentClass();
+            $method = new ReflectionMethod($class->getName(), $this->method->getName());
+            $method->setObject($this->object, $this->method);
+
+            return $method;
         }
 
         return $this->method;

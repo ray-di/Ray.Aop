@@ -4,6 +4,7 @@ namespace Ray\Aop;
 
 /**
  * @Ray\Aop\FakeResource
+ * @FakeClassAnnotation("item")
  */
 class FakeAnnotateClass
 {

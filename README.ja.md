@@ -14,8 +14,7 @@
 
 [MethodInterceptors](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInterceptor.php) はマッチしたメソッドが呼ばれる度に実行されます。呼び出しやメソッド、それらの引き数、インスタンスを調べる事ができます。横断的なロジックと委譲されたメソッドが実行されます。最後に返り値を調べて返します。インターセプターは沢山のメソッドに適用され沢山のコールを受け取るので、実装は効果的で透過的なものになります。
 
-例：平日のメソッドコールを禁止する
---------------------------------
+## 例：平日のメソッドコールを禁止する
 
 メソッドインターセプターがRay.Aopでどのように機能するかを明らかにするために、週末にはピザの注文を禁止するようにしてみましょう。デリバリーは平日だけ受け付ける事にして、ピザの注文を週末には受け付けないようにします！この例はAOPで認証を使用するときにのパターンと構造的に似ています。
 
@@ -96,8 +95,7 @@ try {
 chargeOrder not allowed on weekends!
 ```
 
-メソッド名を指定したマッチ
----------------------------
+## メソッド名を指定したマッチ
 
 ```php
 <?php
@@ -112,8 +110,7 @@ chargeOrder not allowed on weekends!
     }
 ```
 
-独自のマッチャー
----------------
+## 独自のマッチャー
 
 独自のマッチャーを作成することもでます。
 `contains` マッチャーを作成するためには、２つのメソッドを持つクラスを提供する必要があります。
@@ -157,8 +154,7 @@ $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 ```
 
-優先順位
---------
+## 優先順位
 
 インターセプターの実行順は以下のルールで決定されます。
 
@@ -174,8 +170,7 @@ $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $
  */
 ```
 
-制限
-----
+## 制限
 
 この機能の背後ではメソッドのインターセプションを事前にコードを生成する事で可能にしています。Ray.Aopはダイナミックにサブクラスを生成してメソッドをオーバーライドするインターセプターを適用します。
 
@@ -183,21 +178,64 @@ $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $
 
  * クラスは *final* ではない
  * メソッドは *public*
- * メソッドは *final* ではない
 
-AOPアライアンス
---------------
+
+## インターセプター
+
+呼び出されたメソッドをそのまま実行するだけのインターセプターは以下のようになります。
+
+```php
+class MyInterceptor implements MethodInterceptor
+{
+    public function invoke(MethodInvocation $invocation)
+    {
+        // メソッド実行前
+        //
+        
+        // メソッド実行
+        $result = invocation->proceed();
+        
+        // メソッド実行後
+        //
+                
+        return $result;
+    }
+}
+```
+
+インターセプターに渡されるメソッド実行(`MethodInvocation`)オブジェクトは以下のメソッドを持ちます。
+
+
+ * [`$invocation->proceed()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L39) - メソッド実行
+ * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) -  メソッドリフレクションの取得
+ * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L48) - オブジェクトの取得
+ * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) - 引数の取得
+
+拡張されたリフレクションはアノテーション取得のメソッドを持ちます。
+ 
+```php
+/** @var $method \Ray\Aop\ReflectionMethod */
+$method = $invocation->getMethod();
+/** @var $class \Ray\Aop\ReflectionClass */
+$class = $invocation->getMethod()->getDeclaringClass();
+```
+
+ 
+ * [`$method->getAnnotations()`]() - メソッドアノテーションの取得
+ * [`$method->getAnnotation($name)`]() 
+ * [`$class->->getAnnotations()`]() - クラスアノテーションの取得
+ * [`$class->->getAnnotation($name)`]()
+
+## AOPアライアンス
 
 このメソッドインターセプターのAPIは[AOPアライアンス](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html)の部分実装です。
 
-要件
-----
+## 要件
 
 * PHP 5.4+
 * hhvm
 
-インストール
-------------
+## インストール
 
 Ray.Aopの推奨インストール方法は、[Composer](https://github.com/composer/composer)でのインストールです。
 
@@ -206,8 +244,7 @@ Ray.Aopの推奨インストール方法は、[Composer](https://github.com/comp
 $ composer require ray/aop ~2.0
 ```
 
-Ray.Aopのテスト
----------------
+## Ray.Aopのテスト
 
 Ray.Aopをソースからインストールし、ユニットテストとデモを実行するには次のようにします。
 

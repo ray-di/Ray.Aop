@@ -7,8 +7,6 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use ReflectionClass;
-use ReflectionMethod;
 
 final class Bind implements BindInterface
 {
@@ -43,7 +41,7 @@ final class Bind implements BindInterface
 
     /**
      * @param ReflectionClass $class
-     * @param array           $pointcuts
+     * @param Pointcut[]      $pointcuts
      */
     private function annotatedMethodsMatch(\ReflectionClass $class, array &$pointcuts)
     {
@@ -148,7 +146,7 @@ final class Bind implements BindInterface
     /**
      * @param ReflectionClass  $class
      * @param ReflectionMethod $method
-     * @param array            $pointcuts
+     * @param Pointcut[]       $pointcuts
      * @param array            $annotations
      *
      * @return array
