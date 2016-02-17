@@ -6,7 +6,7 @@
  */
 namespace Ray\Aop;
 
-final class ReflectionMethod extends \ReflectionMethod
+final class ReflectionMethod extends \ReflectionMethod implements Reader
 {
     /**
      * @var WeavedInterface
@@ -19,7 +19,7 @@ final class ReflectionMethod extends \ReflectionMethod
     private $method;
 
     /**
-     * Dependencies
+     * Set dependencies
      *
      * @param WeavedInterface   $object
      * @param \ReflectionMethod $method
@@ -43,9 +43,7 @@ final class ReflectionMethod extends \ReflectionMethod
     }
 
     /**
-     * Gets the annotations applied to a method.
-     *
-     * @return array An array of Annotations.
+     * {@inheritdoc}
      */
     public function getAnnotations()
     {
@@ -58,11 +56,7 @@ final class ReflectionMethod extends \ReflectionMethod
     }
 
     /**
-     * Gets a method annotation.
-     *
-     * @param string $annotationName The name of the annotation.
-     *
-     * @return object|null The Annotation or NULL, if the requested annotation does not exist.
+     * {@inheritdoc}
      */
     public function getAnnotation($annotationName)
     {
