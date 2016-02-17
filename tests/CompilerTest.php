@@ -235,4 +235,26 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $annotation = array_shift(FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
         $this->assertInstanceOf(FakeMarker3::class, $annotation);
     }
+
+    /**
+     * @depends testMethodAnnotationReader
+     */
+    public function testClassAnnotationReader()
+    {
+        $this->assertInstanceOf(FakeClassAnnotation::class, FakeMethodAnnotationReaderInterceptor::$classAnnotation);
+        $this->assertCount(2, FakeMethodAnnotationReaderInterceptor::$classAnnotations);
+        $annotation = array_shift(FakeMethodAnnotationReaderInterceptor::$classAnnotations);
+        $this->assertInstanceOf(FakeResource::class, $annotation);
+    }
+
+    public function testMethodAnnotationReaderReturnNull()
+    {
+        $bind = (new Bind)->bindInterceptors('returnSame', [new FakeMethodAnnotationReaderInterceptor]);
+        $compiler = new Compiler($_ENV['TMP_DIR']);
+        $mock = $compiler->newInstance(FakeMock::class, [], $bind);
+        /* @var $mock FakeMock */
+        $mock->returnSame(1);
+        $this->assertNull(FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
+        $this->assertCount(0, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
+    }
 }

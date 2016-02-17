@@ -117,13 +117,22 @@ final class CodeGen implements CodeGenInterface
             ->extend($parentClass)
             ->implement('Ray\Aop\WeavedInterface')
             ->addStmt(
-                $this->factory->property('isIntercepting')->makePrivate()->setDefault(true)
+                $this->factory->property('isIntercepting')
+                    ->makePrivate()
+                    ->setDefault(true)
             )->addStmt(
-                $this->factory->property('bind')->makePublic()
+                $this->factory->property('bind')
+                    ->makePublic()
             )->addStmt(
-                $this->factory->property('methodAnnotations')->setDefault($this->getMethodAnnotations($class))->makePublic()
+                $this->factory
+                    ->property('methodAnnotations')
+                    ->setDefault($this->getMethodAnnotations($class))
+                    ->makePublic()
             )->addStmt(
-                $this->factory->property('classAnnotations')->setDefault($this->getClassAnnotation($class))->makePrivate()
+                $this->factory
+                    ->property('classAnnotations')
+                    ->setDefault($this->getClassAnnotation($class))
+                    ->makePublic()
             );
 
         return $builder;
@@ -165,6 +174,9 @@ final class CodeGen implements CodeGenInterface
         $methods = $class->getMethods();
         foreach ($methods as $method) {
             $annotations = $this->reader->getMethodAnnotations($method);
+            if (! $annotations) {
+                continue;
+            }
             $methodsAnnotation[$method->getName()] = $annotations;
         }
 

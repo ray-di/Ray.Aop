@@ -31,6 +31,18 @@ final class ReflectionMethod extends \ReflectionMethod
     }
 
     /**
+     * @return ReflectionClass
+     */
+    public function getDeclaringClass()
+    {
+        $originalClass = (new \ReflectionClass($this->object))->getParentClass()->getName();
+        $class =  new ReflectionClass($originalClass);
+        $class->setObject($this->object);
+
+        return $class;
+    }
+
+    /**
      * Gets the annotations applied to a method.
      *
      * @return array An array of Annotations.
