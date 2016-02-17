@@ -110,7 +110,6 @@ final class CodeGen implements CodeGenInterface
      */
     private function getClass($newClassName, \ReflectionClass $class)
     {
-
         $parentClass = $class->name;
         $builder = $this->factory
             ->class($newClassName)
