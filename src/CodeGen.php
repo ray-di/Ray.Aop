@@ -143,7 +143,7 @@ final class CodeGen implements CodeGenInterface
     /**
      * @param \ReflectionClass $class
      *
-     * @return array
+     * @return string
      */
     private function getClassAnnotation(\ReflectionClass $class)
     {
