@@ -12,6 +12,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Builder\Class_ as Builder;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -114,25 +115,9 @@ final class CodeGen implements CodeGenInterface
         $builder = $this->factory
             ->class($newClassName)
             ->extend($parentClass)
-            ->implement('Ray\Aop\WeavedInterface')
-            ->addStmt(
-                $this->factory->property('isIntercepting')
-                    ->makePrivate()
-                    ->setDefault(true)
-            )->addStmt(
-                $this->factory->property('bind')
-                    ->makePublic()
-            )->addStmt(
-                $this->factory
-                    ->property('methodAnnotations')
-                    ->setDefault($this->getMethodAnnotations($class))
-                    ->makePublic()
-            )->addStmt(
-                $this->factory
-                    ->property('classAnnotations')
-                    ->setDefault($this->getClassAnnotation($class))
-                    ->makePublic()
-            );
+            ->implement('Ray\Aop\WeavedInterface');
+        $builder = $this->addInterceptorProp($builder, $class);
+        $builder = $this->addSerialisedAnnotationProp($builder, $class);
 
         return $builder;
     }
@@ -167,7 +152,59 @@ final class CodeGen implements CodeGenInterface
         return serialize($classAnnotations);
     }
 
-    public function getMethodAnnotations(\ReflectionClass $class)
+    /**
+     * @param Builder          $builder
+     * @param \ReflectionClass $class
+     *
+     * @return Builder
+     */
+    private function addInterceptorProp(Builder $builder, \ReflectionClass $class)
+    {
+        $builder->addStmt(
+            $this->factory
+                ->property('isIntercepting')
+                ->makePrivate()
+                ->setDefault(true)
+        )->addStmt(
+            $this->factory->property('bind')
+            ->makePublic()
+        );
+
+        return $builder;
+    }
+
+
+    /**
+     * Add serialised
+     *
+     * @param Builder          $builder
+     * @param \ReflectionClass $class
+     *
+     * @return Builder
+     */
+    private function addSerialisedAnnotationProp(Builder $builder, \ReflectionClass $class)
+    {
+        $builder->addStmt(
+            $this->factory
+                ->property('methodAnnotations')
+                ->setDefault($this->getMethodAnnotations($class))
+                ->makePublic()
+        )->addStmt(
+            $this->factory
+                ->property('classAnnotations')
+                ->setDefault($this->getClassAnnotation($class))
+                ->makePublic()
+        );
+
+        return $builder;
+    }
+
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return string
+     */
+    private function getMethodAnnotations(\ReflectionClass $class)
     {
         $methodsAnnotation = [];
         $methods = $class->getMethods();
