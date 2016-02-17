@@ -14,7 +14,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     private $object;
 
     /**
-     * Dependencies
+     * Set dependencies
      *
      * @param WeavedInterface $object
      */
