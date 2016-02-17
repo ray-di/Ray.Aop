@@ -14,8 +14,7 @@ A [Matcher](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php)
 
 [MethodInterceptors](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInterceptor.php) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
 
-Example: Forbidding method calls on weekends
---------------------------------------------
+## Example: Forbidding method calls on weekends
 
 To illustrate how method interceptors work with Ray.Aop, we'll forbid calls to our pizza billing system on weekends. The delivery guys only work Monday thru Friday so we'll prevent pizza from being ordered when it can't be delivered! This example is structurally similar to use of AOP for authorization.
 
@@ -96,8 +95,7 @@ Putting it all together, (and waiting until Saturday), we see the method is inte
 chargeOrder not allowed on weekends!
 ```
 
-Explicit method name match
----------------------------
+## Explicit method name match
 
 ```php
 <?php
@@ -157,8 +155,7 @@ $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
 ```
 
-Priority
---------
+## Priority
 
 The order of interceptor invocation are determined by following rules.
 
@@ -174,8 +171,7 @@ The order of interceptor invocation are determined by following rules.
  */
 ```
 
-Limitations
------------
+## Limitations
 
 Behind the scenes, method interception is implemented by generating code at runtime. Ray.Aop dynamically creates a subclass that applies interceptors by overriding methods.
 
@@ -183,21 +179,47 @@ This approach imposes limits on what classes and methods can be intercepted:
 
  * Classes must be *non-final*
  * Methods must be *public*
- * Methods must be *non-final*
 
-AOP Alliance
-------------
+# Interceptor
+
+In an interceptor a `MethodInvocation` object gets passed to the `invoke` method. We can the decorate the targetted instances so that you run computations before or after any methods on the target are invoked.
+
+```php
+class MyInterceptor implements MethodInterceptor
+{
+    public function invoke(MethodInvocation $invocation)
+    {
+        // Before invocation
+        // ...
+        
+        // Method invocation
+        $result = invocation->proceed();
+        
+        // メソッド実行後
+        // ...
+                
+        return $result;
+    }
+}
+```
+
+With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
+
+ * [`$invocation->proceed()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L39) - Invoke method
+ * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) -  Get method reflection
+ * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L48) - Get object
+ * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) - Get parameters
+  
+## AOP Alliance
 
 The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html).
 
-Requirements
-------------
+## Requirements
 
 * PHP 5.4+
 * hhvm
 
-Installation
-------------
+## Installation
 
 The recommended way to install Ray.Aop is through [Composer](https://github.com/composer/composer).
 
@@ -206,8 +228,7 @@ The recommended way to install Ray.Aop is through [Composer](https://github.com/
 $ composer require ray/aop ~2.0
 ```
 
-Testing Ray.Aop
----------------
+## Testing Ray.Aop
 
 Here's how to install Ray.Aop from source and run the unit tests and demos.
 
