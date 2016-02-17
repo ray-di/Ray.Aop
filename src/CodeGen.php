@@ -40,7 +40,7 @@ final class CodeGen implements CodeGenInterface
     private $codeGenMethod;
 
     /**
-     * @var Reader
+     * @var IndexedReader
      */
     private $reader;
 
