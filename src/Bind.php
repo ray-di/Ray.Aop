@@ -7,8 +7,6 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use ReflectionClass;
-use ReflectionMethod;
 
 final class Bind implements BindInterface
 {

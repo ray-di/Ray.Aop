@@ -40,7 +40,7 @@ final class CodeGen implements CodeGenInterface
     private $codeGenMethod;
 
     /**
-     * @var AnnotationReader
+     * @var Reader
      */
     private $reader;
 
@@ -209,7 +209,7 @@ final class CodeGen implements CodeGenInterface
         $methods = $class->getMethods();
         foreach ($methods as $method) {
             $annotations = $this->reader->getMethodAnnotations($method);
-            if (! $annotations) {
+            if ($annotations === []) {
                 continue;
             }
             $methodsAnnotation[$method->getName()] = $annotations;
