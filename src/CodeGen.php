@@ -153,7 +153,7 @@ final class CodeGen implements CodeGenInterface
     }
 
     /**
-     * @param Builder          $builder
+     * @param Builder $builder
      *
      * @return Builder
      */
