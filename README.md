@@ -219,10 +219,10 @@ $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 ```
  
- * [`$method->getAnnotations()`]()     - Get method annotations
- * [`$method->getAnnotation($name)`]() - Get method annotation
- * [`$class->->getAnnotations()`]()    - Get class annotations
- * [`$class->->getAnnotation($name)`]()     - Get class annotation
+ * `$method->getAnnotations()`     - Get method annotations
+ * `$method->getAnnotation($name)` - Get method annotation
+ * `$class->->getAnnotations()`    - Get class annotations
+ * `$class->->getAnnotation($name)`     - Get class annotation
   
 ## AOP Alliance
 
