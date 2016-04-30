@@ -7,8 +7,6 @@
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Lexer;
-use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard as StandardPrettyPrinter;
 use Ray\Aop\Exception\NotWritableException;
 
@@ -35,7 +33,7 @@ final class Compiler implements CompilerInterface
         }
         $this->classDir = $classDir;
         $this->codeGen = $codeGen ?: new CodeGen(
-            new Parser(new Lexer()),
+            ParserFactory::create(),
             new BuilderFactory(),
             new StandardPrettyPrinter()
         );

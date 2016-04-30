@@ -5,15 +5,13 @@ namespace Ray\Aop;
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Lexer;
-use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 
 class CodeGenTest extends \PHPUnit_Framework_TestCase
 {
     public function testAddNullDefaultWithAssisted()
     {
-        $codeGen = new CodeGen(new Parser(new Lexer), new BuilderFactory, new Standard);
+        $codeGen = new CodeGen(ParserFactory::create(), new BuilderFactory, new Standard);
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
         $code = $codeGen->generate('a', new \ReflectionClass(FakeAssistedConsumer::class), $bind);
