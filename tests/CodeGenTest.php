@@ -11,7 +11,7 @@ class CodeGenTest extends \PHPUnit_Framework_TestCase
 {
     public function testAddNullDefaultWithAssisted()
     {
-        $codeGen = new CodeGen(ParserFactory::create(), new BuilderFactory, new Standard);
+        $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
         $code = $codeGen->generate('a', new \ReflectionClass(FakeAssistedConsumer::class), $bind);

@@ -33,7 +33,7 @@ final class Compiler implements CompilerInterface
         }
         $this->classDir = $classDir;
         $this->codeGen = $codeGen ?: new CodeGen(
-            ParserFactory::create(),
+            (new ParserFactory)->newInstance(),
             new BuilderFactory(),
             new StandardPrettyPrinter()
         );

@@ -12,7 +12,7 @@ use PhpParser\ParserFactory as PHPParserFactory;
 
 class ParserFactory
 {
-    public static function create()
+    public function newInstance()
     {
         if (class_exists('PhpParser\ParserFactory')) {
             return (new PHPParserFactory)->create(PHPParserFactory::PREFER_PHP7);

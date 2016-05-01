@@ -6,6 +6,6 @@ class ParserFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreate()
     {
-        $this->assertInstanceOf('PhpParser\Parser', ParserFactory::create());
+        $this->assertInstanceOf('PhpParser\Parser', (new ParserFactory)->newInstance());
     }
 }
