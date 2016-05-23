@@ -29,7 +29,7 @@ class CodeGenTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterfa
      */
     public function returnSame($a)
     {
-        if (isset($this->bindings[__FUNCTION__]) === false){
+        if (isset($this->bindings[__FUNCTION__]) === false) {
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
