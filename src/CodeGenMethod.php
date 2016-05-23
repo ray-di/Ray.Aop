@@ -203,7 +203,7 @@ final class CodeGenMethod
         }
         $type = $param->getType();
         if ($type) {
-            $paramStmt->setTypeHint((string)$type);
+            $paramStmt->setTypeHint((string) $type);
         }
     }
 }
