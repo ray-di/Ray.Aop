@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
+use PhpParser\Builder\Method;
 
 class CodeGenTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,7 +29,11 @@ class CodeGenTest extends \PHPUnit_Framework_TestCase
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
         $code = $codeGen->generate('a', new \ReflectionClass(FakePhp7Class::class), $bind);
-        $expected = 'function run(string $a, int $b, float $c, bool $d) : array';
+        if (method_exists(Method::class, 'setReturnType')) {
+            $expected = 'function run(string $a, int $b, float $c, bool $d) : array';
+        } else {
+            $expected = 'function run(string $a, int $b, float $c, bool $d)';
+        }
         $this->assertContains($expected, $code);
     }
 }

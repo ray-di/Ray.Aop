@@ -117,7 +117,7 @@ final class CodeGenMethod
         $this->setDefault($param, $paramStmt);
         if ($isOverPhp7) {
             $returnType = $param->getDeclaringFunction()->getReturnType();
-            if ($returnType) {
+            if ($returnType && method_exists($methodStmt, 'setReturnType')) {
                 $methodStmt->setReturnType((string) $returnType);
             }
         }
