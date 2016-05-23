@@ -116,10 +116,7 @@ final class CodeGenMethod
         $this->setParameterType($param, $paramStmt, $isOverPhp7, $typeHint);
         $this->setDefault($param, $paramStmt);
         if ($isOverPhp7) {
-            $returnType = $param->getDeclaringFunction()->getReturnType();
-            if ($returnType && method_exists($methodStmt, 'setReturnType')) {
-                $methodStmt->setReturnType((string) $returnType);
-            }
+            $this->setReturnType($param, $methodStmt, $isOverPhp7);
         }
         $methodStmt->addParam($paramStmt);
 
@@ -160,6 +157,8 @@ final class CodeGenMethod
      * @param \ReflectionParameter $param
      * @param Param                $paramStmt
      * @param \ReflectionClass     $typeHint
+     *
+     * @codeCoverageIgnore
      */
     private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null)
     {
@@ -199,13 +198,25 @@ final class CodeGenMethod
     private function setParameterType(\ReflectionParameter $param, Param $paramStmt, $isOverPhp7, \ReflectionClass $typeHint = null)
     {
         if (! $isOverPhp7) {
-            $this->setTypeHint($param, $paramStmt, $typeHint);
+            $this->setTypeHint($param, $paramStmt, $typeHint); // @codeCoverageIgnore
 
-            return;
+            return; // @codeCoverageIgnore
         }
         $type = $param->getType();
         if ($type) {
             $paramStmt->setTypeHint((string) $type);
+        }
+    }
+
+    /**
+     * @param \ReflectionParameter $param
+     * @param Method $methodStmt
+     */
+    private function setReturnType(\ReflectionParameter $param, Method $methodStmt)
+    {
+        $returnType = $param->getDeclaringFunction()->getReturnType();
+        if ($returnType && method_exists($methodStmt, 'setReturnType')) {
+            $methodStmt->setReturnType((string)$returnType); // @codeCoverageIgnore
         }
     }
 }

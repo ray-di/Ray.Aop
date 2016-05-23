@@ -18,6 +18,6 @@ class ParserFactory
             return (new PHPParserFactory)->create(PHPParserFactory::PREFER_PHP7);
         }
 
-        return new Parser(new Lexer());
+        return new Parser(new Lexer());  // @codeCoverageIgnore
     }
 }

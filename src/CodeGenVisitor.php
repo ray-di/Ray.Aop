@@ -20,7 +20,7 @@ class CodeGenVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof Use_) {
-            $this->use[] = $node;
+            $this->use[] = $node; // @codeCoverageIgnore
         }
     }
 
