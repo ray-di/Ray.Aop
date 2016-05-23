@@ -21,6 +21,9 @@ class CodeGenTest extends \PHPUnit_Framework_TestCase
 
     public function testTypeDeclarations()
     {
+        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+            return;
+        }
         $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
