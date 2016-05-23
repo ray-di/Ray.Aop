@@ -25,7 +25,7 @@ class CodeGenTest extends \PHPUnit_Framework_TestCase
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
         $code = $codeGen->generate('a', new \ReflectionClass(FakePhp7Class::class), $bind);
-        $expected = 'function run(string $a, int $b, float $c, bool $d): array';
+        $expected = 'function run(string $a, int $b, float $c, bool $d) : array';
         $this->assertContains($expected, $code);
     }
 }
