@@ -18,4 +18,14 @@ class CodeGenTest extends \PHPUnit_Framework_TestCase
         $expected = 'function run($a, $b = null, $c = null)';
         $this->assertContains($expected, $code);
     }
+
+    public function testTypeDeclarations()
+    {
+        $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
+        $bind = new Bind;
+        $bind->bindInterceptors('run', []);
+        $code = $codeGen->generate('a', new \ReflectionClass(FakePhp7Class::class), $bind);
+        $expected = 'function run(string $a, int $b, float $c, bool $d): array';
+        $this->assertContains($expected, $code);
+    }
 }
