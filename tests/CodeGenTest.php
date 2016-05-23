@@ -2,8 +2,6 @@
 
 namespace Ray\Aop;
 
-namespace Ray\Aop;
-
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PhpParser\Builder\Method;
