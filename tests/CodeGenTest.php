@@ -34,4 +34,21 @@ class CodeGenTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertContains($expected, $code);
     }
+
+    public function testReturnType()
+    {
+        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+            return;
+        }
+        $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
+        $bind = new Bind;
+        $bind->bindInterceptors('returnTypeArray', []);
+        $code = $codeGen->generate('a', new \ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
+        if (method_exists(Method::class, 'setReturnType')) {
+            $expected = 'function returnTypeArray() : array';
+        } else {
+            $expected = 'function returnTypeArray()';
+        }
+        $this->assertContains($expected, $code);
+    }
 }
