@@ -11,6 +11,7 @@ class FakeMatcher extends AbstractMatcher
 
     public function matchesClass(\ReflectionClass $class, array $arguments)
     {
+        unset($class);
         if (isset($arguments[1])) {
             return $arguments[0] && $arguments[1];
         }
@@ -20,6 +21,7 @@ class FakeMatcher extends AbstractMatcher
 
     public function matchesMethod(\ReflectionMethod $method, array $arguments)
     {
+        unset($method);
         if (isset($arguments[1])) {
             return $arguments[0] && $arguments[1];
         }
