@@ -93,8 +93,8 @@ final class CodeGenMethod
         foreach ($params as $param) {
             $methodStmt = $this->getMethodStatement($param, $methodStmt, $isOverPhp7);
         }
-        $returnType = (string) $method->getReturnType();
         if ($isOverPhp7) {
+            $returnType = (string) $method->getReturnType();
             $this->setReturnType($returnType, $methodStmt);
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
