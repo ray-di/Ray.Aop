@@ -64,6 +64,7 @@ final class CodeGen implements CodeGenInterface
     /**
      * @param string           $class
      * @param \ReflectionClass $sourceClass
+     * @param BindInterface    $bind
      *
      * @return string
      */

@@ -40,8 +40,8 @@ final class Bind implements BindInterface
     }
 
     /**
-     * @param ReflectionClass $class
-     * @param Pointcut[]      $pointcuts
+     * @param \ReflectionClass $class
+     * @param array            $pointcuts
      */
     private function annotatedMethodsMatch(\ReflectionClass $class, array &$pointcuts)
     {
@@ -52,9 +52,9 @@ final class Bind implements BindInterface
     }
 
     /**
-     * @param ReflectionClass  $class
-     * @param ReflectionMethod $method
-     * @param Pointcut[]       $pointcuts
+     * @param \ReflectionClass  $class
+     * @param \ReflectionMethod $method
+     * @param Pointcut[]        $pointcuts
      */
     private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts)
     {
@@ -75,9 +75,9 @@ final class Bind implements BindInterface
     }
 
     /**
-     * @param ReflectionClass  $class
-     * @param ReflectionMethod $method
-     * @param PointCut         $pointCut
+     * @param \ReflectionClass  $class
+     * @param \ReflectionMethod $method
+     * @param PointCut          $pointCut
      */
     private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, PointCut $pointCut)
     {
@@ -144,10 +144,10 @@ final class Bind implements BindInterface
     }
 
     /**
-     * @param ReflectionClass  $class
-     * @param ReflectionMethod $method
-     * @param Pointcut[]       $pointcuts
-     * @param array            $annotations
+     * @param \ReflectionClass  $class
+     * @param \ReflectionMethod $method
+     * @param Pointcut[]        $pointcuts
+     * @param array             $annotations
      *
      * @return array
      */

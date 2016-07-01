@@ -57,6 +57,7 @@ final class CodeGenMethod
 
     /**
      * @param \ReflectionClass $class
+     * @param BindInterface    $bind
      *
      * @return array
      */

@@ -122,9 +122,9 @@ final class Compiler implements CompilerInterface
     }
 
     /**
-     * @param string          $newClass
-     * @param ReflectionClass $sourceClass
-     * @param string          $file
+     * @param string           $newClass
+     * @param \ReflectionClass $sourceClass
+     * @param string           $file
      */
     private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, $file, BindInterface $bind)
     {
