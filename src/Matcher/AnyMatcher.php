@@ -55,7 +55,7 @@ final class AnyMatcher extends AbstractMatcher
      */
     private function isMagicMethod($name)
     {
-        return substr($name, 0, 2) === '__';
+        return strpos($name, '__') === 0;
     }
 
     /**
