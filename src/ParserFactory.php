@@ -8,14 +8,14 @@ namespace Ray\Aop;
 
 use PhpParser\Lexer;
 use PhpParser\Parser;
-use PhpParser\ParserFactory as PHPParserFactory;
+use PhpParser\ParserFactory as PhpParserFactory;
 
 class ParserFactory
 {
     public function newInstance()
     {
         if (class_exists('PhpParser\ParserFactory')) {
-            return (new PHPParserFactory)->create(PHPParserFactory::PREFER_PHP7);
+            return (new PhpParserFactory)->create(PhpParserFactory::PREFER_PHP7);
         }
 
         return new Parser(new Lexer());  // @codeCoverageIgnore
