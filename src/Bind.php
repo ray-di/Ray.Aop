@@ -77,9 +77,9 @@ final class Bind implements BindInterface
     /**
      * @param \ReflectionClass  $class
      * @param \ReflectionMethod $method
-     * @param PointCut          $pointCut
+     * @param Pointcut          $pointut
      */
-    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, PointCut $pointCut)
+    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut)
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
         if (! $isMethodMatch) {
