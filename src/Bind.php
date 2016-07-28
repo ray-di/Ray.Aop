@@ -77,7 +77,7 @@ final class Bind implements BindInterface
     /**
      * @param \ReflectionClass  $class
      * @param \ReflectionMethod $method
-     * @param Pointcut          $pointut
+     * @param Pointcut          $pointCut
      */
     private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut)
     {
