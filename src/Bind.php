@@ -97,7 +97,7 @@ final class Bind implements BindInterface
      */
     public function bindInterceptors($method, array $interceptors)
     {
-        $this->bindings[$method] = !isset($this->bindings[$method]) ? $interceptors : array_merge(
+        $this->bindings[$method] = ! array_key_exists($method, $this->bindings) ? $interceptors : array_merge(
             $this->bindings[$method],
             $interceptors
         );
@@ -160,7 +160,7 @@ final class Bind implements BindInterface
         // method bind in annotation order
         foreach ($annotations as $annotation) {
             $annotationIndex = get_class($annotation);
-            if (isset($pointcuts[$annotationIndex])) {
+            if (array_key_exists($annotationIndex, $pointcuts)) {
                 $this->annotatedMethodMatchBind($class, $method, $pointcuts[$annotationIndex]);
                 unset($pointcuts[$annotationIndex]);
             }

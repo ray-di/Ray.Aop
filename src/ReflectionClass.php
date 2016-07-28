@@ -37,7 +37,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     public function getAnnotation($annotationName)
     {
         $annotations = $this->getAnnotations();
-        if (isset($annotations[$annotationName])) {
+        if (array_key_exists($annotationName, $annotations)) {
             return $annotations[$annotationName];
         }
 
