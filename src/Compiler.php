@@ -66,6 +66,7 @@ final class Compiler implements CompilerInterface
         $file = "{$this->classDir}/{$newClass}.php";
         if (file_exists($file)) {
             /** @noinspection UntrustedInclusionInspection */
+            /** @noinspection PhpIncludeInspection */
             include $file;
 
             return $newClass;
