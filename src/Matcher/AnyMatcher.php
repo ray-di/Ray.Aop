@@ -65,7 +65,7 @@ final class AnyMatcher extends AbstractMatcher
      */
     private function isBuiltinMethod($name)
     {
-        $isBuiltin = in_array($name, self::$builtinMethods);
+        $isBuiltin = in_array($name, self::$builtinMethods, true);
 
         return $isBuiltin;
     }
