@@ -65,7 +65,7 @@ final class Compiler implements CompilerInterface
         }
         $file = "{$this->classDir}/{$newClass}.php";
         if (file_exists($file)) {
-            /** @noinspection PhpIncludeInspection */
+            /** @noinspection UntrustedInclusionInspection */
             include $file;
 
             return $newClass;
@@ -125,6 +125,7 @@ final class Compiler implements CompilerInterface
      * @param string           $newClass
      * @param \ReflectionClass $sourceClass
      * @param string           $file
+     * @param BindInterface    $bind
      */
     private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, $file, BindInterface $bind)
     {
