@@ -24,6 +24,7 @@ class BuiltinMatcher extends AbstractMatcher
      */
     public function __construct($matcherName, array $arguments)
     {
+        parent::__construct();
         $this->matcherName = $matcherName;
         $this->arguments = $arguments;
         $matcher = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';

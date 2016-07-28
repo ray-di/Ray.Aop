@@ -18,6 +18,7 @@ class AnnotatedWithMatcher extends AbstractMatcher
 
     public function __construct()
     {
+        parent::__construct();
         $this->reader = new AnnotationReader();
     }
 
