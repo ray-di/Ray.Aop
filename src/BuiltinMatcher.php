@@ -9,11 +9,6 @@ namespace Ray\Aop;
 class BuiltinMatcher extends AbstractMatcher
 {
     /**
-     * @var array
-     */
-    protected $arguments;
-
-    /**
      * @var string
      */
     private $matcherName;
