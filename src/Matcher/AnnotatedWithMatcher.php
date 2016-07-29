@@ -2,7 +2,7 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT MIT
  */
 namespace Ray\Aop\Matcher;
 
@@ -18,6 +18,7 @@ class AnnotatedWithMatcher extends AbstractMatcher
 
     public function __construct()
     {
+        parent::__construct();
         $this->reader = new AnnotationReader();
     }
 

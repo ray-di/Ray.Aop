@@ -2,7 +2,7 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT MIT
  */
 namespace Ray\Aop;
 
@@ -37,7 +37,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     public function getAnnotation($annotationName)
     {
         $annotations = $this->getAnnotations();
-        if (isset($annotations[$annotationName])) {
+        if (array_key_exists($annotationName, $annotations)) {
             return $annotations[$annotationName];
         }
 

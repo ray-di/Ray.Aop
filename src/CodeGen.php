@@ -2,7 +2,7 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT MIT
  */
 namespace Ray\Aop;
 
@@ -11,7 +11,6 @@ use Doctrine\Common\Annotations\IndexedReader;
 use PhpParser\Builder\Class_ as Builder;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
@@ -20,17 +19,17 @@ use PhpParser\PrettyPrinter\Standard;
 final class CodeGen implements CodeGenInterface
 {
     /**
-     * @var \PHPParser\Parser
+     * @var \PhpParser\Parser
      */
     private $parser;
 
     /**
-     * @var \PHPParser\BuilderFactory
+     * @var \PhpParser\BuilderFactory
      */
     private $factory;
 
     /**
-     * @var \PHPParser\PrettyPrinter\Standard
+     * @var \PhpParser\PrettyPrinter\Standard
      */
     private $printer;
 
@@ -45,9 +44,9 @@ final class CodeGen implements CodeGenInterface
     private $reader;
 
     /**
-     * @param \PHPParser\Parser                 $parser
-     * @param \PHPParser\BuilderFactory         $factory
-     * @param \PHPParser\PrettyPrinter\Standard $printer
+     * @param \PhpParser\Parser                 $parser
+     * @param \PhpParser\BuilderFactory         $factory
+     * @param \PhpParser\PrettyPrinter\Standard $printer
      */
     public function __construct(
         Parser $parser,
@@ -129,7 +128,7 @@ final class CodeGen implements CodeGenInterface
      * @param Class_           $node
      * @param \ReflectionClass $class
      *
-     * @return \PHPParser\Node\Stmt\Class_
+     * @return \PhpParser\Node\Stmt\Class_
      */
     private function addClassDocComment(Class_ $node, \ReflectionClass $class)
     {

@@ -2,7 +2,7 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT MIT
  */
 namespace Ray\Aop;
 
@@ -65,6 +65,7 @@ final class Compiler implements CompilerInterface
         }
         $file = "{$this->classDir}/{$newClass}.php";
         if (file_exists($file)) {
+            /** @noinspection UntrustedInclusionInspection */
             /** @noinspection PhpIncludeInspection */
             include $file;
 
@@ -97,7 +98,7 @@ final class Compiler implements CompilerInterface
     private function getNewClassName($class, BindInterface $bind)
     {
         $fileTime = filemtime((new \ReflectionClass($class))->getFileName());
-        $newClass = sprintf("%s_%s", str_replace('\\', '_', $class), $bind->toString($fileTime));
+        $newClass = sprintf('%s_%s', str_replace('\\', '_', $class), $bind->toString($fileTime));
 
         return $newClass;
     }
@@ -125,6 +126,7 @@ final class Compiler implements CompilerInterface
      * @param string           $newClass
      * @param \ReflectionClass $sourceClass
      * @param string           $file
+     * @param BindInterface    $bind
      */
     private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, $file, BindInterface $bind)
     {

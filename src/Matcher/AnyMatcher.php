@@ -2,7 +2,7 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT MIT
  */
 namespace Ray\Aop\Matcher;
 
@@ -17,6 +17,7 @@ final class AnyMatcher extends AbstractMatcher
 
     public function __construct()
     {
+        parent::__construct();
         if (self::$builtinMethods === []) {
             $this->setBuildInMethods();
         }
@@ -55,7 +56,7 @@ final class AnyMatcher extends AbstractMatcher
      */
     private function isMagicMethod($name)
     {
-        return substr($name, 0, 2) === '__';
+        return strpos($name, '__') === 0;
     }
 
     /**
@@ -65,7 +66,7 @@ final class AnyMatcher extends AbstractMatcher
      */
     private function isBuiltinMethod($name)
     {
-        $isBuiltin = in_array($name, self::$builtinMethods);
+        $isBuiltin = in_array($name, self::$builtinMethods, true);
 
         return $isBuiltin;
     }

@@ -2,17 +2,12 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT MIT
  */
 namespace Ray\Aop;
 
 class BuiltinMatcher extends AbstractMatcher
 {
-    /**
-     * @var array
-     */
-    protected $arguments;
-
     /**
      * @var string
      */
@@ -29,6 +24,7 @@ class BuiltinMatcher extends AbstractMatcher
      */
     public function __construct($matcherName, array $arguments)
     {
+        parent::__construct();
         $this->matcherName = $matcherName;
         $this->arguments = $arguments;
         $matcher = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';

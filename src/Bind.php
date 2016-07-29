@@ -2,7 +2,7 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT MIT
  */
 namespace Ray\Aop;
 
@@ -77,9 +77,9 @@ final class Bind implements BindInterface
     /**
      * @param \ReflectionClass  $class
      * @param \ReflectionMethod $method
-     * @param PointCut          $pointCut
+     * @param Pointcut          $pointCut
      */
-    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, PointCut $pointCut)
+    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut)
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
         if (! $isMethodMatch) {
@@ -97,7 +97,7 @@ final class Bind implements BindInterface
      */
     public function bindInterceptors($method, array $interceptors)
     {
-        $this->bindings[$method] = !isset($this->bindings[$method]) ? $interceptors : array_merge(
+        $this->bindings[$method] = ! array_key_exists($method, $this->bindings) ? $interceptors : array_merge(
             $this->bindings[$method],
             $interceptors
         );
@@ -160,7 +160,7 @@ final class Bind implements BindInterface
         // method bind in annotation order
         foreach ($annotations as $annotation) {
             $annotationIndex = get_class($annotation);
-            if (isset($pointcuts[$annotationIndex])) {
+            if (array_key_exists($annotationIndex, $pointcuts)) {
                 $this->annotatedMethodMatchBind($class, $method, $pointcuts[$annotationIndex]);
                 unset($pointcuts[$annotationIndex]);
             }

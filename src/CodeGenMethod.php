@@ -2,12 +2,12 @@
 /**
  * This file is part of the Ray.Aop package
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT MIT
  */
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use PHPParser\Builder\Method;
+use PhpParser\Builder\Method;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
@@ -18,17 +18,17 @@ use Ray\Aop\Annotation\AbstractAssisted;
 final class CodeGenMethod
 {
     /**
-     * @var \PHPParser\Parser
+     * @var \PhpParser\Parser
      */
     private $parser;
 
     /**
-     * @var \PHPParser\BuilderFactory
+     * @var \PhpParser\BuilderFactory
      */
     private $factory;
 
     /**
-     * @var \PHPParser\PrettyPrinter\Standard
+     * @var \PhpParser\PrettyPrinter\Standard
      */
     private $printer;
 
@@ -40,9 +40,9 @@ final class CodeGenMethod
     private $assisted = [];
 
     /**
-     * @param \PHPParser\Parser                 $parser
-     * @param \PHPParser\BuilderFactory         $factory
-     * @param \PHPParser\PrettyPrinter\Standard $printer
+     * @param \PhpParser\Parser                 $parser
+     * @param \PhpParser\BuilderFactory         $factory
+     * @param \PhpParser\PrettyPrinter\Standard $printer
      */
     public function __construct(
         Parser $parser,
@@ -68,7 +68,7 @@ final class CodeGenMethod
         $methods = $class->getMethods();
         foreach ($methods as $method) {
             $this->assisted = $this->reader->getMethodAnnotation($method, AbstractAssisted::class);
-            $isBindingMethod = in_array($method->getName(), $bindingMethods);
+            $isBindingMethod = in_array($method->getName(), $bindingMethods, true);
             /* @var $method \ReflectionMethod */
             if ($isBindingMethod && $method->isPublic()) {
                 $stmts[] = $this->getMethod($method);
@@ -99,19 +99,17 @@ final class CodeGenMethod
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
         $methodStmt->addStmts($methodInsideStatements);
-        $node = $this->addMethodDocComment($methodStmt, $method);
-
-        return $node;
+        return $this->addMethodDocComment($methodStmt, $method);
     }
 
     /**
      * Return parameter reflection
      *
      * @param \ReflectionParameter      $param
-     * @param \PHPParser\Builder\Method $methodStmt
+     * @param \PhpParser\Builder\Method $methodStmt
      * @param bool                      $isOverPhp7
      *
-     * @return \PHPParser\Builder\Method
+     * @return \PhpParser\Builder\Method
      */
     private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt, $isOverPhp7)
     {
@@ -144,13 +142,13 @@ final class CodeGenMethod
     }
 
     /**
-     * @return \PHPParser\Node[]
+     * @return \PhpParser\Node[]
      */
     private function getMethodInsideStatement()
     {
         $code = file_get_contents(dirname(__DIR__) . '/src-data/CodeGenTemplate.php');
         $node = $this->parser->parse($code)[0];
-        /** @var $node \PHPParser\Node\Stmt\Class_ */
+        /** @var $node \PhpParser\Node\Stmt\Class_ */
         $node = $node->getMethods()[0];
 
         return $node->stmts;
@@ -187,7 +185,7 @@ final class CodeGenMethod
 
             return;
         }
-        if ($this->assisted && in_array($param->getName(), $this->assisted->values)) {
+        if ($this->assisted && in_array($param->getName(), $this->assisted->values, true)) {
             $paramStmt->setDefault(null);
         }
     }
