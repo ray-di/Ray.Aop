@@ -232,7 +232,7 @@ $class = $invocation->getMethod()->getDeclaringClass();
 
 ## 要件
 
-* PHP 5.4+
+* PHP 5.6+
 * hhvm
 
 ## インストール

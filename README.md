@@ -231,7 +231,7 @@ The method interceptor API implemented by Ray.Aop is a part of a public specific
 
 ## Requirements
 
-* PHP 5.4+
+* PHP 5.6+
 * hhvm
 
 ## Installation
