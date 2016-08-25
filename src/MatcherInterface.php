@@ -42,25 +42,29 @@ interface MatcherInterface
      */
     public function startsWith($prefix);
 
+    // @codingStandardsIgnoreStart
+
     /**
-     * Returns a matcher which matches if combining two matchers using a logical OR.
+     * Returns a matcher which matches if combining two or more matchers using a logical OR.
      *
      * @param AbstractMatcher $matcherA
-     * @param AbstractMatcher $matcherB
+     * @param AbstractMatcher ...$matcherB
      *
      * @return AbstractMatcher
      */
     public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB);
 
     /**
-     * Returns a matcher which matches if combining two matchers using a logical AND.
+     * Returns a matcher which matches if combining two or more matchers using a logical AND.
      *
      * @param AbstractMatcher $matcherA
-     * @param AbstractMatcher $matcherB
+     * @param AbstractMatcher ...$matcherB
      *
      * @return AbstractMatcher
      */
     public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB);
+
+    // @codingStandardsIgnoreEnd
 
     /**
      * Returns a matcher which does NOT matches.
