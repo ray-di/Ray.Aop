@@ -51,7 +51,7 @@ interface MatcherInterface
      *
      * @return AbstractMatcher
      */
-    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB, AbstractMatcher ...$otherMatchers);
+    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB, ...$otherMatchers);
 
     /**
      * Returns a matcher which matches if combining two and more matchers using a logical AND.
@@ -62,7 +62,7 @@ interface MatcherInterface
      *
      * @return AbstractMatcher
      */
-    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB, AbstractMatcher ...$otherMatchers);
+    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB, ...$otherMatchers);
 
     /**
      * Returns a matcher which does NOT matches.
