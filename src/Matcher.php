@@ -58,17 +58,17 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
+    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB, ...$otherMatchers)
     {
-        return new BuiltinMatcher(__FUNCTION__, [$matcherA, $matcherB]);
+        return new BuiltinMatcher(__FUNCTION__, [$matcherA, $matcherB] + $otherMatchers);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
+    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB, ...$otherMatchers)
     {
-        return new BuiltinMatcher(__FUNCTION__, [$matcherA, $matcherB]);
+        return new BuiltinMatcher(__FUNCTION__, [$matcherA, $matcherB] + $otherMatchers);
     }
 
     /**
