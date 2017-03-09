@@ -55,7 +55,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testBuildClass
-     * @param mixed $class
+     *
+     * @param string $class
      */
     public function testBuild($class)
     {
@@ -65,6 +66,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testBuildClass
+     *
      * @param string $class
      */
     public function testBuildClassWeaved($class)
