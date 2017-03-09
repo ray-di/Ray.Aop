@@ -27,7 +27,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     public function setObject(WeavedInterface $object, \ReflectionMethod $method)
     {
         $this->object = $object;
-        $this->method = $method->getName();
+        $this->method = $method->name;
     }
 
     /**
@@ -35,7 +35,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
      */
     public function getDeclaringClass()
     {
-        $originalClass = (new \ReflectionClass($this->object))->getParentClass()->getName();
+        $originalClass = (new \ReflectionClass($this->object))->getParentClass()->name;
         $class = new ReflectionClass($originalClass);
         $class->setObject($this->object);
 

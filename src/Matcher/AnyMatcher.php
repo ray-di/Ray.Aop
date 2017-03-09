@@ -45,7 +45,7 @@ final class AnyMatcher extends AbstractMatcher
     {
         $methods = (new \ReflectionClass('\ArrayObject'))->getMethods();
         foreach ($methods as $method) {
-            self::$builtinMethods[] = $method->getName();
+            self::$builtinMethods[] = $method->name;
         }
     }
 
