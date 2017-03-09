@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop;
 
 class FakeOnionInterceptor1 implements MethodInterceptor
