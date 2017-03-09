@@ -1,12 +1,16 @@
 <?php
-
 namespace Ray\Aop;
 
 class FakeClass
 {
     public $a = 0;
 
-    public $msg = "hello";
+    public $msg = 'hello';
+
+    public function __toString()
+    {
+        return 'toStringString';
+    }
 
     public function add($n)
     {
@@ -33,10 +37,5 @@ class FakeClass
     public function getTriple($c)
     {
         return $c * 3;
-    }
-
-    public function __toString()
-    {
-        return 'toStringString';
     }
 }

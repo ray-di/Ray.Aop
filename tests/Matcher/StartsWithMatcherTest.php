@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop\Matcher;
 
 use Ray\Aop\FakeClass;

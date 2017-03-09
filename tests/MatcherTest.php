@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\InvalidAnnotationException;

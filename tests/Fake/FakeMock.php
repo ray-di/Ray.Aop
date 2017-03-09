@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop;
 
 /** doc comment of FakeMock */
@@ -11,13 +10,17 @@ class FakeMock
 
     public $c = 3;
 
-    /** doc comment of returnSame */
+    /**
+     * doc comment of returnSame
+     */
     public function returnSame($a)
     {
         return $a;
     }
 
-    /** doc comment of getSub */
+    /**
+     * doc comment of getSub
+     */
     public function getSub($a, $b)
     {
         return $a - $b;
