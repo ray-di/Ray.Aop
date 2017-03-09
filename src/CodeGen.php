@@ -211,7 +211,7 @@ final class CodeGen implements CodeGenInterface
             if ($annotations === []) {
                 continue;
             }
-            $methodsAnnotation[$method->getName()] = $annotations;
+            $methodsAnnotation[$method->name] = $annotations;
         }
 
         return serialize($methodsAnnotation);
