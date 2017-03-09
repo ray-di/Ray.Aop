@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop;
 
 class FakeWeaved extends FakeMock
