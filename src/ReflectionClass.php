@@ -24,7 +24,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAnnotations()
     {
@@ -32,7 +32,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAnnotation($annotationName)
     {

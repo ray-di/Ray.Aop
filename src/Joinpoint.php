@@ -43,7 +43,7 @@ interface Joinpoint
      *
      * <p>For instance, the target object for an invocation.
      *
-     * @return object (can be null if the accessible object is static).
+     * @return object (can be null if the accessible object is static)
      */
     public function getThis();
 }

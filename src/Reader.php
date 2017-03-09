@@ -11,16 +11,16 @@ interface Reader
     /**
      * Gets the annotations applied to a method.
      *
-     * @return array An array of Annotations.
+     * @return array an array of Annotations
      */
     public function getAnnotations();
 
     /**
      * Gets a method annotation.
      *
-     * @param string $annotationName The name of the annotation.
+     * @param string $annotationName the name of the annotation
      *
-     * @return object|null The Annotation or NULL, if the requested annotation does not exist.
+     * @return object|null the Annotation or NULL, if the requested annotation does not exist
      */
     public function getAnnotation($annotationName);
 }

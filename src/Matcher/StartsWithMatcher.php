@@ -17,7 +17,7 @@ class StartsWithMatcher extends AbstractMatcher
     {
         list($startsWith) = $arguments;
 
-        return (strpos($class->name, $startsWith) === 0);
+        return strpos($class->name, $startsWith) === 0;
     }
 
     /**
@@ -27,6 +27,6 @@ class StartsWithMatcher extends AbstractMatcher
     {
         list($startsWith) = $arguments;
 
-        return (strpos($method->name, $startsWith) === 0);
+        return strpos($method->name, $startsWith) === 0;
     }
 }

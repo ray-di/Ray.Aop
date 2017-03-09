@@ -17,18 +17,18 @@ class CodeGenVisitor extends NodeVisitorAbstract
      */
     private $use = [];
 
-    public function enterNode(Node $node)
-    {
-        if ($node instanceof Use_) {
-            $this->use[] = $node; // @codeCoverageIgnore
-        }
-    }
-
     /**
      * @return Node\Stmt\Use_[]
      */
     public function __invoke()
     {
         return $this->use;
+    }
+
+    public function enterNode(Node $node)
+    {
+        if ($node instanceof Use_) {
+            $this->use[] = $node; // @codeCoverageIgnore
+        }
     }
 }
