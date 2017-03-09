@@ -1,10 +1,9 @@
 <?php
-
 namespace Ray\Aop;
 
+use PhpParser\Builder\Method;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
-use PhpParser\Builder\Method;
 
 class CodeGenTest extends \PHPUnit_Framework_TestCase
 {

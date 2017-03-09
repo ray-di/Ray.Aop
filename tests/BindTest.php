@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop;
 
 class BindTest extends \PHPUnit_Framework_TestCase

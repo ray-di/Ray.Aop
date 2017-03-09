@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -56,6 +55,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testBuildClass
+     * @param mixed $class
      */
     public function testBuild($class)
     {
@@ -65,6 +65,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testBuildClass
+     * @param mixed $class
      */
     public function testBuildClassWeaved($class)
     {
@@ -85,6 +86,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testNewInstance
+     * @param mixed $weaved
      */
     public function testWeavedInterceptorWorks($weaved)
     {
@@ -96,6 +98,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testNewInstance
+     * @param mixed $weaved
      */
     public function testMethodReturnValue($weaved)
     {
