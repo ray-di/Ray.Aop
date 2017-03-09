@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop;
 
 class BuiltInMatcherTest extends \PHPUnit_Framework_TestCase

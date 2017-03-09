@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop;
 
 $loader = require dirname(dirname(__DIR__)) . '/vendor/autoload.php';
