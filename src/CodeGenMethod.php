@@ -68,7 +68,7 @@ final class CodeGenMethod
         $methods = $class->getMethods();
         foreach ($methods as $method) {
             $this->assisted = $this->reader->getMethodAnnotation($method, AbstractAssisted::class);
-            $isBindingMethod = in_array($method->getName(), $bindingMethods, true);
+            $isBindingMethod = in_array($method->name, $bindingMethods, true);
             /* @var $method \ReflectionMethod */
             if ($isBindingMethod && $method->isPublic()) {
                 $stmts[] = $this->getMethod($method);
@@ -186,7 +186,7 @@ final class CodeGenMethod
 
             return;
         }
-        if ($this->assisted && in_array($param->getName(), $this->assisted->values, true)) {
+        if ($this->assisted && in_array($param->name, $this->assisted->values, true)) {
             $paramStmt->setDefault(null);
         }
     }
