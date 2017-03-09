@@ -93,6 +93,7 @@ final class CodeGen implements CodeGenInterface
         $traverser->addVisitor($useStmtsVisitor);
         // parse
         $stmts = $this->parser->parse(file_get_contents($class->getFileName()));
+        /* @var $stmts array */
         // traverse
         $traverser->traverse($stmts);
         // pretty print
