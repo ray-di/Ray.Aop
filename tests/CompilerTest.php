@@ -65,11 +65,12 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testBuildClass
-     * @param mixed $class
+     * @param string $class
      */
     public function testBuildClassWeaved($class)
     {
         $weaved = new $class;
+        /* @var $weaved FakeMock */
         $weaved->bindings = $this->bind->getBindings();
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
@@ -86,9 +87,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testNewInstance
-     * @param mixed $weaved
      */
-    public function testWeavedInterceptorWorks($weaved)
+    public function testWeavedInterceptorWorks(FakeMock $weaved)
     {
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
@@ -98,9 +98,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testNewInstance
-     * @param mixed $weaved
      */
-    public function testMethodReturnValue($weaved)
+    public function testMethodReturnValue(FakeMock $weaved)
     {
         $num = new FakeNum;
         $num->value = 1;
