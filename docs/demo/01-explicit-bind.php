@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop\Demo;
 
 require __DIR__ . '/bootstrap.php';

@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop\Demo;
 
 use Ray\Aop\Bind;

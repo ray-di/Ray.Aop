@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop\Demo;
 
 class AnnotationRealBillingService implements BillingService

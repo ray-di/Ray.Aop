@@ -1,9 +1,7 @@
 <?php
-
 namespace Ray\Aop\Demo;
 
 use Ray\Aop\AbstractMatcher;
-use Ray\Aop\Matcher;
 
 class IsContainsMatcher extends AbstractMatcher
 {
@@ -14,7 +12,7 @@ class IsContainsMatcher extends AbstractMatcher
     {
         list($contains) = $arguments;
 
-        return (strpos($class->name, $contains) !== false);
+        return strpos($class->name, $contains) !== false;
     }
 
     /**
@@ -24,6 +22,6 @@ class IsContainsMatcher extends AbstractMatcher
     {
         list($contains) = $arguments;
 
-        return (strpos($method->name, $contains) !== false);
+        return strpos($method->name, $contains) !== false;
     }
 }

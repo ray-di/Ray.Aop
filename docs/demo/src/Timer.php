@@ -1,5 +1,4 @@
 <?php
-
 namespace Ray\Aop\Demo;
 
 use Ray\Aop\MethodInterceptor;
@@ -13,6 +12,6 @@ class Timer implements MethodInterceptor
         $mTime = microtime(true);
         $invocation->proceed();
         $time = microtime(true) - $mTime;
-        echo "Time stop, time is =[" . sprintf('%01.6f', $time) . "] sec\n\n";
+        echo 'Time stop, time is =[' . sprintf('%01.6f', $time) . "] sec\n\n";
     }
 }
