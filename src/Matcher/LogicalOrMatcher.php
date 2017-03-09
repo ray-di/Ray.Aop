@@ -17,7 +17,7 @@ class LogicalOrMatcher extends AbstractMatcher
     {
         foreach ($arguments as $matcher) {
             /* @var $matcher AbstractMatcher */
-            $isMatch =  $matcher->matchesClass($class, $matcher->getArguments());
+            $isMatch = $matcher->matchesClass($class, $matcher->getArguments());
             if ($isMatch === true) {
                 return true;
             }

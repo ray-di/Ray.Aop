@@ -23,14 +23,6 @@ final class AnyMatcher extends AbstractMatcher
         }
     }
 
-    private function setBuildInMethods()
-    {
-        $methods = (new \ReflectionClass('\ArrayObject'))->getMethods();
-        foreach ($methods as $method) {
-            self::$builtinMethods[] = $method->getName();
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -47,6 +39,14 @@ final class AnyMatcher extends AbstractMatcher
         unset($arguments);
 
         return ! ($this->isMagicMethod($method->name) || $this->isBuiltinMethod($method->name));
+    }
+
+    private function setBuildInMethods()
+    {
+        $methods = (new \ReflectionClass('\ArrayObject'))->getMethods();
+        foreach ($methods as $method) {
+            self::$builtinMethods[] = $method->getName();
+        }
     }
 
     /**

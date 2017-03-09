@@ -99,6 +99,7 @@ final class CodeGenMethod
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
         $methodStmt->addStmts($methodInsideStatements);
+
         return $this->addMethodDocComment($methodStmt, $method);
     }
 

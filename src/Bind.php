@@ -40,6 +40,57 @@ final class Bind implements BindInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function bindInterceptors($method, array $interceptors)
+    {
+        $this->bindings[$method] = ! array_key_exists($method, $this->bindings) ? $interceptors : array_merge(
+            $this->bindings[$method],
+            $interceptors
+        );
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBindings()
+    {
+        return $this->bindings;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toString($salt)
+    {
+        $shortHash = function ($data) {
+            return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($data))))), '='), '+/', '-_');
+        };
+
+        return $shortHash(serialize($this->bindings) . $salt);
+    }
+
+    /**
+     * @param Pointcut[] $pointcuts
+     *
+     * @return Pointcut[]
+     */
+    public function getAnnotationPointcuts(array &$pointcuts)
+    {
+        $keyPointcuts = [];
+        foreach ($pointcuts as $key => $pointcut) {
+            if ($pointcut->methodMatcher instanceof AnnotatedMatcher) {
+                $key = $pointcut->methodMatcher->annotation;
+            }
+            $keyPointcuts[$key] = $pointcut;
+        }
+
+        return $keyPointcuts;
+    }
+
+    /**
      * @param \ReflectionClass $class
      * @param array            $pointcuts
      */
@@ -90,57 +141,6 @@ final class Bind implements BindInterface
             return;
         }
         $this->bindInterceptors($method->name, $pointCut->interceptors);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function bindInterceptors($method, array $interceptors)
-    {
-        $this->bindings[$method] = ! array_key_exists($method, $this->bindings) ? $interceptors : array_merge(
-            $this->bindings[$method],
-            $interceptors
-        );
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBindings()
-    {
-        return $this->bindings;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toString($salt)
-    {
-        $shortHash = function ($data) {
-            return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($data))))), '='), '+/', '-_');
-        };
-
-        return $shortHash(serialize($this->bindings) . $salt);
-    }
-
-    /**
-     * @param Pointcut[] $pointcuts
-     *
-     * @return Pointcut[]
-     */
-    public function getAnnotationPointcuts(array &$pointcuts)
-    {
-        $keyPointcuts = [];
-        foreach ($pointcuts as $key => $pointcut) {
-            if ($pointcut->methodMatcher instanceof AnnotatedMatcher) {
-                $key = $pointcut->methodMatcher->annotation;
-            }
-            $keyPointcuts[$key] = $pointcut;
-        }
-
-        return $keyPointcuts;
     }
 
     /**
