@@ -16,7 +16,7 @@ class FakeWeaved extends FakeMock
     {
         unset($a);
         // direct call
-        if (!$this->rayAopIntercept || !isset($this->bind[__FUNCTION__])) {
+        if (! $this->rayAopIntercept || ! isset($this->bind[__FUNCTION__])) {
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 
