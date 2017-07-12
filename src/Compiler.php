@@ -97,8 +97,7 @@ final class Compiler implements CompilerInterface
      */
     private function getNewClassName($class, BindInterface $bind)
     {
-        $fileTime = filemtime((new \ReflectionClass($class))->getFileName());
-        $newClass = sprintf('%s_%s', str_replace('\\', '_', $class), $bind->toString($fileTime));
+        $newClass = sprintf('%s_%s', str_replace('\\', '_', $class), $bind->toString(''));
 
         return $newClass;
     }
