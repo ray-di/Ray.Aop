@@ -65,11 +65,7 @@ final class Bind implements BindInterface
      */
     public function toString($salt)
     {
-        $shortHash = function ($data) {
-            return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($data))))), '='), '+/', '-_');
-        };
-
-        return $shortHash(serialize($this->bindings) . $salt);
+        return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($this->bindings))))), '='), '+/', '-_');
     }
 
     /**
