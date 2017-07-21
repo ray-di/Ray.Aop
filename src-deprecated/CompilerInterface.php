@@ -6,6 +6,9 @@
  */
 namespace Ray\Aop;
 
+/**
+ * @deprecated
+ */
 interface CompilerInterface
 {
     /**
