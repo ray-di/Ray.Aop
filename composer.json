@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Ray\\Aop\\": "src/"
+            "Ray\\Aop\\": ["src/", "src-deprecated/"]
         }
     },
     "autoload-dev": {
