@@ -2,8 +2,6 @@
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
-use Ray\Aop\Exception\InvalidAnnotationException;
-use Ray\Aop\Exception\InvalidArgumentException;
 
 class MatcherTest extends TestCase
 {
@@ -21,15 +19,19 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->subclassesOf(FakeClass::class));
     }
 
+    /**
+     * @expectedException \Ray\Aop\Exception\InvalidAnnotationException
+     */
     public function testValidationForAnnotatedWith()
     {
-        $this->setExpectedException(InvalidAnnotationException::class);
         (new Matcher)->annotatedWith('__invalid_class');
     }
 
+    /**
+     * @expectedException \Ray\Aop\Exception\InvalidArgumentException
+     */
     public function testValidationForSubclassesOf()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
         (new Matcher)->subclassesOf('__invalid_class');
     }
 }

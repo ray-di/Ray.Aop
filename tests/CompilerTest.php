@@ -3,7 +3,6 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
-use Ray\Aop\Exception\NotWritableException;
 
 class CompilerTest extends TestCase
 {
@@ -207,9 +206,11 @@ class CompilerTest extends TestCase
         $this->assertSame($expected, $file[7]);
     }
 
+    /**
+     * @expectedException \Ray\Aop\Exception\NotWritableException
+     */
     public function testNotWritable()
     {
-        $this->setExpectedException(NotWritableException::class);
         new Compiler('./not_available');
     }
 
