@@ -22,7 +22,8 @@
     "autoload": {
         "psr-4": {
             "Ray\\Aop\\": ["src/", "src-deprecated/"]
-        }
+        },
+        "exclude-from-classmap": ["/src-deprecated//"]
     },
     "autoload-dev": {
         "psr-4": {
