@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -8,12 +10,12 @@ namespace Ray\Aop\Matcher;
 
 use Ray\Aop\AbstractMatcher;
 
-class LogicalNotMatcher extends AbstractMatcher
+final class LogicalNotMatcher extends AbstractMatcher
 {
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(\ReflectionClass $class, array $arguments)
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
         list($matcher) = $arguments;
         /* @var $matcher AbstractMatcher */
@@ -25,7 +27,7 @@ class LogicalNotMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(\ReflectionMethod $method, array $arguments)
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
         list($matcher) = $arguments;
         /* @var $matcher AbstractMatcher */

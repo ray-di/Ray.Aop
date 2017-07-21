@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -20,12 +22,12 @@ class CodeGenVisitor extends NodeVisitorAbstract
     /**
      * @return Node\Stmt\Use_[]
      */
-    public function __invoke()
+    public function __invoke() : array
     {
         return $this->use;
     }
 
-    public function enterNode(Node $node)
+    public function enterNode(Node $node) : void
     {
         if ($node instanceof Use_) {
             $this->use[] = $node; // @codeCoverageIgnore

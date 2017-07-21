@@ -27,12 +27,6 @@ class MatcherTest extends TestCase
         (new Matcher)->annotatedWith('__invalid_class');
     }
 
-    public function testValidationForStartsWith()
-    {
-        $this->setExpectedException(InvalidArgumentException::class);
-        (new Matcher)->startsWith(0);
-    }
-
     public function testValidationForSubclassesOf()
     {
         $this->setExpectedException(InvalidArgumentException::class);

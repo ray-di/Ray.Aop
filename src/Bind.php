@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -7,6 +9,7 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Ray\Aop\Php71\BindInterface;
 
 final class Bind implements BindInterface
 {
@@ -26,12 +29,9 @@ final class Bind implements BindInterface
     }
 
     /**
-     * @param string $class
-     * @param array  $pointcuts
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function bind($class, array $pointcuts)
+    public function bind(string $class, array $pointcuts) : Bind
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
         $this->annotatedMethodsMatch(new \ReflectionClass($class), $pointcuts);
@@ -42,7 +42,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function bindInterceptors($method, array $interceptors)
+    public function bindInterceptors(string $method, array $interceptors) : BindInterface
     {
         $this->bindings[$method] = ! array_key_exists($method, $this->bindings) ? $interceptors : array_merge(
             $this->bindings[$method],
@@ -55,7 +55,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function getBindings()
+    public function getBindings() : array
     {
         return $this->bindings;
     }
@@ -63,7 +63,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function toString($salt)
+    public function toString(string $salt) : string
     {
         return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($this->bindings))))), '='), '+/', '-_');
     }
@@ -73,7 +73,7 @@ final class Bind implements BindInterface
      *
      * @return Pointcut[]
      */
-    public function getAnnotationPointcuts(array &$pointcuts)
+    public function getAnnotationPointcuts(array &$pointcuts) : array
     {
         $keyPointcuts = [];
         foreach ($pointcuts as $key => $pointcut) {
@@ -86,11 +86,7 @@ final class Bind implements BindInterface
         return $keyPointcuts;
     }
 
-    /**
-     * @param \ReflectionClass $class
-     * @param array            $pointcuts
-     */
-    private function annotatedMethodsMatch(\ReflectionClass $class, array &$pointcuts)
+    private function annotatedMethodsMatch(\ReflectionClass $class, array &$pointcuts) : void
     {
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
@@ -98,12 +94,7 @@ final class Bind implements BindInterface
         }
     }
 
-    /**
-     * @param \ReflectionClass  $class
-     * @param \ReflectionMethod $method
-     * @param Pointcut[]        $pointcuts
-     */
-    private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts)
+    private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts) : void
     {
         $annotations = $this->reader->getMethodAnnotations($method);
         // priority bind
@@ -121,12 +112,7 @@ final class Bind implements BindInterface
         }
     }
 
-    /**
-     * @param \ReflectionClass  $class
-     * @param \ReflectionMethod $method
-     * @param Pointcut          $pointCut
-     */
-    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut)
+    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut) : void
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
         if (! $isMethodMatch) {
@@ -139,20 +125,12 @@ final class Bind implements BindInterface
         $this->bindInterceptors($method->name, $pointCut->interceptors);
     }
 
-    /**
-     * @param \ReflectionClass  $class
-     * @param \ReflectionMethod $method
-     * @param Pointcut[]        $pointcuts
-     * @param array             $annotations
-     *
-     * @return array
-     */
     private function onionOrderMatch(
         \ReflectionClass $class,
         \ReflectionMethod $method,
         array $pointcuts,
-        $annotations
-    ) {
+        array $annotations
+    ) : array {
         // method bind in annotation order
         foreach ($annotations as $annotation) {
             $annotationIndex = get_class($annotation);

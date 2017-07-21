@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -9,6 +11,9 @@ namespace Ray\Aop;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard as StandardPrettyPrinter;
 use Ray\Aop\Exception\NotWritableException;
+use Ray\Aop\Php71\BindInterface;
+use Ray\Aop\Php71\CodeGenInterface;
+use Ray\Aop\Php71\CompilerInterface;
 
 final class Compiler implements CompilerInterface
 {
@@ -26,7 +31,7 @@ final class Compiler implements CompilerInterface
      * @param string           $classDir
      * @param CodeGenInterface $codeGen
      */
-    public function __construct($classDir, CodeGenInterface $codeGen = null)
+    public function __construct(string $classDir, CodeGenInterface $codeGen = null)
     {
         if (! is_writable($classDir)) {
             throw new NotWritableException($classDir);
@@ -42,7 +47,7 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      */
-    public function newInstance($class, array $args, BindInterface $bind)
+    public function newInstance(string $class, array $args, BindInterface $bind)
     {
         $compiledClass = $this->compile($class, $bind);
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
@@ -54,7 +59,7 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      */
-    public function compile($class, BindInterface $bind)
+    public function compile(string $class, BindInterface $bind) : string
     {
         if ($this->hasNoBinding($class, $bind)) {
             return $class;
@@ -76,39 +81,21 @@ final class Compiler implements CompilerInterface
         return $newClass;
     }
 
-    /**
-     * @param string        $class
-     * @param BindInterface $bind
-     *
-     * @return bool
-     */
-    private function hasNoBinding($class, BindInterface $bind)
+    private function hasNoBinding($class, BindInterface $bind) : bool
     {
         $hasMethod = $this->hasBoundMethod($class, $bind);
 
         return ! $bind->getBindings() && ! $hasMethod;
     }
 
-    /**
-     * @param string        $class
-     * @param BindInterface $bind
-     *
-     * @return string
-     */
-    private function getNewClassName($class, BindInterface $bind)
+    private function getNewClassName($class, BindInterface $bind) : string
     {
         $newClass = sprintf('%s_%s', str_replace('\\', '_', $class), $bind->toString(''));
 
         return $newClass;
     }
 
-    /**
-     * @param string        $class
-     * @param BindInterface $bind
-     *
-     * @return bool
-     */
-    private function hasBoundMethod($class, BindInterface $bind)
+    private function hasBoundMethod(string $class, BindInterface $bind) : bool
     {
         $bindingMethods = array_keys($bind->getBindings());
         $hasMethod = false;
@@ -121,13 +108,7 @@ final class Compiler implements CompilerInterface
         return $hasMethod;
     }
 
-    /**
-     * @param string           $newClass
-     * @param \ReflectionClass $sourceClass
-     * @param string           $file
-     * @param BindInterface    $bind
-     */
-    private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, $file, BindInterface $bind)
+    private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, string $file, BindInterface $bind)
     {
         $code = $this->codeGen->generate($newClass, $sourceClass, $bind);
         file_put_contents($file, '<?php ' . PHP_EOL . $code);

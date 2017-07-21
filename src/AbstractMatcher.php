@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -19,16 +21,14 @@ abstract class AbstractMatcher
     }
 
     /**
-     * @param \ReflectionClass $class
-     * @param array            $arguments
+     * Match class condition
      *
      * @return bool
      */
     abstract public function matchesClass(\ReflectionClass $class, array $arguments);
 
     /**
-     * @param \ReflectionMethod $method
-     * @param array             $arguments
+     * Match method condition
      *
      * @return bool
      */

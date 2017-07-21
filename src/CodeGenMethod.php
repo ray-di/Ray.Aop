@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -11,9 +13,11 @@ use PhpParser\Builder\Method;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Annotation\AbstractAssisted;
+use Ray\Aop\Php71\BindInterface;
 
 final class CodeGenMethod
 {
@@ -61,7 +65,7 @@ final class CodeGenMethod
      *
      * @return array
      */
-    public function getMethods(\ReflectionClass $class, BindInterface $bind)
+    public function getMethods(\ReflectionClass $class, BindInterface $bind) : array
     {
         $bindingMethods = array_keys($bind->getBindings());
         $stmts = [];
@@ -105,14 +109,8 @@ final class CodeGenMethod
 
     /**
      * Return parameter reflection
-     *
-     * @param \ReflectionParameter      $param
-     * @param \PhpParser\Builder\Method $methodStmt
-     * @param bool                      $isOverPhp7
-     *
-     * @return \PhpParser\Builder\Method
      */
-    private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt, $isOverPhp7)
+    private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt, bool $isOverPhp7) : Method
     {
         /** @var $paramStmt Param */
         $paramStmt = $this->factory->param($param->name);
@@ -125,13 +123,7 @@ final class CodeGenMethod
         return $methodStmt;
     }
 
-    /**
-     * @param Method            $methodStmt
-     * @param \ReflectionMethod $method
-     *
-     * @return \PhpParser\Node\Stmt\ClassMethod
-     */
-    private function addMethodDocComment(Method $methodStmt, \ReflectionMethod $method)
+    private function addMethodDocComment(Method $methodStmt, \ReflectionMethod $method) : ClassMethod
     {
         $node = $methodStmt->getNode();
         $docComment = $method->getDocComment();
@@ -145,7 +137,7 @@ final class CodeGenMethod
     /**
      * @return \PhpParser\Node[]
      */
-    private function getMethodInsideStatement()
+    private function getMethodInsideStatement() : array
     {
         $code = file_get_contents(dirname(__DIR__) . '/src-data/CodeGenTemplate.php');
         $node = $this->parser->parse($code)[0];
@@ -156,13 +148,9 @@ final class CodeGenMethod
     }
 
     /**
-     * @param \ReflectionParameter $param
-     * @param Param                $paramStmt
-     * @param \ReflectionClass     $typeHint
-     *
      * @codeCoverageIgnore
      */
-    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null)
+    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null) : void
     {
         if ($typeHint) {
             $paramStmt->setTypeHint($typeHint->name);
@@ -175,11 +163,7 @@ final class CodeGenMethod
         }
     }
 
-    /**
-     * @param \ReflectionParameter $param
-     * @param Param                $paramStmt
-     */
-    private function setDefault(\ReflectionParameter $param, $paramStmt)
+    private function setDefault(\ReflectionParameter $param, Param $paramStmt) : void
     {
         if ($param->isDefaultValueAvailable()) {
             $paramStmt->setDefault($param->getDefaultValue());
@@ -191,13 +175,7 @@ final class CodeGenMethod
         }
     }
 
-    /**
-     * @param \ReflectionParameter $param
-     * @param Param                $paramStmt
-     * @param bool                 $isOverPhp7
-     * @param \ReflectionClass     $typeHint
-     */
-    private function setParameterType(\ReflectionParameter $param, Param $paramStmt, $isOverPhp7, \ReflectionClass $typeHint = null)
+    private function setParameterType(\ReflectionParameter $param, Param $paramStmt, $isOverPhp7, \ReflectionClass $typeHint = null) : void
     {
         if (! $isOverPhp7) {
             $this->setTypeHint($param, $paramStmt, $typeHint); // @codeCoverageIgnore
@@ -210,11 +188,7 @@ final class CodeGenMethod
         }
     }
 
-    /**
-     * @param string $returnType
-     * @param Method $methodStmt
-     */
-    private function setReturnType($returnType, Method $methodStmt)
+    private function setReturnType($returnType, Method $methodStmt) : void
     {
         if ($returnType && method_exists($methodStmt, 'setReturnType')) {
             $methodStmt->setReturnType($returnType); // @codeCoverageIgnore

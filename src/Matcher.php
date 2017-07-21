@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -22,7 +24,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function annotatedWith($annotationName)
+    public function annotatedWith($annotationName) : AbstractMatcher
     {
         if (! class_exists($annotationName)) {
             throw new InvalidAnnotationException($annotationName);
@@ -34,7 +36,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function subclassesOf($superClass)
+    public function subclassesOf($superClass) : AbstractMatcher
     {
         if (! class_exists($superClass)) {
             throw new InvalidArgumentException($superClass);
@@ -46,12 +48,8 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function startsWith($prefix)
+    public function startsWith($prefix) : AbstractMatcher
     {
-        if (! is_string($prefix)) {
-            throw new InvalidArgumentException($prefix);
-        }
-
         return new BuiltinMatcher(__FUNCTION__, [$prefix]);
     }
 
@@ -60,7 +58,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
+    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB) : AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, func_get_args());
     }
@@ -68,7 +66,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB)
+    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB) : AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, func_get_args());
     }
@@ -78,7 +76,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function logicalNot(AbstractMatcher $matcher)
+    public function logicalNot(AbstractMatcher $matcher) : AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, [$matcher]);
     }

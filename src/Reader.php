@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -13,7 +15,7 @@ interface Reader
      *
      * @return array an array of Annotations
      */
-    public function getAnnotations();
+    public function getAnnotations() : array;
 
     /**
      * Gets a method annotation.
@@ -22,5 +24,5 @@ interface Reader
      *
      * @return object|null the Annotation or NULL, if the requested annotation does not exist
      */
-    public function getAnnotation($annotationName);
+    public function getAnnotation(string $annotationName);
 }
