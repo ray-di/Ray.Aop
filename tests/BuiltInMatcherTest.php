@@ -1,7 +1,9 @@
 <?php
 namespace Ray\Aop;
 
-class BuiltInMatcherTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class BuiltInMatcherTest extends TestCase
 {
     /**
      * @var BuiltinMatcher

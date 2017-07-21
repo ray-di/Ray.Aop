@@ -1,11 +1,12 @@
 <?php
 namespace Ray\Aop\Matcher;
 
+use PHPUnit\Framework\TestCase;
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeMarker;
 use Ray\Aop\FakeResource;
 
-class AnnotatedWithMatcherTest extends \PHPUnit_Framework_TestCase
+class AnnotatedWithMatcherTest extends TestCase
 {
     public function testMatchesClass()
     {

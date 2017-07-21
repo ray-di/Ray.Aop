@@ -1,10 +1,11 @@
 <?php
 namespace Ray\Aop\Matcher;
 
+use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\InvalidAnnotationException;
 use Ray\Aop\FakeClass;
 
-class SubclassesOfMatcherTest extends \PHPUnit_Framework_TestCase
+class SubclassesOfMatcherTest extends TestCase
 {
     public function testMatchesClass()
     {

@@ -4,8 +4,9 @@ namespace Ray\Aop;
 use PhpParser\Builder\Method;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
+use PHPUnit\Framework\TestCase;
 
-class CodeGenTest extends \PHPUnit_Framework_TestCase
+class CodeGenTest extends TestCase
 {
     public function testAddNullDefaultWithAssisted()
     {

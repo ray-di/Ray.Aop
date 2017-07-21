@@ -1,10 +1,11 @@
 <?php
 namespace Ray\Aop\Matcher;
 
+use PHPUnit\Framework\TestCase;
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeMatcher;
 
-class LogicalNotMatcherTest extends \PHPUnit_Framework_TestCase
+class LogicalNotMatcherTest extends TestCase
 {
     public function testMatchesClass()
     {

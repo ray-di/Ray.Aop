@@ -1,10 +1,11 @@
 <?php
 namespace Ray\Aop;
 
+use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\InvalidAnnotationException;
 use Ray\Aop\Exception\InvalidArgumentException;
 
-class MatcherTest extends \PHPUnit_Framework_TestCase
+class MatcherTest extends TestCase
 {
     public function testReturnBuildInMatcher()
     {

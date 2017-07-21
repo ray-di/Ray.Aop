@@ -2,9 +2,10 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\NotWritableException;
 
-class CompilerTest extends \PHPUnit_Framework_TestCase
+class CompilerTest extends TestCase
 {
     /**
      * @var Bind
