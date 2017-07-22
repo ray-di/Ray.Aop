@@ -28,12 +28,6 @@ class CompilerTest extends TestCase
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
     }
 
-    public function tearDown()
-    {
-        parent::tearDown();
-        array_map('unlink', glob("{$_ENV['TMP_DIR']}/*.php"));
-    }
-
     public function testBuildClass()
     {
         $class = $this->compiler->compile(FakeMock::class, $this->bind);
