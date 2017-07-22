@@ -203,7 +203,7 @@ class CompilerTest extends TestCase
         $file = file((new \ReflectionClass($class))->getFileName());
         $expected = '    function returnSame(array $arrayParam, callable $callableParam)
 ';
-        $this->assertSame($expected, $file[7]);
+        $this->assertSame($expected, $file[8]);
     }
 
     /**

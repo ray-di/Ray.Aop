@@ -1,18 +1,25 @@
 <?php
+
+declare(strict_types=1);
 namespace Ray\Aop;
 
-/**
- * @FakeResource
- * @FakeClassAnnotation
- */
+use Composer\Autoload;
+use Reflection;
+
 class FakePhp71ReturnTypeClass
 {
     public function returnTypeVoid() : void
     {
     }
 
-    public function returnNullable() : ?int
+    public function returnNullable(string $str) : ?int
     {
         return null;
+    }
+
+    public function checkClass($a)
+    {
+        $a instanceof Autoload;
+        $a instanceof Reflection;
     }
 }

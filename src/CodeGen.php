@@ -71,25 +71,24 @@ final class CodeGen implements CodeGenInterface
             ->getNode();
         $stmt = $this->addClassDocComment($stmt, $sourceClass);
         $code = $this->printer->prettyPrint([$stmt]);
-        $statements = $this->getUseStatements($sourceClass);
+        $statements = $this->getPhpFileStatementCode($sourceClass);
 
         return $statements . $code;
     }
 
-    private function getUseStatements(\ReflectionClass $class) : string
+    /**
+     * Return "declare()" and "use" statement code
+     */
+    private function getPhpFileStatementCode(\ReflectionClass $class) : string
     {
         $traverser = new NodeTraverser();
-        $useStmtsVisitor = new CodeGenVisitor();
-        $traverser->addVisitor($useStmtsVisitor);
-        // parse
+        $visitor = new CodeGenVisitor();
+        $traverser->addVisitor($visitor);
         $stmts = $this->parser->parse(file_get_contents($class->getFileName()));
-        /* @var $stmts array */
-        // traverse
         $traverser->traverse($stmts);
-        // pretty print
-        $code = $this->printer->prettyPrint($useStmtsVisitor());
+        $code = $this->printer->prettyPrint($visitor());
 
-        return (string) $code;
+        return (string) $code . PHP_EOL;
     }
 
     /**
