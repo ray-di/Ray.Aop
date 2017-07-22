@@ -45,4 +45,30 @@ class CodeGenTest extends TestCase
         $expected = $isOverPhpParserVer2 ? 'function returnTypeArray() : array' : 'function returnTypeArray()';
         $this->assertContains($expected, $code);
     }
+
+    public function testReturnTypeVoid()
+    {
+        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+            return;
+        }
+        $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
+        $bind = new Bind;
+        $bind->bindInterceptors('returnTypeVoid', []);
+        $code = $codeGen->generate('a', new \ReflectionClass(FakePhp71ReturnTypeClass::class), $bind);
+        $expected = 'function returnTypeVoid() : void';
+        $this->assertContains($expected, $code);
+    }
+
+    public function testReturnTypeNullable()
+    {
+        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+            return;
+        }
+        $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
+        $bind = new Bind;
+        $bind->bindInterceptors('returnNullable', []);
+        $code = $codeGen->generate('a', new \ReflectionClass(FakePhp71ReturnTypeClass::class), $bind);
+        $expected = 'function returnNullable() : ?';
+        $this->assertContains($expected, $code);
+    }
 }

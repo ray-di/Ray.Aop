@@ -13,6 +13,7 @@ use PhpParser\Builder\Method;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -97,8 +98,10 @@ final class CodeGenMethod
             $methodStmt = $this->getMethodStatement($param, $methodStmt, $isOverPhp7);
         }
         if ($isOverPhp7) {
-            $returnType = (string) $method->getReturnType();
-            $this->setReturnType($returnType, $methodStmt);
+            $returnType = $method->getReturnType();
+            if ($returnType instanceof \ReflectionType) {
+                $this->setReturnType($returnType, $methodStmt);
+            }
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
         $methodStmt->addStmts($methodInsideStatements);
@@ -187,10 +190,11 @@ final class CodeGenMethod
         }
     }
 
-    private function setReturnType($returnType, Method $methodStmt) : void
+    private function setReturnType(\ReflectionType $returnType, Method $methodStmt) : void
     {
+        $type = $returnType->allowsNull() ? new NullableType($returnType->getName()) : $returnType->getName();
         if ($returnType && method_exists($methodStmt, 'setReturnType')) {
-            $methodStmt->setReturnType($returnType); // @codeCoverageIgnore
+            $methodStmt->setReturnType($type); // @codeCoverageIgnore
         }
     }
 }
