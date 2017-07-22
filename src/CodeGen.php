@@ -17,8 +17,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use Ray\Aop\Php71\BindInterface;
-use Ray\Aop\Php71\CodeGenInterface;
 
 final class CodeGen implements CodeGenInterface
 {
@@ -64,7 +62,7 @@ final class CodeGen implements CodeGenInterface
         $this->reader = new IndexedReader(new AnnotationReader);
     }
 
-    public function generate(string $class, \ReflectionClass $sourceClass, BindInterface $bind) : string
+    public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind) : string
     {
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind);
         $stmt = $this

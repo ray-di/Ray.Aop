@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Ray\Aop\Php71\BindInterface;
 
 final class Bind implements BindInterface
 {
@@ -31,7 +30,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function bind(string $class, array $pointcuts) : Bind
+    public function bind($class, array $pointcuts) : BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
         $this->annotatedMethodsMatch(new \ReflectionClass($class), $pointcuts);
@@ -42,7 +41,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function bindInterceptors(string $method, array $interceptors) : BindInterface
+    public function bindInterceptors($method, array $interceptors) : BindInterface
     {
         $this->bindings[$method] = ! array_key_exists($method, $this->bindings) ? $interceptors : array_merge(
             $this->bindings[$method],
@@ -63,7 +62,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function toString(string $salt) : string
+    public function toString($salt) : string
     {
         return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($this->bindings))))), '='), '+/', '-_');
     }

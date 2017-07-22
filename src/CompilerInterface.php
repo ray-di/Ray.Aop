@@ -1,11 +1,10 @@
 <?php
-
 /**
  * This file is part of the Ray.Aop package
  *
  * @license http://opensource.org/licenses/MIT MIT
  */
-namespace Ray\Aop\Php71;
+namespace Ray\Aop;
 
 interface CompilerInterface
 {
@@ -15,7 +14,7 @@ interface CompilerInterface
      *
      * @return string
      */
-    public function compile(string $class, BindInterface $bind) : string;
+    public function compile($class, BindInterface $bind);
 
     /**
      * Return new instance weaved interceptor(s)
@@ -26,5 +25,5 @@ interface CompilerInterface
      *
      * @return object
      */
-    public function newInstance(string $class, array $args, BindInterface $bind);
+    public function newInstance($class, array $args, BindInterface $bind);
 }

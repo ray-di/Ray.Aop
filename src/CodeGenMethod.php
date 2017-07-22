@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Annotation\AbstractAssisted;
-use Ray\Aop\Php71\BindInterface;
 
 final class CodeGenMethod
 {

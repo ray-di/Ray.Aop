@@ -6,9 +6,6 @@
  */
 namespace Ray\Aop;
 
-/**
- * @deprecated
- */
 interface BindInterface
 {
     /**

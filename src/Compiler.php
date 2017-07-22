@@ -11,9 +11,6 @@ namespace Ray\Aop;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard as StandardPrettyPrinter;
 use Ray\Aop\Exception\NotWritableException;
-use Ray\Aop\Php71\BindInterface;
-use Ray\Aop\Php71\CodeGenInterface;
-use Ray\Aop\Php71\CompilerInterface;
 
 final class Compiler implements CompilerInterface
 {
@@ -47,7 +44,7 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      */
-    public function newInstance(string $class, array $args, BindInterface $bind)
+    public function newInstance($class, array $args, BindInterface $bind)
     {
         $compiledClass = $this->compile($class, $bind);
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
@@ -59,7 +56,7 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      */
-    public function compile(string $class, BindInterface $bind) : string
+    public function compile($class, BindInterface $bind) : string
     {
         if ($this->hasNoBinding($class, $bind)) {
             return $class;
