@@ -64,6 +64,8 @@ final class Bind implements BindInterface
      */
     public function toString($salt) : string
     {
+        unset($salt);
+
         return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($this->bindings))))), '='), '+/', '-_');
     }
 
