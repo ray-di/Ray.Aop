@@ -17,6 +17,7 @@
         "nikic/php-parser": "^3.0"
     },
     "require-dev": {
+        "pds/skeleton": "^1.0",
         "phpunit/phpunit": "^6.2.0"
     },
     "autoload": {
@@ -31,5 +32,11 @@
     },
     "suggest": {
         "ray/di": "A dependency injection framework"
+    },
+    "scripts" :{
+        "test": ["@cs", "phpunit"],
+        "coverage": ["php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"],
+        "cs": ["php-cs-fixer fix -v --dry-run", "phpcs --standard=./phpcs.xml src"],
+        "cs-fix": ["php-cs-fixer fix -v", "phpcbf src"]
     }
 }
