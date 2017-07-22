@@ -1,7 +1,6 @@
 <?php
 namespace Ray\Aop;
 
-use PhpParser\Builder\Method;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
@@ -24,8 +23,7 @@ class CodeGenTest extends TestCase
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
         $code = $codeGen->generate('a', new \ReflectionClass(FakePhp7Class::class), $bind);
-        $isOverPhpParserVer2 = method_exists(Method::class, 'setReturnType');
-        $expected = $isOverPhpParserVer2 ? 'function run(string $a, int $b, float $c, bool $d) : array' : 'function run(string $a, int $b, float $c, bool $d)';
+        $expected = 'function run(string $a, int $b, float $c, bool $d) : array';
         $this->assertContains($expected, $code);
     }
 
@@ -35,8 +33,7 @@ class CodeGenTest extends TestCase
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeArray', []);
         $code = $codeGen->generate('a', new \ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
-        $isOverPhpParserVer2 = method_exists(Method::class, 'setReturnType');
-        $expected = $isOverPhpParserVer2 ? 'function returnTypeArray() : array' : 'function returnTypeArray()';
+        $expected = 'function returnTypeArray() : array';
         $this->assertContains($expected, $code);
     }
 
