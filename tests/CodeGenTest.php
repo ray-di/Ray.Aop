@@ -20,9 +20,6 @@ class CodeGenTest extends TestCase
 
     public function testTypeDeclarations()
     {
-        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-            return;
-        }
         $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
@@ -34,9 +31,6 @@ class CodeGenTest extends TestCase
 
     public function testReturnType()
     {
-        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-            return;
-        }
         $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeArray', []);
@@ -48,9 +42,6 @@ class CodeGenTest extends TestCase
 
     public function testReturnTypeVoid()
     {
-        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-            return;
-        }
         $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeVoid', []);
@@ -61,9 +52,6 @@ class CodeGenTest extends TestCase
 
     public function testReturnTypeNullable()
     {
-        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-            return;
-        }
         $codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
         $bind = new Bind;
         $bind->bindInterceptors('returnNullable', []);
