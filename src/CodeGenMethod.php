@@ -93,15 +93,12 @@ final class CodeGenMethod
     {
         $methodStmt = $this->factory->method($method->name);
         $params = $method->getParameters();
-        $isOverPhp7 = version_compare(PHP_VERSION, '7.0.0') >= 0;
         foreach ($params as $param) {
-            $methodStmt = $this->getMethodStatement($param, $methodStmt, $isOverPhp7);
+            $methodStmt = $this->getMethodStatement($param, $methodStmt);
         }
-        if ($isOverPhp7) {
-            $returnType = $method->getReturnType();
-            if ($returnType instanceof \ReflectionType) {
-                $this->setReturnType($returnType, $methodStmt);
-            }
+        $returnType = $method->getReturnType();
+        if ($returnType instanceof \ReflectionType) {
+            $this->setReturnType($returnType, $methodStmt);
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
         $methodStmt->addStmts($methodInsideStatements);
@@ -112,13 +109,13 @@ final class CodeGenMethod
     /**
      * Return parameter reflection
      */
-    private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt, bool $isOverPhp7) : Method
+    private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt) : Method
     {
         /** @var $paramStmt Param */
         $paramStmt = $this->factory->param($param->name);
         /* @var $param \ReflectionParameter */
         $typeHint = $param->getClass();
-        $this->setParameterType($param, $paramStmt, $isOverPhp7, $typeHint);
+        $this->setParameterType($param, $paramStmt, $typeHint);
         $this->setDefault($param, $paramStmt);
         $methodStmt->addParam($paramStmt);
 
@@ -177,13 +174,8 @@ final class CodeGenMethod
         }
     }
 
-    private function setParameterType(\ReflectionParameter $param, Param $paramStmt, $isOverPhp7, \ReflectionClass $typeHint = null) : void
+    private function setParameterType(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null) : void
     {
-        if (! $isOverPhp7) {
-            $this->setTypeHint($param, $paramStmt, $typeHint); // @codeCoverageIgnore
-
-            return; // @codeCoverageIgnore
-        }
         $type = $param->getType();
         if ($type) {
             $paramStmt->setTypeHint((string) $type);
