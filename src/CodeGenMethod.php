@@ -138,7 +138,7 @@ final class CodeGenMethod
      */
     private function getMethodInsideStatement() : array
     {
-        $code = file_get_contents(dirname(__DIR__) . '/src-data/CodeGenTemplate.php');
+        $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
         $node = $this->parser->parse($code)[0];
         /** @var $node \PhpParser\Node\Stmt\Class_ */
         $node = $node->getMethods()[0];
