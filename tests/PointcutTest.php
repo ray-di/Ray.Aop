@@ -1,7 +1,9 @@
 <?php
 namespace Ray\Aop;
 
-class PointcutTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PointcutTest extends TestCase
 {
     public function testNew()
     {

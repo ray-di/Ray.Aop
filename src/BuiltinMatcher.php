@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -22,7 +24,7 @@ class BuiltinMatcher extends AbstractMatcher
      * @param string $matcherName
      * @param array  $arguments
      */
-    public function __construct($matcherName, array $arguments)
+    public function __construct(string $matcherName, array $arguments)
     {
         parent::__construct();
         $this->matcherName = $matcherName;
@@ -34,7 +36,7 @@ class BuiltinMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(\ReflectionClass $class, array $arguments)
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
         return $this->matcher->matchesClass($class, $arguments);
     }
@@ -42,7 +44,7 @@ class BuiltinMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(\ReflectionMethod $method, array $arguments)
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
         return $this->matcher->matchesMethod($method, $arguments);
     }

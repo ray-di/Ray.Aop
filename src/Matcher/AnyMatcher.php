@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -26,7 +28,7 @@ final class AnyMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(\ReflectionClass $class, array $arguments)
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
         return true;
     }
@@ -34,14 +36,14 @@ final class AnyMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(\ReflectionMethod $method, array $arguments)
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
         unset($arguments);
 
         return ! ($this->isMagicMethod($method->name) || $this->isBuiltinMethod($method->name));
     }
 
-    private function setBuildInMethods()
+    private function setBuildInMethods() : void
     {
         $methods = (new \ReflectionClass('\ArrayObject'))->getMethods();
         foreach ($methods as $method) {
@@ -49,12 +51,7 @@ final class AnyMatcher extends AbstractMatcher
         }
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    private function isMagicMethod($name)
+    private function isMagicMethod(string $name) : bool
     {
         return strpos($name, '__') === 0;
     }
@@ -64,7 +61,7 @@ final class AnyMatcher extends AbstractMatcher
      *
      * @return bool
      */
-    private function isBuiltinMethod($name)
+    private function isBuiltinMethod(string $name) : bool
     {
         $isBuiltin = in_array($name, self::$builtinMethods, true);
 

@@ -1,7 +1,9 @@
 <?php
 namespace Ray\Aop;
 
-class ReflectiveMethodInvocationTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ReflectiveMethodInvocationTest extends TestCase
 {
     /**
      * @var ReflectiveMethodInvocation

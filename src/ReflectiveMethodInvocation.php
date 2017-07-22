@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -49,7 +51,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritdoc}
      */
-    public function getMethod()
+    public function getMethod() : \ReflectionMethod
     {
         if ($this->object instanceof WeavedInterface) {
             $class = (new \ReflectionObject($this->object))->getParentClass();
@@ -65,7 +67,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritdoc}
      */
-    public function getArguments()
+    public function getArguments() : \ArrayObject
     {
         return $this->arguments;
     }

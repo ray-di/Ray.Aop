@@ -1,7 +1,9 @@
 <?php
 namespace Ray\Aop;
 
-class ParserFactoryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ParserFactoryTest extends TestCase
 {
     public function testCreate()
     {

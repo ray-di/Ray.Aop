@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -23,5 +25,5 @@ interface Invocation extends Joinpoint
      *
      * @return \ArrayObject the argument of the invocation
      */
-    public function getArguments();
+    public function getArguments() : \ArrayObject;
 }

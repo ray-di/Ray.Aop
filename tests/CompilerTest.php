@@ -2,9 +2,9 @@
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Ray\Aop\Exception\NotWritableException;
+use PHPUnit\Framework\TestCase;
 
-class CompilerTest extends \PHPUnit_Framework_TestCase
+class CompilerTest extends TestCase
 {
     /**
      * @var Bind
@@ -26,12 +26,6 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $matcher = new Matcher(new AnnotationReader);
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor]);
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-        array_map('unlink', glob("{$_ENV['TMP_DIR']}/*.php"));
     }
 
     public function testBuildClass()
@@ -203,12 +197,14 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $file = file((new \ReflectionClass($class))->getFileName());
         $expected = '    function returnSame(array $arrayParam, callable $callableParam)
 ';
-        $this->assertSame($expected, $file[7]);
+        $this->assertSame($expected, $file[8]);
     }
 
+    /**
+     * @expectedException \Ray\Aop\Exception\NotWritableException
+     */
     public function testNotWritable()
     {
-        $this->setExpectedException(NotWritableException::class);
         new Compiler('./not_available');
     }
 

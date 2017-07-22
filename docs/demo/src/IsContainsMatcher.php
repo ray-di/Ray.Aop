@@ -3,12 +3,12 @@ namespace Ray\Aop\Demo;
 
 use Ray\Aop\AbstractMatcher;
 
-class IsContainsMatcher extends AbstractMatcher
+final class IsContainsMatcher extends AbstractMatcher
 {
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(\ReflectionClass $class, array $arguments)
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
         list($contains) = $arguments;
 
@@ -18,7 +18,7 @@ class IsContainsMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(\ReflectionMethod $method, array $arguments)
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
         list($contains) = $arguments;
 

@@ -14,7 +14,7 @@ namespace Ray\Aop;
  * interceptor.
  *
  * @see MethodInterceptor
- * @see http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInvocation.html
+ * http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInvocation.html
  */
 interface MethodInvocation extends Invocation
 {
@@ -25,5 +25,5 @@ interface MethodInvocation extends Invocation
      *
      * @return ReflectionMethod method being called
      */
-    public function getMethod();
+    public function getMethod() : \ReflectionMethod;
 }

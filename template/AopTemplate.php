@@ -8,24 +8,24 @@
  * @see http://stackoverflow.com/questions/8343399/calling-a-function-with-explicit-parameters-vs-call-user-func-array
  * @see http://stackoverflow.com/questions/1796100/what-is-faster-many-ifs-or-else-if
  * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
- *
  */
-class CodeGenTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
+class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 {
-    /**
-     * @var bool
-     */
-    private $isIntercepting = true;
-
     /**
      * @var array
      *
      * [$methodName => [$interceptorA[]][]
      */
     public $bindings;
+    /**
+     * @var bool
+     */
+    private $isIntercepting = true;
 
     /**
      * Method Template
+     *
+     * @param mixed $a
      */
     public function returnSame($a)
     {
@@ -35,6 +35,7 @@ class CodeGenTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterfa
 
         if ($this->isIntercepting === false) {
             $this->isIntercepting = true;
+
             return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
         }
 

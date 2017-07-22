@@ -1,9 +1,10 @@
 <?php
 namespace Ray\Aop\Matcher;
 
+use PHPUnit\Framework\TestCase;
 use Ray\Aop\FakeClass;
 
-class StartsWithMatcherTest extends \PHPUnit_Framework_TestCase
+class StartsWithMatcherTest extends TestCase
 {
     public function testMatchesClass()
     {

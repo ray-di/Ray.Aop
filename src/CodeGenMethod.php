@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -11,6 +13,8 @@ use PhpParser\Builder\Method;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
+use PhpParser\Node\NullableType;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Annotation\AbstractAssisted;
@@ -61,7 +65,7 @@ final class CodeGenMethod
      *
      * @return array
      */
-    public function getMethods(\ReflectionClass $class, BindInterface $bind)
+    public function getMethods(\ReflectionClass $class, BindInterface $bind) : array
     {
         $bindingMethods = array_keys($bind->getBindings());
         $stmts = [];
@@ -89,12 +93,11 @@ final class CodeGenMethod
     {
         $methodStmt = $this->factory->method($method->name);
         $params = $method->getParameters();
-        $isOverPhp7 = version_compare(PHP_VERSION, '7.0.0') >= 0;
         foreach ($params as $param) {
-            $methodStmt = $this->getMethodStatement($param, $methodStmt, $isOverPhp7);
+            $methodStmt = $this->getMethodStatement($param, $methodStmt);
         }
-        if ($isOverPhp7) {
-            $returnType = (string) $method->getReturnType();
+        $returnType = $method->getReturnType();
+        if ($returnType instanceof \ReflectionType) {
             $this->setReturnType($returnType, $methodStmt);
         }
         $methodInsideStatements = $this->getMethodInsideStatement();
@@ -105,33 +108,21 @@ final class CodeGenMethod
 
     /**
      * Return parameter reflection
-     *
-     * @param \ReflectionParameter      $param
-     * @param \PhpParser\Builder\Method $methodStmt
-     * @param bool                      $isOverPhp7
-     *
-     * @return \PhpParser\Builder\Method
      */
-    private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt, $isOverPhp7)
+    private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt) : Method
     {
         /** @var $paramStmt Param */
         $paramStmt = $this->factory->param($param->name);
         /* @var $param \ReflectionParameter */
         $typeHint = $param->getClass();
-        $this->setParameterType($param, $paramStmt, $isOverPhp7, $typeHint);
+        $this->setParameterType($param, $paramStmt, $typeHint);
         $this->setDefault($param, $paramStmt);
         $methodStmt->addParam($paramStmt);
 
         return $methodStmt;
     }
 
-    /**
-     * @param Method            $methodStmt
-     * @param \ReflectionMethod $method
-     *
-     * @return \PhpParser\Node\Stmt\ClassMethod
-     */
-    private function addMethodDocComment(Method $methodStmt, \ReflectionMethod $method)
+    private function addMethodDocComment(Method $methodStmt, \ReflectionMethod $method) : ClassMethod
     {
         $node = $methodStmt->getNode();
         $docComment = $method->getDocComment();
@@ -145,9 +136,9 @@ final class CodeGenMethod
     /**
      * @return \PhpParser\Node[]
      */
-    private function getMethodInsideStatement()
+    private function getMethodInsideStatement() : array
     {
-        $code = file_get_contents(dirname(__DIR__) . '/src-data/CodeGenTemplate.php');
+        $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
         $node = $this->parser->parse($code)[0];
         /** @var $node \PhpParser\Node\Stmt\Class_ */
         $node = $node->getMethods()[0];
@@ -156,13 +147,9 @@ final class CodeGenMethod
     }
 
     /**
-     * @param \ReflectionParameter $param
-     * @param Param                $paramStmt
-     * @param \ReflectionClass     $typeHint
-     *
      * @codeCoverageIgnore
      */
-    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null)
+    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null) : void
     {
         if ($typeHint) {
             $paramStmt->setTypeHint($typeHint->name);
@@ -175,11 +162,7 @@ final class CodeGenMethod
         }
     }
 
-    /**
-     * @param \ReflectionParameter $param
-     * @param Param                $paramStmt
-     */
-    private function setDefault(\ReflectionParameter $param, $paramStmt)
+    private function setDefault(\ReflectionParameter $param, Param $paramStmt) : void
     {
         if ($param->isDefaultValueAvailable()) {
             $paramStmt->setDefault($param->getDefaultValue());
@@ -191,33 +174,19 @@ final class CodeGenMethod
         }
     }
 
-    /**
-     * @param \ReflectionParameter $param
-     * @param Param                $paramStmt
-     * @param bool                 $isOverPhp7
-     * @param \ReflectionClass     $typeHint
-     */
-    private function setParameterType(\ReflectionParameter $param, Param $paramStmt, $isOverPhp7, \ReflectionClass $typeHint = null)
+    private function setParameterType(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null) : void
     {
-        if (! $isOverPhp7) {
-            $this->setTypeHint($param, $paramStmt, $typeHint); // @codeCoverageIgnore
-
-            return; // @codeCoverageIgnore
-        }
         $type = $param->getType();
         if ($type) {
             $paramStmt->setTypeHint((string) $type);
         }
     }
 
-    /**
-     * @param string $returnType
-     * @param Method $methodStmt
-     */
-    private function setReturnType($returnType, Method $methodStmt)
+    private function setReturnType(\ReflectionType $returnType, Method $methodStmt) : void
     {
+        $type = $returnType->allowsNull() ? new NullableType($returnType->getName()) : $returnType->getName();
         if ($returnType && method_exists($methodStmt, 'setReturnType')) {
-            $methodStmt->setReturnType($returnType); // @codeCoverageIgnore
+            $methodStmt->setReturnType($type); // @codeCoverageIgnore
         }
     }
 }

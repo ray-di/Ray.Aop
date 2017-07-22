@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -18,7 +20,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
      *
      * @param WeavedInterface $object
      */
-    public function setObject(WeavedInterface $object)
+    public function setObject(WeavedInterface $object) : void
     {
         $this->object = $object;
     }
@@ -26,7 +28,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     /**
      * {@inheritdoc}
      */
-    public function getAnnotations()
+    public function getAnnotations() : array
     {
         return unserialize($this->object->classAnnotations);
     }
@@ -34,7 +36,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     /**
      * {@inheritdoc}
      */
-    public function getAnnotation($annotationName)
+    public function getAnnotation(string $annotationName)
     {
         $annotations = $this->getAnnotations();
         if (array_key_exists($annotationName, $annotations)) {

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the Ray.Aop package
  *
@@ -60,14 +62,7 @@ final class CodeGen implements CodeGenInterface
         $this->reader = new IndexedReader(new AnnotationReader);
     }
 
-    /**
-     * @param string           $class
-     * @param \ReflectionClass $sourceClass
-     * @param BindInterface    $bind
-     *
-     * @return string
-     */
-    public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind)
+    public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind) : string
     {
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind);
         $stmt = $this
@@ -76,41 +71,30 @@ final class CodeGen implements CodeGenInterface
             ->getNode();
         $stmt = $this->addClassDocComment($stmt, $sourceClass);
         $code = $this->printer->prettyPrint([$stmt]);
-        $statements = $this->getUseStatements($sourceClass);
+        $statements = $this->getPhpFileStatementCode($sourceClass);
 
         return $statements . $code;
     }
 
     /**
-     * @param \ReflectionClass $class
-     *
-     * @return string
+     * Return "declare()" and "use" statement code
      */
-    private function getUseStatements(\ReflectionClass $class)
+    private function getPhpFileStatementCode(\ReflectionClass $class) : string
     {
         $traverser = new NodeTraverser();
-        $useStmtsVisitor = new CodeGenVisitor();
-        $traverser->addVisitor($useStmtsVisitor);
-        // parse
+        $visitor = new CodeGenVisitor();
+        $traverser->addVisitor($visitor);
         $stmts = $this->parser->parse(file_get_contents($class->getFileName()));
-        /* @var $stmts array */
-        // traverse
         $traverser->traverse($stmts);
-        // pretty print
-        $code = $this->printer->prettyPrint($useStmtsVisitor());
+        $code = $this->printer->prettyPrint($visitor());
 
-        return (string) $code;
+        return (string) $code . PHP_EOL;
     }
 
     /**
      * Return class statement
-     *
-     * @param string           $newClassName
-     * @param \ReflectionClass $class
-     *
-     * @return \PhpParser\Builder\Class_
      */
-    private function getClass($newClassName, \ReflectionClass $class)
+    private function getClass(string $newClassName, \ReflectionClass $class) : Builder
     {
         $parentClass = $class->name;
         $builder = $this->factory
@@ -125,13 +109,8 @@ final class CodeGen implements CodeGenInterface
 
     /**
      * Add class doc comment
-     *
-     * @param Class_           $node
-     * @param \ReflectionClass $class
-     *
-     * @return \PhpParser\Node\Stmt\Class_
      */
-    private function addClassDocComment(Class_ $node, \ReflectionClass $class)
+    private function addClassDocComment(Class_ $node, \ReflectionClass $class) : Class_
     {
         $docComment = $class->getDocComment();
         if ($docComment) {
@@ -141,24 +120,14 @@ final class CodeGen implements CodeGenInterface
         return $node;
     }
 
-    /**
-     * @param \ReflectionClass $class
-     *
-     * @return string
-     */
-    private function getClassAnnotation(\ReflectionClass $class)
+    private function getClassAnnotation(\ReflectionClass $class) : string
     {
         $classAnnotations = $this->reader->getClassAnnotations($class);
 
         return serialize($classAnnotations);
     }
 
-    /**
-     * @param Builder $builder
-     *
-     * @return Builder
-     */
-    private function addInterceptorProp(Builder $builder)
+    private function addInterceptorProp(Builder $builder) : Builder
     {
         $builder->addStmt(
             $this->factory
@@ -175,13 +144,8 @@ final class CodeGen implements CodeGenInterface
 
     /**
      * Add serialised
-     *
-     * @param Builder          $builder
-     * @param \ReflectionClass $class
-     *
-     * @return Builder
      */
-    private function addSerialisedAnnotationProp(Builder $builder, \ReflectionClass $class)
+    private function addSerialisedAnnotationProp(Builder $builder, \ReflectionClass $class) : Builder
     {
         $builder->addStmt(
             $this->factory
@@ -198,12 +162,7 @@ final class CodeGen implements CodeGenInterface
         return $builder;
     }
 
-    /**
-     * @param \ReflectionClass $class
-     *
-     * @return string
-     */
-    private function getMethodAnnotations(\ReflectionClass $class)
+    private function getMethodAnnotations(\ReflectionClass $class) : string
     {
         $methodsAnnotation = [];
         $methods = $class->getMethods();

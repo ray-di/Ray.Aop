@@ -1,7 +1,9 @@
 <?php
 namespace Ray\Aop;
 
-class BindTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class BindTest extends TestCase
 {
     /**
      * @var Bind

@@ -34,7 +34,7 @@ class FakeClass
      *
      * @Log
      */
-    public function getTriple($c)
+    public function getTriple(int $c): \Ray\Aop\number
     {
         return $c * 3;
     }
