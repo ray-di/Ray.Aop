@@ -243,9 +243,10 @@ $ composer require ray/aop ~2.0
 Here's how to install Ray.Aop from source and run the unit tests and demos.
 
 ```bash
-$ composer create-project ray/aop:~2.0 Ray.Aop
+$ git clone https://github.com/ray-di/Ray.Aop.git
 $ cd Ray.Aop
-$ phpunit
+$ composer install
+$ vendor/bin/phpunit
 $ php docs/demo/run.php
 ```
 
