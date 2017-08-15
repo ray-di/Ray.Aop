@@ -229,11 +229,6 @@ $class = $invocation->getMethod()->getDeclaringClass();
 
 The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html).
 
-## Requirements
-
-* PHP 5.6+
-* hhvm
-
 ## Installation
 
 The recommended way to install Ray.Aop is through [Composer](https://github.com/composer/composer).
