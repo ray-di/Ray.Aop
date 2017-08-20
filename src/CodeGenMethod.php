@@ -183,9 +183,7 @@ final class CodeGenMethod
 
     private function setReturnType(\ReflectionType $returnType, Method $methodStmt)
     {
-        $type = $returnType->allowsNull() ? new NullableType($returnType->getName()) : $returnType->getName();
-        if ($returnType && method_exists($methodStmt, 'setReturnType')) {
-            $methodStmt->setReturnType($type); // @codeCoverageIgnore
-        }
+        $type = $returnType->allowsNull() ? new NullableType($returnType->getName()) : (string) $returnType;
+        $methodStmt->setReturnType($type);
     }
 }
