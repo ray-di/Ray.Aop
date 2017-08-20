@@ -28,7 +28,7 @@ class CodeGenVisitor extends NodeVisitorAbstract
         return $this->selectedNodes;
     }
 
-    public function enterNode(Node $node) : void
+    public function enterNode(Node $node)
     {
         if ($node instanceof Use_ || $node instanceof Declare_) {
             $this->selectedNodes[] = $node; // @codeCoverageIgnore

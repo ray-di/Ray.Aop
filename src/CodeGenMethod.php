@@ -148,7 +148,7 @@ final class CodeGenMethod
     /**
      * @codeCoverageIgnore
      */
-    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null) : void
+    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null)
     {
         if ($typeHint) {
             $paramStmt->setTypeHint($typeHint->name);
@@ -161,7 +161,7 @@ final class CodeGenMethod
         }
     }
 
-    private function setDefault(\ReflectionParameter $param, Param $paramStmt) : void
+    private function setDefault(\ReflectionParameter $param, Param $paramStmt)
     {
         if ($param->isDefaultValueAvailable()) {
             $paramStmt->setDefault($param->getDefaultValue());
@@ -173,7 +173,7 @@ final class CodeGenMethod
         }
     }
 
-    private function setParameterType(\ReflectionParameter $param, Param $paramStmt) : void
+    private function setParameterType(\ReflectionParameter $param, Param $paramStmt)
     {
         $type = $param->getType();
         if ($type) {
@@ -181,7 +181,7 @@ final class CodeGenMethod
         }
     }
 
-    private function setReturnType(\ReflectionType $returnType, Method $methodStmt) : void
+    private function setReturnType(\ReflectionType $returnType, Method $methodStmt)
     {
         $type = $returnType->allowsNull() ? new NullableType($returnType->getName()) : $returnType->getName();
         if ($returnType && method_exists($methodStmt, 'setReturnType')) {

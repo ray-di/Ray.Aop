@@ -43,7 +43,7 @@ final class AnyMatcher extends AbstractMatcher
         return ! ($this->isMagicMethod($method->name) || $this->isBuiltinMethod($method->name));
     }
 
-    private function setBuildInMethods() : void
+    private function setBuildInMethods()
     {
         $methods = (new \ReflectionClass('\ArrayObject'))->getMethods();
         foreach ($methods as $method) {
