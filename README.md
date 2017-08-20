@@ -235,7 +235,7 @@ The recommended way to install Ray.Aop is through [Composer](https://github.com/
 
 ```bash
 # Add Ray.Aop as a dependency
-$ composer require ray/aop ~2.0
+$ composer require ray/aop ^2.0
 ```
 
 ## Testing Ray.Aop
