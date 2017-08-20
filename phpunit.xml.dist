@@ -2,7 +2,7 @@
     <testsuites>
         <testsuite>
             <directory suffix="Test.php">tests</directory>
-            <file phpVersion="7.1.0" phpVersionOperator=">=">tests/CodeGenPhp71Test.php</file>
+            <file phpVersion="7.1.0" phpVersionOperator=">=">tests/CodeGenPhp71.php</file>
         </testsuite>
     </testsuites>
     <filter>

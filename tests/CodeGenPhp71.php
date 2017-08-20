@@ -5,7 +5,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
 
-class CodeGenPhp71Test extends TestCase
+class CodeGenPhp71 extends TestCase
 {
     /**
      * @var CodeGen
