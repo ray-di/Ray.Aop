@@ -23,7 +23,7 @@ class CompilerTest extends TestCase
             $_ENV['TMP_DIR']
         );
         $this->bind = new Bind;
-        $matcher = new Matcher(new AnnotationReader);
+        $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor]);
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
     }
@@ -113,7 +113,7 @@ class CompilerTest extends TestCase
 
     public function testCallAbortProceedInterceptorTwice()
     {
-        $matcher = new Matcher(new AnnotationReader);
+        $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeAbortProceedInterceptor]);
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
         $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);

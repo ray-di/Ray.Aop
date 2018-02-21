@@ -16,10 +16,6 @@ class ParserFactory
 {
     public function newInstance()
     {
-        if (class_exists('PhpParser\ParserFactory')) {
-            return (new PhpParserFactory)->create(PhpParserFactory::PREFER_PHP7);
-        }
-
-        return new Parser(new Lexer());  // @codeCoverageIgnore
+        return (new PhpParserFactory)->create(PhpParserFactory::PREFER_PHP7);
     }
 }
