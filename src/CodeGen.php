@@ -85,10 +85,12 @@ final class CodeGen implements CodeGenInterface
         $visitor = new CodeGenVisitor();
         $traverser->addVisitor($visitor);
         $stmts = $this->parser->parse(file_get_contents($class->getFileName()));
-        $traverser->traverse($stmts);
+        if (is_array($stmts)) {
+            $traverser->traverse($stmts);
+        }
         $code = $this->printer->prettyPrint($visitor());
 
-        return (string) $code . PHP_EOL;
+        return $code . PHP_EOL;
     }
 
     /**

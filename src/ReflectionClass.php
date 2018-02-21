@@ -30,7 +30,10 @@ class ReflectionClass extends \ReflectionClass implements Reader
      */
     public function getAnnotations() : array
     {
-        return unserialize($this->object->classAnnotations);
+        /** @var AbstractWeave $object */
+        $object = $this->object;
+
+        return unserialize($object->classAnnotations);
     }
 
     /**

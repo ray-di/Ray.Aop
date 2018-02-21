@@ -16,12 +16,12 @@ use PhpParser\NodeVisitorAbstract;
 class CodeGenVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var Use_[]
+     * @var Node\Stmt[]
      */
     private $selectedNodes = [];
 
     /**
-     * @return Node\Stmt\Use_[]
+     * @return Node\Stmt[]
      */
     public function __invoke() : array
     {

@@ -46,7 +46,9 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
      */
     public function getAnnotations() : array
     {
-        $annotations = unserialize($this->object->methodAnnotations);
+        /** @var AbstractWeave $object */
+        $object = $this->object;
+        $annotations = unserialize($object->methodAnnotations);
         if (array_key_exists($this->method, $annotations)) {
             return $annotations[$this->method];
         }

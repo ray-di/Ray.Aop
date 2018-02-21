@@ -5,6 +5,7 @@ class FakeMatcher extends AbstractMatcher
 {
     public function __construct($arg1 = true, $arg2 = true)
     {
+        parent::__construct();
         $this->arguments = [$arg1, $arg2];
     }
 

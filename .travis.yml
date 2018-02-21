@@ -18,6 +18,7 @@ before_script:
   - composer update $DEPENDENCIES
 script:
   - ./vendor/bin/phpunit --coverage-clover=coverage.clover;
+  - ./vendor/bin/phpstan analyse -l 7 src
   - if [ "$TRAVIS_PHP_VERSION" = "7.1" ]; then wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.4.0/php-cs-fixer.phar && php php-cs-fixer.phar fix --config=.php_cs -v --dry-run --using-cache=no --path-mode=intersection `git diff --name-only --diff-filter=ACMRTUXB $TRAVIS_COMMIT_RANGE`; fi
 
 after_script:
