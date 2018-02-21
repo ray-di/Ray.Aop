@@ -8,8 +8,6 @@ declare(strict_types=1);
  */
 namespace Ray\Aop;
 
-use PhpParser\Lexer;
-use PhpParser\Parser;
 use PhpParser\ParserFactory as PhpParserFactory;
 
 class ParserFactory
