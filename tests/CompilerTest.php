@@ -44,7 +44,8 @@ class CompilerTest extends TestCase
         $this->assertSame($class1, $class2);
         $class1File = (new \ReflectionClass($class1))->getFileName();
         $class2File = (new \ReflectionClass($class1))->getFileName();
-        $this->assertSame($class1File, $class2File);    }
+        $this->assertSame($class1File, $class2File);
+    }
 
     /**
      * @depends testNewInstance
