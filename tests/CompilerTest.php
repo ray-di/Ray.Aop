@@ -28,38 +28,37 @@ class CompilerTest extends TestCase
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
     }
 
-    public function testBuildClass()
+    public function testNewInstance()
     {
-        $class = $this->getWeaved();
-        $this->assertTrue(class_exists($class));
+        $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        $this->assertInstanceOf(FakeMock::class, $mock);
 
-        return $class;
+        return $mock;
     }
 
-    public function testBuildClassTwice()
+    public function testNewInstanceTwice()
     {
-        $class1 = $this->getWeaved();
-        $class2 = $this->getWeaved();
+        $class1 = $this->compiler->compile(FakeMock::class, $this->bind);
+        $class2 = $this->compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class1));
         $this->assertSame($class1, $class2);
         $class1File = (new \ReflectionClass($class1))->getFileName();
         $class2File = (new \ReflectionClass($class1))->getFileName();
-        $this->assertSame($class1File, $class2File);
-    }
+        $this->assertSame($class1File, $class2File);    }
 
     /**
-     * @depends testBuildClass
+     * @depends testNewInstance
      *
      * @param string $class
      */
-    public function testBuild($class)
+    public function testParentClassName($class)
     {
         $parentClass = (new \ReflectionClass($class))->getParentClass()->name;
         $this->assertSame($parentClass, FakeMock::class);
     }
 
     /**
-     * @depends testBuildClass
+     * @depends testNewInstance
      *
      * @param string $class
      */
@@ -72,9 +71,9 @@ class CompilerTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    public function testNewInstance()
+    public function testParenteClass()
     {
-        $weaved = $this->getWeaved();
+        $weaved = $this->testNewInstance();
         $parent = (new \ReflectionClass($weaved))->getParentClass()->name;
         $this->assertSame($parent, FakeMock::class);
 
@@ -246,9 +245,11 @@ class CompilerTest extends TestCase
     {
         $bind = (new Bind)->bindInterceptors('returnSame', [new FakeMethodAnnotationReaderInterceptor]);
         $compiler = new Compiler($_ENV['TMP_DIR']);
-        $weaved = $this->getWeaved();
-        /* @var $mock FakeMock */
-        $weaved->returnSame(1);
+        $mock = $compiler->newInstance(FakeMock::class, [], $bind);
+        if (! $mock instanceof FakeMock) {
+            throw new \LogicException;
+        }
+        $mock->returnSame(1);
         $this->assertNull(FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
         $this->assertCount(0, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
     }

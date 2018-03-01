@@ -42,7 +42,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
         $this->isIntercepting = false;
         $invocationResult = (new \Ray\Aop\ReflectiveMethodInvocation(
             $this,
-            new \ReflectionMethod($this, __FUNCTION__),
+            new \Ray\Aop\ReflectionMethod($this, __FUNCTION__),
             new \Ray\Aop\Arguments(func_get_args()),
             $this->bindings[__FUNCTION__]
         ))->proceed();
