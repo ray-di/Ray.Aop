@@ -249,10 +249,11 @@ $ composer require ray/aop ~2.0
 Ray.Aopをソースからインストールし、ユニットテストとデモを実行するには次のようにします。
 
 ```bash
-$ composer create-project ray/aop:~2.0 Ray.Aop
-$ cd Ray.Aop
-$ phpunit
-$ php docs/demo/run.php
+git clone https://github.com/ray-di/Ray.Aop.git
+cd Ray.Aop
+composer install
+vendor/bin/phpunit
+php demo/run.php
 ```
 
 DIとAOPを統合したDIフレームワーク[Ray.Di](https://github.com/ray-di/Ray.Di)もご覧ください。
