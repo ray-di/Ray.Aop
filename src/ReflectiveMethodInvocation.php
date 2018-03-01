@@ -21,7 +21,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $arguments;
 
     /**
-     * @var ReflectionMethod
+     * @var \ReflectionMethod
      */
     private $method;
 
@@ -30,9 +30,15 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     private $interceptors;
 
+    /**
+     * @param object              $object
+     * @param \ReflectionMethod   $method
+     * @param Arguments           $arguments
+     * @param MethodInterceptor[] $interceptors
+     */
     public function __construct(
         $object,
-        ReflectionMethod $method,
+        \ReflectionMethod $method,
         Arguments $arguments,
         array $interceptors = []
     ) {
@@ -45,7 +51,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritdoc}
      */
-    public function getMethod() : ReflectionMethod
+    public function getMethod() : \ReflectionMethod
     {
         if ($this->object instanceof WeavedInterface) {
             $class = (new \ReflectionObject($this->object))->getParentClass();

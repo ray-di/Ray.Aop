@@ -19,7 +19,7 @@ class ReflectiveMethodInvocationTest extends TestCase
     {
         parent::setUp();
         $this->fake = new FakeClass;
-        $this->invocation = new ReflectiveMethodInvocation($this->fake, new ReflectionMethod($this->fake, 'add'), new Arguments([1]));
+        $this->invocation = new ReflectiveMethodInvocation($this->fake, new \ReflectionMethod($this->fake, 'add'), new Arguments([1]));
     }
 
     public function testGetMethod()
@@ -63,7 +63,7 @@ class ReflectiveMethodInvocationTest extends TestCase
     public function testGetParentMethod()
     {
         $fake = new FakeWeavedClass;
-        $invocation = new ReflectiveMethodInvocation($fake, new ReflectionMethod($fake, 'add'), new Arguments([1]));
+        $invocation = new ReflectiveMethodInvocation($fake, new \ReflectionMethod($fake, 'add'), new Arguments([1]));
         $method = $invocation->getMethod();
         $this->assertSame(FakeClass::class, $method->class);
         $this->assertSame('add', $method->name);
@@ -72,7 +72,7 @@ class ReflectiveMethodInvocationTest extends TestCase
     public function testProceedMultipleInterceptors()
     {
         $fake = new FakeWeavedClass;
-        $invocation = new ReflectiveMethodInvocation($fake, new ReflectionMethod($fake, 'add'), new Arguments([1]), [new FakeInterceptor, new FakeInterceptor]);
+        $invocation = new ReflectiveMethodInvocation($fake, new \ReflectionMethod($fake, 'add'), new Arguments([1]), [new FakeInterceptor, new FakeInterceptor]);
         $invocation->proceed();
         $this->assertSame(1, $fake->a);
     }
