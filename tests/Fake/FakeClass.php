@@ -30,11 +30,9 @@ class FakeClass
     /**
      * @param int $c
      *
-     * @return number
-     *
      * @Log
      */
-    public function getTriple(int $c)
+    public function getTriple(int $c): int
     {
         return $c * 3;
     }

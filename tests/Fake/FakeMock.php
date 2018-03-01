@@ -28,7 +28,7 @@ class FakeMock
 
     public function returnValue(FakeNum $num = null)
     {
-        return $num->value;
+        return ($num instanceof FakeNum) ? $num->value : null;
     }
 
     public function getPrivateVal()

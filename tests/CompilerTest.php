@@ -28,15 +28,15 @@ class CompilerTest extends TestCase
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
     }
 
-    public function testBuildClass()
+    public function testNewInstance()
     {
-        $class = $this->compiler->compile(FakeMock::class, $this->bind);
-        $this->assertTrue(class_exists($class));
+        $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        $this->assertInstanceOf(FakeMock::class, $mock);
 
-        return $class;
+        return $mock;
     }
 
-    public function testBuildClassTwice()
+    public function testNewInstanceTwice()
     {
         $class1 = $this->compiler->compile(FakeMock::class, $this->bind);
         $class2 = $this->compiler->compile(FakeMock::class, $this->bind);
@@ -48,18 +48,18 @@ class CompilerTest extends TestCase
     }
 
     /**
-     * @depends testBuildClass
+     * @depends testNewInstance
      *
      * @param string $class
      */
-    public function testBuild($class)
+    public function testParentClassName($class)
     {
         $parentClass = (new \ReflectionClass($class))->getParentClass()->name;
         $this->assertSame($parentClass, FakeMock::class);
     }
 
     /**
-     * @depends testBuildClass
+     * @depends testNewInstance
      *
      * @param string $class
      */
@@ -72,9 +72,9 @@ class CompilerTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    public function testNewInstance()
+    public function testParenteClass()
     {
-        $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        $weaved = $this->testNewInstance();
         $parent = (new \ReflectionClass($weaved))->getParentClass()->name;
         $this->assertSame($parent, FakeMock::class);
 
@@ -105,8 +105,7 @@ class CompilerTest extends TestCase
 
     public function testGetPrivateVal()
     {
-        $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
-        /** @var FakeMock $weaved */
+        $weaved = $this->getWeaved();
         $val = $weaved->getPrivateVal();
         /* @var FakeMock $weaved */
         $this->assertSame($val, 1);
@@ -117,8 +116,7 @@ class CompilerTest extends TestCase
         $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeAbortProceedInterceptor]);
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
-        $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
-        /* @var $weaved FakeMock */
+        $weaved = $this->getWeaved();
         $this->assertSame(40, $weaved->returnSame(1));
         $this->assertSame(40, $weaved->returnSame(1));
     }
@@ -224,9 +222,7 @@ class CompilerTest extends TestCase
 
     public function testMethodAnnotationReader()
     {
-        $bind = (new Bind)->bindInterceptors('getDouble', [new FakeMethodAnnotationReaderInterceptor]);
-        $compiler = new Compiler($_ENV['TMP_DIR']);
-        $mock = $compiler->newInstance(FakeAnnotateClass::class, [], $bind);
+        $mock = $this->getAnnotated();
         /* @var $mock FakeAnnotateClass */
         $mock->getDouble(1);
         $this->assertInstanceOf(FakeMarker::class, FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
@@ -251,9 +247,31 @@ class CompilerTest extends TestCase
         $bind = (new Bind)->bindInterceptors('returnSame', [new FakeMethodAnnotationReaderInterceptor]);
         $compiler = new Compiler($_ENV['TMP_DIR']);
         $mock = $compiler->newInstance(FakeMock::class, [], $bind);
-        /* @var $mock FakeMock */
+        if (! $mock instanceof FakeMock) {
+            throw new \LogicException;
+        }
         $mock->returnSame(1);
         $this->assertNull(FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
         $this->assertCount(0, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
+    }
+
+    private function getWeaved() : FakeMock
+    {
+        $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        if ($mock instanceof FakeMock) {
+            return $mock;
+        }
+        throw new \LogicException;
+    }
+
+    private function getAnnotated() : FakeAnnotateClass
+    {
+        $bind = (new Bind)->bindInterceptors('getDouble', [new FakeMethodAnnotationReaderInterceptor]);
+        $compiler = new Compiler($_ENV['TMP_DIR']);
+        $mock = $compiler->newInstance(FakeAnnotateClass::class, [], $bind);
+        if ($mock instanceof FakeAnnotateClass) {
+            return $mock;
+        }
+        throw new \LogicException;
     }
 }
