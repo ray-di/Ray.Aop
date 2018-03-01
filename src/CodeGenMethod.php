@@ -41,7 +41,7 @@ final class CodeGenMethod
     /**
      * @var AbstractAssisted
      */
-    private $assisted = [];
+    private $assisted;
 
     /**
      * @param \PhpParser\Parser                 $parser
@@ -111,7 +111,7 @@ final class CodeGenMethod
      */
     private function getMethodStatement(\ReflectionParameter $param, Method $methodStmt) : Method
     {
-        /** @var $paramStmt Param */
+        /* @var $paramStmt Param */
         $paramStmt = $this->factory->param($param->name);
         /* @var $param \ReflectionParameter */
         $this->setParameterType($param, $paramStmt);
@@ -139,7 +139,7 @@ final class CodeGenMethod
     {
         $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
         $node = $this->parser->parse($code)[0];
-        /** @var $node \PhpParser\Node\Stmt\Class_ */
+        /* @var $node \PhpParser\Node\Stmt\Class_ */
         $node = $node->getMethods()[0];
 
         return $node->stmts;
@@ -148,7 +148,7 @@ final class CodeGenMethod
     /**
      * @codeCoverageIgnore
      */
-    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null) : void
+    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null)
     {
         if ($typeHint) {
             $paramStmt->setTypeHint($typeHint->name);
@@ -161,7 +161,7 @@ final class CodeGenMethod
         }
     }
 
-    private function setDefault(\ReflectionParameter $param, Param $paramStmt) : void
+    private function setDefault(\ReflectionParameter $param, Param $paramStmt)
     {
         if ($param->isDefaultValueAvailable()) {
             $paramStmt->setDefault($param->getDefaultValue());
@@ -173,7 +173,7 @@ final class CodeGenMethod
         }
     }
 
-    private function setParameterType(\ReflectionParameter $param, Param $paramStmt) : void
+    private function setParameterType(\ReflectionParameter $param, Param $paramStmt)
     {
         $type = $param->getType();
         if ($type) {
@@ -181,11 +181,9 @@ final class CodeGenMethod
         }
     }
 
-    private function setReturnType(\ReflectionType $returnType, Method $methodStmt) : void
+    private function setReturnType(\ReflectionType $returnType, Method $methodStmt)
     {
-        $type = $returnType->allowsNull() ? new NullableType($returnType->getName()) : $returnType->getName();
-        if ($returnType && method_exists($methodStmt, 'setReturnType')) {
-            $methodStmt->setReturnType($type); // @codeCoverageIgnore
-        }
+        $type = $returnType->allowsNull() ? new NullableType((string) $returnType) : (string) $returnType;
+        $methodStmt->setReturnType($type);
     }
 }

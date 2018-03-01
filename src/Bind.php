@@ -87,7 +87,7 @@ final class Bind implements BindInterface
         return $keyPointcuts;
     }
 
-    private function annotatedMethodsMatch(\ReflectionClass $class, array &$pointcuts) : void
+    private function annotatedMethodsMatch(\ReflectionClass $class, array &$pointcuts)
     {
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
@@ -95,7 +95,7 @@ final class Bind implements BindInterface
         }
     }
 
-    private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts) : void
+    private function annotatedMethodMatch(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts)
     {
         $annotations = $this->reader->getMethodAnnotations($method);
         // priority bind
@@ -113,7 +113,7 @@ final class Bind implements BindInterface
         }
     }
 
-    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut) : void
+    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut)
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
         if (! $isMethodMatch) {

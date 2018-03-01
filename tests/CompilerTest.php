@@ -107,6 +107,7 @@ class CompilerTest extends TestCase
     {
         $weaved = $this->getWeaved();
         $val = $weaved->getPrivateVal();
+        /* @var FakeMock $weaved */
         $this->assertSame($val, 1);
     }
 
@@ -123,7 +124,7 @@ class CompilerTest extends TestCase
     public function testClassDocComment()
     {
         $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
-        /* @var $weaved \Ray\Aop\FakeMock */
+        /* @var $weaved FakeMock */
         $docComment = (new \ReflectionClass($weaved))->getDocComment();
         $expected = (new \ReflectionClass(FakeMock::class))->getDocComment();
         $this->assertContains('/**', $docComment);
@@ -133,7 +134,7 @@ class CompilerTest extends TestCase
     public function testMethodDocComment()
     {
         $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
-        /* @var $weaved \Ray\Aop\FakeMock */
+        /* @var $weaved FakeMock */
         $docComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
         $expected = (new \ReflectionClass(FakeMock::class))->getMethods()[0]->getDocComment();
 
@@ -144,7 +145,7 @@ class CompilerTest extends TestCase
     public function testNoDocComment()
     {
         $weaved = $this->compiler->newInstance(FakeMockNoDoc::class, [], $this->bind);
-        /* @var $weaved \Ray\Aop\FakeMock */
+        /* @var $weaved FakeMock */
         $classDocComment = (new \ReflectionClass($weaved))->getDocComment();
         $methodDocComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
 

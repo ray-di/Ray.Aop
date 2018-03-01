@@ -16,19 +16,19 @@ use PhpParser\NodeVisitorAbstract;
 class CodeGenVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var Use_[]
+     * @var Node\Stmt[]
      */
     private $selectedNodes = [];
 
     /**
-     * @return Node\Stmt\Use_[]
+     * @return Node\Stmt[]
      */
     public function __invoke() : array
     {
         return $this->selectedNodes;
     }
 
-    public function enterNode(Node $node) : void
+    public function enterNode(Node $node)
     {
         if ($node instanceof Use_ || $node instanceof Declare_) {
             $this->selectedNodes[] = $node; // @codeCoverageIgnore

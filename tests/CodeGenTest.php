@@ -43,33 +43,4 @@ class CodeGenTest extends TestCase
         $expected = 'function returnTypeArray() : array';
         $this->assertContains($expected, $code);
     }
-
-    public function testReturnTypeVoid()
-    {
-        $bind = new Bind;
-        $bind->bindInterceptors('returnTypeVoid', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71ReturnTypeClass::class), $bind);
-        $expected = 'function returnTypeVoid() : void';
-        $this->assertContains($expected, $code);
-    }
-
-    public function testReturnTypeNullable()
-    {
-        $bind = new Bind;
-        $bind->bindInterceptors('returnNullable', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71ReturnTypeClass::class), $bind);
-        $expected = 'function returnNullable(string $str) : ?';
-        $this->assertContains($expected, $code);
-
-        return $code;
-    }
-
-    /**
-     * @depends testReturnTypeNullable
-     */
-    public function testContainsStatement(string $code)
-    {
-        $this->assertContains("declare (strict_types=1);\n", $code);
-        $this->assertContains("use Composer\Autoload;\n", $code);
-    }
 }
