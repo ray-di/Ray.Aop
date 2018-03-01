@@ -16,10 +16,4 @@ class FakePhp71ReturnTypeClass
     {
         return null;
     }
-
-    public function checkClass($a)
-    {
-        $a instanceof Autoload;
-        $a instanceof Reflection;
-    }
 }
