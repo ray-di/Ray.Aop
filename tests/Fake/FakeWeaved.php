@@ -24,11 +24,12 @@ class FakeWeaved extends FakeMock
 
         // interceptor weaved call
         $interceptors = $this->bind[__FUNCTION__];
-        $annotation = (isset($this->bind->annotation[__FUNCTION__])) ? $this->bind->annotation[__FUNCTION__] : null;
-        $invocation = new ReflectiveMethodInvocation([
+        $invocation = new ReflectiveMethodInvocation(
             $this,
-            __FUNCTION__
-        ], func_get_args(), $interceptors, $annotation);
+            new \ReflectionMethod($this, __FUNCTION__),
+            new Arguments(func_get_args()),
+            $interceptors
+        );
 
         return $invocation->proceed();
     }
