@@ -10,10 +10,12 @@ class FakeMethodAnnotationReaderInterceptor implements MethodInterceptor
 
     public function invoke(MethodInvocation $invocation)
     {
-        self::$methodAnnotations = $invocation->getMethod()->getAnnotations();
-        self::$methodAnnotation = $invocation->getMethod()->getAnnotation(FakeMarker::class);
-        self::$classAnnotations = $invocation->getMethod()->getDeclaringClass()->getAnnotations();
-        self::$classAnnotation = $invocation->getMethod()->getDeclaringClass()->getAnnotation(FakeClassAnnotation::class);
+        /** @var \Ray\Aop\ReflectionMethod $method */
+        $method = $invocation->getMethod();
+        self::$methodAnnotations = $method->getAnnotations();
+        self::$methodAnnotation = $method->getAnnotation(FakeMarker::class);
+        self::$classAnnotations = $method->getDeclaringClass()->getAnnotations();
+        self::$classAnnotation = $method->getDeclaringClass()->getAnnotation(FakeClassAnnotation::class);
 
         return $invocation->proceed();
     }
