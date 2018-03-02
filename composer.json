@@ -23,7 +23,8 @@
     "autoload": {
         "psr-4": {
             "Ray\\Aop\\": ["src/"]
-        }
+        },
+        "files": ["annotation_loader.php"]
     },
     "autoload-dev": {
         "psr-4": {
