@@ -6,8 +6,6 @@ declare(strict_types=1);
  *
  * @license http://opensource.org/licenses/MIT MIT
  */
-$loader = require dirname(__DIR__) . '/vendor/autoload.php';
-/* @var $loader \Composer\Autoload\ClassLoader */
-\Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+require dirname(__DIR__) . '/vendor/autoload.php';
 $_ENV['TMP_DIR'] = __DIR__ . '/tmp';
 array_map('unlink', glob("{$_ENV['TMP_DIR']}/*.php"));

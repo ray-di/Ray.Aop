@@ -127,5 +127,6 @@ return \PhpCsFixer\Config::create()
             ->exclude('tests/Fake')
             ->exclude('template')
             ->exclude('tests/tmp')
+            ->notPath('annotation_loader.php')
             ->in(__DIR__)
     )->setLineEnding("\n");
