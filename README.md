@@ -206,11 +206,11 @@ class MyInterceptor implements MethodInterceptor
 
 With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
 
- * [`$invocation->proceed()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L39) - Invoke method
- * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) -  Get method reflection
- * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L48) - Get object
- * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) - Get parameters
- 
+ * [`$invocation->proceed()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L41) - Invoke method
+ * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L30) -  Get method reflection
+ * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L50) - Get object
+ * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php#L25) - Get parameters
+ * [`$invocation->getNamedArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php#L32) - Get named parameters
 An extended `ClassRefletion` and `MethodReflection` holds methos to get annotation(s).
 
 ```php
