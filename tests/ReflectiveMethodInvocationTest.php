@@ -83,4 +83,10 @@ class ReflectiveMethodInvocationTest extends TestCase
         $invocation->proceed();
         $this->assertSame(1, $fake->a);
     }
+
+    public function testGetNamedArguments()
+    {
+        $args = $this->invocation->getNamedArguments();
+        $this->assertSame((array) $args, ['n' => 1]);
+    }
 }

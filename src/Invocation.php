@@ -20,10 +20,14 @@ interface Invocation extends Joinpoint
     /**
      * Get the arguments as an array object.
      *
-     * It is possible to change element values within this
-     * array to change the arguments.
-     *
-     * @return \ArrayObject the argument of the invocation
+     * @return \ArrayObject the argument of the invocation ['arg1', 'arg2']
      */
     public function getArguments() : \ArrayObject;
+
+    /**
+     * Get the named arguments as an array object.
+     *
+     * @return \ArrayObject the argument of the invocation  [`paramName1'=>'arg1', `paramName2'=>'arg2']
+     */
+    public function getNamedArguments() : \ArrayObject;
 }

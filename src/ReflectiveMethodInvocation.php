@@ -75,6 +75,21 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritdoc}
      */
+    public function getNamedArguments() : \ArrayObject
+    {
+        $args = $this->getArguments();
+        $paramas = $this->getMethod()->getParameters();
+        $namedParams = new \ArrayObject;
+        foreach ($paramas as $param) {
+            $namedParams[$param->getName()] = $args[$param->getPosition()];
+        }
+
+        return $namedParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function proceed()
     {
         if ($this->interceptors === []) {
