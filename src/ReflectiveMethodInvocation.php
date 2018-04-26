@@ -21,7 +21,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $arguments;
 
     /**
-     * @var \ReflectionMethod
+     * @var string
      */
     private $method;
 
@@ -32,13 +32,13 @@ final class ReflectiveMethodInvocation implements MethodInvocation
 
     /**
      * @param object              $object
-     * @param \ReflectionMethod   $method
+     * @param string              $method
      * @param Arguments           $arguments
      * @param MethodInterceptor[] $interceptors
      */
     public function __construct(
         $object,
-        \ReflectionMethod $method,
+        string $method,
         Arguments $arguments,
         array $interceptors = []
     ) {
@@ -55,13 +55,13 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     {
         if ($this->object instanceof WeavedInterface) {
             $class = (new \ReflectionObject($this->object))->getParentClass();
-            $method = new ReflectionMethod($class->name, $this->method->name);
-            $method->setObject($this->object, $this->method);
+            $method = new ReflectionMethod($class->name, $this->method);
+            $method->setObject($this->object, $method);
 
             return $method;
         }
 
-        return $this->method;
+        return new ReflectionMethod($this->object, $this->method);
     }
 
     /**
@@ -93,10 +93,9 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     public function proceed()
     {
         if ($this->interceptors === []) {
-            return $this->method->invokeArgs($this->object, $this->arguments->getArrayCopy());
+            return (new ReflectionMethod($this->object, $this->method))->invokeArgs($this->object, $this->arguments->getArrayCopy());
         }
         $interceptor = array_shift($this->interceptors);
-        /* @var $interceptor MethodInterceptor */
 
         return $interceptor->invoke($this);
     }
