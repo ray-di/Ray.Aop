@@ -15,6 +15,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Annotation\AbstractAssisted;
@@ -100,7 +101,7 @@ final class CodeGenMethod
         if ($returnType instanceof \ReflectionType) {
             $this->setReturnType($returnType, $methodStmt);
         }
-        $methodInsideStatements = $this->getMethodInsideStatement();
+        $methodInsideStatements = $this->getMethodInsideStatement($method);
         $methodStmt->addStmts($methodInsideStatements);
 
         return $this->addMethodDocComment($methodStmt, $method);
@@ -135,14 +136,19 @@ final class CodeGenMethod
     /**
      * @return \PhpParser\Node[]
      */
-    private function getMethodInsideStatement() : array
+    private function getMethodInsideStatement(\ReflectionMethod $method) : array
     {
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor(new AopTemplateConverter($method));
+
         $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
         $node = $this->parser->parse($code)[0];
         /* @var $node \PhpParser\Node\Stmt\Class_ */
         $node = $node->getMethods()[0];
+        // traverse
+        $stmts = $traverser->traverse($node->stmts);
 
-        return $node->stmts;
+        return $stmts;
     }
 
     /**

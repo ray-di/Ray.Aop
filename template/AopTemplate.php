@@ -29,18 +29,17 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
      *
      * @param mixed $a
      */
-    public function templateMethod($a)
+    public function templateMethod($a, $b)
     {
         if ($this->isIntercepting === false) {
             $this->isIntercepting = true;
 
-            // call original method
-            return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
+            return parent::templateMethod($a, $b);
         }
 
         $this->isIntercepting = false;
         // invoke interceptor
-        $result = (new \Ray\Aop\ReflectiveMethodInvocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
+        $result = (new \Ray\Aop\ReflectiveMethodInvocation($this, __FUNCTION__, [$a, $b], $this->bindings[__FUNCTION__]))->proceed();
         $this->isIntercepting = true;
 
         return $result;
