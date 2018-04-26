@@ -266,7 +266,9 @@ class CompilerTest extends TestCase
     {
         $bind = (new Bind)->bindInterceptors('returnSame', [new FakeChangeArgsInterceptor()]);
         $compiler = new Compiler($_ENV['TMP_DIR']);
+        /** @var FakeMock $mock */
         $mock = $compiler->newInstance(FakeMock::class, [], $bind);
-        $this->assertSame('changed',  $mock->returnSame(1));
+        $mock->returnSame(1);
+        $this->assertSame('changed', $mock->returnSame(1));
     }
 }
