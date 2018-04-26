@@ -16,7 +16,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $object;
 
     /**
-     * @var Arguments
+     * @var \ArrayObject
      */
     private $arguments;
 
@@ -33,13 +33,13 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * @param object              $object
      * @param string              $method
-     * @param Arguments           $arguments
+     * @param \ArrayObject        $arguments
      * @param MethodInterceptor[] $interceptors
      */
     public function __construct(
         $object,
         string $method,
-        Arguments $arguments,
+        \ArrayObject $arguments,
         array $interceptors = []
     ) {
         $this->object = $object;
