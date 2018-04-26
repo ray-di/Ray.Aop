@@ -16,7 +16,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $object;
 
     /**
-     * @var \ArrayObject
+     * @var array|\ArrayObject
      */
     private $arguments;
 
@@ -44,7 +44,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     ) {
         $this->object = $object;
         $this->method = $method;
-        $this->arguments = new \ArrayObject($arguments);
+        $this->arguments = $arguments;
         $this->interceptors = $interceptors;
     }
 
@@ -69,6 +69,8 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function getArguments() : \ArrayObject
     {
+        $this->arguments = new \ArrayObject($this->arguments);
+
         return $this->arguments;
     }
 
