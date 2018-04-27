@@ -48,11 +48,18 @@ final class AopTemplateConverter extends \PhpParser\NodeVisitorAbstract
 
             return $node;
         }
-        // change ReflectiveMethodInvocation 2nd parameter
+
+        return $this->updateReflectiveMethodInvocation2ndParam($node);
+    }
+
+    private function updateReflectiveMethodInvocation2ndParam(Node $node) : Node
+    {
         if ($node instanceof MethodCall && $node->name === 'proceed') {
             $node->var->args[2] = $this->proceedArg;
 
             return $node;
         }
+
+        return $node;
     }
 }
