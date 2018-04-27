@@ -261,4 +261,14 @@ class CompilerTest extends TestCase
         $this->assertNull(FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
         $this->assertCount(0, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
     }
+
+    public function testInterceptorCanChangeArgument()
+    {
+        $bind = (new Bind)->bindInterceptors('returnSame', [new FakeChangeArgsInterceptor()]);
+        $compiler = new Compiler($_ENV['TMP_DIR']);
+        /** @var FakeMock $mock */
+        $mock = $compiler->newInstance(FakeMock::class, [], $bind);
+        $mock->returnSame(1);
+        $this->assertSame('changed', $mock->returnSame(1));
+    }
 }

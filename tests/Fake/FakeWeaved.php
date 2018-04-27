@@ -27,7 +27,7 @@ class FakeWeaved extends FakeMock
         $invocation = new ReflectiveMethodInvocation(
             $this,
             new \ReflectionMethod($this, __FUNCTION__),
-            new Arguments(func_get_args()),
+            func_get_args(),
             $interceptors
         );
 

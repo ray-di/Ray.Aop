@@ -16,12 +16,12 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $object;
 
     /**
-     * @var Arguments
+     * @var array|\ArrayObject
      */
     private $arguments;
 
     /**
-     * @var \ReflectionMethod
+     * @var string
      */
     private $method;
 
@@ -32,14 +32,14 @@ final class ReflectiveMethodInvocation implements MethodInvocation
 
     /**
      * @param object              $object
-     * @param \ReflectionMethod   $method
-     * @param Arguments           $arguments
+     * @param string              $method
+     * @param array               $arguments
      * @param MethodInterceptor[] $interceptors
      */
     public function __construct(
         $object,
-        \ReflectionMethod $method,
-        Arguments $arguments,
+        string $method,
+        array $arguments,
         array $interceptors = []
     ) {
         $this->object = $object;
@@ -55,13 +55,13 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     {
         if ($this->object instanceof WeavedInterface) {
             $class = (new \ReflectionObject($this->object))->getParentClass();
-            $method = new ReflectionMethod($class->name, $this->method->name);
-            $method->setObject($this->object, $this->method);
+            $method = new ReflectionMethod($class->name, $this->method);
+            $method->setObject($this->object, $method);
 
             return $method;
         }
 
-        return $this->method;
+        return new ReflectionMethod($this->object, $this->method);
     }
 
     /**
@@ -69,6 +69,8 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function getArguments() : \ArrayObject
     {
+        $this->arguments = new \ArrayObject($this->arguments);
+
         return $this->arguments;
     }
 
@@ -93,10 +95,9 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     public function proceed()
     {
         if ($this->interceptors === []) {
-            return $this->method->invokeArgs($this->object, $this->arguments->getArrayCopy());
+            return call_user_func_array([$this->object, $this->method], (array) $this->arguments);
         }
         $interceptor = array_shift($this->interceptors);
-        /* @var $interceptor MethodInterceptor */
 
         return $interceptor->invoke($this);
     }

@@ -9,6 +9,7 @@
  * @see http://stackoverflow.com/questions/1796100/what-is-faster-many-ifs-or-else-if
  * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
  */
+
 class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 {
     /**
@@ -17,6 +18,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
      * [$methodName => [$interceptorA[]][]
      */
     public $bindings;
+
     /**
      * @var bool
      */
@@ -27,27 +29,19 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
      *
      * @param mixed $a
      */
-    public function returnSame($a)
+    public function templateMethod($a, $b)
     {
-        if (isset($this->bindings[__FUNCTION__]) === false) {
-            return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
-        }
-
         if ($this->isIntercepting === false) {
             $this->isIntercepting = true;
 
-            return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
+            return parent::templateMethod($a, $b);
         }
 
         $this->isIntercepting = false;
-        $invocationResult = (new \Ray\Aop\ReflectiveMethodInvocation(
-            $this,
-            new \ReflectionMethod($this, __FUNCTION__),
-            new \Ray\Aop\Arguments(func_get_args()),
-            $this->bindings[__FUNCTION__]
-        ))->proceed();
+        // invoke interceptor
+        $result = (new \Ray\Aop\ReflectiveMethodInvocation($this, __FUNCTION__, [$a, $b], $this->bindings[__FUNCTION__]))->proceed();
         $this->isIntercepting = true;
 
-        return $invocationResult;
+        return $result;
     }
 }
