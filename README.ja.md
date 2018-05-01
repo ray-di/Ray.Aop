@@ -206,10 +206,12 @@ class MyInterceptor implements MethodInterceptor
 インターセプターに渡されるメソッド実行(`MethodInvocation`)オブジェクトは以下のメソッドを持ちます。
 
 
- * [`$invocation->proceed()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L39) - メソッド実行
- * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) -  メソッドリフレクションの取得
- * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L48) - オブジェクトの取得
- * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L29) - 引数の取得
+ * [`$invocation->proceed()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L41) - メソッド実行
+ * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L30) -  メソッドリフレクションの取得
+ * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L50) - オブジェクトの取得
+ * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php#L25) - 引数の取得
+ * [`$invocation->getNamedArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php#L32) - 名前付き引数の取得
+
 
 拡張されたリフレクションはアノテーション取得のメソッドを持ちます。
  
