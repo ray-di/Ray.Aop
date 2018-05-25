@@ -27,5 +27,5 @@ interface MethodInvocation extends Invocation
      *
      * @return \ReflectionMethod|ReflectionMethod method being called
      */
-    public function getMethod() : \ReflectionMethod;
+    public function getMethod() : ReflectionMethod;
 }
