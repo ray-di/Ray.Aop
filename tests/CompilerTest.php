@@ -245,9 +245,11 @@ class CompilerTest extends TestCase
      */
     public function testClassAnnotationReader()
     {
-        $this->assertInstanceOf(FakeClassAnnotation::class, FakeMethodAnnotationReaderInterceptor::$classAnnotation);
-        $this->assertCount(2, FakeMethodAnnotationReaderInterceptor::$classAnnotations);
-        $annotation = array_shift(FakeMethodAnnotationReaderInterceptor::$classAnnotations);
+        $classAnnotation = FakeMethodAnnotationReaderInterceptor::$classAnnotation;
+        $classAnnotations = FakeMethodAnnotationReaderInterceptor::$classAnnotations;
+        $this->assertInstanceOf(FakeClassAnnotation::class, $classAnnotation);
+        $this->assertCount(2, $classAnnotations);
+        $annotation = array_shift($classAnnotations);
         $this->assertInstanceOf(FakeResource::class, $annotation);
     }
 
