@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\IndexedReader;
 use PhpParser\Builder\Class_ as Builder;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
@@ -41,7 +40,7 @@ final class CodeGen implements CodeGenInterface
     private $codeGenMethod;
 
     /**
-     * @var IndexedReader
+     * @var AnnotationReader
      */
     private $reader;
 
@@ -59,7 +58,7 @@ final class CodeGen implements CodeGenInterface
         $this->factory = $factory;
         $this->printer = $printer;
         $this->codeGenMethod = new CodeGenMethod($parser, $factory, $printer);
-        $this->reader = new IndexedReader(new AnnotationReader);
+        $this->reader = new AnnotationReader;
     }
 
     public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind) : string

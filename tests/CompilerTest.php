@@ -185,7 +185,7 @@ class CompilerTest extends TestCase
     {
         $class = $this->compiler->compile(FakeAnnotateClass::class, $this->bind);
         $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
-        $this->assertSame(3, count($annotations));
+        $this->assertSame(4, count($annotations));
     }
 
     public function testNoNamespace()
@@ -232,9 +232,11 @@ class CompilerTest extends TestCase
         /** @var \Ray\Aop\FakeAnnotateClass $mock */
         $mock = $compiler->newInstance(FakeAnnotateClass::class, [], $bind);
         $mock->getDouble(1);
-        $this->assertInstanceOf(FakeMarker::class, FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
-        $this->assertCount(3, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
-        $annotation = array_shift(FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
+        $methodAnnotation = FakeMethodAnnotationReaderInterceptor::$methodAnnotation;
+        $this->assertInstanceOf(FakeMarker::class, $methodAnnotation);
+        $methodAnnotations = FakeMethodAnnotationReaderInterceptor::$methodAnnotations;
+        $this->assertCount(4, $methodAnnotations);
+        $annotation = array_shift($methodAnnotations);
         $this->assertInstanceOf(FakeMarker3::class, $annotation);
     }
 
@@ -243,9 +245,11 @@ class CompilerTest extends TestCase
      */
     public function testClassAnnotationReader()
     {
-        $this->assertInstanceOf(FakeClassAnnotation::class, FakeMethodAnnotationReaderInterceptor::$classAnnotation);
-        $this->assertCount(2, FakeMethodAnnotationReaderInterceptor::$classAnnotations);
-        $annotation = array_shift(FakeMethodAnnotationReaderInterceptor::$classAnnotations);
+        $classAnnotation = FakeMethodAnnotationReaderInterceptor::$classAnnotation;
+        $classAnnotations = FakeMethodAnnotationReaderInterceptor::$classAnnotations;
+        $this->assertInstanceOf(FakeClassAnnotation::class, $classAnnotation);
+        $this->assertCount(2, $classAnnotations);
+        $annotation = array_shift($classAnnotations);
         $this->assertInstanceOf(FakeResource::class, $annotation);
     }
 

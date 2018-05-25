@@ -12,7 +12,8 @@ class FakeAnnotateClass
     /**
      * @Ray\Aop\FakeMarker3
      * @FakeMarker2
-     * @FakeMarker
+     * @FakeMarker(1)
+     * @FakeMarker(2)
      */
     public function getDouble($a)
     {
