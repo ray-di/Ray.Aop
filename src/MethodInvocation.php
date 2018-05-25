@@ -25,7 +25,7 @@ interface MethodInvocation extends Invocation
      *
      * <p>This method is a friendly implementation of the {@link * Joinpoint#getStaticPart()} method (same result).
      *
-     * @return \ReflectionMethod|ReflectionMethod method being called
+     * @return ReflectionMethod method being called
      */
     public function getMethod() : ReflectionMethod;
 }
