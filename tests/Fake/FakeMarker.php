@@ -7,4 +7,5 @@ namespace Ray\Aop;
  */
 final class FakeMarker
 {
+    public $value;
 }
