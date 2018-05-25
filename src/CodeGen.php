@@ -59,7 +59,7 @@ final class CodeGen implements CodeGenInterface
         $this->factory = $factory;
         $this->printer = $printer;
         $this->codeGenMethod = new CodeGenMethod($parser, $factory, $printer);
-        $this->reader = new IndexedReader(new AnnotationReader);
+        $this->reader = new AnnotationReader;
     }
 
     public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind) : string
