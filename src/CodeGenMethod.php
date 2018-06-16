@@ -185,14 +185,13 @@ final class CodeGenMethod
         if (! $type) {
             return;
         }
+        if ($param->isVariadic()) {
+            $paramStmt->makeVariadic();
+        }
         $paramString = (string) $param;
         $isNullableType = is_int(strpos($paramString, '<required>')) && strpos($paramString, 'or NULL');
-        if ($isNullableType) {
-            $paramStmt->setTypeHint(new NullableType((string) $type));
-
-            return;
-        }
-        $paramStmt->setTypeHint((string) $type);
+        $destType = $isNullableType ? new NullableType((string) $type) : (string) $type;
+        $paramStmt->setTypeHint($destType);
     }
 
     private function setReturnType(\ReflectionType $returnType, Method $methodStmt)
