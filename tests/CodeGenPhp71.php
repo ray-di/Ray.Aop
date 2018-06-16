@@ -67,7 +67,7 @@ class CodeGenPhp71 extends TestCase
         $bind = new Bind;
         $bind->bindInterceptors('variadicParam', []);
         $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = 'variadicParam(int ...$ids)';
+        $expected = 'function variadicParam(int ...$ids)';
         $this->assertContains($expected, $code);
     }
 }
