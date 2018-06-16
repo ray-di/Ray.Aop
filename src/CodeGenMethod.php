@@ -185,7 +185,7 @@ final class CodeGenMethod
         if (! $type) {
             return;
         }
-        if ($param->allowsNull()) {
+        if ($type->allowsNull()) {
             $paramStmt->setTypeHint(new NullableType((string) $type));
 
             return;
