@@ -28,7 +28,7 @@ class CodeGenPhp71 extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeVoid', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71ReturnTypeClass::class), $bind);
+        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'function returnTypeVoid() : void';
         $this->assertContains($expected, $code);
     }
@@ -37,7 +37,7 @@ class CodeGenPhp71 extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnNullable', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71ReturnTypeClass::class), $bind);
+        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'function returnNullable(string $str) : ?';
         $this->assertContains($expected, $code);
 
@@ -57,7 +57,7 @@ class CodeGenPhp71 extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('nullableParam', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71ReturnTypeClass::class), $bind);
+        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'public function nullableParam(?int $id) : int';
         $this->assertContains($expected, $code);
     }
