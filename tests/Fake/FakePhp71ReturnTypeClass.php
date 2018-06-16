@@ -16,4 +16,8 @@ class FakePhp71ReturnTypeClass
     {
         return null;
     }
+
+    public function nullableParam(?int $id) : int
+    {
+    }
 }

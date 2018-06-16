@@ -52,4 +52,13 @@ class CodeGenPhp71 extends TestCase
         $this->assertContains("declare (strict_types=1);\n", $code);
         $this->assertContains("use Composer\Autoload;\n", $code);
     }
+
+    public function testNullableParam()
+    {
+        $bind = new Bind;
+        $bind->bindInterceptors('nullableParam', []);
+        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71ReturnTypeClass::class), $bind);
+        $expected = 'public function nullableParam(?int $id) : int';
+        $this->assertContains($expected, $code);
+    }
 }
