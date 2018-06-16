@@ -151,22 +151,6 @@ final class CodeGenMethod
         return $stmts;
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
-    private function setTypeHint(\ReflectionParameter $param, Param $paramStmt, \ReflectionClass $typeHint = null)
-    {
-        if ($typeHint) {
-            $paramStmt->setTypeHint($typeHint->name);
-        }
-        if ($param->isArray()) {
-            $paramStmt->setTypeHint('array');
-        }
-        if ($param->isCallable()) {
-            $paramStmt->setTypeHint('callable');
-        }
-    }
-
     private function setDefault(\ReflectionParameter $param, Param $paramStmt)
     {
         if ($param->isDefaultValueAvailable()) {
