@@ -17,7 +17,7 @@ class FakePhp71NullableClass
         return null;
     }
 
-    public function nullableParam(?int $id) : int
+    public function nullableParam(?int $id, string $name = null) : int
     {
     }
 }
