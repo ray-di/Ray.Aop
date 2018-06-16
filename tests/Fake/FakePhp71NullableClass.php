@@ -6,7 +6,7 @@ namespace Ray\Aop;
 use Composer\Autoload;
 use Reflection;
 
-class FakePhp71ReturnTypeClass
+class FakePhp71NullableClass
 {
     public function returnTypeVoid() : void
     {
@@ -15,5 +15,9 @@ class FakePhp71ReturnTypeClass
     public function returnNullable(string $str) : ?int
     {
         return null;
+    }
+
+    public function nullableParam(?int $id, string $name = null) : int
+    {
     }
 }
