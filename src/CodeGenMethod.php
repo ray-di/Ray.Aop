@@ -185,6 +185,9 @@ final class CodeGenMethod
         if (! $type) {
             return;
         }
+        if ($param->isVariadic()) {
+            $paramStmt->makeVariadic();
+        }
         $paramString = (string) $param;
         $isNullableType = is_int(strpos($paramString, '<required>')) && strpos($paramString, 'or NULL');
         if ($isNullableType) {
