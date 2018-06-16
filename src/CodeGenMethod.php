@@ -173,7 +173,7 @@ final class CodeGenMethod
             $paramStmt->makeVariadic();
         }
         $paramString = (string) $param;
-        $isNullableType = is_int(strpos($paramString, '<required>')) && strpos($paramString, 'or NULL');
+        $isNullableType = is_int(strpos($paramString, '<required>')) && is_int(strpos($paramString, 'or NULL'));
         $destType = $isNullableType ? new NullableType((string) $type) : (string) $type;
         $paramStmt->setTypeHint($destType);
     }
