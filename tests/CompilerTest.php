@@ -185,14 +185,14 @@ class CompilerTest extends TestCase
     {
         $class = $this->compiler->compile(FakeAnnotateClass::class, $this->bind);
         $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
-        $this->assertSame(4, count($annotations));
+        $this->assertCount(4, $annotations);
     }
 
     public function testNoNamespace()
     {
         $class = $this->compiler->compile(FakeAnnotateClassNoName::class, $this->bind);
         $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
-        $this->assertSame(3, count($annotations));
+        $this->assertCount(3, $annotations);
     }
 
     public function testArrayTypehintedAndCallable()
