@@ -58,7 +58,7 @@ class CodeGenPhp71 extends TestCase
         $bind = new Bind;
         $bind->bindInterceptors('nullableParam', []);
         $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = 'public function nullableParam(?int $id) : int';
+        $expected = 'function nullableParam(?int $id)';
         $this->assertContains($expected, $code);
     }
 }

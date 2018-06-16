@@ -182,9 +182,15 @@ final class CodeGenMethod
     private function setParameterType(\ReflectionParameter $param, Param $paramStmt)
     {
         $type = $param->getType();
-        if ($type) {
-            $paramStmt->setTypeHint((string) $type);
+        if (! $type) {
+            return;
         }
+        if ($param->allowsNull()) {
+            $paramStmt->setTypeHint(new NullableType((string) $type));
+
+            return;
+        }
+        $paramStmt->setTypeHint((string) $type);
     }
 
     private function setReturnType(\ReflectionType $returnType, Method $methodStmt)
