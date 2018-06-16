@@ -185,7 +185,9 @@ final class CodeGenMethod
         if (! $type) {
             return;
         }
-        if ($type->allowsNull()) {
+        $paramString = (string) $param;
+        $isNullableType = is_int(strpos($paramString, '<required>')) && strpos($paramString, 'or NULL');
+        if ($isNullableType) {
             $paramStmt->setTypeHint(new NullableType((string) $type));
 
             return;
