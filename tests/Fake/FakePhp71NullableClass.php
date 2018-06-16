@@ -20,4 +20,8 @@ class FakePhp71NullableClass
     public function nullableParam(?int $id, string $name = null) : int
     {
     }
+
+    public function variadicParam(int ...$ids)
+    {
+    }
 }
