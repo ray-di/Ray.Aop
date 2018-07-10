@@ -42,7 +42,7 @@ final class AopTemplateConverter extends \PhpParser\NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
-        if ($node instanceof StaticCall && $node->name === 'templateMethod') {
+        if ($node instanceof StaticCall && $node->name->name === 'templateMethod') {
             $node->name = $this->method;
             $node->args = $this->args;
 
@@ -54,7 +54,7 @@ final class AopTemplateConverter extends \PhpParser\NodeVisitorAbstract
 
     private function updateReflectiveMethodInvocation2ndParam(Node $node) : Node
     {
-        if ($node instanceof MethodCall && $node->name === 'proceed') {
+        if ($node instanceof MethodCall && $node->name->name === 'proceed') {
             $node->var->args[2] = $this->proceedArg;
 
             return $node;
