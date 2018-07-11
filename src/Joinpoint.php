@@ -34,7 +34,7 @@ interface Joinpoint
      * <p>The implementation and the semantics of this method depends
      * on the actual joinpoint type (see the children interfaces).
      *
-     * @return object see the children interfaces' proceed definition.
+     * @return mixed see the children interfaces' proceed definition.
      *
      * Throwable if the joinpoint throws an exception.
      */
