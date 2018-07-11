@@ -22,7 +22,9 @@ class BuiltinMatcher extends AbstractMatcher
 
     /**
      * @param string $matcherName
-     * @param array  $arguments
+     * @param array $arguments
+     *
+     * @throws \ReflectionException
      */
     public function __construct(string $matcherName, array $arguments)
     {
