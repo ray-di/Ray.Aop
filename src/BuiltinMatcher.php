@@ -8,6 +8,8 @@ declare(strict_types=1);
  */
 namespace Ray\Aop;
 
+use Ray\Aop\Exception\InvalidMatcherException;
+
 class BuiltinMatcher extends AbstractMatcher
 {
     /**
@@ -21,9 +23,6 @@ class BuiltinMatcher extends AbstractMatcher
     private $matcher;
 
     /**
-     * @param string $matcherName
-     * @param array $arguments
-     *
      * @throws \ReflectionException
      */
     public function __construct(string $matcherName, array $arguments)
@@ -31,8 +30,12 @@ class BuiltinMatcher extends AbstractMatcher
         parent::__construct();
         $this->matcherName = $matcherName;
         $this->arguments = $arguments;
-        $matcher = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';
-        $this->matcher = (new \ReflectionClass($matcher))->newInstance();
+        $matcherClass = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';
+        $matcher = (new \ReflectionClass($matcherClass))->newInstance();
+        if (! $matcher instanceof AbstractMatcher) {
+            throw new InvalidMatcherException($matcherClass);
+        }
+        $this->matcher = $matcher;
     }
 
     /**
