@@ -14,8 +14,9 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\NodeVisitorAbstract;
 
-final class AopTemplateConverter extends \PhpParser\NodeVisitorAbstract
+final class AopTemplateConverter extends NodeVisitorAbstract
 {
     /**
      * @var string
