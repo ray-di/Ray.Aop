@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
+use Ray\Aop\Exception\InvalidMatcherException;
 
 class BuiltInMatcherTest extends TestCase
 {
@@ -34,5 +35,11 @@ class BuiltInMatcherTest extends TestCase
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = $this->matcher->matchesMethod($method, ['get']);
         $this->assertTrue($isMatched);
+    }
+
+    public function testInvalidBuiltinMatcher()
+    {
+        $this->expectException(InvalidMatcherException::class);
+        new BuiltinMatcher('invalid', []);
     }
 }
