@@ -12,6 +12,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
@@ -56,7 +57,7 @@ final class AopTemplateConverter extends NodeVisitorAbstract
 
     private function updateReflectiveMethodInvocation2ndParam(Node $node) : Node
     {
-        if ($node instanceof MethodCall && $node->name instanceof Identifier && $node->name->name === 'proceed') {
+        if ($node instanceof MethodCall && $node->name instanceof Identifier && $node->name->name === 'proceed' && $node->var instanceof New_) {
             $node->var->args[2] = $this->proceedArg;
 
             return $node;
