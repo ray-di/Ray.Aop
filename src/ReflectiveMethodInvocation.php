@@ -31,6 +31,11 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $interceptors;
 
     /**
+     * @var callable
+     */
+    private $callable;
+
+    /**
      * @param object              $object
      * @param string              $method
      * @param array               $arguments
@@ -44,6 +49,10 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     ) {
         $this->object = $object;
         $this->method = $method;
+        $callable = [$object, $method];
+        if (is_callable($callable)) {
+            $this->callable = $callable;
+        }
         $this->arguments = $arguments;
         $this->interceptors = $interceptors;
     }
@@ -55,6 +64,9 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     {
         if ($this->object instanceof WeavedInterface) {
             $class = (new \ReflectionObject($this->object))->getParentClass();
+            if (! $class instanceof \ReflectionClass) {
+                throw new \LogicException;
+            }
             $method = new ReflectionMethod($class->name, $this->method);
             $method->setObject($this->object, $method);
 
@@ -94,13 +106,14 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function proceed()
     {
-        $function = [$this->object, $this->method];
-        if ($this->interceptors === [] && is_callable($function)) {
-            return call_user_func_array($function, (array) $this->arguments);
+        if ($this->interceptors === []) {
+            return call_user_func_array($this->callable, (array) $this->arguments);
         }
         $interceptor = array_shift($this->interceptors);
-
-        return $interceptor->invoke($this);
+        if ($interceptor instanceof MethodInterceptor) {
+            return $interceptor->invoke($this);
+        }
+        throw new \LogicException;
     }
 
     /**
