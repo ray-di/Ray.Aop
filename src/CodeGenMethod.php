@@ -143,10 +143,18 @@ final class CodeGenMethod
 
         $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
         $node = $this->parser->parse($code)[0];
-        /* @var $node \PhpParser\Node\Stmt\Class_ */
-        $node = $node->getMethods()[0];
+        if (! $node instanceof \PhpParser\Node\Stmt\Class_) {
+            throw new \LogicException;
+        }
+        $methodNode = $node->getMethods()[0];
+        if (! $methodNode instanceof ClassMethod) {
+            throw new \LogicException;
+        }
+        if ($methodNode->stmts === null) {
+            throw new \LogicException;
+        }
         // traverse
-        $stmts = $traverser->traverse($node->stmts);
+        $stmts = $traverser->traverse($methodNode->stmts);
 
         return $stmts;
     }
@@ -158,7 +166,7 @@ final class CodeGenMethod
 
             return;
         }
-        if ($this->assisted && in_array($param->name, $this->assisted->values, true)) {
+        if ($this->assisted instanceof AbstractAssisted && in_array($param->name, $this->assisted->values, true)) {
             $paramStmt->setDefault(null);
         }
     }
