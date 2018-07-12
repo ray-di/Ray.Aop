@@ -83,7 +83,15 @@ final class CodeGen implements CodeGenInterface
         $traverser = new NodeTraverser();
         $visitor = new CodeGenVisitor();
         $traverser->addVisitor($visitor);
-        $stmts = $this->parser->parse(file_get_contents($class->getFileName()));
+        $fileName = $class->getFileName();
+        if (is_bool($fileName)) {
+            throw new \LogicException;
+        }
+        $file = file_get_contents($fileName);
+        if (! $file) {
+            throw new \LogicException;
+        }
+        $stmts = $this->parser->parse($file);
         if (is_array($stmts)) {
             $traverser->traverse($stmts);
         }
