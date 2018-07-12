@@ -142,6 +142,9 @@ final class CodeGenMethod
         $traverser->addVisitor(new AopTemplateConverter($method));
 
         $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
+        if (is_bool($code)) {
+            throw new \LogicException;
+        }
         $node = $this->parser->parse($code)[0];
         if (! $node instanceof \PhpParser\Node\Stmt\Class_) {
             throw new \LogicException;
@@ -174,7 +177,7 @@ final class CodeGenMethod
     private function setParameterType(\ReflectionParameter $param, Param $paramStmt)
     {
         $type = $param->getType();
-        if (! $type) {
+        if ($type == null) {
             return;
         }
         if ($param->isVariadic()) {
