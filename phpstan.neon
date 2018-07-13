@@ -5,3 +5,4 @@ parameters:
 		- %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
 	ignoreErrors:
 	    - '#Access to an undefined property object::\$bindings.#'
+	    - '#Parameter \#1 $code of method PhpParser\\Parser::parse() expects string, string|false given.#'
