@@ -11,6 +11,7 @@ namespace Ray\Aop;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
+use Ray\Aop\Exception\InvalidSourceClassException;
 
 class CodeGenTest extends TestCase
 {
@@ -49,5 +50,11 @@ class CodeGenTest extends TestCase
         $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
         $expected = 'function returnTypeArray() : array';
         $this->assertContains($expected, $code);
+    }
+
+    public function testInvalidSourceClass()
+    {
+        $this->expectException(InvalidSourceClassException::class);
+        $this->codeGen->generate('a', new \ReflectionClass(\stdClass::class), new Bind);
     }
 }

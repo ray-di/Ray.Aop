@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+use Ray\Aop\Exception\InvalidSourceClassException;
 
 final class CodeGen implements CodeGenInterface
 {
@@ -83,7 +84,12 @@ final class CodeGen implements CodeGenInterface
         $traverser = new NodeTraverser();
         $visitor = new CodeGenVisitor();
         $traverser->addVisitor($visitor);
-        $stmts = $this->parser->parse(file_get_contents($class->getFileName()));
+        $fileName = $class->getFileName();
+        if (is_bool($fileName)) {
+            throw new InvalidSourceClassException(get_class($class));
+        }
+        $file = file_get_contents($fileName);
+        $stmts = $this->parser->parse($file);
         if (is_array($stmts)) {
             $traverser->traverse($stmts);
         }

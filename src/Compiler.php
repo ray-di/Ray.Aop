@@ -41,6 +41,20 @@ final class Compiler implements CompilerInterface
         );
     }
 
+    public function __sleep()
+    {
+        return ['classDir'];
+    }
+
+    public function __wakeup()
+    {
+        $this->codeGen = new CodeGen(
+            (new ParserFactory)->newInstance(),
+            new BuilderFactory,
+            new StandardPrettyPrinter
+        );
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -14,6 +14,8 @@ use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\NullableType;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
@@ -140,13 +142,10 @@ final class CodeGenMethod
     {
         $traverser = new NodeTraverser;
         $traverser->addVisitor(new AopTemplateConverter($method));
+        $stmts = $this->getTemplateMethodNodeStmts();
 
-        $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
-        $node = $this->parser->parse($code)[0];
-        /* @var $node \PhpParser\Node\Stmt\Class_ */
-        $node = $node->getMethods()[0];
         // traverse
-        $stmts = $traverser->traverse($node->stmts);
+        $stmts = $traverser->traverse($stmts);
 
         return $stmts;
     }
@@ -158,7 +157,7 @@ final class CodeGenMethod
 
             return;
         }
-        if ($this->assisted && in_array($param->name, $this->assisted->values, true)) {
+        if ($this->assisted instanceof AbstractAssisted && in_array($param->name, $this->assisted->values, true)) {
             $paramStmt->setDefault(null);
         }
     }
@@ -166,7 +165,7 @@ final class CodeGenMethod
     private function setParameterType(\ReflectionParameter $param, Param $paramStmt)
     {
         $type = $param->getType();
-        if (! $type) {
+        if ($type == null) {
             return;
         }
         if ($param->isVariadic()) {
@@ -182,5 +181,24 @@ final class CodeGenMethod
     {
         $type = $returnType->allowsNull() ? new NullableType((string) $returnType) : (string) $returnType;
         $methodStmt->setReturnType($type);
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function getTemplateMethodNodeStmts() : array
+    {
+        $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
+        /** @var string $code */
+        $node = $this->parser->parse($code)[0];
+        if (! $node instanceof Class_) {
+            throw new \LogicException; // @codeCoverageIgnore
+        }
+        $methodNode = $node->getMethods()[0];
+        if ($methodNode->stmts === null) {
+            throw new \LogicException; // @codeCoverageIgnore
+        }
+
+        return $methodNode->stmts;
     }
 }

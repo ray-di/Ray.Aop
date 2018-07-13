@@ -34,7 +34,11 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
      */
     public function getDeclaringClass() : ReflectionClass
     {
-        $originalClass = (new \ReflectionClass($this->object))->getParentClass()->name;
+        $parencClass = (new \ReflectionClass($this->object))->getParentClass();
+        if (! $parencClass instanceof \ReflectionClass) {
+            throw new \LogicException; // @codeCoverageIgnore
+        }
+        $originalClass = $parencClass->name;
         $class = new ReflectionClass($originalClass);
         $class->setObject($this->object);
 

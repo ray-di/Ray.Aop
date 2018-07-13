@@ -58,8 +58,10 @@ class CompilerTest extends TestCase
      */
     public function testParentClassName($class)
     {
-        $parentClass = (new \ReflectionClass($class))->getParentClass()->name;
-        $this->assertSame($parentClass, FakeMock::class);
+        $parent = (new \ReflectionClass($class))->getParentClass();
+        if ($parent instanceof \ReflectionClass) {
+            $this->assertSame(FakeMock::class, $parent->getName());
+        }
     }
 
     /**
@@ -79,8 +81,10 @@ class CompilerTest extends TestCase
     public function testParenteClass()
     {
         $weaved = $this->testNewInstance();
-        $parent = (new \ReflectionClass($weaved))->getParentClass()->name;
-        $this->assertSame($parent, FakeMock::class);
+        $parent = (new \ReflectionClass($weaved))->getParentClass();
+        if ($parent instanceof \ReflectionClass) {
+            $this->assertSame(FakeMock::class, $parent->getName());
+        }
 
         return $weaved;
     }
@@ -154,8 +158,8 @@ class CompilerTest extends TestCase
         $classDocComment = (new \ReflectionClass($weaved))->getDocComment();
         $methodDocComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
 
-        $this->assertFalse($classDocComment);
-        $this->assertFalse($methodDocComment);
+        $this->assertFalse((bool) $classDocComment);
+        $this->assertFalse((bool) $methodDocComment);
     }
 
     public function testSerialize()
@@ -198,7 +202,7 @@ class CompilerTest extends TestCase
     public function testArrayTypehintedAndCallable()
     {
         $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
-        $file = file((new \ReflectionClass($class))->getFileName());
+        $file = file((string) (new \ReflectionClass($class))->getFileName());
         $expected = '    function returnSame(array $arrayParam, callable $callableParam)
 ';
         $this->assertSame($expected, $file[8]);

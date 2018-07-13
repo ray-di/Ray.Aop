@@ -26,7 +26,7 @@ interface BindInterface
      * @param string              $method
      * @param MethodInterceptor[] $interceptors
      *
-     * @return $this
+     * @return BindInterface
      */
     public function bindInterceptors($method, array $interceptors);
 
