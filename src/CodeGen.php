@@ -12,6 +12,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use PhpParser\Builder\Class_ as Builder;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
@@ -62,24 +63,25 @@ final class CodeGen implements CodeGenInterface
         $this->reader = new AnnotationReader;
     }
 
+    /**
+     * Generate weaved class code
+     */
     public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind) : string
     {
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind);
-        $stmt = $this
-            ->getClass($class, $sourceClass)
-            ->addStmts($methods)
-            ->getNode();
-        $stmt = $this->addClassDocComment($stmt, $sourceClass);
-        $code = $this->printer->prettyPrint([$stmt]);
-        $statements = $this->getPhpFileStatementCode($sourceClass);
+        $classStmt = $this->buildClass($class, $sourceClass, $methods);
+        $classStmt = $this->addClassDocComment($classStmt, $sourceClass);
+        $declareStmt = $this->getPhpFileStmt($sourceClass);
 
-        return $statements . $code;
-    }
+        return $this->printer->prettyPrintFile(array_merge($declareStmt, [$classStmt]));
+     }
 
     /**
      * Return "declare()" and "use" statement code
+     *
+     * @return Stmt[]
      */
-    private function getPhpFileStatementCode(\ReflectionClass $class) : string
+    private function getPhpFileStmt(\ReflectionClass $class) : array
     {
         $traverser = new NodeTraverser();
         $visitor = new CodeGenVisitor();
@@ -93,18 +95,17 @@ final class CodeGen implements CodeGenInterface
         if (is_array($stmts)) {
             $traverser->traverse($stmts);
         }
-        $code = $this->printer->prettyPrint($visitor());
 
-        return $code . PHP_EOL;
+        return $visitor();
     }
 
     /**
      * Return class statement
      */
-    private function getClass(string $newClassName, \ReflectionClass $class) : Builder
+    private function getClass(BuilderFactory $factory, string $newClassName, \ReflectionClass $class) : Builder
     {
         $parentClass = $class->name;
-        $builder = $this->factory
+        $builder = $factory
             ->class($newClassName)
             ->extend($parentClass)
             ->implement('Ray\Aop\WeavedInterface');
@@ -121,7 +122,7 @@ final class CodeGen implements CodeGenInterface
     {
         $docComment = $class->getDocComment();
         if ($docComment) {
-            $node->setAttribute('comments', [new Doc($docComment)]);
+            $node->setDocComment(new Doc($docComment));
         }
 
         return $node;
@@ -183,4 +184,21 @@ final class CodeGen implements CodeGenInterface
 
         return serialize($methodsAnnotation);
     }
+
+    /**
+     * @param                  $class
+     * @param \ReflectionClass $sourceClass
+     * @param                  $methods
+     *
+     * @return \PhpParser\Node|Class_
+     */
+    private function buildClass($class, \ReflectionClass $sourceClass, $methods)
+    {
+        $stmt = $this
+            ->getClass($this->factory, $class, $sourceClass)
+            ->addStmts($methods)
+            ->getNode();
+
+        return $stmt;
+}
 }

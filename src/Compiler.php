@@ -122,7 +122,7 @@ final class Compiler implements CompilerInterface
     private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, string $file, BindInterface $bind)
     {
         $code = $this->codeGen->generate($newClass, $sourceClass, $bind);
-        file_put_contents($file, '<?php ' . PHP_EOL . $code . PHP_EOL);
+        file_put_contents($file, $code . PHP_EOL);
         /** @noinspection PhpIncludeInspection */
         require $file;
     }
