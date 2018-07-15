@@ -74,7 +74,7 @@ final class CodeGen implements CodeGenInterface
         $declareStmt = $this->getPhpFileStmt($sourceClass);
 
         return $this->printer->prettyPrintFile(array_merge($declareStmt, [$classStmt]));
-     }
+    }
 
     /**
      * Return "declare()" and "use" statement code
@@ -185,14 +185,7 @@ final class CodeGen implements CodeGenInterface
         return serialize($methodsAnnotation);
     }
 
-    /**
-     * @param                  $class
-     * @param \ReflectionClass $sourceClass
-     * @param                  $methods
-     *
-     * @return \PhpParser\Node|Class_
-     */
-    private function buildClass($class, \ReflectionClass $sourceClass, $methods)
+    private function buildClass(string $class, \ReflectionClass $sourceClass, array $methods) : Class_
     {
         $stmt = $this
             ->getClass($this->factory, $class, $sourceClass)
@@ -200,5 +193,5 @@ final class CodeGen implements CodeGenInterface
             ->getNode();
 
         return $stmt;
-}
+    }
 }
