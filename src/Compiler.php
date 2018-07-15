@@ -24,17 +24,17 @@ final class Compiler implements CompilerInterface
      */
     private $codeGen;
 
-    /**
-     * @param string           $classDir
-     * @param CodeGenInterface $codeGen
-     */
-    public function __construct(string $classDir, CodeGenInterface $codeGen = null)
+    public function __construct(string $classDir)
     {
         if (! is_writable($classDir)) {
             throw new NotWritableException($classDir);
         }
         $this->classDir = $classDir;
-        $this->__wakeup();
+        $this->codeGen = new CodeGen(
+            (new ParserFactory)->newInstance(),
+            new BuilderFactory,
+            new Standard(['shortArraySyntax' => true])
+        );
     }
 
     public function __sleep()
@@ -44,11 +44,7 @@ final class Compiler implements CompilerInterface
 
     public function __wakeup()
     {
-        $this->codeGen = new CodeGen(
-            (new ParserFactory)->newInstance(),
-            new BuilderFactory,
-            new Standard(['shortArraySyntax' => true])
-        );
+        $this->__construct($this->classDir);
     }
 
     /**
