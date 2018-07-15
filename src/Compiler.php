@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
-use PhpParser\PrettyPrinter\Standard as StandardPrettyPrinter;
+use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\NotWritableException;
 
 final class Compiler implements CompilerInterface
@@ -34,11 +34,7 @@ final class Compiler implements CompilerInterface
             throw new NotWritableException($classDir);
         }
         $this->classDir = $classDir;
-        $this->codeGen = $codeGen ?: new CodeGen(
-            (new ParserFactory)->newInstance(),
-            new BuilderFactory,
-            new StandardPrettyPrinter
-        );
+        $this->__wakeup();
     }
 
     public function __sleep()
@@ -51,7 +47,7 @@ final class Compiler implements CompilerInterface
         $this->codeGen = new CodeGen(
             (new ParserFactory)->newInstance(),
             new BuilderFactory,
-            new StandardPrettyPrinter
+            new Standard(['shortArraySyntax' => true])
         );
     }
 
