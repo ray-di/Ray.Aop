@@ -190,13 +190,13 @@ class MyInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
-        // Before invocation
+        // Before method invocation
         // ...
         
         // Method invocation
         $result = invocation->proceed();
         
-        // メソッド実行後
+        // After method invocation
         // ...
                 
         return $result;
