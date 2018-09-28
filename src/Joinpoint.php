@@ -36,7 +36,7 @@ interface Joinpoint
      *
      * @return mixed see the children interfaces' proceed definition.
      *
-     * Throwable if the joinpoint throws an exception.
+     * Throwable if the joinpoint throws an exception
      */
     public function proceed();
 
