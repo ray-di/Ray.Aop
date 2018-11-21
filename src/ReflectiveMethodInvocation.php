@@ -49,10 +49,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     ) {
         $this->object = $object;
         $this->method = $method;
-        $callable = [$object, $method];
-        if (is_callable($callable)) {
-            $this->callable = $callable;
-        }
+        $this->callable = [$object, $method];
         $this->arguments = $arguments;
         $this->interceptors = $interceptors;
     }
