@@ -46,7 +46,7 @@ final class AopTemplateConverter extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof StaticCall && $node->name instanceof Identifier && $node->name->name === 'templateMethod') {
-            $node->name = $this->method;
+            $node->name = new Identifier($this->method);
             $node->args = $this->args;
 
             return $node;
