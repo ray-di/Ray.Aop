@@ -91,6 +91,9 @@ final class CodeGen implements CodeGenInterface
             throw new InvalidSourceClassException(get_class($class));
         }
         $file = file_get_contents($fileName);
+        if ($file === false) {
+            throw new \RuntimeException($fileName); // @codeCoverageIgnore
+        }
         $stmts = $this->parser->parse($file);
         if (is_array($stmts)) {
             $traverser->traverse($stmts);
