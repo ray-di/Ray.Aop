@@ -13,6 +13,7 @@ use PhpParser\Builder\Method;
 use PhpParser\Builder\Param;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
+use PhpParser\Node;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -184,7 +185,7 @@ final class CodeGenMethod
     }
 
     /**
-     * @return Stmt[]
+     * @return Node[]
      */
     private function getTemplateMethodNodeStmts() : array
     {
