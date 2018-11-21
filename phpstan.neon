@@ -4,5 +4,5 @@ parameters:
 		- %currentWorkingDirectory%/tests/Fake/*
 		- %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
 	ignoreErrors:
-	    - '#Access to an undefined property object::\$bindings.#'
-	    - '#Parameter \#1 $code of method PhpParser\\Parser::parse() expects string, string|false given.#'
+	    - '#Property Ray\\Aop\\ReflectiveMethodInvocation::\$callable \(callable\) does not accept array<int, object|string>.#'
+	    - '#Instanceof between PhpParser\\Node\\Expr|string and PhpParser\Node\Identifier will always evaluate to false.#'
