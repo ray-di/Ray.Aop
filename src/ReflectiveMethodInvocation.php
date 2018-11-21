@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 final class ReflectiveMethodInvocation implements MethodInvocation
@@ -37,8 +33,6 @@ final class ReflectiveMethodInvocation implements MethodInvocation
 
     /**
      * @param object              $object
-     * @param string              $method
-     * @param array               $arguments
      * @param MethodInterceptor[] $interceptors
      */
     public function __construct(
@@ -110,6 +104,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         if ($interceptor instanceof MethodInterceptor) {
             return $interceptor->invoke($this);
         }
+
         throw new \LogicException;
     }
 

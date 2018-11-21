@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop\Matcher;
 
 use PHPUnit\Framework\TestCase;
@@ -21,11 +17,10 @@ class SubclassesOfMatcherTest extends TestCase
         $this->assertTrue($isMatched);
     }
 
-    /**
-     * @expectedException \Ray\Aop\Exception\InvalidAnnotationException
-     */
     public function testMatchesMethod()
     {
+        $this->expectException(\Ray\Aop\Exception\InvalidAnnotationException::class);
+
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = (new SubclassesOfMatcher)->matchesMethod($method, ['get']);
 

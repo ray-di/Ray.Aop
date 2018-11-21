@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 use _HumbugBox90c4dcb919ed\Symfony\Component\Console\Exception\LogicException;
@@ -48,11 +44,6 @@ final class CodeGenMethod
      */
     private $assisted;
 
-    /**
-     * @param \PhpParser\Parser                 $parser
-     * @param \PhpParser\BuilderFactory         $factory
-     * @param \PhpParser\PrettyPrinter\Standard $printer
-     */
     public function __construct(
         Parser $parser,
         BuilderFactory $factory,
@@ -64,12 +55,6 @@ final class CodeGenMethod
         $this->reader = new AnnotationReader;
     }
 
-    /**
-     * @param \ReflectionClass $class
-     * @param BindInterface    $bind
-     *
-     * @return array
-     */
     public function getMethods(\ReflectionClass $class, BindInterface $bind) : array
     {
         $bindingMethods = array_keys($bind->getBindings());
@@ -89,8 +74,6 @@ final class CodeGenMethod
 
     /**
      * Return method statement
-     *
-     * @param \ReflectionMethod $method
      *
      * @return \PhpParser\Node\Stmt\ClassMethod
      */
@@ -147,9 +130,7 @@ final class CodeGenMethod
         $stmts = $this->getTemplateMethodNodeStmts();
 
         // traverse
-        $stmts = $traverser->traverse($stmts);
-
-        return $stmts;
+        return $traverser->traverse($stmts);
     }
 
     private function setDefault(\ReflectionParameter $param, Param $paramStmt)

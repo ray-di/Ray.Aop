@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
@@ -93,9 +89,7 @@ final class Compiler implements CompilerInterface
 
     private function getNewClassName($class, BindInterface $bind) : string
     {
-        $newClass = sprintf('%s_%s', str_replace('\\', '_', $class), $bind->toString(''));
-
-        return $newClass;
+        return sprintf('%s_%s', str_replace('\\', '_', $class), $bind->toString(''));
     }
 
     private function hasBoundMethod(string $class, BindInterface $bind) : bool

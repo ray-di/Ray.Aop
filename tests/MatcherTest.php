@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
@@ -26,19 +22,17 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->subclassesOf(FakeClass::class));
     }
 
-    /**
-     * @expectedException \Ray\Aop\Exception\InvalidAnnotationException
-     */
     public function testValidationForAnnotatedWith()
     {
+        $this->expectException(\Ray\Aop\Exception\InvalidAnnotationException::class);
+
         (new Matcher)->annotatedWith('__invalid_class');
     }
 
-    /**
-     * @expectedException \Ray\Aop\Exception\InvalidArgumentException
-     */
     public function testValidationForSubclassesOf()
     {
+        $this->expectException(\Ray\Aop\Exception\InvalidArgumentException::class);
+
         (new Matcher)->subclassesOf('__invalid_class');
     }
 }

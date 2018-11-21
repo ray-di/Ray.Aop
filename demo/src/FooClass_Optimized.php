@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 class Ray_Aop_Demo_Optimized extends Ray\Aop\Demo\FooClass implements Ray\Aop\WeavedInterface
 {
     public $bind;

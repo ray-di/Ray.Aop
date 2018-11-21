@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
@@ -19,7 +15,7 @@ class CodeGenPhp71 extends TestCase
      */
     private $codeGen;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
     }
@@ -50,7 +46,7 @@ class CodeGenPhp71 extends TestCase
     public function testContainsStatement(string $code)
     {
         $this->assertContains("declare (strict_types=1);\n", $code);
-        $this->assertContains("use Composer\Autoload;\n", $code);
+        $this->assertContains("use Composer\\Autoload;\n", $code);
     }
 
     public function testNullableParam()

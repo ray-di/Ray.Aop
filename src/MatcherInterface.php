@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 interface MatcherInterface
@@ -47,9 +43,6 @@ interface MatcherInterface
     /**
      * Returns a matcher which matches if combining two matchers using a logical OR.
      *
-     * @param AbstractMatcher $matcherA
-     * @param AbstractMatcher $matcherB
-     *
      * @return AbstractMatcher
      */
     public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB);
@@ -57,17 +50,12 @@ interface MatcherInterface
     /**
      * Returns a matcher which matches if combining two matchers using a logical AND.
      *
-     * @param AbstractMatcher $matcherA
-     * @param AbstractMatcher $matcherB
-     *
      * @return AbstractMatcher
      */
     public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB);
 
     /**
      * Returns a matcher which does NOT matches.
-     *
-     * @param AbstractMatcher $matcher
      *
      * @return AbstractMatcher
      */

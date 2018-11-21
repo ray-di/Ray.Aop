@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop\Demo;
 
 require __DIR__ . '/bootstrap.php';
@@ -45,31 +41,28 @@ $bind = (new Bind)->bindInterceptors(
 array_map('unlink', glob("{$tmpDir}/*.php"));
 $max = 1000 * 1000;
 
-compile: {
+compile:
     $t = microtime(true);
     /** @var FooClass $foo */
     $foo = $compiler->newInstance(FooClass::class, [], $bind);
     echo sprintf('%-16s%.8f[ms]', 'compile', (microtime(true) - $t) * 1000) . PHP_EOL;
-}
 
-initialize: {
+initialize:
     $t = microtime(true);
     /* @var FooClass $foo */
     for ($i = 0; $i < $max; $i++) {
         $foo = $compiler->newInstance(FooClass::class, [], $bind);
     }
     echo sprintf('%-16s%.8f[ms]', 'initialize', microtime(true) - $t) . PHP_EOL;
-}
 
-intercepting: {
+intercepting:
     $t = microtime(true);
     for ($i = 0; $i < $max; $i++) {
         $foo->intercepted();
     }
     echo sprintf('%-16s%.8f[μs]', 'intercepting', microtime(true) - $t) . PHP_EOL;
-}
 
-optimized: {
+optimized:
     $foo = new \Ray_Aop_Demo_Optimized();
     $foo->bindings = ['intercepted' => [new NullInterceptor]];
     $t = microtime(true);
@@ -77,25 +70,22 @@ optimized: {
         $foo->intercepted();
     }
     echo sprintf('%-16s%.8f[μs]', 'optimized?', microtime(true) - $t) . PHP_EOL;
-}
 
-no_intercepting: {
+no_intercepting:
     $t = microtime(true);
     for ($i = 0; $i < $max; $i++) {
         $foo->noInteceptor();
     }
     // should be same with native_call
     echo sprintf('%-16s%.8f[μs]', 'no_intercepting', microtime(true) - $t) . PHP_EOL;
-}
 
-native_call: {
+native_call:
     $bareFoo = new FooClass();
     $t = microtime(true);
     for ($i = 0; $i < $max; $i++) {
         $bareFoo->noInteceptor();
     }
     echo sprintf('%-16s%.8f[μs]', 'native_call', microtime(true) - $t) . PHP_EOL;
-}
 
 //compile         7.96413422[ms]
 //initialize      2.08863711[ms]

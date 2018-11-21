@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 final class ReflectionMethod extends \ReflectionMethod implements Reader
@@ -29,9 +25,6 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
         $this->method = $method->name;
     }
 
-    /**
-     * @return ReflectionClass
-     */
     public function getDeclaringClass() : ReflectionClass
     {
         $parencClass = (new \ReflectionClass($this->object))->getParentClass();
@@ -71,7 +64,5 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
                 return $annotation;
             }
         }
-
-        return null;
     }
 }
