@@ -8,6 +8,7 @@ declare(strict_types=1);
  */
 namespace Ray\Aop;
 
+use _HumbugBox90c4dcb919ed\Symfony\Component\Console\Exception\LogicException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use PhpParser\Builder\Method;
 use PhpParser\Builder\Param;
@@ -21,6 +22,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Annotation\AbstractAssisted;
+use function is_string;
 
 final class CodeGenMethod
 {
@@ -188,7 +190,11 @@ final class CodeGenMethod
      */
     private function getTemplateMethodNodeStmts() : array
     {
-        $code = file_get_contents(dirname(__DIR__) . '/template/AopTemplate.php');
+        $templateFile = dirname(__DIR__) . '/template/AopTemplate.php';
+        $code = file_get_contents($templateFile);
+        if (! is_string($code)) {
+            throw new LogicException; // @codeCoverageIgnore
+        }
         /** @var string $code */
         $node = $this->parser->parse($code)[0];
         if (! $node instanceof Class_) {
