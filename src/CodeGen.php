@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -46,11 +42,6 @@ final class CodeGen implements CodeGenInterface
      */
     private $reader;
 
-    /**
-     * @param \PhpParser\Parser                 $parser
-     * @param \PhpParser\BuilderFactory         $factory
-     * @param \PhpParser\PrettyPrinter\Standard $printer
-     */
     public function __construct(
         Parser $parser,
         BuilderFactory $factory,
@@ -113,9 +104,8 @@ final class CodeGen implements CodeGenInterface
             ->extend($parentClass)
             ->implement('Ray\Aop\WeavedInterface');
         $builder = $this->addInterceptorProp($builder);
-        $builder = $this->addSerialisedAnnotationProp($builder, $class);
 
-        return $builder;
+        return $this->addSerialisedAnnotationProp($builder, $class);
     }
 
     /**
@@ -147,7 +137,7 @@ final class CodeGen implements CodeGenInterface
                 ->setDefault(true)
         )->addStmt(
             $this->factory->property('bind')
-            ->makePublic()
+                ->makePublic()
         );
 
         return $builder;
@@ -190,11 +180,9 @@ final class CodeGen implements CodeGenInterface
 
     private function buildClass(string $class, \ReflectionClass $sourceClass, array $methods) : Class_
     {
-        $stmt = $this
+        return $this
             ->getClass($this->factory, $class, $sourceClass)
             ->addStmts($methods)
             ->getNode();
-
-        return $stmt;
     }
 }

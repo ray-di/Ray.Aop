@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 /**
@@ -13,7 +9,7 @@ namespace Ray\Aop;
  *
  * An invocation is a joinpoint and can be intercepted by an interceptor.
  *
- * @link http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/Invocation.html
+ * @see http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/Invocation.html
  */
 interface Invocation extends Joinpoint
 {

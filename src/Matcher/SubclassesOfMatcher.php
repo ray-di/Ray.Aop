@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop\Matcher;
 
 use Ray\Aop\AbstractMatcher;
@@ -19,9 +15,8 @@ final class SubclassesOfMatcher extends AbstractMatcher
     public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
         list($superClass) = $arguments;
-        $isSubClass = $class->isSubclassOf($superClass) || ($class->name === $superClass);
 
-        return $isSubClass;
+        return $class->isSubclassOf($superClass) || ($class->name === $superClass);
     }
 
     /**

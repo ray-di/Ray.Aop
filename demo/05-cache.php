@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop\Demo;
 
 require __DIR__ . '/bootstrap.php';
@@ -21,7 +17,7 @@ if (file_exists($cache)) {
 }
 
 $start = microtime(true);
-no_cache: {
+no_cache:
     $pointcut = new Pointcut(
         (new Matcher)->any(),
         (new Matcher)->annotatedWith(WeekendBlock::class),
@@ -30,16 +26,16 @@ no_cache: {
     $compiler = new Compiler($_ENV['TMP_DIR']);
     $bind = (new Bind)->bind(AnnotationRealBillingService::class, [$pointcut]);
     $billingService1 = $compiler->newInstance(AnnotationRealBillingService::class, [], $bind);
-}
+
 $time1 = microtime(true) - $start;
 
 file_put_contents($cache, serialize($bind));
 
 $start = microtime(true);
-cache_enable: {
+cache_enable:
     $bind = unserialize(file_get_contents($cache));
     $billingService2 = $compiler->newInstance(AnnotationRealBillingService::class, [], $bind);
-}
+
 $time2 = microtime(true) - $start;
 
 $works = $billingService1 instanceof AnnotationRealBillingService && $billingService2 instanceof AnnotationRealBillingService;

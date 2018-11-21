@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 /**
@@ -14,7 +10,7 @@ namespace Ray\Aop;
  * The user should implement the invoke(MethodInvocation) method to modify the original behavior.
  * E.g. the following class implements a tracing interceptor (traces all the calls on the intercepted method(s)):
  *
- * @link http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html
+ * @see http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html
  */
 interface MethodInterceptor extends Interceptor
 {

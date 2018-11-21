@@ -1,18 +1,13 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 interface CompilerInterface
 {
     /**
-     * @param string        $class
-     * @param BindInterface $bind
+     * @param string $class
      *
      * @return string
      */
@@ -21,9 +16,7 @@ interface CompilerInterface
     /**
      * Return new instance weaved interceptor(s)
      *
-     * @param string        $class
-     * @param array         $args
-     * @param BindInterface $bind
+     * @param string $class
      *
      * @return object
      */

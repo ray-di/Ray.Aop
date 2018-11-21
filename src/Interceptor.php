@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop;
 
 /**
@@ -13,7 +9,7 @@ namespace Ray\Aop;
  *
  * This interface is not used directly. Use the the sub-interfaces to intercept specific events.
  *
- * @link http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/Interceptor.html
+ * @see http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/Interceptor.html
  */
 interface Interceptor extends Advice
 {

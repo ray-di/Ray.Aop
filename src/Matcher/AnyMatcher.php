@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
- */
+
 namespace Ray\Aop\Matcher;
 
 use Ray\Aop\AbstractMatcher;
@@ -56,15 +52,8 @@ final class AnyMatcher extends AbstractMatcher
         return strpos($name, '__') === 0;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     private function isBuiltinMethod(string $name) : bool
     {
-        $isBuiltin = in_array($name, self::$builtinMethods, true);
-
-        return $isBuiltin;
+        return in_array($name, self::$builtinMethods, true);
     }
 }
