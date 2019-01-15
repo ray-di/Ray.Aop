@@ -4,5 +4,4 @@ parameters:
 		- %currentWorkingDirectory%/tests/Fake/*
 		- %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
 	ignoreErrors:
-	    - '#Instanceof between PhpParser\\Node\\Expr|string and PhpParser\\Node\\Identifier will always evaluate to false.#'
-	    - '#Property PhpParser\\Node\\Expr\\StaticCall::\$name \(PhpParser\\Node\\Expr\|string\) does not accept PhpParser\\Node\\Identifier.#'
+	    - '#Access to an undefined property object::\$bindings.#'
