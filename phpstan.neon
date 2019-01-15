@@ -5,4 +5,3 @@ parameters:
 		- %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
 	ignoreErrors:
 	    - '#Property Ray\\Aop\\ReflectiveMethodInvocation::\$callable \(callable\) does not accept array<int, object|string>.#'
-	    - '#Access to an undefined property object::\$bindings.#'
