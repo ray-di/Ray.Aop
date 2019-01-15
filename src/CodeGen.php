@@ -42,6 +42,9 @@ final class CodeGen implements CodeGenInterface
      */
     private $reader;
 
+    /**
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     */
     public function __construct(
         Parser $parser,
         BuilderFactory $factory,

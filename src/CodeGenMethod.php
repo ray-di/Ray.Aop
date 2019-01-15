@@ -42,6 +42,9 @@ final class CodeGenMethod
      */
     private $assisted;
 
+    /**
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     */
     public function __construct(
         Parser $parser,
         BuilderFactory $factory,

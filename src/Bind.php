@@ -18,6 +18,9 @@ final class Bind implements BindInterface
      */
     private $reader;
 
+    /**
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     */
     public function __construct()
     {
         $this->reader = new AnnotationReader();
@@ -25,6 +28,7 @@ final class Bind implements BindInterface
 
     /**
      * {@inheritdoc}
+     * @throws \ReflectionException
      */
     public function bind($class, array $pointcuts) : BindInterface
     {
