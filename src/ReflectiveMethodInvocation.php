@@ -50,6 +50,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
 
     /**
      * {@inheritdoc}
+     *
      * @throws \ReflectionException
      */
     public function getMethod() : ReflectionMethod
@@ -80,6 +81,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
 
     /**
      * {@inheritdoc}
+     *
      * @throws \ReflectionException
      */
     public function getNamedArguments() : \ArrayObject
