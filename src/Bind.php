@@ -31,7 +31,7 @@ final class Bind implements BindInterface
      *
      * @throws \ReflectionException
      */
-    public function bind($class, array $pointcuts) : BindInterface
+    public function bind(string $class, array $pointcuts) : BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
         $this->annotatedMethodsMatch(new \ReflectionClass($class), $pointcuts);
@@ -42,7 +42,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function bindInterceptors($method, array $interceptors) : BindInterface
+    public function bindInterceptors(string $method, array $interceptors) : BindInterface
     {
         $this->bindings[$method] = ! array_key_exists($method, $this->bindings) ? $interceptors : array_merge(
             $this->bindings[$method],
