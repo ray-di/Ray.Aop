@@ -27,7 +27,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $interceptors;
 
     /**
-     * @var callable
+     * @var array
      */
     private $callable;
 
@@ -43,7 +43,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     ) {
         $this->object = $object;
         $this->method = $method;
-        $this->callable = $this->getCallable($object, $method);
+        $this->callable = [$object, $method];
         $this->arguments = $arguments;
         $this->interceptors = $interceptors;
     }
@@ -101,7 +101,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function proceed()
     {
-        if ($this->interceptors === []) {
+        if ($this->interceptors === [] && \is_callable($this->callable)) {
             return call_user_func_array($this->callable, (array) $this->arguments);
         }
         $interceptor = array_shift($this->interceptors);
@@ -118,10 +118,5 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     public function getThis()
     {
         return $this->object;
-    }
-
-    private function getCallable($object, string $method) : callable
-    {
-        return [$object, $method];
     }
 }
