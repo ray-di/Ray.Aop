@@ -58,9 +58,9 @@ final class CodeGen implements CodeGenInterface
     }
 
     /**
-     * Generate weaved class code
+     * {@inheritdoc}
      */
-    public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind) : string
+    public function generate(string $class, \ReflectionClass $sourceClass, BindInterface $bind) : string
     {
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind);
         $classStmt = $this->buildClass($class, $sourceClass, $methods);

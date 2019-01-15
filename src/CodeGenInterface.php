@@ -6,10 +6,5 @@ namespace Ray\Aop;
 
 interface CodeGenInterface
 {
-    /**
-     * @param string $class
-     *
-     * @return string
-     */
-    public function generate($class, \ReflectionClass $sourceClass, BindInterface $bind);
+    public function generate(string $class, \ReflectionClass $sourceClass, BindInterface $bind) : string;
 }
