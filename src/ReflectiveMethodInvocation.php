@@ -43,7 +43,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     ) {
         $this->object = $object;
         $this->method = $method;
-        $this->callable = [$object, $method];
+        $this->callable = $this->getCallable($object, $method);
         $this->arguments = $arguments;
         $this->interceptors = $interceptors;
     }
@@ -118,5 +118,10 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     public function getThis()
     {
         return $this->object;
+    }
+
+    private function getCallable($object, string $method) : callable
+    {
+        return [$object, $method];
     }
 }
