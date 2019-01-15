@@ -14,6 +14,9 @@ final class AnnotatedWithMatcher extends AbstractMatcher
      */
     private $reader;
 
+    /**
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     */
     public function __construct()
     {
         parent::__construct();

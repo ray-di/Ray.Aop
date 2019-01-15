@@ -20,6 +20,9 @@ final class Compiler implements CompilerInterface
      */
     private $codeGen;
 
+    /**
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     */
     public function __construct(string $classDir)
     {
         if (! is_writable($classDir)) {
@@ -38,6 +41,9 @@ final class Compiler implements CompilerInterface
         return ['classDir'];
     }
 
+    /**
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     */
     public function __wakeup()
     {
         $this->__construct($this->classDir);
@@ -45,8 +51,10 @@ final class Compiler implements CompilerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \ReflectionException
      */
-    public function newInstance($class, array $args, BindInterface $bind)
+    public function newInstance(string $class, array $args, BindInterface $bind)
     {
         $compiledClass = $this->compile($class, $bind);
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
@@ -57,8 +65,10 @@ final class Compiler implements CompilerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \ReflectionException
      */
-    public function compile($class, BindInterface $bind) : string
+    public function compile(string $class, BindInterface $bind) : string
     {
         if ($this->hasNoBinding($class, $bind)) {
             return $class;

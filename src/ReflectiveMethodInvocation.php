@@ -27,7 +27,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $interceptors;
 
     /**
-     * @var callable
+     * @var array
      */
     private $callable;
 
@@ -50,6 +50,8 @@ final class ReflectiveMethodInvocation implements MethodInvocation
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \ReflectionException
      */
     public function getMethod() : ReflectionMethod
     {
@@ -79,6 +81,8 @@ final class ReflectiveMethodInvocation implements MethodInvocation
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \ReflectionException
      */
     public function getNamedArguments() : \ArrayObject
     {
@@ -97,7 +101,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function proceed()
     {
-        if ($this->interceptors === []) {
+        if ($this->interceptors === [] && \is_callable($this->callable)) {
             return call_user_func_array($this->callable, (array) $this->arguments);
         }
         $interceptor = array_shift($this->interceptors);
