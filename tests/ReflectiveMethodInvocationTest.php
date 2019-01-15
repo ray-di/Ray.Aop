@@ -89,8 +89,8 @@ class ReflectiveMethodInvocationTest extends TestCase
     public function testNoInterceptor()
     {
         $this->expectException(\LogicException::class);
-        $invalidIntercepor = new \stdClass;
-        $invocation = new ReflectiveMethodInvocation(new FakeWeavedClass, 'add', [1], [$invalidIntercepor]);
+        $invalidInterceptor = new \stdClass;
+        $invocation = new ReflectiveMethodInvocation(new FakeWeavedClass, 'add', [1], [$invalidInterceptor]);
         $invocation->proceed();
     }
 }
