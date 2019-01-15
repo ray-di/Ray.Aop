@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class MatcherTest extends TestCase
 {
+    /**
+     * @throws \ReflectionException
+     */
     public function testReturnBuildInMatcher()
     {
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->any());
@@ -22,6 +25,9 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->subclassesOf(FakeClass::class));
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testValidationForAnnotatedWith()
     {
         $this->expectException(\Ray\Aop\Exception\InvalidAnnotationException::class);
@@ -29,6 +35,9 @@ class MatcherTest extends TestCase
         (new Matcher)->annotatedWith('__invalid_class');
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testValidationForSubclassesOf()
     {
         $this->expectException(\Ray\Aop\Exception\InvalidArgumentException::class);
