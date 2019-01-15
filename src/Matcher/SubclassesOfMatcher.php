@@ -24,6 +24,8 @@ final class SubclassesOfMatcher extends AbstractMatcher
      */
     public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
+        unset($method, $arguments);
+
         throw new InvalidAnnotationException('subclassesOf is only for class match');
     }
 }

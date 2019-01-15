@@ -26,6 +26,8 @@ final class AnyMatcher extends AbstractMatcher
      */
     public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
+        unset($class, $arguments);
+
         return true;
     }
 
