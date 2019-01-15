@@ -7,18 +7,14 @@ namespace Ray\Aop;
 interface CompilerInterface
 {
     /**
-     * @param string $class
-     *
-     * @return string
+     * Compile class
      */
-    public function compile($class, BindInterface $bind);
+    public function compile(string $class, BindInterface $bind) : string;
 
     /**
      * Return new instance weaved interceptor(s)
      *
-     * @param string $class
-     *
      * @return object
      */
-    public function newInstance($class, array $args, BindInterface $bind);
+    public function newInstance(string $class, array $args, BindInterface $bind);
 }
