@@ -73,21 +73,22 @@ final class Compiler implements CompilerInterface
         if ($this->hasNoBinding($class, $bind)) {
             return $class;
         }
-        $newClass = $this->getNewClassName($class, $bind);
-        if (class_exists($newClass)) {
-            return $newClass;
+        $baseName = $this->getBaseName($class, $bind);
+        $newClassName = 'RayAop\\' . $baseName;
+        if (class_exists($newClassName)) {
+            return $newClassName;
         }
-        $file = "{$this->classDir}/{$newClass}.php";
+        $file = "{$this->classDir}/{$baseName}.php";
         if (file_exists($file)) {
             /** @noinspection UntrustedInclusionInspection */
             /** @noinspection PhpIncludeInspection */
             include $file;
 
-            return $newClass;
+            return $newClassName;
         }
-        $this->includeGeneratedCode($newClass, new ReflectionClass($class), $file, $bind);
+        $this->includeGeneratedCode($baseName, new ReflectionClass($class), $file, $bind);
 
-        return $newClass;
+        return $newClassName;
     }
 
     private function hasNoBinding($class, BindInterface $bind) : bool
@@ -97,7 +98,7 @@ final class Compiler implements CompilerInterface
         return ! $bind->getBindings() && ! $hasMethod;
     }
 
-    private function getNewClassName($class, BindInterface $bind) : string
+    private function getBaseName($class, BindInterface $bind) : string
     {
         return sprintf('%s_%s', str_replace('\\', '_', $class), $bind->toString(''));
     }
