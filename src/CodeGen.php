@@ -67,6 +67,7 @@ final class CodeGen implements CodeGenInterface
         $classDocStmt = $this->addClassDocComment($classStmt, $sourceClass);
         $stmt = $this->factory->namespace('RayAop')
             ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
+            ->addStmt($this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation'))
             ->addStmt($classDocStmt)->getNode();
         $declareStmt = $this->getPhpFileStmt($sourceClass);
 

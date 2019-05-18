@@ -233,7 +233,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 
         $this->isAspect = false;
         // invoke interceptor
-        $result = (new \Ray\Aop\ReflectiveMethodInvocation($this, __FUNCTION__, [$a, $b], $this->bindings[__FUNCTION__]))->proceed();
+        $result = (new Invocation($this, __FUNCTION__, [$a, $b], $this->bindings[__FUNCTION__]))->proceed();
         $this->isAspect = true;
 
         return $result;
