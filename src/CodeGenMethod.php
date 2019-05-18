@@ -211,7 +211,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
     /**
      * @var bool
      */
-    private $isIntercepting = true;
+    private $isAspect = true;
 
     /**
      * Method Template
@@ -220,16 +220,16 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
      */
     public function templateMethod($a, $b)
     {
-        if ($this->isIntercepting === false) {
-            $this->isIntercepting = true;
+        if ($this->isAspect === false) {
+            $this->isAspect = true;
 
             return parent::templateMethod($a, $b);
         }
 
-        $this->isIntercepting = false;
+        $this->isAspect = false;
         // invoke interceptor
         $result = (new \Ray\Aop\ReflectiveMethodInvocation($this, __FUNCTION__, [$a, $b], $this->bindings[__FUNCTION__]))->proceed();
-        $this->isIntercepting = true;
+        $this->isAspect = true;
 
         return $result;
     }

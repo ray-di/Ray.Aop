@@ -135,7 +135,7 @@ final class CodeGen implements CodeGenInterface
     {
         $builder->addStmt(
             $this->factory
-                ->property('isIntercepting')
+                ->property('isAspect')
                 ->makePrivate()
                 ->setDefault(true)
         )->addStmt(
