@@ -64,10 +64,13 @@ final class CodeGen implements CodeGenInterface
     {
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind);
         $classStmt = $this->buildClass($class, $sourceClass, $methods);
-        $classStmt = $this->addClassDocComment($classStmt, $sourceClass);
+        $classDocStmt = $this->addClassDocComment($classStmt, $sourceClass);
+        $stmt = $this->factory->namespace('RayAop')
+            ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
+            ->addStmt($classDocStmt)->getNode();
         $declareStmt = $this->getPhpFileStmt($sourceClass);
 
-        return $this->printer->prettyPrintFile(array_merge($declareStmt, [$classStmt]));
+        return $this->printer->prettyPrintFile(array_merge($declareStmt, [$stmt]));
     }
 
     /**
@@ -101,11 +104,11 @@ final class CodeGen implements CodeGenInterface
      */
     private function getClass(BuilderFactory $factory, string $newClassName, \ReflectionClass $class) : Builder
     {
-        $parentClass = $class->name;
+        $parentClass = '\\' . $class->name;
         $builder = $factory
             ->class($newClassName)
             ->extend($parentClass)
-            ->implement('Ray\Aop\WeavedInterface');
+            ->implement('WeavedInterface');
         $builder = $this->addInterceptorProp($builder);
 
         return $this->addSerialisedAnnotationProp($builder, $class);
@@ -141,6 +144,10 @@ final class CodeGen implements CodeGenInterface
         )->addStmt(
             $this->factory->property('bind')
                 ->makePublic()
+        )->addStmt(
+            $this->factory->property('bindings')
+                ->makePublic()
+                ->setDefault([])
         );
 
         return $builder;
