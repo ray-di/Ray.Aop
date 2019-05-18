@@ -8,7 +8,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
 
-class CodeGenPhp71 extends TestCase
+class CodeGenPhp71Test extends TestCase
 {
     /**
      * @var CodeGen
@@ -58,12 +58,25 @@ class CodeGenPhp71 extends TestCase
         $this->assertContains($expected, $code);
     }
 
-    public function testVariadicParam()
+    public function testTypedParam()
     {
         $bind = new Bind;
-        $bind->bindInterceptors('variadicParam', []);
+        $bind->bindInterceptors('typed', []);
         $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = 'function variadicParam(int ...$ids)';
+        $expected = <<<'EOT'
+    function typed(\SplObjectStorage $storage)
+EOT;
+        $this->assertContains($expected, $code);
+    }
+
+    public function testUseTyped()
+    {
+        $bind = new Bind;
+        $bind->bindInterceptors('useTyped', []);
+        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $expected = <<<'EOT'
+    function useTyped(\Ray\Aop\CodeGen $codeGen)
+EOT;
         $this->assertContains($expected, $code);
     }
 }

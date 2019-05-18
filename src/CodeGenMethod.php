@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use function class_exists;
 use Doctrine\Common\Annotations\AnnotationReader;
 use function is_string;
 use PhpParser\Builder\Method;
@@ -160,7 +159,7 @@ final class CodeGenMethod
         $paramString = (string) $param;
         $isNullableType = is_int(strpos($paramString, '<required>')) && is_int(strpos($paramString, 'or NULL'));
         $destType = $isNullableType ? new NullableType((string) $type) : (string) $type;
-        if (is_string($destType) && class_exists($destType)) {
+        if (is_string($destType) && ! $type->isBuiltin()) {
             $destType = '\\' . $destType;
         }
         $paramStmt->setTypeHint($destType);
