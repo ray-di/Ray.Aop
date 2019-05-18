@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use function class_exists;
 use Doctrine\Common\Annotations\AnnotationReader;
 use function is_string;
 use PhpParser\Builder\Method;
