@@ -14,12 +14,12 @@ final class CodeVisitor extends NodeVisitorAbstract
     /**
      * @var Declare_[]
      */
-    public $declare;
+    public $declare = [];
 
     /**
      * @var Use_[]
      */
-    public $use;
+    public $use = [];
 
     public function enterNode(Node $node)
     {
