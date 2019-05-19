@@ -20,7 +20,7 @@ class CompilerTest extends TestCase
      */
     private $compiler;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->compiler = new Compiler($_ENV['TMP_DIR']);

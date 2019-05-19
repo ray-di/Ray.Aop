@@ -18,7 +18,7 @@ class BindTest extends TestCase
      */
     protected $interceptors;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->bind = new Bind;
