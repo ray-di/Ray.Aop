@@ -65,13 +65,15 @@ final class CodeGen implements CodeGenInterface
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind);
         $classStmt = $this->buildClass($class, $sourceClass, $methods);
         $classDocStmt = $this->addClassDocComment($classStmt, $sourceClass);
+        $code = $this->getVisitorCode($sourceClass);
+        $a = $this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation');
         $stmt = $this->factory->namespace('RayAop')
             ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
             ->addStmt($this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation'))
+            ->addStmts($code->use)
             ->addStmt($classDocStmt)->getNode();
-        $declareStmt = $this->getPhpFileStmt($sourceClass);
 
-        return $this->printer->prettyPrintFile(array_merge($declareStmt, [$stmt]));
+        return $this->printer->prettyPrintFile(array_merge($code->declare, [$stmt]));
     }
 
     /**
@@ -79,10 +81,10 @@ final class CodeGen implements CodeGenInterface
      *
      * @return Stmt[]
      */
-    private function getPhpFileStmt(\ReflectionClass $class) : array
+    private function getVisitorCode(\ReflectionClass $class) : CodeVisitor
     {
         $traverser = new NodeTraverser();
-        $visitor = new CodeGenVisitor();
+        $visitor = new CodeVisitor();
         $traverser->addVisitor($visitor);
         $fileName = $class->getFileName();
         if (is_bool($fileName)) {
@@ -97,7 +99,7 @@ final class CodeGen implements CodeGenInterface
             $traverser->traverse($stmts);
         }
 
-        return $visitor();
+        return $visitor;
     }
 
     /**
