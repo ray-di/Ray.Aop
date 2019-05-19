@@ -8,7 +8,6 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use PhpParser\Builder\Class_ as Builder;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
@@ -78,8 +77,6 @@ final class CodeGen implements CodeGenInterface
 
     /**
      * Return "declare()" and "use" statement code
-     *
-     * @return Stmt[]
      */
     private function getVisitorCode(\ReflectionClass $class) : CodeVisitor
     {
