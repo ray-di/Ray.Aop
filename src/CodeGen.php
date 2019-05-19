@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use function implode;
 use PhpParser\Builder\Class_ as Builder;
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
@@ -65,8 +66,10 @@ final class CodeGen implements CodeGenInterface
         $classStmt = $this->buildClass($class, $sourceClass, $methods);
         $classDocStmt = $this->addClassDocComment($classStmt, $sourceClass);
         $code = $this->getVisitorCode($sourceClass);
-        $a = $this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation');
-        $stmt = $this->factory->namespace('RayAop')
+        $this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation');
+        $parts = $code->namespace->name->parts ?? [];
+        $ns = implode('\\', $parts);
+        $stmt = $this->factory->namespace($ns)
             ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
             ->addStmt($this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation'))
             ->addStmts($code->use)
