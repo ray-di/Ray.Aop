@@ -224,7 +224,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
      */
     public function templateMethod($a, $b)
     {
-        if ($this->isAspect === false) {
+        if (! $this->isAspect) {
             $this->isAspect = true;
 
             return parent::templateMethod($a, $b);
