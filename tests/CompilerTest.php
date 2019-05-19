@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker3;
 use Ray\Aop\Exception\NotWritableException;
+use const SVN_AUTH_PARAM_DEFAULT_USERNAME;
 
 class CompilerTest extends TestCase
 {
@@ -25,7 +26,7 @@ class CompilerTest extends TestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->compiler = new Compiler($_ENV['TMP_DIR']);
+        $this->compiler = new Compiler(__DIR__ . '/tmp');
         $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor]);
         $this->bind = (new Bind)->bind(FakeWeaved::class, [$pointcut]);
@@ -216,9 +217,7 @@ class CompilerTest extends TestCase
 
     public function testHasBound()
     {
-        $this->compiler = new Compiler(
-            $_ENV['TMP_DIR']
-        );
+        $this->compiler = new Compiler(__DIR__ . '/tmp');
         $this->bind = new Bind;
         $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor]);
@@ -230,7 +229,7 @@ class CompilerTest extends TestCase
     public function testMethodAnnotationReader()
     {
         $bind = (new Bind)->bindInterceptors('getDouble', [new FakeMethodAnnotationReaderInterceptor]);
-        $compiler = new Compiler($_ENV['TMP_DIR']);
+        $compiler = new Compiler(__DIR__ . '/tmp');
         /** @var \Ray\Aop\FakeAnnotateClass $mock */
         $mock = $compiler->newInstance(FakeAnnotateClass::class, [], $bind);
         $mock->getDouble(1);
@@ -258,7 +257,7 @@ class CompilerTest extends TestCase
     public function testMethodAnnotationReaderReturnNull()
     {
         $bind = (new Bind)->bindInterceptors('returnSame', [new FakeMethodAnnotationReaderInterceptor]);
-        $compiler = new Compiler($_ENV['TMP_DIR']);
+        $compiler = new Compiler(__DIR__ . '/tmp');
         $mock = $compiler->newInstance(FakeMock::class, [], $bind);
         if (! $mock instanceof FakeMock) {
             throw new \LogicException;
@@ -271,7 +270,7 @@ class CompilerTest extends TestCase
     public function testInterceptorCanChangeArgument()
     {
         $bind = (new Bind)->bindInterceptors('returnSame', [new FakeChangeArgsInterceptor()]);
-        $compiler = new Compiler($_ENV['TMP_DIR']);
+        $compiler = new Compiler(__DIR__ . '/tmp');
         /** @var FakeMock $mock */
         $mock = $compiler->newInstance(FakeMock::class, [], $bind);
         $mock->returnSame(1);
