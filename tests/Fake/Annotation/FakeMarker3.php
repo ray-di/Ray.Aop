@@ -1,5 +1,5 @@
 <?php
-namespace Ray\Aop;
+namespace Ray\Aop\Annotation;
 
 /**
  * @Annotation

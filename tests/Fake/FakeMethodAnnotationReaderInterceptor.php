@@ -1,6 +1,8 @@
 <?php
 namespace Ray\Aop;
 
+use Ray\Aop\Annotation\FakeMarker;
+
 class FakeMethodAnnotationReaderInterceptor implements MethodInterceptor
 {
     public static $classAnnotations;

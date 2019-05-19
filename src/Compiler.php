@@ -74,7 +74,8 @@ final class Compiler implements CompilerInterface
             return $class;
         }
         $baseName = $this->getBaseName($class, $bind);
-        $newClassName = 'RayAop\\' . $baseName;
+        $ns = (new \ReflectionClass($class))->getNamespaceName();
+        $newClassName = $ns . '\\' . $baseName;
         if (class_exists($newClassName)) {
             return $newClassName;
         }

@@ -14,7 +14,7 @@ class BuiltInMatcherTest extends TestCase
      */
     private $matcher;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->matcher = new BuiltinMatcher('startsWith', ['Ray']);
     }

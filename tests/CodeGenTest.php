@@ -16,7 +16,7 @@ class CodeGenTest extends TestCase
      */
     private $codeGen;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
     }

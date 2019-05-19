@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
+use Ray\Aop\Annotation\FakeMarker;
+use Ray\Aop\Annotation\FakeMarker2;
+use Ray\Aop\Annotation\FakeMarker3;
 
 class BindTest extends TestCase
 {
@@ -18,7 +21,7 @@ class BindTest extends TestCase
      */
     protected $interceptors;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->bind = new Bind;

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Ray\Aop\Matcher;
 
 use PHPUnit\Framework\TestCase;
+use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\FakeAnnotateClass;
-use Ray\Aop\FakeMarker;
 use Ray\Aop\FakeResource;
 
 class AnnotatedWithMatcherTest extends TestCase
