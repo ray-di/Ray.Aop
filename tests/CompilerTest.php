@@ -6,6 +6,8 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
+use Ray\Aop\Annotation\FakeMarker;
+use Ray\Aop\Annotation\FakeMarker3;
 use Ray\Aop\Exception\NotWritableException;
 
 class CompilerTest extends TestCase

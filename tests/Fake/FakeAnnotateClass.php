@@ -1,8 +1,12 @@
 <?php
 namespace Ray\Aop;
 
+use Ray\Aop\Annotation\FakeMarker;
+use Ray\Aop\Annotation\FakeMarker2;
+use Ray\Aop\Annotation\FakeMarker3;
+
 /**
- * @Ray\Aop\FakeResource
+ * @FakeResource
  * @FakeClassAnnotation("item")
  */
 class FakeAnnotateClass
@@ -10,7 +14,7 @@ class FakeAnnotateClass
     public $a = 0;
 
     /**
-     * @Ray\Aop\FakeMarker3
+     * @FakeMarker3
      * @FakeMarker2
      * @FakeMarker(1)
      * @FakeMarker(2)
