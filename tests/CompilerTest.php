@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker3;
 use Ray\Aop\Exception\NotWritableException;
-use const SVN_AUTH_PARAM_DEFAULT_USERNAME;
 
 class CompilerTest extends TestCase
 {
