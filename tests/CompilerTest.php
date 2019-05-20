@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use function file_get_contents;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker3;
@@ -201,9 +202,8 @@ class CompilerTest extends TestCase
     public function testArrayTypehintedAndCallable()
     {
         $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
-        $file = file((string) (new \ReflectionClass($class))->getFileName());
-        $expected = '    function returnSame(array $arrayParam, callable $callableParam)
-';
+        $file = file_get_contents((string) (new \ReflectionClass($class))->getFileName());
+        $expected = 'public function returnSame(array $arrayParam, callable $callableParam)';
         $this->assertContains($expected, $file);
     }
 

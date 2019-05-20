@@ -21,36 +21,27 @@ class CodeGenTest extends TestCase
         $this->codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
     }
 
-    public function testAddNullDefaultWithAssisted()
-    {
-        $bind = new Bind;
-        $bind->bindInterceptors('run', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakeAssistedConsumer::class), $bind);
-        $expected = 'function run($a, $b = null, $c = null)';
-        $this->assertContains($expected, $code);
-    }
-
     public function testTypeDeclarations()
     {
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp7Class::class), $bind);
+        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp7Class::class), $bind);
         $expected = 'function run(string $a, int $b, float $c, bool $d) : array';
-        $this->assertContains($expected, $code);
+        $this->assertContains($expected, $code->code);
     }
 
     public function testReturnType()
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeArray', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
+        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
         $expected = 'function returnTypeArray() : array';
-        $this->assertContains($expected, $code);
+        $this->assertContains($expected, $code->code);
     }
 
     public function testInvalidSourceClass()
     {
         $this->expectException(InvalidSourceClassException::class);
-        $this->codeGen->generate('a', new \ReflectionClass(\stdClass::class), new Bind);
+        $this->codeGen->generate(new \ReflectionClass(\stdClass::class), new Bind);
     }
 }

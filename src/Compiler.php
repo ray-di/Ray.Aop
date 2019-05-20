@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use function class_exists;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\NotWritableException;
+use function sprintf;
 
 final class Compiler implements CompilerInterface
 {
@@ -73,23 +75,13 @@ final class Compiler implements CompilerInterface
         if ($this->hasNoBinding($class, $bind)) {
             return $class;
         }
-        $baseName = $this->getBaseName($class, $bind);
-        $ns = (new \ReflectionClass($class))->getNamespaceName();
-        $newClassName = $ns . '\\' . $baseName;
-        if (class_exists($newClassName)) {
-            return $newClassName;
+        $aopClassName = $this->getAopClassName($class, $bind);
+        if (class_exists($aopClassName, false)) {
+            return $aopClassName;
         }
-        $file = "{$this->classDir}/{$baseName}.php";
-        if (file_exists($file)) {
-            /** @noinspection UntrustedInclusionInspection */
-            /** @noinspection PhpIncludeInspection */
-            include $file;
+        $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
 
-            return $newClassName;
-        }
-        $this->includeGeneratedCode($baseName, new ReflectionClass($class), $file, $bind);
-
-        return $newClassName;
+        return $aopClassName;
     }
 
     private function hasNoBinding($class, BindInterface $bind) : bool
@@ -97,11 +89,6 @@ final class Compiler implements CompilerInterface
         $hasMethod = $this->hasBoundMethod($class, $bind);
 
         return ! $bind->getBindings() && ! $hasMethod;
-    }
-
-    private function getBaseName($class, BindInterface $bind) : string
-    {
-        return sprintf('%s_%s', str_replace('\\', '_', $class), $bind->toString(''));
     }
 
     private function hasBoundMethod(string $class, BindInterface $bind) : bool
@@ -117,11 +104,16 @@ final class Compiler implements CompilerInterface
         return $hasMethod;
     }
 
-    private function includeGeneratedCode($newClass, \ReflectionClass $sourceClass, string $file, BindInterface $bind)
+    private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind) : void
     {
-        $code = $this->codeGen->generate($newClass, $sourceClass, $bind);
-        file_put_contents($file, $code . PHP_EOL);
-        /** @noinspection PhpIncludeInspection */
-        require $file;
+        $code = $this->codeGen->generate($sourceClass, $bind);
+        $file = $code->save($this->classDir, $aopClassName);
+        require_once $file;
+        class_exists($aopClassName); // ensue class is created
+    }
+
+    private function getAopClassName(string $class, BindInterface $bind)
+    {
+        return sprintf('%s_%s', $class, $bind->toString(''));
     }
 }
