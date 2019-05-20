@@ -63,9 +63,7 @@ class CodeGenPhp71Test extends TestCase
         $bind = new Bind;
         $bind->bindInterceptors('typed', []);
         $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = <<<'EOT'
-    function typed(\SplObjectStorage $storage)
-EOT;
+        $expected = 'public function typed(\SplObjectStorage $storage)';
         $this->assertContains($expected, $code);
     }
 
@@ -74,9 +72,7 @@ EOT;
         $bind = new Bind;
         $bind->bindInterceptors('useTyped', []);
         $code = $this->codeGen->generate('a', new \ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = <<<'EOT'
-    function useTyped(\Ray\Aop\CodeGen $codeGen)
-EOT;
+        $expected = 'public function useTyped(CodeGen $codeGen)';
         $this->assertContains($expected, $code);
     }
 }

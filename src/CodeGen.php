@@ -62,10 +62,10 @@ final class CodeGen implements CodeGenInterface
      */
     public function generate(string $class, \ReflectionClass $sourceClass, BindInterface $bind) : string
     {
-        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind);
+        $code = $this->getVisitorCode($sourceClass);
+        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $code);
         $classStmt = $this->buildClass($class, $sourceClass, $methods);
         $classDocStmt = $this->addClassDocComment($classStmt, $sourceClass);
-        $code = $this->getVisitorCode($sourceClass);
         $this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation');
         $parts = $code->namespace->name->parts ?? [];
         $ns = implode('\\', $parts);
