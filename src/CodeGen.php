@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use function array_merge;
 use Doctrine\Common\Annotations\AnnotationReader;
 use function implode;
-use PhpParser\Builder\Class_ as Builder;
 use PhpParser\BuilderFactory;
-use PhpParser\Comment\Doc;
-use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -60,22 +61,30 @@ final class CodeGen implements CodeGenInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(string $class, \ReflectionClass $sourceClass, BindInterface $bind) : string
+    public function generate(\ReflectionClass $sourceClass, BindInterface $bind) : Code
     {
-        $code = $this->getVisitorCode($sourceClass);
-        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $code);
-        $classStmt = $this->buildClass($class, $sourceClass, $methods);
-        $classDocStmt = $this->addClassDocComment($classStmt, $sourceClass);
-        $this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation');
-        $parts = $code->namespace->name->parts ?? [];
+        $souce = $this->getVisitorCode($sourceClass);
+        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $souce);
+        $propStms = $this->getAopProps($sourceClass);
+        $classStm = $souce->class;
+        $newClassName = sprintf('%s_%s', (string) $souce->class->name, $bind->toString(''));
+        $classStm->name = new Identifier($newClassName);
+        $classStm->extends = new Name('\\' . $sourceClass->name);
+        $classStm->implements[] = new Name('WeavedInterface');
+        $classStm->stmts = array_merge($propStms, $methods);
+        $parts = $souce->namespace->name->parts ?? [];
         $ns = implode('\\', $parts);
         $stmt = $this->factory->namespace($ns)
             ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
             ->addStmt($this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation'))
-            ->addStmts($code->use)
-            ->addStmt($classDocStmt)->getNode();
+            ->addStmts($souce->use)
+            ->addStmt($classStm)
+            ->getNode();
 
-        return $this->printer->prettyPrintFile(array_merge($code->declare, [$stmt]));
+        $code = new Code;
+        $code->code = $this->printer->prettyPrintFile(array_merge($souce->declare, [$stmt]));
+
+        return $code;
     }
 
     /**
@@ -102,34 +111,6 @@ final class CodeGen implements CodeGenInterface
         return $visitor;
     }
 
-    /**
-     * Return class statement
-     */
-    private function getClass(BuilderFactory $factory, string $newClassName, \ReflectionClass $class) : Builder
-    {
-        $parentClass = '\\' . $class->name;
-        $builder = $factory
-            ->class($newClassName)
-            ->extend($parentClass)
-            ->implement('WeavedInterface');
-        $builder = $this->addInterceptorProp($builder);
-
-        return $this->addSerialisedAnnotationProp($builder, $class);
-    }
-
-    /**
-     * Add class doc comment
-     */
-    private function addClassDocComment(Class_ $node, \ReflectionClass $class) : Class_
-    {
-        $docComment = $class->getDocComment();
-        if ($docComment) {
-            $node->setDocComment(new Doc($docComment));
-        }
-
-        return $node;
-    }
-
     private function getClassAnnotation(\ReflectionClass $class) : string
     {
         $classAnnotations = $this->reader->getClassAnnotations($class);
@@ -137,43 +118,40 @@ final class CodeGen implements CodeGenInterface
         return serialize($classAnnotations);
     }
 
-    private function addInterceptorProp(Builder $builder) : Builder
+    /**
+     * @return Property[]
+     */
+    private function getAopProps(\ReflectionClass $class) : array
     {
-        $builder->addStmt(
-            $this->factory
-                ->property('isAspect')
-                ->makePrivate()
-                ->setDefault(true)
-        )->addStmt(
-            $this->factory->property('bind')
-                ->makePublic()
-        )->addStmt(
+        $pros = [];
+        $pros[] = $this->factory
+            ->property('bind')
+            ->makePublic()
+            ->getNode();
+
+        $pros[] =
             $this->factory->property('bindings')
                 ->makePublic()
                 ->setDefault([])
-        );
+                ->getNode();
 
-        return $builder;
-    }
+        $pros[] = $this->factory
+            ->property('methodAnnotations')
+            ->setDefault($this->getMethodAnnotations($class))
+            ->makePublic()
+            ->getNode();
+        $pros[] = $this->factory
+            ->property('classAnnotations')
+            ->setDefault($this->getClassAnnotation($class))
+            ->makePublic()
+            ->getNode();
+        $pros[] = $this->factory
+            ->property('isAspect')
+            ->makePrivate()
+            ->setDefault(true)
+            ->getNode();
 
-    /**
-     * Add serialised
-     */
-    private function addSerialisedAnnotationProp(Builder $builder, \ReflectionClass $class) : Builder
-    {
-        $builder->addStmt(
-            $this->factory
-                ->property('methodAnnotations')
-                ->setDefault($this->getMethodAnnotations($class))
-                ->makePublic()
-        )->addStmt(
-            $this->factory
-                ->property('classAnnotations')
-                ->setDefault($this->getClassAnnotation($class))
-                ->makePublic()
-        );
-
-        return $builder;
+        return $pros;
     }
 
     private function getMethodAnnotations(\ReflectionClass $class) : string
@@ -189,13 +167,5 @@ final class CodeGen implements CodeGenInterface
         }
 
         return serialize($methodsAnnotation);
-    }
-
-    private function buildClass(string $class, \ReflectionClass $sourceClass, array $methods) : Class_
-    {
-        return $this
-            ->getClass($this->factory, $class, $sourceClass)
-            ->addStmts($methods)
-            ->getNode();
     }
 }

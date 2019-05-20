@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
@@ -29,6 +30,11 @@ final class CodeVisitor extends NodeVisitorAbstract
     public $use = [];
 
     /**
+     * @var Class_
+     */
+    public $class;
+
+    /**
      * @var ClassMethod[]
      */
     public $classMethod = [];
@@ -43,6 +49,9 @@ final class CodeVisitor extends NodeVisitorAbstract
         }
         if ($node instanceof Namespace_) {
             $this->namespace = $node;
+        }
+        if ($node instanceof Class_) {
+            $this->class = $node;
         }
         if ($node instanceof ClassMethod) {
             $this->classMethod[] = $node;

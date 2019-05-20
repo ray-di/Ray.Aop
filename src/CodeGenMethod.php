@@ -64,21 +64,17 @@ final class CodeGenMethod
     }
 
     /**
-     * @return \PhpParser\Node[]
+     * @return Node\Stmt[]
      */
     private function getMethodInsideStatement(\ReflectionMethod $method) : array
     {
         $traverser = new NodeTraverser;
         $traverser->addVisitor(new AopTemplateConverter($method));
         $stmts = $this->getTemplateMethodNodeStmts();
-
         // traverse
         return $traverser->traverse($stmts);
     }
 
-    /**
-     * @return Node[]
-     */
     private function getTemplateMethodNodeStmts() : array
     {
         $code = $this->getTemplateCode();
@@ -136,7 +132,6 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
         }
 
         $this->isAspect = false;
-        // invoke interceptor
         $result = (new Invocation($this, __FUNCTION__, [$a, $b], $this->bindings[__FUNCTION__]))->proceed();
         $this->isAspect = true;
 
