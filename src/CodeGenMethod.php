@@ -71,8 +71,17 @@ final class CodeGenMethod
         $traverser = new NodeTraverser;
         $traverser->addVisitor(new AopTemplateConverter($method));
         $stmts = $this->getTemplateMethodNodeStmts();
+
         // traverse
-        return $traverser->traverse($stmts);
+        $stmts = $traverser->traverse($stmts);
+        $result = [];
+        foreach ($stmts as $stmt) {
+            if ($stmt instanceof Node\Stmt) {
+                $result[] = $stmt;
+            }
+        }
+
+        return $result;
     }
 
     private function getTemplateMethodNodeStmts() : array
