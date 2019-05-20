@@ -21,15 +21,6 @@ class CodeGenTest extends TestCase
         $this->codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
     }
 
-    public function testAddNullDefaultWithAssisted()
-    {
-        $bind = new Bind;
-        $bind->bindInterceptors('run', []);
-        $code = $this->codeGen->generate('a', new \ReflectionClass(FakeAssistedConsumer::class), $bind);
-        $expected = 'function run($a, $b = null, $c = null)';
-        $this->assertContains($expected, $code);
-    }
-
     public function testTypeDeclarations()
     {
         $bind = new Bind;
