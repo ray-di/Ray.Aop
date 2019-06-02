@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 
@@ -53,7 +51,7 @@ final class CodeGenMethod
             /* @var $method \ReflectionMethod */
             $isPublic = $classMethod->flags === Class_::MODIFIER_PUBLIC;
             if ($isBindingMethod && $isPublic) {
-                $methodInsideStatements = $this->getMethodInsideStatement($method);
+                $methodInsideStatements = $this->getTemplateMethodNodeStmts();
                 // replace statements in the method
                 $classMethod->stmts = $methodInsideStatements;
                 $methods[] = $classMethod;
@@ -61,27 +59,6 @@ final class CodeGenMethod
         }
 
         return $methods;
-    }
-
-    /**
-     * @return Node\Stmt[]
-     */
-    private function getMethodInsideStatement(\ReflectionMethod $method) : array
-    {
-        $traverser = new NodeTraverser;
-        $traverser->addVisitor(new AopTemplateConverter($method));
-        $stmts = $this->getTemplateMethodNodeStmts();
-
-        // traverse
-        $stmts = $traverser->traverse($stmts);
-        $result = [];
-        foreach ($stmts as $stmt) {
-            if ($stmt instanceof Node\Stmt) {
-                $result[] = $stmt;
-            }
-        }
-
-        return $result;
     }
 
     private function getTemplateMethodNodeStmts() : array
@@ -111,7 +88,8 @@ final class CodeGenMethod
      */
     private function getTemplateCode() : string
     {
-        return <<<'EOT'
+        return /* @lang PHP */
+            <<<'EOT'
 <?php
 class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 {
@@ -137,11 +115,11 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
         if (! $this->isAspect) {
             $this->isAspect = true;
 
-            return parent::templateMethod($a, $b);
+            return call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
         }
 
         $this->isAspect = false;
-        $result = (new Invocation($this, __FUNCTION__, [$a, $b], $this->bindings[__FUNCTION__]))->proceed();
+        $result = (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
         $this->isAspect = true;
 
         return $result;
