@@ -25,6 +25,7 @@ class FakePhp71NullableClass
 
     public function variadicParam(int ...$ids)
     {
+        return $ids[0];
     }
 
     public function typed(\SplObjectStorage $storage)
