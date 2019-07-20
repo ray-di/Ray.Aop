@@ -5,7 +5,7 @@ php:
   - 7.1
   - 7.2
   - 7.3
-  - 7.4
+  - 7.4snapshot
 
 cache:
   directories:
@@ -58,4 +58,4 @@ jobs:
       - ./vendor/bin/php-cs-fixer --dry-run -v fix;
 
   allow_failures:
-    - php: 7.4
+    - php: 7.4snapshot
