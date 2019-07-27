@@ -72,16 +72,13 @@ final class CodeGen implements CodeGenInterface
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('WeavedInterface');
         $classStm->stmts = array_merge($propStms, $methods);
-        $parts = $source->namespace->name->parts ?? [];
-        $ns = implode('\\', $parts);
-        $ns = $ns ? $ns : null;
+        $ns = $this->getNamespace($source);
         $stmt = $this->factory->namespace($ns)
             ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
             ->addStmt($this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation'))
             ->addStmts($source->use)
             ->addStmt($classStm)
             ->getNode();
-
         $code = new Code;
         $code->code = $this->printer->prettyPrintFile(array_merge($source->declare, [$stmt]));
 
@@ -168,5 +165,17 @@ final class CodeGen implements CodeGenInterface
         }
 
         return serialize($methodsAnnotation);
+    }
+
+    /**
+     * @return null|string
+     */
+    private function getNamespace(CodeVisitor $source)
+    {
+        $parts = $source->namespace->name->parts ?? [];
+        $ns = implode( '\\', $parts );
+        $ns = $ns ? $ns : null;
+
+        return $ns;
     }
 }
