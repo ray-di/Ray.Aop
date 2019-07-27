@@ -74,6 +74,7 @@ final class CodeGen implements CodeGenInterface
         $classStm->stmts = array_merge($propStms, $methods);
         $parts = $souce->namespace->name->parts ?? [];
         $ns = implode('\\', $parts);
+        $ns = $ns ? $ns : null;
         $stmt = $this->factory->namespace($ns)
             ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
             ->addStmt($this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation'))
