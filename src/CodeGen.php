@@ -63,27 +63,27 @@ final class CodeGen implements CodeGenInterface
      */
     public function generate(\ReflectionClass $sourceClass, BindInterface $bind) : Code
     {
-        $souce = $this->getVisitorCode($sourceClass);
-        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $souce);
+        $source = $this->getVisitorCode($sourceClass);
+        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $source);
         $propStms = $this->getAopProps($sourceClass);
-        $classStm = $souce->class;
-        $newClassName = sprintf('%s_%s', (string) $souce->class->name, $bind->toString(''));
+        $classStm = $source->class;
+        $newClassName = sprintf('%s_%s', (string) $source->class->name, $bind->toString(''));
         $classStm->name = new Identifier($newClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('WeavedInterface');
         $classStm->stmts = array_merge($propStms, $methods);
-        $parts = $souce->namespace->name->parts ?? [];
+        $parts = $source->namespace->name->parts ?? [];
         $ns = implode('\\', $parts);
         $ns = $ns ? $ns : null;
         $stmt = $this->factory->namespace($ns)
             ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
             ->addStmt($this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation'))
-            ->addStmts($souce->use)
+            ->addStmts($source->use)
             ->addStmt($classStm)
             ->getNode();
 
         $code = new Code;
-        $code->code = $this->printer->prettyPrintFile(array_merge($souce->declare, [$stmt]));
+        $code->code = $this->printer->prettyPrintFile(array_merge($source->declare, [$stmt]));
 
         return $code;
     }
