@@ -279,6 +279,7 @@ class CompilerTest extends TestCase
 
     public function testUnnamespacedClass()
     {
+        /** @var FakeGlobalNamespaced $mock */
         $mock = $this->compiler->newInstance(FakeGlobalNamespaced::class, [], $this->bind);
         $this->assertInstanceOf(FakeGlobalNamespaced::class, $mock);
         $this->assertSame(2, $mock->returnSame(1));
