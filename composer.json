@@ -28,7 +28,8 @@
     "autoload-dev": {
         "psr-4": {
             "Ray\\Aop\\": ["tests/", "tests/Fake/"]
-        }
+        },
+        "files": ["tests/Fake/FakeGlobalNamespaced.php"]
     },
     "suggest": {
         "ray/di": "A dependency injection framework"

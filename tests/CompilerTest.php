@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use FakeGlobalNamespaced;
 use function file_get_contents;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
@@ -274,5 +275,13 @@ class CompilerTest extends TestCase
         $mock = $compiler->newInstance(FakeMock::class, [], $bind);
         $mock->returnSame(1);
         $this->assertSame('changed', $mock->returnSame(1));
+    }
+
+    public function testUnnamespacedClass()
+    {
+        /** @var FakeGlobalNamespaced $mock */
+        $mock = $this->compiler->newInstance(FakeGlobalNamespaced::class, [], $this->bind);
+        $this->assertInstanceOf(FakeGlobalNamespaced::class, $mock);
+        $this->assertSame(2, $mock->returnSame(1));
     }
 }
