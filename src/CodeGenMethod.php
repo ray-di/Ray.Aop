@@ -104,83 +104,10 @@ final class CodeGenMethod
          * the function must not contain `return` statement.
          * @see https://www.php.net/manual/en/migration71.new-features.php#migration71.new-features.void-functions
          */
-        if ($returnType instanceof Identifier
-            && $returnType->name === 'void') {
-            return /* @lang PHP */
-            <<<'EOT'
-<?php
-class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
-{
-    /**
-     * @var array
-     *
-     * [$methodName => [$interceptorA[]][]
-     */
-    public $bindings;
-
-    /**
-     * @var bool
-     */
-    private $isAspect = true;
-
-    /**
-     * Method Template
-     *
-     * @param mixed $a
-     */
-    public function templateMethod($a, $b)
-    {
-        if (! $this->isAspect) {
-            $this->isAspect = true;
-
-            call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
-        } else {
-            $this->isAspect = false;
-            (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
-            $this->isAspect = true;
-        }
-    }
-}
-EOT;
+        if ($returnType instanceof Identifier && $returnType->name === 'void') {
+            return AopTemplate::AOP_TEMPLATE_VOID;
         }
 
-        return /* @lang PHP */
-            <<<'EOT'
-<?php
-class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
-{
-    /**
-     * @var array
-     *
-     * [$methodName => [$interceptorA[]][]
-     */
-    public $bindings;
-
-    /**
-     * @var bool
-     */
-    private $isAspect = true;
-
-    /**
-     * Method Template
-     *
-     * @param mixed $a
-     */
-    public function templateMethod($a, $b)
-    {
-        if (! $this->isAspect) {
-            $this->isAspect = true;
-
-            return call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
-        }
-
-        $this->isAspect = false;
-        $result = (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
-        $this->isAspect = true;
-
-        return $result;
-    }
-}
-EOT;
+        return AopTemplate::AOP_TEMPLATE_RETURN;
     }
 }
