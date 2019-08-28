@@ -29,15 +29,13 @@ class CodeGenPhp71Test extends TestCase
         $this->assertContains($expected, $code->code);
     }
 
-    /**
-     * @dataProvider returnStmtProvider
-     */
-    public function testReturnTypeVoidNotContainsReturn(string $expected)
+    public function testReturnTypeVoidContainsNoReturnValue()
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeVoid', []);
         $code = $this->codeGen->generate(new \ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $this->assertNotContains($expected, $code->code);
+        $this->assertNotContains('return ', $code->code);
+        $this->assertContains('return;', $code->code);
     }
 
     public function testReturnTypeNullable()
@@ -85,17 +83,5 @@ class CodeGenPhp71Test extends TestCase
         $code = $this->codeGen->generate(new \ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'public function useTyped(CodeGen $codeGen)';
         $this->assertContains($expected, $code->code);
-    }
-
-    public function returnStmtProvider()
-    {
-        return [
-            'return something' => [
-                ' return ',
-            ],
-            'sole return' => [
-                ' return;',
-            ],
-        ];
     }
 }
