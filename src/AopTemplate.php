@@ -12,7 +12,10 @@ namespace Ray\Aop;
  */
 final class AopTemplate
 {
-    const AOP_TEMPLATE_VOID = /* @lang PHP */ <<<'EOT'
+    /**
+     * Return void aop code
+     */
+    const RETURN_VOID = /* @lang PHP */ <<<'EOT'
 <?php
 class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 {
@@ -22,8 +25,9 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
     {
         if (! $this->isAspect) {
             $this->isAspect = true;
-
             call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
+
+            return; 
         }
         $this->isAspect = false;
         (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
@@ -32,7 +36,10 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 }
 EOT;
 
-    const AOP_TEMPLATE_RETURN = /* @lang PHP */ <<<'EOT'
+    /**
+     * Return (mixed) aop code
+     */
+    const RETURN = /* @lang PHP */ <<<'EOT'
 <?php
 class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 {
