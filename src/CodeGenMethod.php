@@ -72,7 +72,7 @@ final class CodeGenMethod
      */
     private function getTemplateMethodNodeStmts(?NodeAbstract $returnType) : array
     {
-        $code = $this->getTemplateCode($returnType);
+        $code = $this->isReturnVoid($returnType) ? AopTemplate::RETURN_VOID : AopTemplate::RETURN;
         $node = $this->parser->parse($code)[0];
         if (! $node instanceof Class_) {
             throw new \LogicException; // @codeCoverageIgnore
@@ -86,101 +86,10 @@ final class CodeGenMethod
     }
 
     /**
-     * Return CodeGenTemplate string
-     *
-     * Compiler takes only the statements in the method. Then create new inherit code with interceptors.
-     *
-     * @see http://paul-m-jones.com/archives/182
-     * @see http://stackoverflow.com/questions/8343399/calling-a-function-with-explicit-parameters-vs-call-user-func-array
-     * @see http://stackoverflow.com/questions/1796100/what-is-faster-many-ifs-or-else-if
-     * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
-     *
      * @param null|Identifier|Name|NullableType $returnType
      */
-    private function getTemplateCode(?NodeAbstract $returnType) : string
+    private function isReturnVoid(?NodeAbstract $returnType) : bool
     {
-        /*
-         * if a void return type is specified,
-         * the function must not contain `return` statement.
-         * @see https://www.php.net/manual/en/migration71.new-features.php#migration71.new-features.void-functions
-         */
-        if ($returnType instanceof Identifier
-            && $returnType->name === 'void') {
-            return /* @lang PHP */
-            <<<'EOT'
-<?php
-class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
-{
-    /**
-     * @var array
-     *
-     * [$methodName => [$interceptorA[]][]
-     */
-    public $bindings;
-
-    /**
-     * @var bool
-     */
-    private $isAspect = true;
-
-    /**
-     * Method Template
-     *
-     * @param mixed $a
-     */
-    public function templateMethod($a, $b)
-    {
-        if (! $this->isAspect) {
-            $this->isAspect = true;
-
-            call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
-        }
-
-        $this->isAspect = false;
-        (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
-        $this->isAspect = true;
-    }
-}
-EOT;
-        }
-
-        return /* @lang PHP */
-            <<<'EOT'
-<?php
-class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
-{
-    /**
-     * @var array
-     *
-     * [$methodName => [$interceptorA[]][]
-     */
-    public $bindings;
-
-    /**
-     * @var bool
-     */
-    private $isAspect = true;
-
-    /**
-     * Method Template
-     *
-     * @param mixed $a
-     */
-    public function templateMethod($a, $b)
-    {
-        if (! $this->isAspect) {
-            $this->isAspect = true;
-
-            return call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
-        }
-
-        $this->isAspect = false;
-        $result = (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
-        $this->isAspect = true;
-
-        return $result;
-    }
-}
-EOT;
+        return $returnType instanceof Identifier && $returnType->name === 'void';
     }
 }
