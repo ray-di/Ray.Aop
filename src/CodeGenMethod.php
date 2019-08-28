@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\NodeAbstract;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use PhpParser\NodeAbstract;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\NullableType;
 
 final class CodeGenMethod
 {
@@ -67,7 +68,7 @@ final class CodeGenMethod
     }
 
     /**
-     * @param null|NullableType|Identifier $returnType
+     * @param null|Identifier|Name|NullableType $returnType
      */
     private function getTemplateMethodNodeStmts(?NodeAbstract $returnType) : array
     {
@@ -93,11 +94,12 @@ final class CodeGenMethod
      * @see http://stackoverflow.com/questions/8343399/calling-a-function-with-explicit-parameters-vs-call-user-func-array
      * @see http://stackoverflow.com/questions/1796100/what-is-faster-many-ifs-or-else-if
      * @see http://stackoverflow.com/questions/2401478/why-is-faster-than-in-php
-     * @param null|NullableType|Identifier $returnType
+     *
+     * @param null|Identifier|Name|NullableType $returnType
      */
     private function getTemplateCode(?NodeAbstract $returnType) : string
     {
-        /**
+        /*
          * if a void return type is specified,
          * the function must not contain `return` statement.
          * @see https://www.php.net/manual/en/migration71.new-features.php#migration71.new-features.void-functions
@@ -140,10 +142,9 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
     }
 }
 EOT;
-
         }
-        else {
-            return /* @lang PHP */
+
+        return /* @lang PHP */
             <<<'EOT'
 <?php
 class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
@@ -181,6 +182,5 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
     }
 }
 EOT;
-        }
     }
 }
