@@ -284,4 +284,14 @@ class CompilerTest extends TestCase
         $this->assertInstanceOf(FakeGlobalNamespaced::class, $mock);
         $this->assertSame(2, $mock->returnSame(1));
     }
+
+    public function testVoidFunction()
+    {
+        $bind = (new Bind)->bindInterceptors('returnTypeVoid', [new FakeChangeArgsInterceptor()]);
+        $compiler = new Compiler(__DIR__ . '/tmp');
+        /** @var FakePhp71NullableClass $mock */
+        $mock = $compiler->newInstance(FakePhp71NullableClass::class, [], $bind);
+        $mock->returnTypeVoid();
+        $this->assertTrue($mock->returnTypeVoidCalled);
+    }
 }

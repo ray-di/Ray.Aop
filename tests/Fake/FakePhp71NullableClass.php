@@ -7,9 +7,12 @@ use Composer\Autoload;
 
 class FakePhp71NullableClass
 {
+    public $returnTypeVoidCalled = false;
+
     public function returnTypeVoid() : void
     {
         new Autoload\ClassLoader();
+        $this->returnTypeVoidCalled = true;
     }
 
     public function returnNullable(string $str) : ?int
