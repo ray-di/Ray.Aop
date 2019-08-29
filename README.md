@@ -43,7 +43,7 @@ class RealBillingService
     /**
      * @NotOnWeekends
      */
-    chargeOrder(PizzaOrder $order, CreditCard $creditCard)
+    public function chargeOrder(PizzaOrder $order, CreditCard $creditCard)
     {
 ```
 
