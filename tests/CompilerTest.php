@@ -294,4 +294,11 @@ class CompilerTest extends TestCase
         $mock->returnTypeVoid();
         $this->assertTrue($mock->returnTypeVoidCalled);
     }
+
+    public function testCompileMultipleFile()
+    {
+        $compiler = new Compiler(__DIR__ . '/tmp');
+        $bind = (new Bind)->bindInterceptors('foo', [new FakeDoubleInterceptor()]);
+        $compiler->newInstance(FakeTwoClass::class, [], $bind);
+    }
 }
