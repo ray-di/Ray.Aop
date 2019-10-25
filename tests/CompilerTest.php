@@ -10,6 +10,7 @@ use function file_get_contents;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker3;
+use Ray\Aop\Exception\MultipleClassInOneFileException;
 use Ray\Aop\Exception\NotWritableException;
 
 class CompilerTest extends TestCase
@@ -297,6 +298,7 @@ class CompilerTest extends TestCase
 
     public function testCompileMultipleFile()
     {
+        $this->expectException(MultipleClassInOneFileException::class);
         $compiler = new Compiler(__DIR__ . '/tmp');
         $bind = (new Bind)->bindInterceptors('foo', [new FakeDoubleInterceptor()]);
         $compiler->newInstance(FakeTwoClass::class, [], $bind);
