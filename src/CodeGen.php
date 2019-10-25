@@ -10,6 +10,7 @@ use function implode;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
@@ -64,6 +65,7 @@ final class CodeGen implements CodeGenInterface
     public function generate(\ReflectionClass $sourceClass, BindInterface $bind) : Code
     {
         $source = $this->getVisitorCode($sourceClass);
+        assert($source->class instanceof Class_);
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $source);
         $propStms = $this->getAopProps($sourceClass);
         $classStm = $source->class;
