@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeVisitorAbstract;
+use Ray\Aop\Exception\MultipleClassInOneFileException;
 
 final class CodeVisitor extends NodeVisitorAbstract
 {
@@ -30,7 +31,7 @@ final class CodeVisitor extends NodeVisitorAbstract
     public $use = [];
 
     /**
-     * @var Class_
+     * @var null|Class_
      */
     public $class;
 
@@ -51,10 +52,21 @@ final class CodeVisitor extends NodeVisitorAbstract
             $this->namespace = $node;
         }
         if ($node instanceof Class_) {
+            $this->validateClass($node);
             $this->class = $node;
         }
         if ($node instanceof ClassMethod) {
             $this->classMethod[] = $node;
+        }
+    }
+
+    private function validateClass(Class_ $class)
+    {
+        $isClassAlreadyDeclared = $this->class instanceof Class_;
+        if ($isClassAlreadyDeclared) {
+            $name = $class->name instanceof Node\Identifier ? $class->name->name : '';
+
+            throw new MultipleClassInOneFileException($name);
         }
     }
 }
