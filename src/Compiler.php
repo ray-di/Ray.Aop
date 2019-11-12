@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use function class_exists;
+use Doctrine\Common\Annotations\Reader as AnnotationReaderInterface;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\NotWritableException;
@@ -25,7 +26,7 @@ final class Compiler implements CompilerInterface
     /**
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
-    public function __construct(string $classDir)
+    public function __construct(string $classDir, AnnotationReaderInterface $reader = null)
     {
         if (! is_writable($classDir)) {
             throw new NotWritableException($classDir);
@@ -34,7 +35,8 @@ final class Compiler implements CompilerInterface
         $this->codeGen = new CodeGen(
             (new ParserFactory)->newInstance(),
             new BuilderFactory,
-            new Standard(['shortArraySyntax' => true])
+            new Standard(['shortArraySyntax' => true]),
+            $reader
         );
     }
 

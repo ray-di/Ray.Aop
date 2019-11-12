@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use function array_merge;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader as AnnotationReaderInterface;
 use function implode;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
@@ -40,7 +41,7 @@ final class CodeGen implements CodeGenInterface
     private $codeGenMethod;
 
     /**
-     * @var AnnotationReader
+     * @var AnnotationReaderInterface
      */
     private $reader;
 
@@ -50,13 +51,14 @@ final class CodeGen implements CodeGenInterface
     public function __construct(
         Parser $parser,
         BuilderFactory $factory,
-        Standard $printer
+        Standard $printer,
+        AnnotationReaderInterface $reader = null
     ) {
         $this->parser = $parser;
         $this->factory = $factory;
         $this->printer = $printer;
         $this->codeGenMethod = new CodeGenMethod($parser, $factory, $printer);
-        $this->reader = new AnnotationReader;
+        $this->reader = $reader ?? new AnnotationReader;
     }
 
     /**

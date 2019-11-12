@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use FakeGlobalNamespaced;
 use function file_get_contents;
 use PHPUnit\Framework\TestCase;
@@ -302,5 +303,14 @@ class CompilerTest extends TestCase
         $compiler = new Compiler(__DIR__ . '/tmp');
         $bind = (new Bind)->bindInterceptors('foo', [new FakeDoubleInterceptor()]);
         $compiler->newInstance(FakeTwoClass::class, [], $bind);
+    }
+
+    public function testNewInstanceWithInjectedAnnotationReader()
+    {
+        $this->compiler = new Compiler(__DIR__ . '/tmp', new SimpleAnnotationReader());
+        $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
+        $this->assertInstanceOf(FakeMock::class, $mock);
+
+        return $mock;
     }
 }
