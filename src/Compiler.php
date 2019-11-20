@@ -76,7 +76,7 @@ final class Compiler implements CompilerInterface
             return $class;
         }
         $aopClassName = $this->getAopClassName($class, $bind);
-        if (class_exists($aopClassName, false)) {
+        if (class_exists($aopClassName, true)) {
             return $aopClassName;
         }
         $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
