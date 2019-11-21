@@ -9,10 +9,9 @@ require __DIR__ . '/src/FooClass_Optimized.php';
 
 use Ray\Aop\Bind;
 use Ray\Aop\Compiler;
-use Ray\Aop\MethodInterceptor;
-use Ray\Aop\MethodInvocation;
+use Ray\Aop\NullInterceptor;
 
-class FooClass
+class benchmark
 {
     public function intercepted()
     {
@@ -20,14 +19,6 @@ class FooClass
 
     public function noInterceptor()
     {
-    }
-}
-
-class NullInterceptor implements MethodInterceptor
-{
-    public function invoke(MethodInvocation $invocation)
-    {
-        return $invocation->proceed();
     }
 }
 
