@@ -26,6 +26,11 @@ final class Weaver
      */
     private $aopClassName;
 
+    /**
+     * @var Compiler
+     */
+    private $compiler;
+
     public function __construct(BindInterface $bind, string $classDir)
     {
         $this->bind = $bind;
