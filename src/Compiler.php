@@ -55,6 +55,7 @@ final class Compiler implements CompilerInterface
      * {@inheritdoc}
      *
      * @throws \ReflectionException
+     * @deprecated Use Weaver:newInstance() inst
      */
     public function newInstance(string $class, array $args, BindInterface $bind)
     {
