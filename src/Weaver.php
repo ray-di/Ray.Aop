@@ -27,6 +27,11 @@ final class Weaver
     private $aopClassName;
 
     /**
+     * @var string[]
+     */
+    private static $classDirs = [];
+
+    /**
      * @var Compiler
      */
     private $compiler;
@@ -61,6 +66,10 @@ final class Weaver
 
     private function regsterLoader()
     {
+        if (\in_array($this->classDir, static::$classDirs, true)) {
+            return;
+        }
+        static::$classDirs[] = $this->classDir;
         spl_autoload_register(
             function (string $class) {
                 $file = sprintf('%s/%s.php', $this->classDir, str_replace('\\', '_', $class));
