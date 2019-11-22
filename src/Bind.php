@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader as AnnotationReaderInterface;
 
 final class Bind implements BindInterface
 {
@@ -14,16 +15,18 @@ final class Bind implements BindInterface
     private $bindings = [];
 
     /**
-     * @var AnnotationReader
+     * @var AnnotationReaderInterface
      */
     private $reader;
 
     /**
+     * @param AnnotationReaderInterface|null $reader
+     *
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
-    public function __construct()
+    public function __construct(AnnotationReaderInterface $reader = null)
     {
-        $this->reader = new AnnotationReader();
+        $this->reader = $reader ?? new AnnotationReader();
     }
 
     /**

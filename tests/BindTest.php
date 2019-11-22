@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker2;
@@ -114,5 +115,17 @@ class BindTest extends TestCase
             'getDouble' => [$onion4, $onion3, $onion2, $onion1]
         ];
         $this->assertSame($expect, $actual);
+    }
+
+    public function testBindWithInjectedAnnotationReader()
+    {
+        $reader = \Mockery::spy(new SimpleAnnotationReader());
+        $bind = new Bind($reader);
+        $interceptors = [new FakeDoubleInterceptor];
+        $pointcut = new Pointcut((new Matcher)->startsWith('Ray'), (new Matcher)->startsWith('get'), $interceptors);
+        $bind->bind(FakeAnnotateClass::class, [$pointcut]);
+        $this->assertArrayHasKey('getDouble', $bind->getBindings());
+        $this->assertSame($bind->getBindings()['getDouble'], $interceptors);
+        $reader->shouldHaveReceived('getMethodAnnotations');
     }
 }
