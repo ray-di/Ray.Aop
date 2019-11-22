@@ -151,7 +151,16 @@ $pointcut = new Pointcut(
     [new WeekendBlocker]
 );
 $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
-$billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
+$billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
+```
+
+## パフォーマンス
+
+`Weaver`オブジェクトはキャッシュ可能です。コンパイル、束縛、アノテーション読み込みコストを削減します。
+
+```php
+$weaver = unserialize(file_get_contentes('./serializedWever'));
+$billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
 ```
 
 ## 優先順位
