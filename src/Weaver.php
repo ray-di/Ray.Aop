@@ -48,15 +48,21 @@ final class Weaver
 
     public function newInstance(string $class, array $args)
     {
-        $aopClass = ($this->aopClassName)($class, $this->bindName);
-        if (! class_exists($aopClass)) {
-            $this->compiler->compile($class, $this->bind);
-            assert(class_exists($aopClass));
-        }
+        $aopClass = $this->weave($class);
         $instance = (new ReflectionClass($aopClass))->newInstanceArgs($args);
         $instance->bindings = $this->bind->getBindings();
 
         return $instance;
+    }
+
+    public function weave(string $class): string
+    {
+        $aopClass = ($this->aopClassName)($class, $this->bindName);
+        if (!class_exists($aopClass)) {
+            $this->compiler->compile($class, $this->bind);
+            assert(class_exists($aopClass));
+        }
+        return $aopClass;
     }
 
     private function regsterLoader()

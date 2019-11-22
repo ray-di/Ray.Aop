@@ -22,6 +22,15 @@ class WeaverTest extends TestCase
     /**
      * @depends test__construct
      */
+    public function testWeave(Weaver $weaver)
+    {
+        $className = $weaver->weave(FakeMock::class);
+        $this->assertTrue(\class_exists($className, false));
+    }
+
+    /**
+     * @depends test__construct
+     */
     public function testNewInstance(Weaver $weaver)
     {
         $weaved = $weaver->newInstance(FakeMock::class, []);
