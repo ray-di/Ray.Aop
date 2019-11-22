@@ -60,13 +60,14 @@ final class Weaver
         return $instance;
     }
 
-    public function weave(string $class): string
+    public function weave(string $class) : string
     {
         $aopClass = ($this->aopClassName)($class, $this->bindName);
-        if (!class_exists($aopClass)) {
+        if (! class_exists($aopClass)) {
             $this->compiler->compile($class, $this->bind);
             assert(class_exists($aopClass));
         }
+
         return $aopClass;
     }
 
