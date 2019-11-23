@@ -2,30 +2,26 @@
 
 declare(strict_types=1);
 
+use Ray\Aop\ReflectiveMethodInvocation as Invocation;
+
 class Ray_Aop_Demo_Optimized extends Ray\Aop\Demo\FooClass implements Ray\Aop\WeavedInterface
 {
     public $bind;
+    public $bindings = [];
     public $methodAnnotations = 'a:0:{}';
     public $classAnnotations = 'a:0:{}';
-    private $isIntercepting = true;
+    private $isAspect = true;
 
     public function intercepted()
     {
-        if (isset($this->bindings[__FUNCTION__]) === false) {
-            // call original method - no biding
-            // return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
-            return parent::intercepted();
+        if (! $this->isAspect) {
+            $this->isAspect = true;
+
+            return call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
         }
-        if ($this->isIntercepting === false) {
-            $this->isIntercepting = true;
-            // call original method
-            // return call_user_func_array('parent::' . __FUNCTION__, func_get_args());
-            return parent::intercepted();
-        }
-        $this->isIntercepting = false;
-        // call interceptor
-        $result = (new \Ray\Aop\ReflectiveMethodInvocation($this, new \ReflectionMethod($this, __FUNCTION__), new \Ray\Aop\Arguments(func_get_args()), $this->bindings[__FUNCTION__]))->proceed();
-        $this->isIntercepting = true;
+        $this->isAspect = false;
+        $result = (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
+        $this->isAspect = true;
 
         return $result;
     }
