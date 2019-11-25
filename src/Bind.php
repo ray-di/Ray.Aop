@@ -26,6 +26,11 @@ final class Bind implements BindInterface
         $this->reader = new AnnotationReader();
     }
 
+    public function __sleep()
+    {
+        return ['bindings'];
+    }
+
     /**
      * {@inheritdoc}
      *
