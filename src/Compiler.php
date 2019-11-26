@@ -23,6 +23,11 @@ final class Compiler implements CompilerInterface
     private $codeGen;
 
     /**
+     * @var AopClassName
+     */
+    private $aopClassName;
+
+    /**
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public function __construct(string $classDir)
@@ -36,6 +41,7 @@ final class Compiler implements CompilerInterface
             new BuilderFactory,
             new Standard(['shortArraySyntax' => true])
         );
+        $this->aopClassName = new AopClassName;
     }
 
     public function __sleep()
@@ -75,7 +81,7 @@ final class Compiler implements CompilerInterface
         if ($this->hasNoBinding($class, $bind)) {
             return $class;
         }
-        $aopClassName = $this->getAopClassName($class, $bind);
+        $aopClassName = ($this->aopClassName)($class, $bind->toString());
         if (class_exists($aopClassName, false)) {
             return $aopClassName;
         }
@@ -110,10 +116,5 @@ final class Compiler implements CompilerInterface
         $file = $code->save($this->classDir, $aopClassName);
         require_once $file;
         class_exists($aopClassName); // ensue class is created
-    }
-
-    private function getAopClassName(string $class, BindInterface $bind)
-    {
-        return sprintf('%s_%s', $class, $bind->toString(''));
     }
 }
