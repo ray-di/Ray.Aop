@@ -80,7 +80,7 @@ $pointcut = new Pointcut(
     [new WeekendBlocker]
 );
 $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
-$billing = (new Compiler($tmpDir))->newInstance(RealBillingService::class, [], $bind);
+$billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [], $bind);
 
 try {
     echo $billing->chargeOrder();
@@ -101,7 +101,7 @@ chargeOrder not allowed on weekends!
 ```php
 <?php
     $bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-    $compiler = new Compiler($tmpDir);
+    $compiler = new Weaver($bind, $tmpDir);
     $billing = $compiler->newInstance('RealBillingService', [], $bind);
     try {
         echo $billing->chargeOrder();
