@@ -8,7 +8,6 @@ use function class_exists;
 use PhpParser\BuilderFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\NotWritableException;
-use function sprintf;
 
 final class Compiler implements CompilerInterface
 {
@@ -81,7 +80,7 @@ final class Compiler implements CompilerInterface
         if ($this->hasNoBinding($class, $bind)) {
             return $class;
         }
-        $aopClassName = ($this->aopClassName)($class, $bind->toString());
+        $aopClassName = ($this->aopClassName)($class, $bind->toString(''));
         if (class_exists($aopClassName, false)) {
             return $aopClassName;
         }
