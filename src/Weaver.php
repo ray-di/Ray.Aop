@@ -27,11 +27,6 @@ final class Weaver
     private $aopClassName;
 
     /**
-     * @var string[]
-     */
-    private static $classDirs = [];
-
-    /**
      * @var Compiler
      */
     private $compiler;
@@ -43,12 +38,6 @@ final class Weaver
         $this->compiler = new Compiler($classDir);
         $this->classDir = $classDir;
         $this->aopClassName = new AopClassName;
-        $this->regsterLoader();
-    }
-
-    public function __wakeup()
-    {
-        $this->regsterLoader();
     }
 
     public function newInstance(string $class, array $args)
@@ -63,27 +52,27 @@ final class Weaver
     public function weave(string $class) : string
     {
         $aopClass = ($this->aopClassName)($class, $this->bindName);
-        if (! class_exists($aopClass)) {
-            $this->compiler->compile($class, $this->bind);
-            assert(class_exists($aopClass));
+        if (class_exists($aopClass, false)) {
+            return $aopClass;
         }
+        if ($this->loadClass($class)) {
+            return $aopClass;
+        }
+        $this->compiler->compile($class, $this->bind);
+        assert(class_exists($aopClass));
 
         return $aopClass;
     }
 
-    private function regsterLoader()
+    private function loadClass(string $class) : bool
     {
-        if (\in_array($this->classDir, static::$classDirs, true)) {
-            return;
+        $file = sprintf('%s/%s.php', $this->classDir, str_replace('\\', '_', $class));
+        if (file_exists($file)) {
+            require $file;
+
+            return true;
         }
-        static::$classDirs[] = $this->classDir;
-        spl_autoload_register(
-            function (string $class) {
-                $file = sprintf('%s/%s.php', $this->classDir, str_replace('\\', '_', $class));
-                if (file_exists($file)) {
-                    include $file; //@codeCoverageIgnore
-                }
-            }
-        );
+
+        return false;
     }
 }
