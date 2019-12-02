@@ -55,7 +55,7 @@ final class Weaver
         if (class_exists($aopClass, false)) {
             return $aopClass;
         }
-        if ($this->loadClass($class)) {
+        if ($this->loadClass($aopClass)) {
             return $aopClass;
         }
         $this->compiler->compile($class, $this->bind);
