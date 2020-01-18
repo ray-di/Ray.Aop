@@ -27,6 +27,7 @@ class BuiltinMatcher extends AbstractMatcher
         $this->matcherName = $matcherName;
         $this->arguments = $arguments;
         $matcherClass = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';
+        assert(class_exists($matcherClass));
         $matcher = (new \ReflectionClass($matcherClass))->newInstance();
         if (! $matcher instanceof AbstractMatcher) {
             throw new InvalidMatcherException($matcherClass);
