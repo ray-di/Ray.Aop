@@ -6,8 +6,6 @@ namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeAbstract;
 use PhpParser\Parser;
@@ -67,9 +65,6 @@ final class CodeGenMethod
         return $methods;
     }
 
-    /**
-     * @param null|Identifier|Name|NullableType $returnType
-     */
     private function getTemplateMethodNodeStmts(?NodeAbstract $returnType) : array
     {
         $code = $this->isReturnVoid($returnType) ? AopTemplate::RETURN_VOID : AopTemplate::RETURN;
@@ -85,9 +80,6 @@ final class CodeGenMethod
         return $methodNode->stmts;
     }
 
-    /**
-     * @param null|Identifier|Name|NullableType $returnType
-     */
     private function isReturnVoid(?NodeAbstract $returnType) : bool
     {
         return $returnType instanceof Identifier && $returnType->name === 'void';
