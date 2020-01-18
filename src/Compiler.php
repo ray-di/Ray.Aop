@@ -89,7 +89,7 @@ final class Compiler implements CompilerInterface
         return $aopClassName;
     }
 
-    private function hasNoBinding($class, BindInterface $bind) : bool
+    private function hasNoBinding(string $class, BindInterface $bind) : bool
     {
         $hasMethod = $this->hasBoundMethod($class, $bind);
 
