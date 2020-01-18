@@ -14,7 +14,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     /**
      * Set dependencies
      */
-    public function setObject(WeavedInterface $object)
+    public function setObject(WeavedInterface $object) : void
     {
         $this->object = $object;
     }

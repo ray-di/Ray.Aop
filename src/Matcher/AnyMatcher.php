@@ -47,7 +47,7 @@ final class AnyMatcher extends AbstractMatcher
     /**
      * @throws \ReflectionException
      */
-    private function setBuildInMethods()
+    private function setBuildInMethods() : void
     {
         $methods = (new \ReflectionClass(\ArrayObject::class))->getMethods();
         foreach ($methods as $method) {
