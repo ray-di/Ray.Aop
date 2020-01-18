@@ -49,8 +49,7 @@ final class AnyMatcher extends AbstractMatcher
      */
     private function setBuildInMethods()
     {
-        assert(class_exists('\ArrayObject'));
-        $methods = (new \ReflectionClass('\ArrayObject'))->getMethods();
+        $methods = (new \ReflectionClass(\ArrayObject::class))->getMethods();
         foreach ($methods as $method) {
             self::$builtinMethods[] = $method->name;
         }
