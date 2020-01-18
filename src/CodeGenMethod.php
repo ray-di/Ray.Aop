@@ -68,7 +68,9 @@ final class CodeGenMethod
     private function getTemplateMethodNodeStmts(?NodeAbstract $returnType) : array
     {
         $code = $this->isReturnVoid($returnType) ? AopTemplate::RETURN_VOID : AopTemplate::RETURN;
-        $node = $this->parser->parse($code)[0];
+        $parts = $this->parser->parse($code);
+        assert(isset($parts[0]));
+        $node = $parts[0];
         if (! $node instanceof Class_) {
             throw new \LogicException; // @codeCoverageIgnore
         }
