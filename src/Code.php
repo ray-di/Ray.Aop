@@ -9,7 +9,7 @@ final class Code
     /**
      * @var string
      */
-    public $code;
+    public $code = '';
 
     public function save(string $classDir, string $aopClassName) : string
     {

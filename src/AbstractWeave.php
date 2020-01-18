@@ -6,6 +6,13 @@ namespace Ray\Aop;
 
 abstract class AbstractWeave implements WeavedInterface
 {
+    /**
+     * @var string
+     */
     public $methodAnnotations;
+
+    /**
+     * @var string
+     */
     public $classAnnotations;
 }

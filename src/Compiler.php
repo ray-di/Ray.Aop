@@ -64,6 +64,7 @@ final class Compiler implements CompilerInterface
     public function newInstance(string $class, array $args, BindInterface $bind)
     {
         $compiledClass = $this->compile($class, $bind);
+        assert(class_exists($compiledClass));
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
         $instance->bindings = $bind->getBindings();
 
@@ -84,13 +85,15 @@ final class Compiler implements CompilerInterface
         if (class_exists($aopClassName, false)) {
             return $aopClassName;
         }
+        assert(class_exists($class));
         $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
 
         return $aopClassName;
     }
 
-    private function hasNoBinding($class, BindInterface $bind) : bool
+    private function hasNoBinding(string $class, BindInterface $bind) : bool
     {
+        assert(class_exists($class));
         $hasMethod = $this->hasBoundMethod($class, $bind);
 
         return ! $bind->getBindings() && ! $hasMethod;
@@ -98,6 +101,7 @@ final class Compiler implements CompilerInterface
 
     private function hasBoundMethod(string $class, BindInterface $bind) : bool
     {
+        assert(class_exists($class));
         $bindingMethods = array_keys($bind->getBindings());
         $hasMethod = false;
         foreach ($bindingMethods as $bindingMethod) {
@@ -113,6 +117,7 @@ final class Compiler implements CompilerInterface
     {
         $code = $this->codeGen->generate($sourceClass, $bind);
         $file = $code->save($this->classDir, $aopClassName);
+        assert(file_exists($file));
         require_once $file;
         class_exists($aopClassName); // ensue class is created
     }

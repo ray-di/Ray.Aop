@@ -60,7 +60,7 @@ final class CodeVisitor extends NodeVisitorAbstract
         }
     }
 
-    private function validateClass(Class_ $class)
+    private function validateClass(Class_ $class) : void
     {
         $isClassAlreadyDeclared = $this->class instanceof Class_;
         if ($isClassAlreadyDeclared) {
