@@ -27,7 +27,7 @@ class CodeGenTest extends TestCase
         $bind->bindInterceptors('run', []);
         $code = $this->codeGen->generate(new \ReflectionClass(FakePhp7Class::class), $bind);
         $expected = 'function run(string $a, int $b, float $c, bool $d) : array';
-        $this->assertContains($expected, $code->code);
+        $this->assertStringContainsString($expected, $code->code);
     }
 
     public function testReturnType()
@@ -36,7 +36,7 @@ class CodeGenTest extends TestCase
         $bind->bindInterceptors('returnTypeArray', []);
         $code = $this->codeGen->generate(new \ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
         $expected = 'function returnTypeArray() : array';
-        $this->assertContains($expected, $code->code);
+        $this->assertStringContainsString($expected, $code->code);
     }
 
     public function testInvalidSourceClass()

@@ -138,7 +138,7 @@ class CompilerTest extends TestCase
         /* @var $weaved FakeMock */
         $docComment = (new \ReflectionClass($weaved))->getDocComment();
         $expected = (new \ReflectionClass(FakeMock::class))->getDocComment();
-        $this->assertContains('/**', $docComment);
+        $this->assertStringContainsString('/**', $docComment);
         $this->assertSame($expected, $docComment);
     }
 
@@ -149,7 +149,7 @@ class CompilerTest extends TestCase
         $docComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
         $expected = (new \ReflectionClass(FakeMock::class))->getMethods()[0]->getDocComment();
 
-        $this->assertContains('/**', $docComment);
+        $this->assertStringContainsString('/**', $docComment);
         $this->assertSame($expected, $docComment);
     }
 
@@ -206,7 +206,7 @@ class CompilerTest extends TestCase
         $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
         $file = file_get_contents((string) (new \ReflectionClass($class))->getFileName());
         $expected = 'public function returnSame(array $arrayParam, callable $callableParam)';
-        $this->assertContains($expected, $file);
+        $this->assertStringContainsString($expected, $file);
     }
 
     public function testNotWritable()
