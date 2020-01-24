@@ -136,7 +136,7 @@ class CompilerTest extends TestCase
     {
         $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
         /* @var $weaved FakeMock */
-        $docComment = (new \ReflectionClass($weaved))->getDocComment();
+        $docComment = (string) (new \ReflectionClass($weaved))->getDocComment();
         $expected = (new \ReflectionClass(FakeMock::class))->getDocComment();
         $this->assertStringContainsString('/**', $docComment);
         $this->assertSame($expected, $docComment);
@@ -146,7 +146,7 @@ class CompilerTest extends TestCase
     {
         $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
         /* @var $weaved FakeMock */
-        $docComment = (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
+        $docComment = (string) (new \ReflectionClass($weaved))->getMethods()[0]->getDocComment();
         $expected = (new \ReflectionClass(FakeMock::class))->getMethods()[0]->getDocComment();
 
         $this->assertStringContainsString('/**', $docComment);
@@ -204,7 +204,7 @@ class CompilerTest extends TestCase
     public function testArrayTypehintedAndCallable()
     {
         $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
-        $file = file_get_contents((string) (new \ReflectionClass($class))->getFileName());
+        $file = (string) file_get_contents((string) (new \ReflectionClass($class))->getFileName());
         $expected = 'public function returnSame(array $arrayParam, callable $callableParam)';
         $this->assertStringContainsString($expected, $file);
     }
