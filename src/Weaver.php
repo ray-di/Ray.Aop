@@ -42,6 +42,8 @@ final class Weaver
 
     /**
      * @throws \ReflectionException
+     *
+     * @return mixed
      */
     public function newInstance(string $class, array $args)
     {
