@@ -48,6 +48,7 @@ class CompilerTest extends TestCase
         $class2 = $this->compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class1));
         $this->assertSame($class1, $class2);
+        assert(class_exists($class1));
         $class1File = (new \ReflectionClass($class1))->getFileName();
         $class2File = (new \ReflectionClass($class1))->getFileName();
         $this->assertSame($class1File, $class2File);
@@ -55,10 +56,8 @@ class CompilerTest extends TestCase
 
     /**
      * @depends testNewInstance
-     *
-     * @param string $class
      */
-    public function testParentClassName($class)
+    public function testParentClassName(object $class)
     {
         $parent = (new \ReflectionClass($class))->getParentClass();
         if ($parent instanceof \ReflectionClass) {
@@ -68,13 +67,10 @@ class CompilerTest extends TestCase
 
     /**
      * @depends testNewInstance
-     *
-     * @param string $class
      */
-    public function testBuildClassWeaved($class)
+    public function testBuildClassWeaved(FakeMock $weaved)
     {
-        $weaved = new $class;
-        /* @var $weaved FakeMock */
+        assert(isset($weaved->bindings));
         $weaved->bindings = $this->bind->getBindings();
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
@@ -204,6 +200,7 @@ class CompilerTest extends TestCase
     public function testArrayTypehintedAndCallable()
     {
         $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
+        assert(class_exists($class));
         $file = (string) file_get_contents((string) (new \ReflectionClass($class))->getFileName());
         $expected = 'public function returnSame(array $arrayParam, callable $callableParam)';
         $this->assertStringContainsString($expected, $file);

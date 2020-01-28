@@ -38,7 +38,7 @@
         <MisplacedRequiredParam errorLevel="info" />
 
         <PropertyNotSetInConstructor errorLevel="info" />
-        <MissingConstructor errorLevel="info" />
+        <MissingConstructor errorLevel="suppress" />
         <MissingClosureParamType errorLevel="info" />
         <MissingParamType errorLevel="info" />
 

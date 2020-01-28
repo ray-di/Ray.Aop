@@ -1,7 +1,15 @@
 parameters:
-	excludes_analyse:
-		- %currentWorkingDirectory%/tests/tmp/*
-		- %currentWorkingDirectory%/tests/Fake/*
-		- %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
-	ignoreErrors:
-	    - '#Access to an undefined property object::\$bindings.#'
+  level: max
+  paths:
+    - src
+    - tests
+  excludes_analyse:
+    - %currentWorkingDirectory%/tests/tmp/*
+    - %currentWorkingDirectory%/tests/Fake/*
+    - %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
+  ignoreErrors:
+  -
+      message: "#has no return typehint specified\\.$#"
+      path: tests/*.php
+  checkMissingIterableValueType: false
+  checkGenericClassInNonGenericObjectType: false

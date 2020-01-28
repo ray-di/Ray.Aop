@@ -103,7 +103,7 @@ return \PhpCsFixer\Config::create()
         'no_unset_on_property' => true,
         'no_unused_imports' => true,
         'no_useless_else' => true,
-        'no_useless_return' => true,
+//      'no_useless_return' => true,
         'no_whitespace_before_comma_in_array' => true, // @Symfony
         'no_whitespace_in_blank_line' => true, // @Symfony
         'non_printable_character' => true, // @Symfony
@@ -158,7 +158,7 @@ return \PhpCsFixer\Config::create()
         'semicolon_after_instruction' => true, // @Symfony
         'set_type_to_cast' => true, // @Symfony:risky
         'short_scalar_cast' => true, // @Symfony:risky
-        'simplified_null_return' => true,
+//      'simplified_null_return' => true,
         'single_blank_line_before_namespace' => true, // @Symfony
 //      'single_line_comment_style' => true, // @Symfony
         'single_line_after_imports' => true,
