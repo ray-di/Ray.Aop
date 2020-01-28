@@ -58,8 +58,6 @@ final class CodeVisitor extends NodeVisitorAbstract
         if ($node instanceof ClassMethod) {
             $this->classMethod[] = $node;
         }
-
-        return null;
     }
 
     private function validateClass(Class_ $class) : void

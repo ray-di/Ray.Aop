@@ -4,12 +4,9 @@ parameters:
     - src
     - tests
   excludes_analyse:
-    - tests/tmp/*
-    - tests/Fake/*
-    - tests/ReflectiveMethodInvocationTest.php
+    - %currentWorkingDirectory%/tests/tmp/*
+    - %currentWorkingDirectory%/tests/Fake/*
+    - %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
   ignoreErrors:
-  -
-      message: "#has no return typehint specified\\.$#"
-      path: tests/*.php
   checkMissingIterableValueType: false
   checkGenericClassInNonGenericObjectType: false

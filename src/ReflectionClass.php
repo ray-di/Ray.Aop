@@ -41,7 +41,5 @@ class ReflectionClass extends \ReflectionClass implements Reader
                 return $annotation;
             }
         }
-
-        return null;
     }
 }
