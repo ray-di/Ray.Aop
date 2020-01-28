@@ -8,5 +8,8 @@ parameters:
     - %currentWorkingDirectory%/tests/Fake/*
     - %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
   ignoreErrors:
+  -
+      message: "#has no return typehint specified\\.$#"
+      path: tests/*.php
   checkMissingIterableValueType: false
   checkGenericClassInNonGenericObjectType: false
