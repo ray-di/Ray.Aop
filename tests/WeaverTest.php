@@ -34,6 +34,7 @@ class WeaverTest extends TestCase
     public function testNewInstance(Weaver $weaver)
     {
         $weaved = $weaver->newInstance(FakeMock::class, []);
+        assert($weaved instanceof FakeMock);
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
@@ -45,6 +46,7 @@ class WeaverTest extends TestCase
     {
         $weaver = unserialize(serialize($weaver));
         $weaved = $weaver->newInstance(FakeMock::class, []);
+        assert($weaved instanceof FakeMock);
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }

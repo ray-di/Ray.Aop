@@ -43,7 +43,7 @@ final class Weaver
     /**
      * @throws \ReflectionException
      */
-    public function newInstance(string $class, array $args)
+    public function newInstance(string $class, array $args) : object
     {
         $aopClass = $this->weave($class);
         assert(class_exists($aopClass));
