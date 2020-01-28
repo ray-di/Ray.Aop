@@ -12,16 +12,14 @@ interface BindInterface
      * @param string     $class     class name
      * @param Pointcut[] $pointcuts Pointcut array
      */
-    public function bind(string $class, array $pointcuts);
+    public function bind(string $class, array $pointcuts) : BindInterface;
 
     /**
      * Bind interceptors to method
      *
      * @param MethodInterceptor[] $interceptors
-     *
-     * @return BindInterface
      */
-    public function bindInterceptors(string $method, array $interceptors);
+    public function bindInterceptors(string $method, array $interceptors) : BindInterface;
 
     /**
      * Return bindings data
