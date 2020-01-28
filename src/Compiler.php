@@ -66,6 +66,7 @@ final class Compiler implements CompilerInterface
         $compiledClass = $this->compile($class, $bind);
         assert(class_exists($compiledClass));
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
+        assert(isset($instance->bindings));
         $instance->bindings = $bind->getBindings();
 
         return $instance;

@@ -4,8 +4,8 @@ parameters:
     - src
     - tests
   excludes_analyse:
-    - tests/tmp/*
-  ignoreErrors:
+    - %currentWorkingDirectory%/tests/tmp/*
+    - %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
   -
       message: "#has no return typehint specified\\.$#"
       path: tests/*/*.php
