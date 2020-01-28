@@ -56,12 +56,9 @@ class CompilerTest extends TestCase
 
     /**
      * @depends testNewInstance
-     *
-     * @param string $class
      */
-    public function testParentClassName($class)
+    public function testParentClassName(object $class)
     {
-        assert(class_exists($class));
         $parent = (new \ReflectionClass($class))->getParentClass();
         if ($parent instanceof \ReflectionClass) {
             $this->assertSame(FakeMock::class, $parent->getName());
@@ -70,13 +67,10 @@ class CompilerTest extends TestCase
 
     /**
      * @depends testNewInstance
-     *
-     * @param string $class
      */
-    public function testBuildClassWeaved($class)
+    public function testBuildClassWeaved(FakeMock $weaved)
     {
-        $weaved = new $class;
-        /* @var $weaved FakeMock */
+        assert(isset($weaved->bindings));
         $weaved->bindings = $this->bind->getBindings();
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
