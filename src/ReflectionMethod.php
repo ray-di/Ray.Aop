@@ -68,5 +68,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
                 return $annotation;
             }
         }
+
+        return null;
     }
 }
