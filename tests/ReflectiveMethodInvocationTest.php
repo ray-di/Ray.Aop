@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
+use Ray\Aop\Annotation\FakeClassMarker;
+use Ray\Aop\Annotation\FakeMarker;
 
 class ReflectiveMethodInvocationTest extends TestCase
 {
@@ -92,5 +94,17 @@ class ReflectiveMethodInvocationTest extends TestCase
         $invalidIntercepor = new \stdClass;
         $invocation = new ReflectiveMethodInvocation(new FakeWeavedClass, 'add', [1], [$invalidIntercepor]);
         $invocation->proceed();
+    }
+
+    public function testGetAnnotation()
+    {
+        $fakeMarker = $this->invocation->getMethod()->getAnnotation(FakeMarker::class);
+        $this->assertInstanceOf(FakeMarker::class, $fakeMarker);
+    }
+
+    public function testGetClassAnnotati()
+    {
+        $fakeMarker = $this->invocation->getMethod()->getDeclaringClass()->getAnnotation(FakeClassMarker::class);
+        $this->assertInstanceOf(FakeClassMarker::class, $fakeMarker);
     }
 }
