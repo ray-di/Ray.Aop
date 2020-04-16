@@ -5,6 +5,7 @@ parameters:
     - tests
   excludes_analyse:
     - %currentWorkingDirectory%/tests/tmp/*
+    - %currentWorkingDirectory%/tests/tmp_unerase/*
     - %currentWorkingDirectory%/tests/Fake/*
     - %currentWorkingDirectory%/tests/ReflectiveMethodInvocationTest.php
   ignoreErrors:
