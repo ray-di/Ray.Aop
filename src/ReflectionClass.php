@@ -9,7 +9,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 class ReflectionClass extends \ReflectionClass implements Reader
 {
     /**
-     * @var WeavedInterface
+     * @var null|WeavedInterface
      */
     private $object;
 
@@ -27,7 +27,9 @@ class ReflectionClass extends \ReflectionClass implements Reader
     public function getAnnotations() : array
     {
         $object = $this->object;
-        if ($object instanceof WeavedInterface && isset($object->classAnnotations)) {
+        if ($object instanceof WeavedInterface) {
+            assert(property_exists($object, 'classAnnotations'));
+
             return unserialize($object->classAnnotations);
         }
 
