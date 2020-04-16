@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=7.2.0",
-        "doctrine/annotations": "^1.6",
+        "doctrine/annotations": "^1.10",
         "nikic/php-parser": "^4.2"
     },
     "require-dev": {

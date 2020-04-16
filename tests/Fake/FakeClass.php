@@ -1,6 +1,13 @@
 <?php
 namespace Ray\Aop;
 
+use Ray\Aop\Annotation\FakeClassMarker;
+use Ray\Aop\Annotation\FakeMarker;
+use Ray\Aop\Annotation\FakeMarker2;
+
+/**
+ * @FakeClassMarker
+ */
 class FakeClass
 {
     public $a = 0;
@@ -12,6 +19,9 @@ class FakeClass
         return 'toStringString';
     }
 
+    /**
+     * @FakeMarker
+     */
     public function add($n)
     {
         $this->a += $n;
