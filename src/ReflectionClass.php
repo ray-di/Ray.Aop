@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+
 class ReflectionClass extends \ReflectionClass implements Reader
 {
     /**
@@ -24,10 +26,12 @@ class ReflectionClass extends \ReflectionClass implements Reader
      */
     public function getAnnotations() : array
     {
-        /** @var AbstractWeave $object */
         $object = $this->object;
+        if ($object instanceof WeavedInterface && isset($object->classAnnotations)) {
+            return unserialize($object->classAnnotations);
+        }
 
-        return unserialize($object->classAnnotations);
+        return (new AnnotationReader)->getClassAnnotations(new \ReflectionClass($this->name));
     }
 
     /**
