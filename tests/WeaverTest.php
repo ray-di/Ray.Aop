@@ -31,8 +31,8 @@ class WeaverTest extends TestCase
     /**
      * This tests cover compiled aop file loading.
      *
-     * @covers \Ray\Aop\Weaver::weave
      * @covers \Ray\Aop\Weaver::loadClass
+     * @covers \Ray\Aop\Weaver::weave
      */
     public function testWeaveLoad()
     {

@@ -9,7 +9,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 final class ReflectionMethod extends \ReflectionMethod implements Reader
 {
     /**
-     * @var WeavedInterface
+     * @var null|WeavedInterface
      */
     private $object;
 
@@ -55,10 +55,10 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     public function getAnnotations() : array
     {
         $object = $this->object;
-        $isCompiled = $object instanceof WeavedInterface && isset($object->classAnnotations);
-        if (! $isCompiled) {
+        if (! $object instanceof WeavedInterface) {
             return (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
         }
+        assert(isset($object->methodAnnotations));
         $annotations = unserialize($object->methodAnnotations);
         if (array_key_exists($this->method, $annotations)) {
             return $annotations[$this->method];

@@ -52,5 +52,6 @@
         <RawObjectIteration errorLevel="info" />
 
         <InvalidStringClass errorLevel="info" />
+        <NoInterfaceProperties errorLevel="info" />
     </issueHandlers>
 </psalm>
