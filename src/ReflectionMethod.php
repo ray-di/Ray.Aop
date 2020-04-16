@@ -9,7 +9,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 final class ReflectionMethod extends \ReflectionMethod implements Reader
 {
     /**
-     * @var WeavedInterface
+     * @var null|WeavedInterface
      */
     private $object;
 
