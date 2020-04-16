@@ -12,7 +12,7 @@ class WeaverTest extends TestCase
     {
         $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor]);
-        $bind = (new Bind)->bind(FakeMock::class, [$pointcut]);
+        $bind = (new Bind)->bind(FakeWeaverMock::class, [$pointcut]);
         $weaver = new Weaver($bind, __DIR__ . '/tmp');
         $this->assertInstanceOf(Weaver::class, $weaver);
 
@@ -24,7 +24,23 @@ class WeaverTest extends TestCase
      */
     public function testWeave(Weaver $weaver)
     {
-        $className = $weaver->weave(FakeMock::class);
+        $className = $weaver->weave(FakeWeaverMock::class);
+        $this->assertTrue(\class_exists($className, false));
+    }
+
+    /**
+     * This tests cover compiled aop file loading.
+     *
+     * @covers \Ray\Aop\Weaver::weave
+     * @covers \Ray\Aop\Weaver::loadClass
+     */
+    public function testWeaveLoad()
+    {
+        $matcher = new Matcher;
+        $pointcut = new Pointcut($matcher->any(), $matcher->any(), []);
+        $bind = (new Bind)->bind(FakeWeaverMock::class, [$pointcut]);
+        $weaver = new Weaver($bind, __DIR__ . '/tmp_unerase');
+        $className = $weaver->weave(FakeWeaverMock::class);
         $this->assertTrue(\class_exists($className, false));
     }
 
@@ -33,8 +49,8 @@ class WeaverTest extends TestCase
      */
     public function testNewInstance(Weaver $weaver)
     {
-        $weaved = $weaver->newInstance(FakeMock::class, []);
-        assert($weaved instanceof FakeMock);
+        $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
+        assert($weaved instanceof FakeWeaverMock);
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
@@ -45,8 +61,8 @@ class WeaverTest extends TestCase
     public function testCachedWeaver(Weaver $weaver)
     {
         $weaver = unserialize(serialize($weaver));
-        $weaved = $weaver->newInstance(FakeMock::class, []);
-        assert($weaved instanceof FakeMock);
+        $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
+        assert($weaved instanceof FakeWeaverMock);
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
