@@ -15,7 +15,7 @@ final class LogicalAndMatcher extends AbstractMatcher
     {
         $isAnd = true;
         foreach ($arguments as $matcher) {
-            /* @var $matcher AbstractMatcher */
+            assert($matcher instanceof AbstractMatcher);
             $isAnd = $isAnd && $matcher->matchesClass($class, $matcher->getArguments());
         }
 
@@ -29,7 +29,7 @@ final class LogicalAndMatcher extends AbstractMatcher
     {
         $isAnd = true;
         foreach ($arguments as $matcher) {
-            /* @var $matcher AbstractMatcher */
+            assert($matcher instanceof AbstractMatcher);
             $isAnd = $isAnd && $matcher->matchesMethod($method, $matcher->getArguments());
         }
 

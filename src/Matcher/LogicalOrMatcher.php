@@ -14,7 +14,7 @@ final class LogicalOrMatcher extends AbstractMatcher
     public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
         foreach ($arguments as $matcher) {
-            /* @var $matcher AbstractMatcher */
+            assert($matcher instanceof AbstractMatcher);
             $isMatch = $matcher->matchesClass($class, $matcher->getArguments());
             if ($isMatch === true) {
                 return true;
@@ -30,7 +30,7 @@ final class LogicalOrMatcher extends AbstractMatcher
     public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
         foreach ($arguments as $matcher) {
-            /* @var $matcher AbstractMatcher */
+            assert($matcher instanceof AbstractMatcher);
             $isMatch = $matcher->matchesMethod($method, $matcher->getArguments());
             if ($isMatch === true) {
                 return true;
