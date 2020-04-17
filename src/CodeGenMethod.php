@@ -50,7 +50,7 @@ final class CodeGenMethod
             $methodName = $classMethod->name->name;
             $method = new \ReflectionMethod($class->name, $methodName);
             $isBindingMethod = in_array($methodName, $bindingMethods, true);
-            /* @var $method \ReflectionMethod */
+            assert($method instanceof \ReflectionMethod);
             $isPublic = $classMethod->flags === Class_::MODIFIER_PUBLIC;
             if ($isBindingMethod && $isPublic) {
                 $methodInsideStatements = $this->getTemplateMethodNodeStmts(
@@ -71,13 +71,9 @@ final class CodeGenMethod
         $parts = $this->parser->parse($code);
         assert(isset($parts[0]));
         $node = $parts[0];
-        if (! $node instanceof Class_) {
-            throw new \LogicException; // @codeCoverageIgnore
-        }
+        assert($node instanceof Class_);
         $methodNode = $node->getMethods()[0];
-        if ($methodNode->stmts === null) {
-            throw new \LogicException; // @codeCoverageIgnore
-        }
+        assert($methodNode->stmts !== null);
 
         return $methodNode->stmts;
     }

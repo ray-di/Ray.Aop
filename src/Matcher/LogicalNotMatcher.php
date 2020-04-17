@@ -14,7 +14,8 @@ final class LogicalNotMatcher extends AbstractMatcher
     public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
         list($matcher) = $arguments;
-        /* @var $matcher AbstractMatcher */
+        assert($matcher instanceof AbstractMatcher);
+
         return ! $matcher->matchesClass($class, $matcher->getArguments());
     }
 
@@ -24,7 +25,8 @@ final class LogicalNotMatcher extends AbstractMatcher
     public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
         list($matcher) = $arguments;
-        /* @var $matcher AbstractMatcher */
+        assert($matcher instanceof AbstractMatcher);
+
         return ! $matcher->matchesMethod($method, [$arguments]);
     }
 }

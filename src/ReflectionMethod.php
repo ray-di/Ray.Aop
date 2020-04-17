@@ -38,9 +38,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
             return new ReflectionClass($this->class);
         }
         $parencClass = (new \ReflectionClass($this->object))->getParentClass();
-        if (! $parencClass instanceof \ReflectionClass) {
-            throw new \LogicException; // @codeCoverageIgnore
-        }
+        assert($parencClass instanceof \ReflectionClass);
         $originalClass = $parencClass->name;
         assert(class_exists($originalClass));
         $class = new ReflectionClass($originalClass);
