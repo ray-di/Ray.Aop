@@ -27,10 +27,8 @@ class ReflectionClass extends \ReflectionClass implements Reader
     public function getAnnotations() : array
     {
         $object = $this->object;
-        if ($object instanceof WeavedInterface) {
-            assert(property_exists($object, 'classAnnotations'));
-
-            return unserialize($object->classAnnotations);
+        if (isset($object->annotations)) {
+            return unserialize($object->classAnnotations); // @phpstan-ignore-line
         }
 
         return (new AnnotationReader)->getClassAnnotations(new \ReflectionClass($this->name));

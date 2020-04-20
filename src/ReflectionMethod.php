@@ -53,11 +53,10 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     public function getAnnotations() : array
     {
         $object = $this->object;
-        if (! $object instanceof WeavedInterface) {
+        if (! isset($object->annotations)) {
             return (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
         }
-        assert(isset($object->methodAnnotations));
-        $annotations = unserialize($object->methodAnnotations);
+        $annotations = unserialize($object->methodAnnotations); // @phpstan-ignore-line
         if (array_key_exists($this->method, $annotations)) {
             return $annotations[$this->method];
         }
