@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Ray\Aop\Demo;
-
 require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/src/FooClass_Optimized.php';
 
