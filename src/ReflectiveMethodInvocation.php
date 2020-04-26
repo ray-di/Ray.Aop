@@ -12,7 +12,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $object;
 
     /**
-     * @var array|\ArrayObject
+     * @var array|\ArrayObject<string, mixed>
      */
     private $arguments;
 
