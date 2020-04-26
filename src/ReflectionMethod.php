@@ -53,10 +53,10 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     public function getAnnotations() : array
     {
         $object = $this->object;
-        if (! isset($object->annotations)) {
+        if (! isset($object->methodAnnotations)) {
             return (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
         }
-        $annotations = unserialize($object->methodAnnotations); // @phpstan-ignore-line
+        $annotations = unserialize($object->methodAnnotations, ['allowed_classes' => true]);
         if (array_key_exists($this->method, $annotations)) {
             return $annotations[$this->method];
         }
