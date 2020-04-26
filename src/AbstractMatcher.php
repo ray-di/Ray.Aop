@@ -19,7 +19,7 @@ abstract class AbstractMatcher
     /**
      * Match class condition
      *
-     * @phpstan-param \ReflectionClass<object> $class
+     * @param \ReflectionClass<object> $class
      *
      * @return bool
      */
