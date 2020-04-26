@@ -24,6 +24,9 @@ final class MethodMatch
         $this->reader = new AnnotationReader;
     }
 
+    /**
+     * @param \ReflectionClass<object> $class
+     */
     public function __invoke(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts) : void
     {
         $annotations = $this->reader->getMethodAnnotations($method);
@@ -42,6 +45,9 @@ final class MethodMatch
         }
     }
 
+    /**
+     * @param \ReflectionClass<object> $class
+     */
     private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut) : void
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
@@ -55,6 +61,9 @@ final class MethodMatch
         $this->bind->bindInterceptors($method->name, $pointCut->interceptors);
     }
 
+    /**
+     * @param \ReflectionClass<object> $class
+     */
     private function onionOrderMatch(
         \ReflectionClass $class,
         \ReflectionMethod $method,
