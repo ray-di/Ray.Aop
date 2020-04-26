@@ -27,8 +27,8 @@ class ReflectionClass extends \ReflectionClass implements Reader
     public function getAnnotations() : array
     {
         $object = $this->object;
-        if (isset($object->annotations)) {
-            return unserialize($object->classAnnotations); // @phpstan-ignore-line
+        if (isset($object->classAnnotations)) {
+            return unserialize($object->classAnnotations, ['allowed_classes' => true]);
         }
 
         return (new AnnotationReader)->getClassAnnotations(new \ReflectionClass($this->name));
