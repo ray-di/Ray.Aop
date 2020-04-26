@@ -114,6 +114,9 @@ final class Compiler implements CompilerInterface
         return $hasMethod;
     }
 
+    /**
+     * @param \ReflectionClass<object> $sourceClass
+     */
     private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind) : void
     {
         $code = $this->codeGen->generate($sourceClass, $bind);
