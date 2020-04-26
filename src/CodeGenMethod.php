@@ -41,6 +41,9 @@ final class CodeGenMethod
         $this->printer = $printer;
     }
 
+    /**
+     * @param \ReflectionClass<object> $class
+     */
     public function getMethods(\ReflectionClass $class, BindInterface $bind, CodeVisitor $code) : array
     {
         $bindingMethods = array_keys($bind->getBindings());
