@@ -53,7 +53,6 @@ final class CodeGenMethod
             $methodName = $classMethod->name->name;
             $method = new \ReflectionMethod($class->name, $methodName);
             $isBindingMethod = in_array($methodName, $bindingMethods, true);
-            assert($method instanceof \ReflectionMethod);
             $isPublic = $classMethod->flags === Class_::MODIFIER_PUBLIC;
             if ($isBindingMethod && $isPublic) {
                 $methodInsideStatements = $this->getTemplateMethodNodeStmts(
