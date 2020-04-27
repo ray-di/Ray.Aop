@@ -46,6 +46,7 @@ jobs:
     script:
       - ~/.composer/vendor/bin/phpstan analyse -c phpstan.neon --no-progress --no-interaction;
       - ~/.composer/vendor/bin/psalm --show-info=false
+      - ~/.composer/vendor/bin/phpmetrics --exclude=Exception src
 
   - stage: Code Quality
     name: Coding standards
