@@ -61,6 +61,8 @@ final class CodeGen implements CodeGenInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param \ReflectionClass<object> $sourceClass
      */
     public function generate(\ReflectionClass $sourceClass, BindInterface $bind) : Code
     {
@@ -89,6 +91,8 @@ final class CodeGen implements CodeGenInterface
 
     /**
      * Return "declare()" and "use" statement code
+     *
+     * @param \ReflectionClass<object> $class
      */
     private function getVisitorCode(\ReflectionClass $class) : CodeVisitor
     {
@@ -111,6 +115,9 @@ final class CodeGen implements CodeGenInterface
         return $visitor;
     }
 
+    /**
+     * @param \ReflectionClass<object> $class
+     */
     private function getClassAnnotation(\ReflectionClass $class) : string
     {
         $classAnnotations = $this->reader->getClassAnnotations($class);
@@ -119,6 +126,8 @@ final class CodeGen implements CodeGenInterface
     }
 
     /**
+     * @param \ReflectionClass<object> $class
+     *
      * @return Property[]
      */
     private function getAopProps(\ReflectionClass $class) : array
@@ -154,6 +163,9 @@ final class CodeGen implements CodeGenInterface
         return $pros;
     }
 
+    /**
+     * @param \ReflectionClass<object> $class
+     */
     private function getMethodAnnotations(\ReflectionClass $class) : string
     {
         $methodsAnnotation = [];

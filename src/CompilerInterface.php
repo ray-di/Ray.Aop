@@ -8,11 +8,17 @@ interface CompilerInterface
 {
     /**
      * Compile class
+     *
+     * @param class-string $class
+     *
+     * @return class-string
      */
     public function compile(string $class, BindInterface $bind) : string;
 
     /**
      * Return new instance weaved interceptor(s)
+     *
+     * @param class-string $class
      *
      * @return object
      */

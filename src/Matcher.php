@@ -11,8 +11,6 @@ class Matcher implements MatcherInterface
 {
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function any()
     {
@@ -21,8 +19,6 @@ class Matcher implements MatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function annotatedWith($annotationName) : AbstractMatcher
     {
@@ -35,8 +31,6 @@ class Matcher implements MatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function subclassesOf($superClass) : AbstractMatcher
     {
@@ -49,8 +43,6 @@ class Matcher implements MatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function startsWith($prefix) : AbstractMatcher
     {
@@ -61,8 +53,6 @@ class Matcher implements MatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB) : AbstractMatcher
     {
@@ -71,8 +61,6 @@ class Matcher implements MatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB) : AbstractMatcher
     {
@@ -83,8 +71,6 @@ class Matcher implements MatcherInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function logicalNot(AbstractMatcher $matcher) : AbstractMatcher
     {

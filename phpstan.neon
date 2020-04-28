@@ -13,4 +13,3 @@ parameters:
       message: "#has no return typehint specified\\.$#"
       path: tests/*.php
   checkMissingIterableValueType: false
-  checkGenericClassInNonGenericObjectType: false

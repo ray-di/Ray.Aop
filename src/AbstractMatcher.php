@@ -19,6 +19,8 @@ abstract class AbstractMatcher
     /**
      * Match class condition
      *
+     * @param \ReflectionClass<object> $class
+     *
      * @return bool
      */
     abstract public function matchesClass(\ReflectionClass $class, array $arguments);
@@ -33,7 +35,7 @@ abstract class AbstractMatcher
     /**
      * Return matching condition arguments
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getArguments()
     {

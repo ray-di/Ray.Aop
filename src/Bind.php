@@ -31,13 +31,10 @@ final class Bind implements BindInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function bind(string $class, array $pointcuts) : BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
-        assert(class_exists($class));
         $class = new \ReflectionClass($class);
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {

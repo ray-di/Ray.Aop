@@ -58,13 +58,10 @@ final class Compiler implements CompilerInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function newInstance(string $class, array $args, BindInterface $bind)
     {
         $compiledClass = $this->compile($class, $bind);
-        assert(class_exists($compiledClass));
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
         assert(isset($instance->bindings));
         $instance->bindings = $bind->getBindings();
@@ -75,7 +72,9 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      *
-     * @throws \ReflectionException
+     * @param class-string $class
+     *
+     * @return class-string
      */
     public function compile(string $class, BindInterface $bind) : string
     {
@@ -86,23 +85,27 @@ final class Compiler implements CompilerInterface
         if (class_exists($aopClassName, false)) {
             return $aopClassName;
         }
-        assert(class_exists($class));
         $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
+        assert(class_exists($aopClassName));
 
         return $aopClassName;
     }
 
+    /**
+     * @param class-string $class
+     */
     private function hasNoBinding(string $class, BindInterface $bind) : bool
     {
-        assert(class_exists($class));
         $hasMethod = $this->hasBoundMethod($class, $bind);
 
         return ! $bind->getBindings() && ! $hasMethod;
     }
 
+    /**
+     * @param class-string $class
+     */
     private function hasBoundMethod(string $class, BindInterface $bind) : bool
     {
-        assert(class_exists($class));
         $bindingMethods = array_keys($bind->getBindings());
         $hasMethod = false;
         foreach ($bindingMethods as $bindingMethod) {
@@ -114,6 +117,9 @@ final class Compiler implements CompilerInterface
         return $hasMethod;
     }
 
+    /**
+     * @param \ReflectionClass<object> $sourceClass
+     */
     private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind) : void
     {
         $code = $this->codeGen->generate($sourceClass, $bind);

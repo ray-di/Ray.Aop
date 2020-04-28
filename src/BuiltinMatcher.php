@@ -18,9 +18,6 @@ class BuiltinMatcher extends AbstractMatcher
      */
     private $matcher;
 
-    /**
-     * @throws \ReflectionException
-     */
     public function __construct(string $matcherName, array $arguments)
     {
         parent::__construct();

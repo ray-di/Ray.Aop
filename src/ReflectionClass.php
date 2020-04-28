@@ -6,6 +6,9 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 
+/**
+ * @extends \ReflectionClass<object>
+ */
 class ReflectionClass extends \ReflectionClass implements Reader
 {
     /**
@@ -23,6 +26,8 @@ class ReflectionClass extends \ReflectionClass implements Reader
 
     /**
      * {@inheritdoc}
+     *
+     * @psalm-suppress NoInterfaceProperties
      */
     public function getAnnotations() : array
     {

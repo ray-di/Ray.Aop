@@ -41,12 +41,11 @@ final class Weaver
     }
 
     /**
-     * @throws \ReflectionException
+     * @param class-string $class
      */
     public function newInstance(string $class, array $args) : object
     {
         $aopClass = $this->weave($class);
-        assert(class_exists($aopClass));
         $instance = (new ReflectionClass($aopClass))->newInstanceArgs($args);
         assert(isset($instance->bindings));
         $instance->bindings = $this->bind->getBindings();
@@ -54,6 +53,11 @@ final class Weaver
         return $instance;
     }
 
+    /**
+     * @param class-string $class
+     *
+     * @return class-string
+     */
     public function weave(string $class) : string
     {
         $aopClass = ($this->aopClassName)($class, $this->bindName);
@@ -61,6 +65,8 @@ final class Weaver
             return $aopClass;
         }
         if ($this->loadClass($aopClass)) {
+            assert(class_exists($aopClass));
+
             return $aopClass;
         }
         $this->compiler->compile($class, $this->bind);
