@@ -13,7 +13,7 @@ abstract class AbstractAssisted
     /**
      * Add null default to listed parameters
      *
-     * @var array
+     * @var string[]
      */
     public $values;
 }

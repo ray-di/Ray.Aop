@@ -19,6 +19,7 @@ interface CompilerInterface
      * Return new instance weaved interceptor(s)
      *
      * @param class-string $class
+     * @param mixed[]      $args
      *
      * @return object
      */

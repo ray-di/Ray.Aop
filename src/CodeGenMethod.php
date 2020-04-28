@@ -6,7 +6,9 @@ namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeAbstract;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -43,6 +45,8 @@ final class CodeGenMethod
 
     /**
      * @param \ReflectionClass<object> $class
+     *
+     * @return ClassMethod[]
      */
     public function getMethods(\ReflectionClass $class, BindInterface $bind, CodeVisitor $code) : array
     {
@@ -67,6 +71,9 @@ final class CodeGenMethod
         return $methods;
     }
 
+    /**
+     * @return Stmt[]
+     */
     private function getTemplateMethodNodeStmts(?NodeAbstract $returnType) : array
     {
         $code = $this->isReturnVoid($returnType) ? AopTemplate::RETURN_VOID : AopTemplate::RETURN;

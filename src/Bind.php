@@ -7,7 +7,7 @@ namespace Ray\Aop;
 final class Bind implements BindInterface
 {
     /**
-     * @var array
+     * @var array<string, array<MethodInterceptor>>
      */
     private $bindings = [];
 
