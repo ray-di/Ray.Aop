@@ -21,7 +21,7 @@ class CodeGenTest extends TestCase
         $this->codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
     }
 
-    public function testTypeDeclarations()
+    public function testTypeDeclarations() : void
     {
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
@@ -30,7 +30,7 @@ class CodeGenTest extends TestCase
         $this->assertStringContainsString($expected, $code->code);
     }
 
-    public function testReturnType()
+    public function testReturnType() : void
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeArray', []);
@@ -39,7 +39,7 @@ class CodeGenTest extends TestCase
         $this->assertStringContainsString($expected, $code->code);
     }
 
-    public function testInvalidSourceClass()
+    public function testInvalidSourceClass() : void
     {
         $this->expectException(InvalidSourceClassException::class);
         $this->codeGen->generate(new \ReflectionClass(\stdClass::class), new Bind);

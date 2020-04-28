@@ -10,7 +10,7 @@ use Ray\Aop\FakeMatcher;
 
 class LogicalOrMatcherTest extends TestCase
 {
-    public function testMatchesClass()
+    public function testMatchesClass() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher, new FakeMatcher(false)]);
@@ -18,7 +18,7 @@ class LogicalOrMatcherTest extends TestCase
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesClassFalse()
+    public function testMatchesClassFalse() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher, new FakeMatcher(false)]);
@@ -26,21 +26,21 @@ class LogicalOrMatcherTest extends TestCase
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesClassThreeConditions()
+    public function testMatchesClassThreeConditions() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher(false), new FakeMatcher(false), new FakeMatcher]);
         $this->assertTrue($isMatched);
     }
 
-    public function testLogicalOrNotMatch()
+    public function testLogicalOrNotMatch() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalOrMatcher)->matchesClass($class, [new FakeMatcher(true, false), new FakeMatcher(true, false), new FakeMatcher(true, false)]);
         $this->assertFalse($isMatched);
     }
 
-    public function testMatchesMethod()
+    public function testMatchesMethod() : void
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
         $isMatched = (new LogicalOrMatcher)->matchesMethod($method, [new FakeMatcher, new FakeMatcher]);
@@ -48,7 +48,7 @@ class LogicalOrMatcherTest extends TestCase
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethodFalse()
+    public function testMatchesMethodFalse() : void
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
         $isMatched = (new LogicalOrMatcher)->matchesMethod($method, [new FakeMatcher(false), new FakeMatcher(false)]);
@@ -56,7 +56,7 @@ class LogicalOrMatcherTest extends TestCase
         $this->assertFalse($isMatched);
     }
 
-    public function testMatchesMethodMoreThanTwoMatch()
+    public function testMatchesMethodMoreThanTwoMatch() : void
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
         $isMatched = (new LogicalOrMatcher)->matchesMethod($method, [new FakeMatcher(false), new FakeMatcher(false), new FakeMatcher(false), new FakeMatcher(true)]);

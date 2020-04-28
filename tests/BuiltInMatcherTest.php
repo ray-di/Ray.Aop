@@ -19,21 +19,21 @@ class BuiltInMatcherTest extends TestCase
         $this->matcher = new BuiltinMatcher('startsWith', ['Ray']);
     }
 
-    public function testMatchesClass()
+    public function testMatchesClass() : void
     {
         $class = new \ReflectionClass(FakeClass::class);
         $isMatched = $this->matcher->matchesClass($class, ['Ray\Aop']);
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethod()
+    public function testMatchesMethod() : void
     {
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = $this->matcher->matchesMethod($method, ['get']);
         $this->assertTrue($isMatched);
     }
 
-    public function testInvalidBuiltinMatcher()
+    public function testInvalidBuiltinMatcher() : void
     {
         $this->expectException(InvalidMatcherException::class);
         new BuiltinMatcher('invalid', []);

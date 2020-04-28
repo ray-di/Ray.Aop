@@ -10,7 +10,7 @@ use Ray\Aop\FakeMatcher;
 
 class LogicalAndMatcherTest extends TestCase
 {
-    public function testMatchesClass()
+    public function testMatchesClass() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, true)]);
@@ -18,7 +18,7 @@ class LogicalAndMatcherTest extends TestCase
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesClassFalse()
+    public function testMatchesClassFalse() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, false)]);
@@ -26,7 +26,7 @@ class LogicalAndMatcherTest extends TestCase
         $this->assertFalse($isMatched);
     }
 
-    public function testMatchesClassThreeConditions()
+    public function testMatchesClassThreeConditions() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, true), new FakeMatcher(true, false)]);
@@ -34,7 +34,7 @@ class LogicalAndMatcherTest extends TestCase
         $this->assertFalse($isMatched);
     }
 
-    public function testMatchesMethod()
+    public function testMatchesMethod() : void
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
         $isMatched = (new LogicalAndMatcher)->matchesMethod($method, [new FakeMatcher(true, true), new FakeMatcher(true, true)]);

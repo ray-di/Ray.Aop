@@ -9,7 +9,7 @@ use Ray\Aop\FakeClass;
 
 class StartsWithMatcherTest extends TestCase
 {
-    public function testMatchesClass()
+    public function testMatchesClass() : void
     {
         $class = new \ReflectionClass(FakeClass::class);
         $isMatched = (new StartsWithMatcher)->matchesClass($class, ['Ray\Aop']);
@@ -17,7 +17,7 @@ class StartsWithMatcherTest extends TestCase
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethod()
+    public function testMatchesMethod() : void
     {
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = (new StartsWithMatcher)->matchesMethod($method, ['get']);
@@ -25,7 +25,7 @@ class StartsWithMatcherTest extends TestCase
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethodNotMatch()
+    public function testMatchesMethodNotMatch() : void
     {
         $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = (new StartsWithMatcher)->matchesMethod($method, ['xxx']);

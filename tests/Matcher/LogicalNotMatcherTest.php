@@ -10,21 +10,21 @@ use Ray\Aop\FakeMatcher;
 
 class LogicalNotMatcherTest extends TestCase
 {
-    public function testMatchesClass()
+    public function testMatchesClass() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalNotMatcher)->matchesClass($class, [new FakeMatcher(false)]);
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesClassFalse()
+    public function testMatchesClassFalse() : void
     {
         $class = new \ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new LogicalNotMatcher)->matchesClass($class, [new FakeMatcher]);
         $this->assertFalse($isMatched);
     }
 
-    public function testMatchesMethod()
+    public function testMatchesMethod() : void
     {
         $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
         $isMatched = (new LogicalNotMatcher)->matchesMethod($method, [new FakeMatcher]);

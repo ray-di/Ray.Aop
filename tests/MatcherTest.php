@@ -11,7 +11,7 @@ class MatcherTest extends TestCase
     /**
      * @throws \ReflectionException
      */
-    public function testReturnBuildInMatcher()
+    public function testReturnBuildInMatcher() : void
     {
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->any());
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher)->annotatedWith(FakeResource::class));
@@ -28,7 +28,7 @@ class MatcherTest extends TestCase
     /**
      * @throws \ReflectionException
      */
-    public function testValidationForAnnotatedWith()
+    public function testValidationForAnnotatedWith() : void
     {
         $this->expectException(\Ray\Aop\Exception\InvalidAnnotationException::class);
 
@@ -38,7 +38,7 @@ class MatcherTest extends TestCase
     /**
      * @throws \ReflectionException
      */
-    public function testValidationForSubclassesOf()
+    public function testValidationForSubclassesOf() : void
     {
         $this->expectException(\Ray\Aop\Exception\InvalidArgumentException::class);
 

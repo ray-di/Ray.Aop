@@ -9,7 +9,7 @@ use Ray\Aop\FakeClass;
 
 class SubclassesOfMatcherTest extends TestCase
 {
-    public function testMatchesClass()
+    public function testMatchesClass() : void
     {
         $class = new \ReflectionClass(FakeClass::class);
         $isMatched = (new SubclassesOfMatcher)->matchesClass($class, [FakeClass::class]);
@@ -17,7 +17,7 @@ class SubclassesOfMatcherTest extends TestCase
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethod()
+    public function testMatchesMethod() : void
     {
         $this->expectException(\Ray\Aop\Exception\InvalidAnnotationException::class);
 
