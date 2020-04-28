@@ -35,7 +35,7 @@ abstract class AbstractMatcher
     /**
      * Return matching condition arguments
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getArguments()
     {
