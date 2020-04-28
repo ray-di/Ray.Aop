@@ -26,6 +26,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
 
     /**
      * {@inheritdoc}
+     * @psalm-suppress NoInterfaceProperties
      */
     public function getAnnotations() : array
     {
