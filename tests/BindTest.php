@@ -27,14 +27,14 @@ class BindTest extends TestCase
         $this->bind = new Bind;
     }
 
-    public function testBindInterceptors()
+    public function testBindInterceptors() : void
     {
         $interceptors = [new FakeDoubleInterceptor, new FakeDoubleInterceptor];
         $this->bind->bindInterceptors('getDouble', $interceptors);
         $this->assertSame($this->bind->getBindings()['getDouble'], $interceptors);
     }
 
-    public function testBind()
+    public function testBind() : void
     {
         $interceptors = [new FakeDoubleInterceptor];
         $pointcut = new Pointcut((new Matcher)->startsWith('Ray'), (new Matcher)->startsWith('get'), $interceptors);
@@ -43,7 +43,7 @@ class BindTest extends TestCase
         $this->assertSame($this->bind->getBindings()['getDouble'], $interceptors);
     }
 
-    public function testBindUnmatched()
+    public function testBindUnmatched() : void
     {
         $interceptors = [new FakeDoubleInterceptor];
         $pointcut = new Pointcut((new Matcher)->startsWith('XXX'), (new Matcher)->startsWith('get'), $interceptors);
@@ -51,7 +51,7 @@ class BindTest extends TestCase
         $this->assertSame($this->bind->getBindings(), []);
     }
 
-    public function testToString()
+    public function testToString() : void
     {
         $nullBind = (new Bind)->toString('');
         $this->assertIsString($nullBind);
@@ -64,7 +64,7 @@ class BindTest extends TestCase
         $this->assertIsString($nullBind, $bindString);
     }
 
-    public function testMyMatcher()
+    public function testMyMatcher() : void
     {
         $interceptors = [new FakeDoubleInterceptor];
         $pointcut = new Pointcut(new FakeMatcher, (new Matcher)->any(), $interceptors);
@@ -73,14 +73,14 @@ class BindTest extends TestCase
         $this->assertSame($this->bind->getBindings()['getDouble'], $interceptors);
     }
 
-    public function testNotClassMatch()
+    public function testNotClassMatch() : void
     {
         $pointcut = new Pointcut(new FakeMatcher(false), (new Matcher)->any(), [new FakeDoubleInterceptor]);
         $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
         $this->assertArrayNotHasKey('getDouble', $this->bind->getBindings());
     }
 
-    public function testOnionAnnotation()
+    public function testOnionAnnotation() : void
     {
         $onion1 = new FakeOnionInterceptor1;
         $onion2 = new FakeOnionInterceptor2;
@@ -97,7 +97,7 @@ class BindTest extends TestCase
         $this->assertSame($expect, $actual);
     }
 
-    public function testOnionAnnotationAndPriorityPointcut()
+    public function testOnionAnnotationAndPriorityPointcut() : void
     {
         $onion1 = new FakeOnionInterceptor1;
         $onion2 = new FakeOnionInterceptor2;

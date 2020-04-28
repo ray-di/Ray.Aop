@@ -27,45 +27,45 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->invocation = new ReflectiveMethodInvocation($this->fake, 'add', [1]);
     }
 
-    public function testGetMethod()
+    public function testGetMethod() : void
     {
         $methodReflection = $this->invocation->getMethod();
         $this->assertInstanceOf(\ReflectionMethod::class, $methodReflection);
     }
 
-    public function testGetMethodMethodName()
+    public function testGetMethodMethodName() : void
     {
         $methodReflection = $this->invocation->getMethod();
         $this->assertSame(FakeClass::class, $methodReflection->class);
         $this->assertSame('add', $methodReflection->name);
     }
 
-    public function testGetArguments()
+    public function testGetArguments() : void
     {
         $args = $this->invocation->getArguments();
         $this->assertSame((array) $args, [1]);
     }
 
-    public function testProceed()
+    public function testProceed() : void
     {
         $this->invocation->proceed();
         $this->assertSame(1, $this->fake->a);
     }
 
-    public function testProceedTwoTimes()
+    public function testProceedTwoTimes() : void
     {
         $this->invocation->proceed();
         $this->invocation->proceed();
         $this->assertSame(2, $this->fake->a);
     }
 
-    public function testGetThis()
+    public function testGetThis() : void
     {
         $actual = $this->invocation->getThis();
         $this->assertSame($this->fake, $actual);
     }
 
-    public function testGetParentMethod()
+    public function testGetParentMethod() : void
     {
         $fake = new FakeWeavedClass;
         $invocation = new ReflectiveMethodInvocation($fake, 'add', [1]);
@@ -74,7 +74,7 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->assertSame('add', $method->name);
     }
 
-    public function testProceedMultipleInterceptors()
+    public function testProceedMultipleInterceptors() : void
     {
         $fake = new FakeWeavedClass;
         $invocation = new ReflectiveMethodInvocation($fake, 'add', [1], [new FakeInterceptor, new FakeInterceptor]);
@@ -82,13 +82,13 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->assertSame(1, $fake->a);
     }
 
-    public function testGetNamedArguments()
+    public function testGetNamedArguments() : void
     {
         $args = $this->invocation->getNamedArguments();
         $this->assertSame((array) $args, ['n' => 1]);
     }
 
-    public function testNoInterceptor()
+    public function testNoInterceptor() : void
     {
         $this->expectException(\LogicException::class);
         $invalidIntercepor = new \stdClass;
@@ -96,13 +96,13 @@ class ReflectiveMethodInvocationTest extends TestCase
         $invocation->proceed();
     }
 
-    public function testGetAnnotation()
+    public function testGetAnnotation() : void
     {
         $fakeMarker = $this->invocation->getMethod()->getAnnotation(FakeMarker::class);
         $this->assertInstanceOf(FakeMarker::class, $fakeMarker);
     }
 
-    public function testGetClassAnnotati()
+    public function testGetClassAnnotati() : void
     {
         $fakeMarker = $this->invocation->getMethod()->getDeclaringClass()->getAnnotation(FakeClassMarker::class);
         $this->assertInstanceOf(FakeClassMarker::class, $fakeMarker);

@@ -34,15 +34,16 @@ class CompilerTest extends TestCase
         $this->bind = (new Bind)->bind(FakeWeaved::class, [$pointcut]);
     }
 
-    public function testNewInstance()
+    public function testNewInstance() : FakeMock
     {
         $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
         $this->assertInstanceOf(FakeMock::class, $mock);
+        assert($mock instanceof FakeMock);
 
         return $mock;
     }
 
-    public function testNewInstanceTwice()
+    public function testNewInstanceTwice() : void
     {
         $class1 = $this->compiler->compile(FakeMock::class, $this->bind);
         $class2 = $this->compiler->compile(FakeMock::class, $this->bind);
@@ -57,7 +58,7 @@ class CompilerTest extends TestCase
     /**
      * @depends testNewInstance
      */
-    public function testParentClassName(object $class)
+    public function testParentClassName(object $class) : void
     {
         $parent = (new \ReflectionClass($class))->getParentClass();
         if ($parent instanceof \ReflectionClass) {
@@ -68,7 +69,7 @@ class CompilerTest extends TestCase
     /**
      * @depends testNewInstance
      */
-    public function testBuildClassWeaved(FakeMock $weaved)
+    public function testBuildClassWeaved(FakeMock $weaved) : void
     {
         assert(isset($weaved->bindings));
         $weaved->bindings = $this->bind->getBindings();
@@ -76,7 +77,7 @@ class CompilerTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    public function testParenteClass()
+    public function testParenteClass() : FakeMock
     {
         $weaved = $this->testNewInstance();
         $parent = (new \ReflectionClass($weaved))->getParentClass();
@@ -90,7 +91,7 @@ class CompilerTest extends TestCase
     /**
      * @depends testNewInstance
      */
-    public function testWeavedInterceptorWorks(FakeMock $weaved)
+    public function testWeavedInterceptorWorks(FakeMock $weaved) : void
     {
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
@@ -101,7 +102,7 @@ class CompilerTest extends TestCase
     /**
      * @depends testNewInstance
      */
-    public function testMethodReturnValue(FakeMock $weaved)
+    public function testMethodReturnValue(FakeMock $weaved) : void
     {
         $num = new FakeNum;
         $num->value = 1;
@@ -109,7 +110,7 @@ class CompilerTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    public function testGetPrivateVal()
+    public function testGetPrivateVal() : void
     {
         /** @var \Ray\Aop\FakeMock $mock */
         $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
@@ -117,7 +118,7 @@ class CompilerTest extends TestCase
         $this->assertSame($val, 1);
     }
 
-    public function testCallAbortProceedInterceptorTwice()
+    public function testCallAbortProceedInterceptorTwice() : void
     {
         $matcher = new Matcher;
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeAbortProceedInterceptor]);
@@ -128,7 +129,7 @@ class CompilerTest extends TestCase
         $this->assertSame(40, $mock->returnSame(1));
     }
 
-    public function testClassDocComment()
+    public function testClassDocComment() : void
     {
         $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
         /* @var $weaved FakeMock */
@@ -138,7 +139,7 @@ class CompilerTest extends TestCase
         $this->assertSame($expected, $docComment);
     }
 
-    public function testMethodDocComment()
+    public function testMethodDocComment() : void
     {
         $weaved = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
         /* @var $weaved FakeMock */
@@ -149,7 +150,7 @@ class CompilerTest extends TestCase
         $this->assertSame($expected, $docComment);
     }
 
-    public function testNoDocComment()
+    public function testNoDocComment() : void
     {
         $weaved = $this->compiler->newInstance(FakeMockNoDoc::class, [], $this->bind);
         /* @var $weaved FakeMock */
@@ -160,14 +161,14 @@ class CompilerTest extends TestCase
         $this->assertFalse((bool) $methodDocComment);
     }
 
-    public function testSerialize()
+    public function testSerialize() : void
     {
         $compiler = unserialize(serialize($this->compiler));
         $class = $compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
     }
 
-    public function testIncludeCompilerFile()
+    public function testIncludeCompilerFile() : void
     {
         // new aop class file saved.
         passthru('php ' . __DIR__ . '/script/compile.php');
@@ -177,27 +178,27 @@ class CompilerTest extends TestCase
         $this->assertTrue($isWeaved);
     }
 
-    public function testCompileNoBInd()
+    public function testCompileNoBInd() : void
     {
         $class = $this->compiler->compile(FakeMock::class, new Bind);
         $this->assertSame(FakeMock::class, $class);
     }
 
-    public function testAnnotation()
+    public function testAnnotation() : void
     {
         $class = $this->compiler->compile(FakeAnnotateClass::class, $this->bind);
         $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
         $this->assertCount(4, $annotations);
     }
 
-    public function testNoNamespace()
+    public function testNoNamespace() : void
     {
         $class = $this->compiler->compile(FakeAnnotateClassNoName::class, $this->bind);
         $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($class, 'getDouble'));
         $this->assertCount(3, $annotations);
     }
 
-    public function testArrayTypehintedAndCallable()
+    public function testArrayTypehintedAndCallable() : void
     {
         $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
         assert(class_exists($class));
@@ -206,14 +207,14 @@ class CompilerTest extends TestCase
         $this->assertStringContainsString($expected, $file);
     }
 
-    public function testNotWritable()
+    public function testNotWritable() : void
     {
         $this->expectException(NotWritableException::class);
 
         new Compiler('./not_available');
     }
 
-    public function testHasBound()
+    public function testHasBound() : void
     {
         $this->compiler = new Compiler(__DIR__ . '/tmp');
         $this->bind = new Bind;
@@ -224,7 +225,7 @@ class CompilerTest extends TestCase
         $this->assertTrue(class_exists($class));
     }
 
-    public function testMethodAnnotationReader()
+    public function testMethodAnnotationReader() : void
     {
         $bind = (new Bind)->bindInterceptors('getDouble', [new FakeMethodAnnotationReaderInterceptor]);
         $compiler = new Compiler(__DIR__ . '/tmp');
@@ -242,7 +243,7 @@ class CompilerTest extends TestCase
     /**
      * @depends testMethodAnnotationReader
      */
-    public function testClassAnnotationReader()
+    public function testClassAnnotationReader() : void
     {
         $classAnnotation = FakeMethodAnnotationReaderInterceptor::$classAnnotation;
         $classAnnotations = FakeMethodAnnotationReaderInterceptor::$classAnnotations;
@@ -252,7 +253,7 @@ class CompilerTest extends TestCase
         $this->assertInstanceOf(FakeResource::class, $annotation);
     }
 
-    public function testMethodAnnotationReaderReturnNull()
+    public function testMethodAnnotationReaderReturnNull() : void
     {
         $bind = (new Bind)->bindInterceptors('returnSame', [new FakeMethodAnnotationReaderInterceptor]);
         $compiler = new Compiler(__DIR__ . '/tmp');
@@ -265,7 +266,7 @@ class CompilerTest extends TestCase
         $this->assertCount(0, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
     }
 
-    public function testInterceptorCanChangeArgument()
+    public function testInterceptorCanChangeArgument() : void
     {
         $bind = (new Bind)->bindInterceptors('returnSame', [new FakeChangeArgsInterceptor()]);
         $compiler = new Compiler(__DIR__ . '/tmp');
@@ -275,7 +276,7 @@ class CompilerTest extends TestCase
         $this->assertSame('changed', $mock->returnSame(1));
     }
 
-    public function testUnnamespacedClass()
+    public function testUnnamespacedClass() : void
     {
         /** @var FakeGlobalNamespaced $mock */
         $mock = $this->compiler->newInstance(FakeGlobalNamespaced::class, [], $this->bind);
@@ -283,7 +284,7 @@ class CompilerTest extends TestCase
         $this->assertSame(2, $mock->returnSame(1));
     }
 
-    public function testVoidFunction()
+    public function testVoidFunction() : void
     {
         $bind = (new Bind)->bindInterceptors('returnTypeVoid', [new FakeChangeArgsInterceptor()]);
         $compiler = new Compiler(__DIR__ . '/tmp');
@@ -293,7 +294,7 @@ class CompilerTest extends TestCase
         $this->assertTrue($mock->returnTypeVoidCalled);
     }
 
-    public function testCompileMultipleFile()
+    public function testCompileMultipleFile() : void
     {
         $this->expectException(MultipleClassInOneFileException::class);
         $compiler = new Compiler(__DIR__ . '/tmp');

@@ -20,7 +20,7 @@ class CodeGenPhp71Test extends TestCase
         $this->codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
     }
 
-    public function testReturnTypeVoid()
+    public function testReturnTypeVoid() : void
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeVoid', []);
@@ -29,7 +29,7 @@ class CodeGenPhp71Test extends TestCase
         $this->assertStringContainsString($expected, $code->code);
     }
 
-    public function testReturnTypeVoidContainsNoReturnValue()
+    public function testReturnTypeVoidContainsNoReturnValue() : void
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeVoid', []);
@@ -38,7 +38,7 @@ class CodeGenPhp71Test extends TestCase
         $this->assertStringContainsString('return;', $code->code);
     }
 
-    public function testReturnTypeNullable()
+    public function testReturnTypeNullable() : Code
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnNullable', []);
@@ -52,13 +52,13 @@ class CodeGenPhp71Test extends TestCase
     /**
      * @depends testReturnTypeNullable
      */
-    public function testContainsStatement(Code $code)
+    public function testContainsStatement(Code $code) : void
     {
         $this->assertStringContainsString("declare (strict_types=1);\n", $code->code);
         $this->assertStringContainsString("use Composer\\Autoload;\n", $code->code);
     }
 
-    public function testNullableParam()
+    public function testNullableParam() : void
     {
         $bind = new Bind;
         $bind->bindInterceptors('nullableParam', []);
@@ -67,7 +67,7 @@ class CodeGenPhp71Test extends TestCase
         $this->assertStringContainsString($expected, $code->code);
     }
 
-    public function testTypedParam()
+    public function testTypedParam() : void
     {
         $bind = new Bind;
         $bind->bindInterceptors('typed', []);
@@ -76,7 +76,7 @@ class CodeGenPhp71Test extends TestCase
         $this->assertStringContainsString($expected, $code->code);
     }
 
-    public function testUseTyped()
+    public function testUseTyped() : void
     {
         $bind = new Bind;
         $bind->bindInterceptors('useTyped', []);

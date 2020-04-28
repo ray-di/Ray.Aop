@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ParserFactoryTest extends TestCase
 {
-    public function testCreate()
+    public function testCreate() : void
     {
         $this->assertInstanceOf('PhpParser\Parser', (new ParserFactory)->newInstance());
     }
