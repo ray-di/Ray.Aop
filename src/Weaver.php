@@ -40,6 +40,9 @@ final class Weaver
         $this->aopClassName = new AopClassName;
     }
 
+    /**
+     * @param class-string $class
+     */
     public function newInstance(string $class, array $args) : object
     {
         $aopClass = $this->weave($class);
@@ -51,6 +54,11 @@ final class Weaver
         return $instance;
     }
 
+    /**
+     * @param class-string $class
+     *
+     * @return class-string
+     */
     public function weave(string $class) : string
     {
         $aopClass = ($this->aopClassName)($class, $this->bindName);
@@ -58,6 +66,8 @@ final class Weaver
             return $aopClass;
         }
         if ($this->loadClass($aopClass)) {
+            assert(class_exists($aopClass));
+
             return $aopClass;
         }
         $this->compiler->compile($class, $this->bind);

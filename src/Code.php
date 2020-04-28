@@ -13,6 +13,7 @@ final class Code
 
     public function save(string $classDir, string $aopClassName) : string
     {
+        class_exists($aopClassName);
         $flatName = str_replace('\\', '_', $aopClassName);
         $file = sprintf('%s/%s.php', $classDir, $flatName);
         file_put_contents($file, $this->code . PHP_EOL);

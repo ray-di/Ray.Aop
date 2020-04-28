@@ -72,6 +72,10 @@ final class Compiler implements CompilerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param class-string $class
+     *
+     * @return class-string
      */
     public function compile(string $class, BindInterface $bind) : string
     {
@@ -84,6 +88,7 @@ final class Compiler implements CompilerInterface
         }
         assert(class_exists($class));
         $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
+        assert(class_exists($aopClassName));
 
         return $aopClassName;
     }

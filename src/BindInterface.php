@@ -9,8 +9,8 @@ interface BindInterface
     /**
      * Bind pointcuts
      *
-     * @param string     $class     class name
-     * @param Pointcut[] $pointcuts Pointcut array
+     * @param class-string $class     class name
+     * @param Pointcut[]   $pointcuts Pointcut array
      */
     public function bind(string $class, array $pointcuts) : self;
 
@@ -26,7 +26,7 @@ interface BindInterface
      *
      * [$methodNameA => [$interceptorA, ...][]
      *
-     * @return array
+     * @return array<string, array<class-string<\Ray\Aop\MethodInterceptor>>>
      */
     public function getBindings();
 
