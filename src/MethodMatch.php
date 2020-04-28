@@ -26,6 +26,7 @@ final class MethodMatch
 
     /**
      * @param \ReflectionClass<object> $class
+     * @param Pointcut[]               $pointcuts
      */
     public function __invoke(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts) : void
     {
@@ -63,6 +64,10 @@ final class MethodMatch
 
     /**
      * @param \ReflectionClass<object> $class
+     * @param Pointcut[]               $pointcuts
+     * @param object[]                 $annotations
+     *
+     * @return Pointcut[]
      */
     private function onionOrderMatch(
         \ReflectionClass $class,

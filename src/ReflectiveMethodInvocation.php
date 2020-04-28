@@ -12,7 +12,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $object;
 
     /**
-     * @var array|\ArrayObject<string, mixed>
+     * @var array<int, mixed>|\ArrayObject<int, mixed>
      */
     private $arguments;
 
@@ -27,23 +27,25 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $interceptors;
 
     /**
-     * @var array
+     * @var callable
      */
     private $callable;
 
     /**
-     * @param object              $object
      * @param MethodInterceptor[] $interceptors
+     * @param array<int, mixed>   $arguments
      */
     public function __construct(
-        $object,
+        object $object,
         string $method,
         array $arguments,
         array $interceptors = []
     ) {
         $this->object = $object;
         $this->method = $method;
-        $this->callable = [$object, $method];
+        $callable = [$object, $method];
+        assert(is_callable($callable));
+        $this->callable = $callable;
         $this->arguments = $arguments;
         $this->interceptors = $interceptors;
     }
@@ -95,15 +97,12 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function proceed()
     {
-        if ($this->interceptors === [] && \is_callable($this->callable)) {
-            return call_user_func_array($this->callable, (array) $this->arguments);
-        }
         $interceptor = array_shift($this->interceptors);
         if ($interceptor instanceof MethodInterceptor) {
             return $interceptor->invoke($this);
         }
 
-        throw new \LogicException;
+        return call_user_func_array($this->callable, (array) $this->arguments);
     }
 
     /**

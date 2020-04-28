@@ -17,7 +17,7 @@ class BindTest extends TestCase
     protected $bind;
 
     /**
-     * @var array
+     * @var array<MethodInterceptor>
      */
     protected $interceptors;
 

@@ -18,6 +18,9 @@ class BuiltinMatcher extends AbstractMatcher
      */
     private $matcher;
 
+    /**
+     * @param mixed[] $arguments
+     */
     public function __construct(string $matcherName, array $arguments)
     {
         parent::__construct();

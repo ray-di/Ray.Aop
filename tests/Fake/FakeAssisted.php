@@ -15,7 +15,7 @@ use Ray\Aop\Annotation\AbstractAssisted;
 final class FakeAssisted extends AbstractAssisted
 {
     /**
-     * @var array
+     * @var array<string>
      */
     public $values;
 }

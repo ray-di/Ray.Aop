@@ -9,7 +9,7 @@ use Ray\Aop\AbstractMatcher;
 final class AnyMatcher extends AbstractMatcher
 {
     /**
-     * @var array
+     * @var string[]
      */
     private static $builtinMethods = [];
 

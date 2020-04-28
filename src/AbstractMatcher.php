@@ -7,7 +7,7 @@ namespace Ray\Aop;
 abstract class AbstractMatcher
 {
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $arguments = [];
 
@@ -20,6 +20,7 @@ abstract class AbstractMatcher
      * Match class condition
      *
      * @param \ReflectionClass<object> $class
+     * @param array<mixed>             $arguments
      *
      * @return bool
      */
@@ -28,6 +29,8 @@ abstract class AbstractMatcher
     /**
      * Match method condition
      *
+     * @param mixed[] $arguments
+     *
      * @return bool
      */
     abstract public function matchesMethod(\ReflectionMethod $method, array $arguments);
@@ -35,7 +38,7 @@ abstract class AbstractMatcher
     /**
      * Return matching condition arguments
      *
-     * @return array<mixed>
+     * @return mixed[]
      */
     public function getArguments()
     {
