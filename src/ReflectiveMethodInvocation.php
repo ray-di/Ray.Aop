@@ -97,15 +97,12 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      */
     public function proceed()
     {
-        if ($this->interceptors === []) {
-            return call_user_func_array($this->callable, (array) $this->arguments);
-        }
         $interceptor = array_shift($this->interceptors);
         if ($interceptor instanceof MethodInterceptor) {
             return $interceptor->invoke($this);
         }
 
-        throw new \LogicException;
+        return call_user_func_array($this->callable, (array) $this->arguments);
     }
 
     /**

@@ -88,14 +88,6 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->assertSame((array) $args, ['n' => 1]);
     }
 
-    public function testNoInterceptor() : void
-    {
-        $this->expectException(\LogicException::class);
-        $invalidIntercepor = new \stdClass;
-        $invocation = new ReflectiveMethodInvocation(new FakeWeavedClass, 'add', [1], [$invalidIntercepor]);
-        $invocation->proceed();
-    }
-
     public function testGetAnnotation() : void
     {
         $fakeMarker = $this->invocation->getMethod()->getAnnotation(FakeMarker::class);
