@@ -58,8 +58,6 @@ final class Compiler implements CompilerInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function newInstance(string $class, array $args, BindInterface $bind)
     {
@@ -74,8 +72,6 @@ final class Compiler implements CompilerInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function compile(string $class, BindInterface $bind) : string
     {

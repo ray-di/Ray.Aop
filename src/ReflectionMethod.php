@@ -27,9 +27,6 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
         $this->method = $method->name;
     }
 
-    /**
-     * @throws \ReflectionException
-     */
     public function getDeclaringClass() : ReflectionClass
     {
         if (! is_object($this->object)) {

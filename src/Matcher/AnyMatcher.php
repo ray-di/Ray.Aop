@@ -13,9 +13,6 @@ final class AnyMatcher extends AbstractMatcher
      */
     private static $builtinMethods = [];
 
-    /**
-     * @throws \ReflectionException
-     */
     public function __construct()
     {
         parent::__construct();
@@ -44,9 +41,6 @@ final class AnyMatcher extends AbstractMatcher
         return ! ($this->isMagicMethod($method->name) || $this->isBuiltinMethod($method->name));
     }
 
-    /**
-     * @throws \ReflectionException
-     */
     private function setBuildInMethods() : void
     {
         $methods = (new \ReflectionClass(\ArrayObject::class))->getMethods();

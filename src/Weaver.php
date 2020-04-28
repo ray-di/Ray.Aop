@@ -40,9 +40,6 @@ final class Weaver
         $this->aopClassName = new AopClassName;
     }
 
-    /**
-     * @throws \ReflectionException
-     */
     public function newInstance(string $class, array $args) : object
     {
         $aopClass = $this->weave($class);

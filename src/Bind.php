@@ -31,8 +31,6 @@ final class Bind implements BindInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \ReflectionException
      */
     public function bind(string $class, array $pointcuts) : BindInterface
     {
