@@ -20,7 +20,7 @@ abstract class AbstractMatcher
      * Match class condition
      *
      * @param \ReflectionClass<object> $class
-     * @param array<mixed>             $arguments
+     * @param mixed[]                  $arguments
      *
      * @return bool
      */
