@@ -59,7 +59,9 @@ final class MethodMatch
         if (! $isClassMatch) {
             return;
         }
-        $this->bind->bindInterceptors($method->name, $pointCut->interceptors);
+        /** @var MethodInterceptor[] $interceptors */
+        $interceptors = $pointCut->interceptors;
+        $this->bind->bindInterceptors($method->name, $interceptors);
     }
 
     /**

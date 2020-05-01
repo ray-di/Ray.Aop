@@ -17,12 +17,12 @@ class Pointcut
     public $methodMatcher;
 
     /**
-     * @var MethodInterceptor[]
+     * @var array<MethodInterceptor|class-string>
      */
     public $interceptors = [];
 
     /**
-     * @param MethodInterceptor[] $interceptors
+     * @param array<MethodInterceptor|class-string> $interceptors
      */
     public function __construct(AbstractMatcher $classMatcher, AbstractMatcher $methodMatcher, array $interceptors)
     {
