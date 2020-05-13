@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Ray\Aop\Exception\NotWritableException;
+
 final class Code
 {
     /**
@@ -15,9 +17,13 @@ final class Code
     {
         class_exists($aopClassName);
         $flatName = str_replace('\\', '_', $aopClassName);
-        $file = sprintf('%s/%s.php', $classDir, $flatName);
-        file_put_contents($file, $this->code . PHP_EOL);
+        $filename = sprintf('%s/%s.php', $classDir, $flatName);
+        $tmpFile = tempnam(dirname($filename), 'swap');
+        if (is_string($tmpFile) && file_put_contents($tmpFile, $this->code) && rename($tmpFile, $filename)) {
+            return $filename;
+        }
+        @unlink((string) $tmpFile);
 
-        return $file;
+        throw new NotWritableException(sprintf('swap: %s, file: %s', $tmpFile, $filename));
     }
 }
