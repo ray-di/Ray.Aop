@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use PhpParser\Node;
+use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\NotWritableException;
 
 final class Code
@@ -11,7 +13,15 @@ final class Code
     /**
      * @var string
      */
-    public $code = '';
+    public $code;
+
+    /**
+     * @param array<Node> $stmt
+     */
+    public function __construct(array $stmt)
+    {
+        $this->code = (new Standard(['shortArraySyntax' => true]))->prettyPrintFile($stmt);
+    }
 
     public function save(string $classDir, string $aopClassName) : string
     {
