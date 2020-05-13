@@ -20,7 +20,7 @@ final class Code
      */
     public function __construct(array $stmt)
     {
-        $this->code = (new Standard(['shortArraySyntax' => true]))->prettyPrintFile($stmt);
+        $this->code = (new Standard(['shortArraySyntax' => true]))->prettyPrintFile($stmt) . PHP_EOL;
     }
 
     public function save(string $classDir, string $aopClassName) : string
