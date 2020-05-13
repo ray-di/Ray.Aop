@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeAbstract;
 use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard;
 
 final class CodeGenMethod
 {
@@ -26,21 +25,14 @@ final class CodeGenMethod
     private $factory;
 
     /**
-     * @var \PhpParser\PrettyPrinter\Standard
-     */
-    private $printer;
-
-    /**
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public function __construct(
         Parser $parser,
-        BuilderFactory $factory,
-        Standard $printer
+        BuilderFactory $factory
     ) {
         $this->parser = $parser;
         $this->factory = $factory;
-        $this->printer = $printer;
     }
 
     /**

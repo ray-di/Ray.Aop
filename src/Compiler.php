@@ -6,7 +6,6 @@ namespace Ray\Aop;
 
 use function class_exists;
 use PhpParser\BuilderFactory;
-use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\NotWritableException;
 
 final class Compiler implements CompilerInterface
@@ -37,8 +36,7 @@ final class Compiler implements CompilerInterface
         $this->classDir = $classDir;
         $this->codeGen = new CodeGen(
             (new ParserFactory)->newInstance(),
-            new BuilderFactory,
-            new Standard(['shortArraySyntax' => true])
+            new BuilderFactory
         );
         $this->aopClassName = new AopClassName;
     }

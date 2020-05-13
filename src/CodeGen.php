@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\InvalidSourceClassException;
 
 final class CodeGen implements CodeGenInterface
@@ -28,11 +27,6 @@ final class CodeGen implements CodeGenInterface
      * @var \PhpParser\BuilderFactory
      */
     private $factory;
-
-    /**
-     * @var \PhpParser\PrettyPrinter\Standard
-     */
-    private $printer;
 
     /**
      * @var CodeGenMethod
@@ -49,13 +43,11 @@ final class CodeGen implements CodeGenInterface
      */
     public function __construct(
         Parser $parser,
-        BuilderFactory $factory,
-        Standard $printer
+        BuilderFactory $factory
     ) {
         $this->parser = $parser;
         $this->factory = $factory;
-        $this->printer = $printer;
-        $this->codeGenMethod = new CodeGenMethod($parser, $factory, $printer);
+        $this->codeGenMethod = new CodeGenMethod($parser, $factory);
         $this->reader = new AnnotationReader;
     }
 
@@ -78,15 +70,13 @@ final class CodeGen implements CodeGenInterface
         $classStm->stmts = array_merge($propStms, $methods);
         $ns = $this->getNamespace($source);
         $stmt = $this->factory->namespace($ns)
-            ->addStmt($this->factory->use('Ray\Aop\WeavedInterface'))
-            ->addStmt($this->factory->use('Ray\Aop\ReflectiveMethodInvocation')->as('Invocation'))
+            ->addStmt($this->factory->use(WeavedInterface::class))
+            ->addStmt($this->factory->use(ReflectiveMethodInvocation::class)->as('Invocation'))
             ->addStmts($source->use)
             ->addStmt($classStm)
             ->getNode();
-        $code = new Code;
-        $code->code = $this->printer->prettyPrintFile(array_merge($source->declare, [$stmt]));
 
-        return $code;
+        return new Code(array_merge($source->declare, [$stmt]));
     }
 
     /**

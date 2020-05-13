@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
-use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\InvalidSourceClassException;
 
@@ -18,7 +17,7 @@ class CodeGenTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory, new Standard);
+        $this->codeGen = new CodeGen((new ParserFactory)->newInstance(), new BuilderFactory);
     }
 
     public function testTypeDeclarations() : void
