@@ -10,8 +10,6 @@ interface CompilerInterface
      * Compile class
      *
      * @param class-string $class
-     *
-     * @return class-string
      */
     public function compile(string $class, BindInterface $bind) : string;
 
