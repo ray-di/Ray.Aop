@@ -61,6 +61,7 @@ final class Compiler implements CompilerInterface
     public function newInstance(string $class, array $args, BindInterface $bind)
     {
         $compiledClass = $this->compile($class, $bind);
+        assert(class_exists($compiledClass));
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
         if (isset($instance->bindings)) {
             $instance->bindings = $bind->getBindings();
@@ -71,10 +72,6 @@ final class Compiler implements CompilerInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @param class-string $class
-     *
-     * @return class-string
      */
     public function compile(string $class, BindInterface $bind) : string
     {
@@ -86,7 +83,6 @@ final class Compiler implements CompilerInterface
             return $aopClassName;
         }
         $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
-        assert(class_exists($aopClassName));
 
         return $aopClassName;
     }
