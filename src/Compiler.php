@@ -34,11 +34,12 @@ final class Compiler implements CompilerInterface
             throw new NotWritableException($classDir);
         }
         $this->classDir = $classDir;
+        $this->aopClassName = new AopClassName($classDir);
         $this->codeGen = new CodeGen(
             (new ParserFactory)->newInstance(),
-            new BuilderFactory
+            new BuilderFactory,
+            $this->aopClassName
         );
-        $this->aopClassName = new AopClassName;
     }
 
     public function __sleep()

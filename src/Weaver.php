@@ -37,7 +37,7 @@ final class Weaver
         $this->bindName = $bind->toString('');
         $this->compiler = new Compiler($classDir);
         $this->classDir = $classDir;
-        $this->aopClassName = new AopClassName;
+        $this->aopClassName = new AopClassName($classDir);
     }
 
     /**

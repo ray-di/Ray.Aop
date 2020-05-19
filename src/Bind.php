@@ -72,7 +72,7 @@ final class Bind implements BindInterface
     {
         unset($salt);
 
-        return strtr(rtrim(base64_encode(pack('H*', sprintf('%u', crc32(serialize($this->bindings))))), '='), '+/', '-_');
+        return serialize($this->bindings);
     }
 
     /**
