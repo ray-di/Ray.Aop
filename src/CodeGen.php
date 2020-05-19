@@ -39,16 +39,23 @@ final class CodeGen implements CodeGenInterface
     private $reader;
 
     /**
+     * @var AopClassName
+     */
+    private $aopClassName;
+
+    /**
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public function __construct(
         Parser $parser,
-        BuilderFactory $factory
+        BuilderFactory $factory,
+        AopClassName $aopClassName
     ) {
         $this->parser = $parser;
         $this->factory = $factory;
         $this->codeGenMethod = new CodeGenMethod($parser, $factory);
         $this->reader = new AnnotationReader;
+        $this->aopClassName = $aopClassName;
     }
 
     /**
@@ -63,7 +70,7 @@ final class CodeGen implements CodeGenInterface
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $source);
         $propStms = $this->getAopProps($sourceClass);
         $classStm = $source->class;
-        $newClassName = sprintf('%s_%s', (string) $source->class->name, $bind->toString(''));
+        $newClassName = ($this->aopClassName)((string) $source->class->name, $bind->toString(''));
         $classStm->name = new Identifier($newClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('WeavedInterface');
