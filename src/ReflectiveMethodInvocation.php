@@ -33,7 +33,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
 
     /**
      * @param MethodInterceptor[] $interceptors
-     * @param array<int, mixed>   $arguments
+     * @param array<int, scalar>  $arguments
      */
     public function __construct(
         object $object,
