@@ -68,7 +68,7 @@ final class MethodMatch
     /**
      * @param \ReflectionClass<object> $class
      * @param Pointcut[]               $pointcuts
-     * @param array<int, object> $annotations
+     * @param array<int, object>       $annotations
      *
      * @return Pointcut[]
      */

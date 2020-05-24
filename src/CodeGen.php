@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use PhpParser\Node\Stmt;
 use function array_merge;
 use Doctrine\Common\Annotations\AnnotationReader;
 use function implode;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;

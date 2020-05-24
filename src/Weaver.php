@@ -41,7 +41,7 @@ final class Weaver
     }
 
     /**
-     * @param class-string $class
+     * @param class-string      $class
      * @param array<int, mixed> $args
      */
     public function newInstance(string $class, array $args) : object
