@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use PhpParser\Node\Stmt;
 use function array_merge;
 use Doctrine\Common\Annotations\AnnotationReader;
 use function implode;
@@ -74,7 +75,9 @@ final class CodeGen implements CodeGenInterface
         $classStm->name = new Identifier($newClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('WeavedInterface');
-        $classStm->stmts = array_merge($propStms, $methods);
+        /** @var array<int, Stmt> $stmts */
+        $stmts = array_merge($propStms, $methods);
+        $classStm->stmts = $stmts;
         $ns = $this->getNamespace($source);
         $stmt = $this->factory->namespace($ns)
             ->addStmt($this->factory->use(WeavedInterface::class))
