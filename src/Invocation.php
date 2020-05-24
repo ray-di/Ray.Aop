@@ -16,14 +16,14 @@ interface Invocation extends Joinpoint
     /**
      * Get the arguments as an array object.
      *
-     * @return \ArrayObject<int, scalar> the argument of the invocation ['arg1', 'arg2']
+     * @return \ArrayObject<int, mixed> the argument of the invocation ['arg1', 'arg2']
      */
     public function getArguments() : \ArrayObject;
 
     /**
      * Get the named arguments as an array object.
      *
-     * @return \ArrayObject<string, scalar> the argument of the invocation  [`paramName1'=>'arg1', `paramName2'=>'arg2']
+     * @return \ArrayObject<string, mixed> the argument of the invocation  [`paramName1'=>'arg1', `paramName2'=>'arg2']
      */
     public function getNamedArguments() : \ArrayObject;
 }
