@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use ArrayObject;
+
 final class ReflectiveMethodInvocation implements MethodInvocation
 {
     /**
@@ -12,7 +14,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $object;
 
     /**
-     * @var array<int, mixed>|\ArrayObject<int, mixed>
+     * @var \ArrayObject<int, mixed>
      */
     private $arguments;
 
@@ -32,8 +34,8 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $callable;
 
     /**
-     * @param MethodInterceptor[] $interceptors
-     * @param array<int, scalar>  $arguments
+     * @param array<MethodInterceptor> $interceptors
+     * @param array<int, mixed>        $arguments
      */
     public function __construct(
         object $object,
@@ -46,7 +48,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         $callable = [$object, $method];
         assert(is_callable($callable));
         $this->callable = $callable;
-        $this->arguments = $arguments;
+        $this->arguments = new \ArrayObject($arguments);
         $this->interceptors = $interceptors;
     }
 
@@ -70,26 +72,25 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritdoc}
      */
-    public function getArguments() : \ArrayObject
+    public function getArguments() : ArrayObject
     {
-        $this->arguments = new \ArrayObject($this->arguments);
-
         return $this->arguments;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNamedArguments() : \ArrayObject
+    public function getNamedArguments() : ArrayObject
     {
         $args = $this->getArguments();
-        $paramas = $this->getMethod()->getParameters();
-        $namedParams = new \ArrayObject;
-        foreach ($paramas as $param) {
+        $params = $this->getMethod()->getParameters();
+        $namedParams = [];
+        foreach ($params as $param) {
+            /** @psalm-suppress MixedAssignment */
             $namedParams[$param->getName()] = $args[$param->getPosition()];
         }
 
-        return $namedParams;
+        return new \ArrayObject($namedParams);
     }
 
     /**
