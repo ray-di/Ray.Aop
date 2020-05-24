@@ -30,6 +30,7 @@ final class MethodMatch
      */
     public function __invoke(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts) : void
     {
+        /** @var array<int, object> $annotations */
         $annotations = $this->reader->getMethodAnnotations($method);
         // priority bind
         foreach ($pointcuts as $key => $pointcut) {
@@ -67,7 +68,7 @@ final class MethodMatch
     /**
      * @param \ReflectionClass<object> $class
      * @param Pointcut[]               $pointcuts
-     * @param object[]                 $annotations
+     * @param array<int, object> $annotations
      *
      * @return Pointcut[]
      */
