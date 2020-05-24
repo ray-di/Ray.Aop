@@ -16,7 +16,7 @@ use Ray\Aop\Exception\MultipleClassInOneFileException;
 final class CodeVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var Namespace_
+     * @var ?Namespace_
      */
     public $namespace;
 

@@ -32,11 +32,16 @@ class ReflectionClass extends \ReflectionClass implements Reader
     public function getAnnotations() : array
     {
         $object = $this->object;
-        if (isset($object->classAnnotations)) {
-            return unserialize($object->classAnnotations, ['allowed_classes' => true]);
-        }
+        if (isset($object->classAnnotations) && is_string($object->classAnnotations)) {
+            /** @var array<int, object> $annotations */
+            $annotations = unserialize($object->classAnnotations, ['allowed_classes' => true]);
 
-        return (new AnnotationReader)->getClassAnnotations(new \ReflectionClass($this->name));
+            return $annotations;
+        }
+        /** @var array<int, object> $annotations */
+        $annotations = (new AnnotationReader)->getClassAnnotations(new \ReflectionClass($this->name));
+
+        return $annotations;
     }
 
     /**
