@@ -26,7 +26,7 @@ interface BindInterface
      *
      * [$methodNameA => [$interceptorA, ...][]
      *
-     * @return array<string, array<string|\Ray\Aop\MethodInterceptor>>
+     * @return array<string, array<string|MethodInterceptor>>
      */
     public function getBindings();
 
