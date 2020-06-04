@@ -8,6 +8,6 @@ class RealBillingService implements BillingService
 {
     public function chargeOrder()
     {
-        echo "Charged.\n";
+        echo 'Charged.' .  PHP_EOL;
     }
 }

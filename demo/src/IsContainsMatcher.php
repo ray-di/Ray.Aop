@@ -13,7 +13,7 @@ final class IsContainsMatcher extends AbstractMatcher
      */
     public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
-        list($contains) = $arguments;
+        [$contains] = $arguments;
 
         return strpos($class->name, $contains) !== false;
     }
@@ -23,7 +23,7 @@ final class IsContainsMatcher extends AbstractMatcher
      */
     public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
-        list($contains) = $arguments;
+        [$contains] = $arguments;
 
         return strpos($method->name, $contains) !== false;
     }

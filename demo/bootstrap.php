@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-$loader = require dirname(__DIR__) . '/vendor/autoload.php';
-/* @var \Composer\Autoload\ClassLoader $loader */
-$loader->addPsr4('Ray\Aop\Demo\\', __DIR__ . '/src/');
+use Composer\Autoload\ClassLoader;
 
-// tmp dir
-$_ENV['TMP_DIR'] = __DIR__ . '/tmp';
+$loader = require dirname(__DIR__) . '/vendor/autoload.php';
+assert($loader instanceof ClassLoader);
+$loader->addPsr4('Ray\Aop\Demo\\', __DIR__ . '/src/');

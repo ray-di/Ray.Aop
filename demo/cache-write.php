@@ -14,7 +14,7 @@ use Ray\Aop\Pointcut;
 $start = microtime(true);
 $max = 1000;
 cache_write:
-    $compiler = new Compiler($_ENV['TMP_DIR']);
+    $compiler = new Compiler(__DIR__ . '/tmp');
     for ($i = 0; $i < $max; $i++) {
         $pointcut = new Pointcut(
             (new Matcher)->any(),

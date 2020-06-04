@@ -17,12 +17,12 @@ $pointcut = new Pointcut(
     [new WeekendBlocker]                    // interceptors
 );
 $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
-$compiler = new Compiler($_ENV['TMP_DIR']);
+$compiler = new Compiler(__DIR__ . '/tmp');
 $billingService = $compiler->newInstance(RealBillingService::class, [], $bind);
 
 try {
     echo $billingService->chargeOrder();
 } catch (\RuntimeException $e) {
-    echo $e->getMessage() . "\n";
+    echo $e->getMessage() . PHP_EOL;
     exit(1);
 }
