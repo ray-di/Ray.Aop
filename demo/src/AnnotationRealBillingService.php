@@ -11,6 +11,6 @@ class AnnotationRealBillingService implements BillingService
      */
     public function chargeOrder()
     {
-        echo 'Charged.' .  PHP_EOL;
+        echo 'Charged.' . PHP_EOL;
     }
 }

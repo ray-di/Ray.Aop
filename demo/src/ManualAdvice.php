@@ -8,11 +8,11 @@ class ManualAdvice
 {
     public function before()
     {
-        echo 'before A' .  PHP_EOL;
+        echo 'before A' . PHP_EOL;
     }
 
     public function after()
     {
-        echo 'after A' .  PHP_EOL;
+        echo 'after A' . PHP_EOL;
     }
 }

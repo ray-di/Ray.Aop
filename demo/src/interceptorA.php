@@ -11,8 +11,8 @@ class interceptorA implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
-        echo 'before A' .  PHP_EOL;
+        echo 'before A' . PHP_EOL;
         $invocation->proceed();
-        echo 'after A' .  PHP_EOL;
+        echo 'after A' . PHP_EOL;
     }
 }

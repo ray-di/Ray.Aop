@@ -8,17 +8,6 @@ use Ray\Aop\Bind;
 use Ray\Aop\Compiler;
 use Ray\Aop\NullInterceptor;
 
-class FooClass
-{
-    public function intercepted()
-    {
-    }
-
-    public function noInterceptor()
-    {
-    }
-}
-
 require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/src/FooClass_Optimized.php';
 
