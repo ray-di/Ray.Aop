@@ -36,7 +36,7 @@
     },
     "scripts" :{
         "test": "./vendor/bin/phpunit --log-junit=build/junit.xml",
-        "tests": ["@cs", "@test", "phpstan analyse", "psalm --show-info"],
+        "tests": ["@cs", "@test", "phpstan analyse", "psalm --show-info=true"],
         "coverage": ["php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"],
         "cs": ["php-cs-fixer fix -v --dry-run", "phpcs --standard=./phpcs.xml src"],
         "cs-fix": ["php-cs-fixer fix -v", "phpcbf src"],
