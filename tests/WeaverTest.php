@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use function class_exists;
 use PHPUnit\Framework\TestCase;
 
 class WeaverTest extends TestCase
@@ -25,7 +26,7 @@ class WeaverTest extends TestCase
     public function testWeave(Weaver $weaver) : void
     {
         $className = $weaver->weave(FakeWeaverMock::class);
-        $this->assertTrue(\class_exists($className, false));
+        $this->assertTrue(class_exists($className, false));
     }
 
     /**
@@ -41,7 +42,7 @@ class WeaverTest extends TestCase
         $bind = (new Bind)->bind(FakeWeaverMock::class, [$pointcut]);
         $weaver = new Weaver($bind, __DIR__ . '/tmp_unerase');
         $className = $weaver->weave(FakeWeaverMock::class);
-        $this->assertTrue(\class_exists($className, false));
+        $this->assertTrue(class_exists($className, false));
     }
 
     /**

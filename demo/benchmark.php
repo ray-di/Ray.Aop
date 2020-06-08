@@ -7,6 +7,7 @@ namespace Ray\Aop\Demo;
 use Ray\Aop\Bind;
 use Ray\Aop\Compiler;
 use Ray\Aop\NullInterceptor;
+use Ray_Aop_Demo_Optimized;
 
 require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/src/FooClass_Optimized.php';
@@ -43,7 +44,7 @@ intercepting:
     echo sprintf('%-16s%.8f[μs]', 'intercepting', microtime(true) - $t) . PHP_EOL;
 
 optimized:
-    $foo = new \Ray_Aop_Demo_Optimized();
+    $foo = new Ray_Aop_Demo_Optimized();
     $foo->bindings = ['intercepted' => [new NullInterceptor]];
     $t = microtime(true);
     for ($i = 0; $i < $max; $i++) {

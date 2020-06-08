@@ -6,12 +6,14 @@ namespace Ray\Aop\Matcher;
 
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\FakeClass;
+use ReflectionClass;
+use ReflectionMethod;
 
 class StartsWithMatcherTest extends TestCase
 {
     public function testMatchesClass() : void
     {
-        $class = new \ReflectionClass(FakeClass::class);
+        $class = new ReflectionClass(FakeClass::class);
         $isMatched = (new StartsWithMatcher)->matchesClass($class, ['Ray\Aop']);
 
         $this->assertTrue($isMatched);
@@ -19,7 +21,7 @@ class StartsWithMatcherTest extends TestCase
 
     public function testMatchesMethod() : void
     {
-        $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
+        $method = new ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = (new StartsWithMatcher)->matchesMethod($method, ['get']);
 
         $this->assertTrue($isMatched);
@@ -27,7 +29,7 @@ class StartsWithMatcherTest extends TestCase
 
     public function testMatchesMethodNotMatch() : void
     {
-        $method = new \ReflectionMethod(FakeClass::class, 'getDouble');
+        $method = new ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = (new StartsWithMatcher)->matchesMethod($method, ['xxx']);
 
         $this->assertFalse($isMatched);

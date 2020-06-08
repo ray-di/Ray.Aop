@@ -15,7 +15,7 @@ final class AopTemplate
     /**
      * Return void aop code
      */
-    const RETURN_VOID = /* @lang PHP */ <<<'EOT'
+    public const RETURN_VOID = /* @lang PHP */ <<<'EOT'
 <?php
 class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 {
@@ -39,7 +39,7 @@ EOT;
     /**
      * Return (mixed) aop code
      */
-    const RETURN = /* @lang PHP */ <<<'EOT'
+    public const RETURN = /* @lang PHP */ <<<'EOT'
 <?php
 class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
 {

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use ReflectionClass;
+use ReflectionMethod;
+
 abstract class AbstractMatcher
 {
     /**
@@ -19,12 +22,12 @@ abstract class AbstractMatcher
     /**
      * Match class condition
      *
-     * @param \ReflectionClass<object> $class
-     * @param mixed[]                  $arguments
+     * @param ReflectionClass<object> $class
+     * @param mixed[]                 $arguments
      *
      * @return bool
      */
-    abstract public function matchesClass(\ReflectionClass $class, array $arguments);
+    abstract public function matchesClass(ReflectionClass $class, array $arguments);
 
     /**
      * Match method condition
@@ -33,7 +36,7 @@ abstract class AbstractMatcher
      *
      * @return bool
      */
-    abstract public function matchesMethod(\ReflectionMethod $method, array $arguments);
+    abstract public function matchesMethod(ReflectionMethod $method, array $arguments);
 
     /**
      * Return matching condition arguments

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use ReflectionClass;
+use ReflectionMethod;
 
 final class MethodMatch
 {
@@ -25,10 +27,10 @@ final class MethodMatch
     }
 
     /**
-     * @param \ReflectionClass<object> $class
-     * @param Pointcut[]               $pointcuts
+     * @param ReflectionClass<object> $class
+     * @param Pointcut[]              $pointcuts
      */
-    public function __invoke(\ReflectionClass $class, \ReflectionMethod $method, array $pointcuts) : void
+    public function __invoke(ReflectionClass $class, ReflectionMethod $method, array $pointcuts) : void
     {
         /** @var array<int, object> $annotations */
         $annotations = $this->reader->getMethodAnnotations($method);
@@ -48,9 +50,9 @@ final class MethodMatch
     }
 
     /**
-     * @param \ReflectionClass<object> $class
+     * @param ReflectionClass<object> $class
      */
-    private function annotatedMethodMatchBind(\ReflectionClass $class, \ReflectionMethod $method, Pointcut $pointCut) : void
+    private function annotatedMethodMatchBind(ReflectionClass $class, ReflectionMethod $method, Pointcut $pointCut) : void
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
         if (! $isMethodMatch) {
@@ -66,15 +68,15 @@ final class MethodMatch
     }
 
     /**
-     * @param \ReflectionClass<object> $class
-     * @param Pointcut[]               $pointcuts
-     * @param array<int, object>       $annotations
+     * @param ReflectionClass<object> $class
+     * @param Pointcut[]              $pointcuts
+     * @param array<int, object>      $annotations
      *
      * @return Pointcut[]
      */
     private function onionOrderMatch(
-        \ReflectionClass $class,
-        \ReflectionMethod $method,
+        ReflectionClass $class,
+        ReflectionMethod $method,
         array $pointcuts,
         array $annotations
     ) : array {

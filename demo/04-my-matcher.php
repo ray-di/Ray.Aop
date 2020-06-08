@@ -8,6 +8,7 @@ use Ray\Aop\Bind;
 use Ray\Aop\Compiler;
 use Ray\Aop\Matcher;
 use Ray\Aop\Pointcut;
+use RuntimeException;
 
 require __DIR__ . '/bootstrap.php';
 
@@ -23,7 +24,7 @@ $billingService = $compiler->newInstance(RealBillingService::class, [], $bind);
 
 try {
     echo $billingService->chargeOrder();
-} catch (\RuntimeException $e) {
+} catch (RuntimeException $e) {
     echo $e->getMessage() . PHP_EOL;
     exit(1);
 }

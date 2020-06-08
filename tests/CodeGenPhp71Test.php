@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class CodeGenPhp71Test extends TestCase
 {
@@ -23,7 +24,7 @@ class CodeGenPhp71Test extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeVoid', []);
-        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'function returnTypeVoid() : void';
         $this->assertStringContainsString($expected, $code->code);
     }
@@ -32,7 +33,7 @@ class CodeGenPhp71Test extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeVoid', []);
-        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
         $this->assertStringNotContainsString('return ', $code->code);
         $this->assertStringContainsString('return;', $code->code);
     }
@@ -41,7 +42,7 @@ class CodeGenPhp71Test extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnNullable', []);
-        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'function returnNullable(string $str) : ?';
         $this->assertStringContainsString($expected, $code->code);
 
@@ -61,7 +62,7 @@ class CodeGenPhp71Test extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('nullableParam', []);
-        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'function nullableParam(?int $id, string $name = null)';
         $this->assertStringContainsString($expected, $code->code);
     }
@@ -70,7 +71,7 @@ class CodeGenPhp71Test extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('typed', []);
-        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'public function typed(\SplObjectStorage $storage)';
         $this->assertStringContainsString($expected, $code->code);
     }
@@ -79,7 +80,7 @@ class CodeGenPhp71Test extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('useTyped', []);
-        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
         $expected = 'public function useTyped(CodeGen $codeGen)';
         $this->assertStringContainsString($expected, $code->code);
     }

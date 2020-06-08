@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Ray\Aop\Demo;
 
 use Ray\Aop\Compiler;
+use RuntimeException;
 
 require __DIR__ . '/bootstrap.php';
 
 $cache = '.cache';
 if (! file_exists(__DIR__ . '/.cache')) {
-    throw new \RuntimeException('Run cache-write.php first');
+    throw new RuntimeException('Run cache-write.php first');
 }
 
 $max = 1;

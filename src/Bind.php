@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use ReflectionClass;
+
 final class Bind implements BindInterface
 {
     /**
@@ -35,7 +37,7 @@ final class Bind implements BindInterface
     public function bind(string $class, array $pointcuts) : BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
-        $class = new \ReflectionClass($class);
+        $class = new ReflectionClass($class);
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
             ($this->methodMatch)($class, $method, $pointcuts);

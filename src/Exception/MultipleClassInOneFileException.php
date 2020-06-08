@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop\Exception;
 
-class MultipleClassInOneFileException extends \LogicException implements ExceptionInterface
+use LogicException;
+
+class MultipleClassInOneFileException extends LogicException implements ExceptionInterface
 {
 }

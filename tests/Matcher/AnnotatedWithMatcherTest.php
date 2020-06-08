@@ -8,12 +8,14 @@ use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeResource;
+use ReflectionClass;
+use ReflectionMethod;
 
 class AnnotatedWithMatcherTest extends TestCase
 {
     public function testMatchesClass() : void
     {
-        $class = new \ReflectionClass(FakeAnnotateClass::class);
+        $class = new ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new AnnotatedWithMatcher)->matchesClass($class, [FakeResource::class]);
 
         $this->assertTrue($isMatched);
@@ -21,7 +23,7 @@ class AnnotatedWithMatcherTest extends TestCase
 
     public function testMatchMethod() : void
     {
-        $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
+        $method = new ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
         $isMatched = (new AnnotatedWithMatcher)->matchesMethod($method, [FakeMarker::class]);
 
         $this->assertTrue($isMatched);
