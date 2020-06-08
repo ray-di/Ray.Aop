@@ -7,12 +7,14 @@ namespace Ray\Aop\Matcher;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeResource;
+use ReflectionClass;
+use ReflectionMethod;
 
 class AnyMatcherTest extends TestCase
 {
     public function testMatchesClass() : void
     {
-        $class = new \ReflectionClass(FakeAnnotateClass::class);
+        $class = new ReflectionClass(FakeAnnotateClass::class);
         $isMatched = (new AnyMatcher)->matchesClass($class, [FakeResource::class]);
 
         $this->assertTrue($isMatched);
@@ -20,7 +22,7 @@ class AnyMatcherTest extends TestCase
 
     public function testMatchesMethod() : void
     {
-        $method = new \ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
+        $method = new ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
         $isMatched = (new AnyMatcher)->matchesMethod($method, []);
 
         $this->assertTrue($isMatched);

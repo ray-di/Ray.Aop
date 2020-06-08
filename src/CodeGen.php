@@ -16,6 +16,8 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use Ray\Aop\Exception\InvalidSourceClassException;
+use ReflectionClass;
+use RuntimeException;
 
 final class CodeGen implements CodeGenInterface
 {
@@ -62,9 +64,9 @@ final class CodeGen implements CodeGenInterface
     /**
      * {@inheritdoc}
      *
-     * @param \ReflectionClass<object> $sourceClass
+     * @param ReflectionClass<object> $sourceClass
      */
-    public function generate(\ReflectionClass $sourceClass, BindInterface $bind) : Code
+    public function generate(ReflectionClass $sourceClass, BindInterface $bind) : Code
     {
         $source = $this->getVisitorCode($sourceClass);
         assert($source->class instanceof Class_);
@@ -92,9 +94,9 @@ final class CodeGen implements CodeGenInterface
     /**
      * Return "declare()" and "use" statement code
      *
-     * @param \ReflectionClass<object> $class
+     * @param ReflectionClass<object> $class
      */
-    private function getVisitorCode(\ReflectionClass $class) : CodeVisitor
+    private function getVisitorCode(ReflectionClass $class) : CodeVisitor
     {
         $traverser = new NodeTraverser();
         $visitor = new CodeVisitor();
@@ -105,7 +107,7 @@ final class CodeGen implements CodeGenInterface
         }
         $file = file_get_contents($fileName);
         if ($file === false) {
-            throw new \RuntimeException($fileName); // @codeCoverageIgnore
+            throw new RuntimeException($fileName); // @codeCoverageIgnore
         }
         $stmts = $this->parser->parse($file);
         if (is_array($stmts)) {
@@ -116,9 +118,9 @@ final class CodeGen implements CodeGenInterface
     }
 
     /**
-     * @param \ReflectionClass<object> $class
+     * @param ReflectionClass<object> $class
      */
-    private function getClassAnnotation(\ReflectionClass $class) : string
+    private function getClassAnnotation(ReflectionClass $class) : string
     {
         $classAnnotations = $this->reader->getClassAnnotations($class);
 
@@ -126,11 +128,11 @@ final class CodeGen implements CodeGenInterface
     }
 
     /**
-     * @param \ReflectionClass<object> $class
+     * @param ReflectionClass<object> $class
      *
      * @return Property[]
      */
-    private function getAopProps(\ReflectionClass $class) : array
+    private function getAopProps(ReflectionClass $class) : array
     {
         $pros = [];
         $pros[] = $this->factory
@@ -164,9 +166,9 @@ final class CodeGen implements CodeGenInterface
     }
 
     /**
-     * @param \ReflectionClass<object> $class
+     * @param ReflectionClass<object> $class
      */
-    private function getMethodAnnotations(\ReflectionClass $class) : string
+    private function getMethodAnnotations(ReflectionClass $class) : string
     {
         $methodsAnnotation = [];
         $methods = $class->getMethods();

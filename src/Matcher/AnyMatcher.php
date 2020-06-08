@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Ray\Aop\Matcher;
 
+use ArrayObject;
 use Ray\Aop\AbstractMatcher;
+use ReflectionClass;
+use ReflectionMethod;
 
 final class AnyMatcher extends AbstractMatcher
 {
@@ -24,7 +27,7 @@ final class AnyMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
+    public function matchesClass(ReflectionClass $class, array $arguments) : bool
     {
         unset($class, $arguments);
 
@@ -34,7 +37,7 @@ final class AnyMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
+    public function matchesMethod(ReflectionMethod $method, array $arguments) : bool
     {
         unset($arguments);
 
@@ -43,7 +46,7 @@ final class AnyMatcher extends AbstractMatcher
 
     private function setBuildInMethods() : void
     {
-        $methods = (new \ReflectionClass(\ArrayObject::class))->getMethods();
+        $methods = (new ReflectionClass(ArrayObject::class))->getMethods();
         foreach ($methods as $method) {
             self::$builtinMethods[] = $method->name;
         }

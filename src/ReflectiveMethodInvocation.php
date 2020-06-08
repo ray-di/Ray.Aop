@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use ArrayObject;
+use ReflectionClass;
+use ReflectionObject;
 
 final class ReflectiveMethodInvocation implements MethodInvocation
 {
@@ -14,7 +16,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $object;
 
     /**
-     * @var \ArrayObject<int, mixed>
+     * @var ArrayObject<int, mixed>
      */
     private $arguments;
 
@@ -48,7 +50,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         $callable = [$object, $method];
         assert(is_callable($callable));
         $this->callable = $callable;
-        $this->arguments = new \ArrayObject($arguments);
+        $this->arguments = new ArrayObject($arguments);
         $this->interceptors = $interceptors;
     }
 
@@ -58,8 +60,8 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     public function getMethod() : ReflectionMethod
     {
         if ($this->object instanceof WeavedInterface) {
-            $class = (new \ReflectionObject($this->object))->getParentClass();
-            assert($class instanceof \ReflectionClass);
+            $class = (new ReflectionObject($this->object))->getParentClass();
+            assert($class instanceof ReflectionClass);
             $method = new ReflectionMethod($class->name, $this->method);
             $method->setObject($this->object, $method);
 
@@ -90,7 +92,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
             $namedParams[$param->getName()] = $args[$param->getPosition()];
         }
 
-        return new \ArrayObject($namedParams);
+        return new ArrayObject($namedParams);
     }
 
     /**

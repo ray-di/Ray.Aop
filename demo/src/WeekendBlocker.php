@@ -6,6 +6,7 @@ namespace Ray\Aop\Demo;
 
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
+use RuntimeException;
 
 class WeekendBlocker implements MethodInterceptor
 {
@@ -13,7 +14,7 @@ class WeekendBlocker implements MethodInterceptor
     {
         $today = getdate();
         if ($today['weekday'][0] === 'S') {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 $invocation->getMethod()->getName() . ' not allowed on weekends!'
             );
         }

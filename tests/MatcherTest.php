@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 class MatcherTest extends TestCase
 {
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testReturnBuildInMatcher() : void
     {
@@ -26,7 +27,7 @@ class MatcherTest extends TestCase
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testValidationForAnnotatedWith() : void
     {
@@ -36,7 +37,7 @@ class MatcherTest extends TestCase
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testValidationForSubclassesOf() : void
     {

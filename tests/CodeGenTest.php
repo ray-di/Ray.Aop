@@ -7,6 +7,8 @@ namespace Ray\Aop;
 use PhpParser\BuilderFactory;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\InvalidSourceClassException;
+use ReflectionClass;
+use stdClass;
 
 class CodeGenTest extends TestCase
 {
@@ -24,7 +26,7 @@ class CodeGenTest extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('run', []);
-        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp7Class::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind);
         $expected = 'function run(string $a, int $b, float $c, bool $d) : array';
         $this->assertStringContainsString($expected, $code->code);
     }
@@ -33,7 +35,7 @@ class CodeGenTest extends TestCase
     {
         $bind = new Bind;
         $bind->bindInterceptors('returnTypeArray', []);
-        $code = $this->codeGen->generate(new \ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
         $expected = 'function returnTypeArray() : array';
         $this->assertStringContainsString($expected, $code->code);
     }
@@ -41,6 +43,6 @@ class CodeGenTest extends TestCase
     public function testInvalidSourceClass() : void
     {
         $this->expectException(InvalidSourceClassException::class);
-        $this->codeGen->generate(new \ReflectionClass(\stdClass::class), new Bind);
+        $this->codeGen->generate(new ReflectionClass(stdClass::class), new Bind);
     }
 }

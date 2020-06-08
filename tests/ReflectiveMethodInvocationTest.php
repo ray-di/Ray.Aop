@@ -7,6 +7,7 @@ namespace Ray\Aop;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeClassMarker;
 use Ray\Aop\Annotation\FakeMarker;
+use ReflectionMethod;
 
 class ReflectiveMethodInvocationTest extends TestCase
 {
@@ -30,7 +31,7 @@ class ReflectiveMethodInvocationTest extends TestCase
     public function testGetMethod() : void
     {
         $methodReflection = $this->invocation->getMethod();
-        $this->assertInstanceOf(\ReflectionMethod::class, $methodReflection);
+        $this->assertInstanceOf(ReflectionMethod::class, $methodReflection);
     }
 
     public function testGetMethodMethodName() : void
