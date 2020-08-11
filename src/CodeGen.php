@@ -70,7 +70,7 @@ final class CodeGen implements CodeGenInterface
     {
         $source = $this->getVisitorCode($sourceClass);
         assert($source->class instanceof Class_);
-        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $source);
+        $methods = $this->codeGenMethod->getMethods($bind, $source);
         $propStms = $this->getAopProps($sourceClass);
         $classStm = $source->class;
         $newClassName = ($this->aopClassName)((string) $source->class->name, $bind->toString(''));

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use function class_exists;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 final class ReflectionMethod extends \ReflectionMethod implements Reader
@@ -53,6 +54,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     {
         $object = $this->object;
         if (! isset($object->methodAnnotations) || ! is_string($object->methodAnnotations)) {
+            assert(class_exists($this->class));
             /** @var array<int, object> $annotations */
             $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
 
