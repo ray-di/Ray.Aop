@@ -11,8 +11,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeAbstract;
 use PhpParser\Parser;
-use ReflectionClass;
-use ReflectionMethod;
 
 final class CodeGenMethod
 {
@@ -38,18 +36,15 @@ final class CodeGenMethod
     }
 
     /**
-     * @param ReflectionClass<object> $class
-     *
      * @return ClassMethod[]
      */
-    public function getMethods(ReflectionClass $class, BindInterface $bind, CodeVisitor $code) : array
+    public function getMethods(BindInterface $bind, CodeVisitor $code) : array
     {
         $bindingMethods = array_keys($bind->getBindings());
         $classMethods = $code->classMethod;
         $methods = [];
         foreach ($classMethods as $classMethod) {
             $methodName = $classMethod->name->name;
-            $method = new ReflectionMethod($class->name, $methodName);
             $isBindingMethod = in_array($methodName, $bindingMethods, true);
             $isPublic = $classMethod->flags === Class_::MODIFIER_PUBLIC;
             if ($isBindingMethod && $isPublic) {
