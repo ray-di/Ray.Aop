@@ -29,6 +29,11 @@ jobs:
     php: 7.2
     install: composer update --prefer-dist --prefer-lowest
 
+  - stage: Test
+    name: PHP 8
+    php: nightly
+    install: composer update --ignore-platform-reqs
+
   - stage: Code Quality
     name: Code coverage
     php: 7.2
