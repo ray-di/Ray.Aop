@@ -13,7 +13,7 @@ cache:
     - $HOME/.composer/cache
 
 before_install:
-  - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{,.disabled} || echo "xdebug not available"
+  - phpenv config-rm xdebug.ini || true
   - composer validate
   - composer self-update
 
