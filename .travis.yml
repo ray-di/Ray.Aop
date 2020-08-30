@@ -1,5 +1,7 @@
 language: php
 
+dist: bionic
+
 php:
   - 7.3
   - 7.4
@@ -37,12 +39,11 @@ jobs:
     name: Code coverage
     php: 7.4
     before_script:
-    - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{.disabled,}
-    - if [[ ! $(php -m | grep -si xdebug) ]]; then echo "xdebug required for coverage"; exit 1; fi
+      - pecl install pcov
     script:
-    - ./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml
+      - ./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml --coverage-text;
     after_script:
-    - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
+      - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
 
   - stage: Code Quality
     name: Static analysis
