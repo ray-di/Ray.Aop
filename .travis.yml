@@ -44,7 +44,7 @@ jobs:
       script:
         - ./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml --coverage-text
       after_success:
-        - bash <(curl -s https://codecov.io/bash)
+        - bash <(curl -s https://codecov.io/bash) -cF php
 
     - stage: Code Quality
       name: Static analysis
