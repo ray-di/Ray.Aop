@@ -39,7 +39,7 @@ jobs:
     - stage: Code Quality
       name: Code coverage
       php: 7.4
-      install:
+      before_script:
         - pecl install pcov
       script:
         - ./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml --coverage-text

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use function class_exists;
+use function passthru;
 use PHPUnit\Framework\TestCase;
 
 class WeaverTest extends TestCase
@@ -66,5 +67,20 @@ class WeaverTest extends TestCase
         assert($weaved instanceof FakeWeaverMock);
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
+    }
+
+    public function testWeaveCompiled() : void
+    {
+        passthru('php ' . __DIR__ . '/script/weave.php');
+        $pointcut = new Pointcut(
+            (new Matcher)->any(),
+            (new Matcher)->any(),
+            [new FakeInterceptor]
+        );
+        $bind = (new Bind);
+        $bind->bind(FakeWeaverScript::class, [$pointcut]);
+        $weaver = new Weaver($bind, __DIR__ . '/tmp');
+        $className = $weaver->weave(FakeWeaverScript::class);
+        $this->assertTrue(class_exists($className, false));
     }
 }

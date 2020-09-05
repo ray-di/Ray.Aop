@@ -44,22 +44,21 @@ final class CodeVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Declare_) {
             $this->declare[] = $node;
+
+            return null;
         }
         if ($node instanceof Use_) {
             $this->use[] = $node;
+
+            return null;
         }
         if ($node instanceof Namespace_) {
             $this->namespace = $node;
-        }
-        if ($node instanceof Class_) {
-            $this->validateClass($node);
-            $this->class = $node;
-        }
-        if ($node instanceof ClassMethod) {
-            $this->classMethod[] = $node;
+
+            return null;
         }
 
-        return null;
+        return $this->enterNodeClass($node);
     }
 
     private function validateClass(Class_ $class) : void
@@ -70,5 +69,23 @@ final class CodeVisitor extends NodeVisitorAbstract
 
             throw new MultipleClassInOneFileException($name);
         }
+    }
+
+    /**
+     * @return null
+     */
+    private function enterNodeClass(Node $node)
+    {
+        if ($node instanceof Class_) {
+            $this->validateClass($node);
+            $this->class = $node;
+
+            return null;
+        }
+        if ($node instanceof ClassMethod) {
+            $this->classMethod[] = $node;
+        }
+
+        return null;
     }
 }

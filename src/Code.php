@@ -32,8 +32,10 @@ final class Code
         if (is_string($tmpFile) && file_put_contents($tmpFile, $this->code) && rename($tmpFile, $filename)) {
             return $filename;
         }
+        // @codeCoverageIgnoreStart
         @unlink((string) $tmpFile);
 
         throw new NotWritableException(sprintf('swap: %s, file: %s', $tmpFile, $filename));
+        // @codeCoverageIgnoreEnd
     }
 }
