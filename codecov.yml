@@ -1,6 +1,6 @@
 codecov:
   notify:
-    require_ci_to_pass: no
+    require_ci_to_pass: yes
 
 coverage:
   status:
@@ -10,3 +10,5 @@ coverage:
     patch:
       default:
         informational: true
+
+comment: false
