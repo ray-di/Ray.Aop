@@ -67,4 +67,14 @@ class WeaverTest extends TestCase
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
+
+    /**
+     * @depends test__construct
+     */
+    public function testWeaveCompiled(Weaver $weaver) : void
+    {
+        require __DIR__ . '/script/weave.php';
+        $className = $weaver->weave(FakeWeaverScript::class);
+        $this->assertTrue(class_exists($className, false));
+    }
 }
