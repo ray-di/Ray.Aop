@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 <ruleset
-        name="BEAR.Skeleton"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd"
->
-    <description>BEAR.Skeleton Coding Standard</description>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="bearcs"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+
     <arg name="basepath" value="."/>
     <arg name="extensions" value="php"/>
     <arg name="parallel" value="80"/>
@@ -23,15 +21,24 @@
     <rule ref="PSR12"/>
 
     <!-- Doctrine Coding Standard -->
-    <rule ref="./vendor/doctrine/coding-standard/lib/Doctrine/ruleset.xml">
+    <rule ref="Doctrine">
+    <!-- Inapplicable for this project -->
+        <!-- Base -->
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
         <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming.SuperfluousPrefix"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming.SuperfluousSuffix"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming.SuperfluousSuffix"/>
         <exclude name="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable"/>
+        <exclude name="SlevomatCodingStandard.Commenting.UselessInheritDocComment.UselessInheritDocComment"/>
         <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint"/>
         <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint"/>
+        <!-- /Base -->
+        <!-- Option -->
+        <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit.EarlyExitNotUsed"/>
+        <!-- /Option -->
+        <!-- Exclude Fake files form Doctrine CS -->
         <exclude-pattern>*/tests/Fake/*</exclude-pattern>
     </rule>
 
@@ -41,7 +48,6 @@
             <property name="annotationsGroups" type="array">
                 <element value="@param, @psalm-param, @phpstan-param"/>
                 <element value="@return, @psalm-return, @phpstan-return"/>
-                <element value="@Inject, @Named"/>
                 <element value="@throws"/>
             </property>
         </properties>
