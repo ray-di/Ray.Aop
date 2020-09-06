@@ -30,6 +30,9 @@ final class CodeVisitor extends NodeVisitorAbstract
     /** @var ClassMethod[] */
     public $classMethod = [];
 
+    /**
+     * @return null
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof Declare_) {

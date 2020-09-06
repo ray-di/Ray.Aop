@@ -33,7 +33,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
         [$annotation] = $arguments;
         $annotation = $this->reader->getClassAnnotation($class, $annotation);
 
-        return $annotation ? true : false;
+        return (bool) $annotation;
     }
 
     /**
@@ -45,6 +45,6 @@ final class AnnotatedWithMatcher extends AbstractMatcher
         [$annotation] = $arguments;
         $annotation = $this->reader->getMethodAnnotation($method, $annotation);
 
-        return $annotation ? true : false;
+        return (bool) $annotation;
     }
 }

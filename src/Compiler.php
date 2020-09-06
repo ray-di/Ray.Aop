@@ -44,6 +44,9 @@ final class Compiler implements CompilerInterface
         );
     }
 
+    /**
+     * @return list<string>
+     */
     public function __sleep()
     {
         return ['classDir'];

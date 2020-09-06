@@ -27,7 +27,10 @@ final class Bind implements BindInterface
         $this->methodMatch = new MethodMatch($this);
     }
 
-    public function __sleep()
+    /**
+     * @return list<string>
+     */
+    public function __sleep(): array
     {
         return ['bindings'];
     }

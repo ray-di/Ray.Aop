@@ -10,14 +10,10 @@ use Ray\Aop\Exception\NotWritableException;
 
 final class Code
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $code;
 
-    /**
-     * @param array<Node> $stmt
-     */
+    /** @param array<Node> $stmt */
     public function __construct(array $stmt)
     {
         $this->code = (new Standard(['shortArraySyntax' => true]))->prettyPrintFile($stmt) . PHP_EOL;
