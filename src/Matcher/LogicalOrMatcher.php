@@ -8,12 +8,14 @@ use Ray\Aop\AbstractMatcher;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function assert;
+
 final class LogicalOrMatcher extends AbstractMatcher
 {
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(ReflectionClass $class, array $arguments) : bool
+    public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
         foreach ($arguments as $matcher) {
             assert($matcher instanceof AbstractMatcher);
@@ -29,7 +31,7 @@ final class LogicalOrMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(ReflectionMethod $method, array $arguments) : bool
+    public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
         foreach ($arguments as $matcher) {
             assert($matcher instanceof AbstractMatcher);

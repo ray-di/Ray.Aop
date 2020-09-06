@@ -12,18 +12,18 @@ use ReflectionMethod;
 
 class AnyMatcherTest extends TestCase
 {
-    public function testMatchesClass() : void
+    public function testMatchesClass(): void
     {
         $class = new ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new AnyMatcher)->matchesClass($class, [FakeResource::class]);
+        $isMatched = (new AnyMatcher())->matchesClass($class, [FakeResource::class]);
 
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethod() : void
+    public function testMatchesMethod(): void
     {
         $method = new ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
-        $isMatched = (new AnyMatcher)->matchesMethod($method, []);
+        $isMatched = (new AnyMatcher())->matchesMethod($method, []);
 
         $this->assertTrue($isMatched);
     }

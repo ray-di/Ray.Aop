@@ -12,24 +12,24 @@ use ReflectionMethod;
 
 class LogicalNotMatcherTest extends TestCase
 {
-    public function testMatchesClass() : void
+    public function testMatchesClass(): void
     {
         $class = new ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalNotMatcher)->matchesClass($class, [new FakeMatcher(false)]);
+        $isMatched = (new LogicalNotMatcher())->matchesClass($class, [new FakeMatcher(false)]);
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesClassFalse() : void
+    public function testMatchesClassFalse(): void
     {
         $class = new ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalNotMatcher)->matchesClass($class, [new FakeMatcher]);
+        $isMatched = (new LogicalNotMatcher())->matchesClass($class, [new FakeMatcher()]);
         $this->assertFalse($isMatched);
     }
 
-    public function testMatchesMethod() : void
+    public function testMatchesMethod(): void
     {
         $method = new ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
-        $isMatched = (new LogicalNotMatcher)->matchesMethod($method, [new FakeMatcher]);
+        $isMatched = (new LogicalNotMatcher())->matchesMethod($method, [new FakeMatcher()]);
         $this->assertFalse($isMatched);
     }
 }

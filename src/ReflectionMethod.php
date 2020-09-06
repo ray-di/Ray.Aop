@@ -4,37 +4,40 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use function class_exists;
 use Doctrine\Common\Annotations\AnnotationReader;
+
+use function array_key_exists;
+use function assert;
+use function class_exists;
+use function is_object;
+use function is_string;
+use function unserialize;
 
 final class ReflectionMethod extends \ReflectionMethod implements Reader
 {
-    /**
-     * @var ?WeavedInterface
-     */
+    /** @var ?WeavedInterface */
     private $object;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $method = '';
 
     /**
      * Set dependencies
      */
-    public function setObject(WeavedInterface $object, \ReflectionMethod $method) : void
+    public function setObject(WeavedInterface $object, \ReflectionMethod $method): void
     {
         $this->object = $object;
         $this->method = $method->name;
     }
 
-    public function getDeclaringClass() : ReflectionClass
+    public function getDeclaringClass(): ReflectionClass
     {
         if (! is_object($this->object)) {
             assert(class_exists($this->class));
 
             return new ReflectionClass($this->class);
         }
+
         $parencClass = (new \ReflectionClass($this->object))->getParentClass();
         assert($parencClass instanceof \ReflectionClass);
         $originalClass = $parencClass->name;
@@ -50,16 +53,17 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
      *
      * @psalm-suppress NoInterfaceProperties
      */
-    public function getAnnotations() : array
+    public function getAnnotations(): array
     {
         $object = $this->object;
         if (! isset($object->methodAnnotations) || ! is_string($object->methodAnnotations)) {
             assert(class_exists($this->class));
             /** @var array<int, object> $annotations */
-            $annotations = (new AnnotationReader)->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
+            $annotations = (new AnnotationReader())->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
 
             return $annotations;
         }
+
         /** @var array<string, array<int, object>> $annotations */
         $annotations = unserialize($object->methodAnnotations, ['allowed_classes' => true]);
         if (array_key_exists($this->method, $annotations)) {

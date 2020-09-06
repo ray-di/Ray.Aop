@@ -5,35 +5,30 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use ArrayObject;
-use function class_exists;
 use ReflectionClass;
 use ReflectionObject;
 
+use function array_shift;
+use function assert;
+use function call_user_func_array;
+use function class_exists;
+use function is_callable;
+
 final class ReflectiveMethodInvocation implements MethodInvocation
 {
-    /**
-     * @var object
-     */
+    /** @var object */
     private $object;
 
-    /**
-     * @var ArrayObject<int, mixed>
-     */
+    /** @var ArrayObject<int, mixed> */
     private $arguments;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $method;
 
-    /**
-     * @var MethodInterceptor[]
-     */
+    /** @var MethodInterceptor[] */
     private $interceptors;
 
-    /**
-     * @var callable
-     */
+    /** @var callable */
     private $callable;
 
     /**
@@ -58,7 +53,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritdoc}
      */
-    public function getMethod() : ReflectionMethod
+    public function getMethod(): ReflectionMethod
     {
         if ($this->object instanceof WeavedInterface) {
             $class = (new ReflectionObject($this->object))->getParentClass();
@@ -76,7 +71,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritdoc}
      */
-    public function getArguments() : ArrayObject
+    public function getArguments(): ArrayObject
     {
         return $this->arguments;
     }
@@ -84,7 +79,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritdoc}
      */
-    public function getNamedArguments() : ArrayObject
+    public function getNamedArguments(): ArrayObject
     {
         $args = $this->getArguments();
         $params = $this->getMethod()->getParameters();

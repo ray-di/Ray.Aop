@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use function crc32;
+use function sprintf;
+
 final class AopClassName
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $classDir;
 
     public function __construct(string $classDir)
@@ -16,7 +17,7 @@ final class AopClassName
         $this->classDir = $classDir;
     }
 
-    public function __invoke(string $class, string $bindName) : string
+    public function __invoke(string $class, string $bindName): string
     {
         return sprintf('%s_%s', $class, crc32($bindName . $this->classDir));
     }

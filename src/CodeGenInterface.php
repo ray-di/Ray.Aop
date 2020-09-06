@@ -11,5 +11,5 @@ interface CodeGenInterface
     /**
      * @param ReflectionClass<object> $sourceClass
      */
-    public function generate(ReflectionClass $sourceClass, BindInterface $bind) : Code;
+    public function generate(ReflectionClass $sourceClass, BindInterface $bind): Code;
 }

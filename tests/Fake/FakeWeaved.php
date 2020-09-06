@@ -1,10 +1,10 @@
 <?php
+
 namespace Ray\Aop;
 
 class FakeWeaved extends FakeMock
 {
     private $rayAopIntercept = true;
-
     private $bind;
 
     public function ___postConstruct(Bind $bind)

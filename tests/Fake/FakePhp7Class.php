@@ -1,4 +1,5 @@
 <?php
+
 namespace Ray\Aop;
 
 /**
@@ -7,7 +8,7 @@ namespace Ray\Aop;
  */
 class FakePhp7Class
 {
-    public function run(string $a, int $b, float $c, bool $d) : array
+    public function run(string $a, int $b, float $c, bool $d): array
     {
         return [$a, $b, $c, $d];
     }

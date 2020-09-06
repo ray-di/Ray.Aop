@@ -1,13 +1,12 @@
 <?php
+
 namespace Ray\Aop;
 
 /** doc comment of FakeMock */
 class FakeMock
 {
     private $a = 1;
-
     protected $b = 2;
-
     public $c = 3;
 
     /**

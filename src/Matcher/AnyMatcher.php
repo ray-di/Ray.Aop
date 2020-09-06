@@ -9,11 +9,12 @@ use Ray\Aop\AbstractMatcher;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function in_array;
+use function strpos;
+
 final class AnyMatcher extends AbstractMatcher
 {
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private static $builtinMethods = [];
 
     public function __construct()
@@ -27,7 +28,7 @@ final class AnyMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(ReflectionClass $class, array $arguments) : bool
+    public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
         unset($class, $arguments);
 
@@ -37,14 +38,14 @@ final class AnyMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(ReflectionMethod $method, array $arguments) : bool
+    public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
         unset($arguments);
 
         return ! ($this->isMagicMethod($method->name) || $this->isBuiltinMethod($method->name));
     }
 
-    private function setBuildInMethods() : void
+    private function setBuildInMethods(): void
     {
         $methods = (new ReflectionClass(ArrayObject::class))->getMethods();
         foreach ($methods as $method) {
@@ -52,12 +53,12 @@ final class AnyMatcher extends AbstractMatcher
         }
     }
 
-    private function isMagicMethod(string $name) : bool
+    private function isMagicMethod(string $name): bool
     {
         return strpos($name, '__') === 0;
     }
 
-    private function isBuiltinMethod(string $name) : bool
+    private function isBuiltinMethod(string $name): bool
     {
         return in_array($name, self::$builtinMethods, true);
     }

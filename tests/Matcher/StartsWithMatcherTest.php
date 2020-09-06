@@ -11,26 +11,26 @@ use ReflectionMethod;
 
 class StartsWithMatcherTest extends TestCase
 {
-    public function testMatchesClass() : void
+    public function testMatchesClass(): void
     {
         $class = new ReflectionClass(FakeClass::class);
-        $isMatched = (new StartsWithMatcher)->matchesClass($class, ['Ray\Aop']);
+        $isMatched = (new StartsWithMatcher())->matchesClass($class, ['Ray\Aop']);
 
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethod() : void
+    public function testMatchesMethod(): void
     {
         $method = new ReflectionMethod(FakeClass::class, 'getDouble');
-        $isMatched = (new StartsWithMatcher)->matchesMethod($method, ['get']);
+        $isMatched = (new StartsWithMatcher())->matchesMethod($method, ['get']);
 
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethodNotMatch() : void
+    public function testMatchesMethodNotMatch(): void
     {
         $method = new ReflectionMethod(FakeClass::class, 'getDouble');
-        $isMatched = (new StartsWithMatcher)->matchesMethod($method, ['xxx']);
+        $isMatched = (new StartsWithMatcher())->matchesMethod($method, ['xxx']);
 
         $this->assertFalse($isMatched);
     }

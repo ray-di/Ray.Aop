@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Doctrine\Common\Annotations\AnnotationException;
 use ReflectionClass;
+
+use function array_key_exists;
+use function array_merge;
+use function serialize;
 
 final class Bind implements BindInterface
 {
-    /**
-     * @var array<string, array<MethodInterceptor>>
-     */
+    /** @var array<string, array<MethodInterceptor>> */
     private $bindings = [];
 
-    /**
-     * @var MethodMatch
-     */
+    /** @var MethodMatch */
     private $methodMatch;
 
     /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws AnnotationException
      */
     public function __construct()
     {
@@ -34,7 +35,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function bind(string $class, array $pointcuts) : BindInterface
+    public function bind(string $class, array $pointcuts): BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
         $class = new ReflectionClass($class);
@@ -49,7 +50,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function bindInterceptors(string $method, array $interceptors) : BindInterface
+    public function bindInterceptors(string $method, array $interceptors): BindInterface
     {
         $this->bindings[$method] = ! array_key_exists($method, $this->bindings) ? $interceptors : array_merge(
             $this->bindings[$method],
@@ -62,7 +63,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function getBindings() : array
+    public function getBindings(): array
     {
         return $this->bindings;
     }
@@ -70,7 +71,7 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function toString($salt) : string
+    public function toString($salt): string
     {
         unset($salt);
 
@@ -82,13 +83,14 @@ final class Bind implements BindInterface
      *
      * @return Pointcut[]
      */
-    public function getAnnotationPointcuts(array &$pointcuts) : array
+    public function getAnnotationPointcuts(array &$pointcuts): array
     {
         $keyPointcuts = [];
         foreach ($pointcuts as $key => $pointcut) {
             if ($pointcut->methodMatcher instanceof AnnotatedMatcher) {
                 $key = $pointcut->methodMatcher->annotation;
             }
+
             $keyPointcuts[$key] = $pointcut;
         }
 

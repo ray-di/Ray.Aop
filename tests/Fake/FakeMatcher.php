@@ -1,4 +1,5 @@
 <?php
+
 namespace Ray\Aop;
 
 class FakeMatcher extends AbstractMatcher

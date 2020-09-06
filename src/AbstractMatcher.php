@@ -7,11 +7,11 @@ namespace Ray\Aop;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function func_get_args;
+
 abstract class AbstractMatcher
 {
-    /**
-     * @var mixed[]
-     */
+    /** @var mixed[] */
     protected $arguments = [];
 
     public function __construct()

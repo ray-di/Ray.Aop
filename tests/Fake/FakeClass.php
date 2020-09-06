@@ -1,4 +1,5 @@
 <?php
+
 namespace Ray\Aop;
 
 use Ray\Aop\Annotation\FakeClassMarker;
@@ -11,7 +12,6 @@ use Ray\Aop\Annotation\FakeMarker2;
 class FakeClass
 {
     public $a = 0;
-
     public $msg = 'hello';
 
     public function __toString()

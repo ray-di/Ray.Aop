@@ -12,34 +12,34 @@ use ReflectionMethod;
 
 class LogicalAndMatcherTest extends TestCase
 {
-    public function testMatchesClass() : void
+    public function testMatchesClass(): void
     {
         $class = new ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, true)]);
+        $isMatched = (new LogicalAndMatcher())->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, true)]);
 
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesClassFalse() : void
+    public function testMatchesClassFalse(): void
     {
         $class = new ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, false)]);
+        $isMatched = (new LogicalAndMatcher())->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, false)]);
 
         $this->assertFalse($isMatched);
     }
 
-    public function testMatchesClassThreeConditions() : void
+    public function testMatchesClassThreeConditions(): void
     {
         $class = new ReflectionClass(FakeAnnotateClass::class);
-        $isMatched = (new LogicalAndMatcher)->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, true), new FakeMatcher(true, false)]);
+        $isMatched = (new LogicalAndMatcher())->matchesClass($class, [new FakeMatcher(true, true), new FakeMatcher(true, true), new FakeMatcher(true, false)]);
 
         $this->assertFalse($isMatched);
     }
 
-    public function testMatchesMethod() : void
+    public function testMatchesMethod(): void
     {
         $method = new ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
-        $isMatched = (new LogicalAndMatcher)->matchesMethod($method, [new FakeMatcher(true, true), new FakeMatcher(true, true)]);
+        $isMatched = (new LogicalAndMatcher())->matchesMethod($method, [new FakeMatcher(true, true), new FakeMatcher(true, true)]);
 
         $this->assertTrue($isMatched);
     }

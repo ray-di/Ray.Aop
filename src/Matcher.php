@@ -7,6 +7,8 @@ namespace Ray\Aop;
 use Ray\Aop\Exception\InvalidAnnotationException;
 use Ray\Aop\Exception\InvalidArgumentException;
 
+use function class_exists;
+
 class Matcher implements MatcherInterface
 {
     /**
@@ -20,7 +22,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function annotatedWith($annotationName) : AbstractMatcher
+    public function annotatedWith($annotationName): AbstractMatcher
     {
         if (! class_exists($annotationName)) {
             throw new InvalidAnnotationException($annotationName);
@@ -32,7 +34,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function subclassesOf($superClass) : AbstractMatcher
+    public function subclassesOf($superClass): AbstractMatcher
     {
         if (! class_exists($superClass)) {
             throw new InvalidArgumentException($superClass);
@@ -44,7 +46,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function startsWith($prefix) : AbstractMatcher
+    public function startsWith($prefix): AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, [$prefix]);
     }
@@ -72,7 +74,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function logicalNot(AbstractMatcher $matcher) : AbstractMatcher
+    public function logicalNot(AbstractMatcher $matcher): AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, [$matcher]);
     }

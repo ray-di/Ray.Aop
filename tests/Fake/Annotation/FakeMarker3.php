@@ -1,4 +1,5 @@
 <?php
+
 namespace Ray\Aop\Annotation;
 
 /**
