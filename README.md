@@ -3,7 +3,7 @@
 ## Aspect Oriented Framework
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=2.x)
-[![codecov](https://codecov.io/gh/ray-di/Ray.Aop/branch/coverage/graph/badge.svg)](https://codecov.io/gh/ray-di/Ray.Aop)
+[![codecov](https://codecov.io/gh/ray-di/Ray.Aop/branch/2.x/graph/badge.svg?token=KCQXtu01zc)](https://codecov.io/gh/ray-di/Ray.Aop)
 [![Build Status](https://travis-ci.org/ray-di/Ray.Aop.svg?branch=2.x)](https://travis-ci.org/ray-di/Ray.Aop)
 [![Total Downloads](https://poser.pugx.org/ray/aop/downloads)](https://packagist.org/packages/ray/aop)
 
