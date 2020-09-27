@@ -7,6 +7,11 @@ namespace Ray\Aop\Demo;
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
+use function microtime;
+use function sprintf;
+
+use const PHP_EOL;
+
 class Timer implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)

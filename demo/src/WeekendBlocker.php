@@ -8,6 +8,8 @@ use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 use RuntimeException;
 
+use function getdate;
+
 class WeekendBlocker implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)

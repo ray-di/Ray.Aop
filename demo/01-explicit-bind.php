@@ -10,10 +10,12 @@ use Ray\Aop\Bind;
 use Ray\Aop\Compiler;
 use RuntimeException;
 
+use const PHP_EOL;
+
 $compiler = new Compiler(__DIR__ . '/tmp');
-$bind = (new Bind)->bindInterceptors(
+$bind = (new Bind())->bindInterceptors(
     'chargeOrder',        // method name
-    [new WeekendBlocker]  // interceptors
+    [new WeekendBlocker()]  // interceptors
 );
 $billingService = $compiler->newInstance(RealBillingService::class, [], $bind);
 
