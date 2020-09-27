@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ray\Aop;
+
+use ReflectionClass;
+use ReflectionMethod;
 
 class FakeMatcher extends AbstractMatcher
 {
@@ -10,7 +15,7 @@ class FakeMatcher extends AbstractMatcher
         $this->arguments = [$arg1, $arg2];
     }
 
-    public function matchesClass(\ReflectionClass $class, array $arguments)
+    public function matchesClass(ReflectionClass $class, array $arguments)
     {
         unset($class);
         if (isset($arguments[1])) {
@@ -20,7 +25,7 @@ class FakeMatcher extends AbstractMatcher
         return $arguments[0];
     }
 
-    public function matchesMethod(\ReflectionMethod $method, array $arguments)
+    public function matchesMethod(ReflectionMethod $method, array $arguments)
     {
         unset($method);
         if (isset($arguments[1])) {

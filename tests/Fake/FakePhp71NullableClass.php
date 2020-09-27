@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Composer\Autoload;
+use SplObjectStorage;
 
 class FakePhp71NullableClass
 {
@@ -19,10 +20,11 @@ class FakePhp71NullableClass
     public function returnNullable(string $str): ?int
     {
         unset($str);
+
         return null;
     }
 
-    public function nullableParam(?int $id, string $name = null): ?int
+    public function nullableParam(?int $id, ?string $name = null): ?int
     {
         return null;
     }
@@ -32,7 +34,7 @@ class FakePhp71NullableClass
         return $ids[0];
     }
 
-    public function typed(\SplObjectStorage $storage)
+    public function typed(SplObjectStorage $storage)
     {
     }
 

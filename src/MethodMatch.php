@@ -35,10 +35,12 @@ final class MethodMatch
         $annotations = $this->reader->getMethodAnnotations($method);
         // priority bind
         foreach ($pointcuts as $key => $pointcut) {
-            if ($pointcut instanceof PriorityPointcut) {
-                $this->annotatedMethodMatchBind($class, $method, $pointcut);
-                unset($pointcuts[$key]);
+            if (! ($pointcut instanceof PriorityPointcut)) {
+                continue;
             }
+
+            $this->annotatedMethodMatchBind($class, $method, $pointcut);
+            unset($pointcuts[$key]);
         }
 
         $onion = $this->onionOrderMatch($class, $method, $pointcuts, $annotations);
@@ -85,10 +87,12 @@ final class MethodMatch
         // method bind in annotation order
         foreach ($annotations as $annotation) {
             $annotationIndex = get_class($annotation);
-            if (array_key_exists($annotationIndex, $pointcuts)) {
-                $this->annotatedMethodMatchBind($class, $method, $pointcuts[$annotationIndex]);
-                unset($pointcuts[$annotationIndex]);
+            if (! array_key_exists($annotationIndex, $pointcuts)) {
+                continue;
             }
+
+            $this->annotatedMethodMatchBind($class, $method, $pointcuts[$annotationIndex]);
+            unset($pointcuts[$annotationIndex]);
         }
 
         return $pointcuts;

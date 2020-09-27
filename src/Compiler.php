@@ -112,9 +112,11 @@ final class Compiler implements CompilerInterface
         $bindingMethods = array_keys($bind->getBindings());
         $hasMethod = false;
         foreach ($bindingMethods as $bindingMethod) {
-            if (method_exists($class, $bindingMethod)) {
-                $hasMethod = true;
+            if (! method_exists($class, $bindingMethod)) {
+                continue;
             }
+
+            $hasMethod = true;
         }
 
         return $hasMethod;

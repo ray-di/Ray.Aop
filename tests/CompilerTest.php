@@ -67,9 +67,11 @@ class CompilerTest extends TestCase
     public function testParentClassName(object $class): void
     {
         $parent = (new ReflectionClass($class))->getParentClass();
-        if ($parent instanceof ReflectionClass) {
-            $this->assertSame(FakeMock::class, $parent->getName());
+        if (! ($parent instanceof ReflectionClass)) {
+            return;
         }
+
+        $this->assertSame(FakeMock::class, $parent->getName());
     }
 
     /**

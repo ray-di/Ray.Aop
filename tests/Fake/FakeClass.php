@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ray\Aop;
 
 use Ray\Aop\Annotation\FakeClassMarker;
 use Ray\Aop\Annotation\FakeMarker;
-use Ray\Aop\Annotation\FakeMarker2;
 
 /**
  * @FakeClassMarker
@@ -38,8 +39,6 @@ class FakeClass
     }
 
     /**
-     * @param int $c
-     *
      * @Log
      */
     public function getTriple(int $c): int

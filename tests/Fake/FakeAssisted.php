@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of the Ray.Aop package.
- *
- * @license http://opensource.org/licenses/MIT MIT
  */
 
 namespace Ray\Aop;
@@ -16,8 +16,6 @@ use Ray\Aop\Annotation\AbstractAssisted;
  */
 final class FakeAssisted extends AbstractAssisted
 {
-    /**
-     * @var array<string>
-     */
+    /** @var array<string> */
     public $values;
 }
