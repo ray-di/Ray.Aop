@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class NullInterceptorTest extends TestCase
 {
-    public function testInvoke() : void
+    public function testInvoke(): void
     {
         $invocation = new ReflectiveMethodInvocation(new FakeMock(), 'returnSame', [1]);
         $result = (new NullInterceptor())->invoke($invocation);

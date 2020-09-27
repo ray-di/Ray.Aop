@@ -8,16 +8,16 @@ use Ray\Aop\Exception\InvalidMatcherException;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function assert;
+use function class_exists;
+use function ucwords;
+
 class BuiltinMatcher extends AbstractMatcher
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $matcherName;
 
-    /**
-     * @var AbstractMatcher
-     */
+    /** @var AbstractMatcher */
     private $matcher;
 
     /**
@@ -34,13 +34,14 @@ class BuiltinMatcher extends AbstractMatcher
         if (! $matcher instanceof AbstractMatcher) {
             throw new InvalidMatcherException($matcherClass);
         }
+
         $this->matcher = $matcher;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(ReflectionClass $class, array $arguments) : bool
+    public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
         return $this->matcher->matchesClass($class, $arguments);
     }
@@ -48,7 +49,7 @@ class BuiltinMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(ReflectionMethod $method, array $arguments) : bool
+    public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
         return $this->matcher->matchesMethod($method, $arguments);
     }

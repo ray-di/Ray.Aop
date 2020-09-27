@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use PhpParser\BuilderFactory;
+use Doctrine\Common\Annotations\AnnotationException;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -12,33 +12,28 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeAbstract;
 use PhpParser\Parser;
 
+use function array_keys;
+use function assert;
+use function in_array;
+
 final class CodeGenMethod
 {
-    /**
-     * @var \PhpParser\Parser
-     */
+    /** @var Parser */
     private $parser;
 
     /**
-     * @var \PhpParser\BuilderFactory
-     */
-    private $factory;
-
-    /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws AnnotationException
      */
     public function __construct(
-        Parser $parser,
-        BuilderFactory $factory
+        Parser $parser
     ) {
         $this->parser = $parser;
-        $this->factory = $factory;
     }
 
     /**
      * @return ClassMethod[]
      */
-    public function getMethods(BindInterface $bind, CodeVisitor $code) : array
+    public function getMethods(BindInterface $bind, CodeVisitor $code): array
     {
         $bindingMethods = array_keys($bind->getBindings());
         $classMethods = $code->classMethod;
@@ -63,7 +58,7 @@ final class CodeGenMethod
     /**
      * @return Stmt[]
      */
-    private function getTemplateMethodNodeStmts(?NodeAbstract $returnType) : array
+    private function getTemplateMethodNodeStmts(?NodeAbstract $returnType): array
     {
         $code = $this->isReturnVoid($returnType) ? AopTemplate::RETURN_VOID : AopTemplate::RETURN;
         $parts = $this->parser->parse($code);
@@ -76,7 +71,7 @@ final class CodeGenMethod
         return $methodNode->stmts;
     }
 
-    private function isReturnVoid(?NodeAbstract $returnType) : bool
+    private function isReturnVoid(?NodeAbstract $returnType): bool
     {
         return $returnType instanceof Identifier && $returnType->name === 'void';
     }

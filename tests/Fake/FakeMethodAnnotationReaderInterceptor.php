@@ -1,7 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Ray\Aop;
 
 use Ray\Aop\Annotation\FakeMarker;
+
+use function assert;
 
 class FakeMethodAnnotationReaderInterceptor implements MethodInterceptor
 {
@@ -12,8 +17,8 @@ class FakeMethodAnnotationReaderInterceptor implements MethodInterceptor
 
     public function invoke(MethodInvocation $invocation)
     {
-        /** @var \Ray\Aop\ReflectionMethod $method */
         $method = $invocation->getMethod();
+        assert($method instanceof ReflectionMethod);
         self::$methodAnnotations = $method->getAnnotations();
         self::$methodAnnotation = $method->getAnnotation(FakeMarker::class);
         self::$classAnnotations = $method->getDeclaringClass()->getAnnotations();

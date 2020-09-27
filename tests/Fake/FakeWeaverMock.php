@@ -1,13 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Ray\Aop;
 
 /** doc comment of FakeMock */
 class FakeWeaverMock
 {
     private $a = 1;
-
     protected $b = 2;
-
     public $c = 3;
 
     /**
@@ -26,9 +27,9 @@ class FakeWeaverMock
         return $a - $b;
     }
 
-    public function returnValue(FakeNum $num = null)
+    public function returnValue(?FakeNum $num = null)
     {
-        return ($num instanceof FakeNum) ? $num->value : null;
+        return $num instanceof FakeNum ? $num->value : null;
     }
 
     public function getPrivateVal()

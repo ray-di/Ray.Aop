@@ -11,7 +11,7 @@ interface CompilerInterface
      *
      * @param class-string $class
      */
-    public function compile(string $class, BindInterface $bind) : string;
+    public function compile(string $class, BindInterface $bind): string;
 
     /**
      * Return new instance weaved interceptor(s)

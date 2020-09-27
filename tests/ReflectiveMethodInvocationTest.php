@@ -11,91 +11,87 @@ use ReflectionMethod;
 
 class ReflectiveMethodInvocationTest extends TestCase
 {
-    /**
-     * @var ReflectiveMethodInvocation
-     */
+    /** @var ReflectiveMethodInvocation */
     protected $invocation;
 
-    /**
-     * @var FakeClass
-     */
+    /** @var FakeClass */
     protected $fake;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->fake = new FakeClass;
+        $this->fake = new FakeClass();
         $this->invocation = new ReflectiveMethodInvocation($this->fake, 'add', [1]);
     }
 
-    public function testGetMethod() : void
+    public function testGetMethod(): void
     {
         $methodReflection = $this->invocation->getMethod();
         $this->assertInstanceOf(ReflectionMethod::class, $methodReflection);
     }
 
-    public function testGetMethodMethodName() : void
+    public function testGetMethodMethodName(): void
     {
         $methodReflection = $this->invocation->getMethod();
         $this->assertSame(FakeClass::class, $methodReflection->class);
         $this->assertSame('add', $methodReflection->name);
     }
 
-    public function testGetArguments() : void
+    public function testGetArguments(): void
     {
         $args = $this->invocation->getArguments();
         $this->assertSame((array) $args, [1]);
     }
 
-    public function testProceed() : void
+    public function testProceed(): void
     {
         $this->invocation->proceed();
         $this->assertSame(1, $this->fake->a);
     }
 
-    public function testProceedTwoTimes() : void
+    public function testProceedTwoTimes(): void
     {
         $this->invocation->proceed();
         $this->invocation->proceed();
         $this->assertSame(2, $this->fake->a);
     }
 
-    public function testGetThis() : void
+    public function testGetThis(): void
     {
         $actual = $this->invocation->getThis();
         $this->assertSame($this->fake, $actual);
     }
 
-    public function testGetParentMethod() : void
+    public function testGetParentMethod(): void
     {
-        $fake = new FakeWeavedClass;
+        $fake = new FakeWeavedClass();
         $invocation = new ReflectiveMethodInvocation($fake, 'add', [1]);
         $method = $invocation->getMethod();
         $this->assertSame(FakeClass::class, $method->class);
         $this->assertSame('add', $method->name);
     }
 
-    public function testProceedMultipleInterceptors() : void
+    public function testProceedMultipleInterceptors(): void
     {
-        $fake = new FakeWeavedClass;
-        $invocation = new ReflectiveMethodInvocation($fake, 'add', [1], [new FakeInterceptor, new FakeInterceptor]);
+        $fake = new FakeWeavedClass();
+        $invocation = new ReflectiveMethodInvocation($fake, 'add', [1], [new FakeInterceptor(), new FakeInterceptor()]);
         $invocation->proceed();
         $this->assertSame(1, $fake->a);
     }
 
-    public function testGetNamedArguments() : void
+    public function testGetNamedArguments(): void
     {
         $args = $this->invocation->getNamedArguments();
         $this->assertSame((array) $args, ['n' => 1]);
     }
 
-    public function testGetAnnotation() : void
+    public function testGetAnnotation(): void
     {
         $fakeMarker = $this->invocation->getMethod()->getAnnotation(FakeMarker::class);
         $this->assertInstanceOf(FakeMarker::class, $fakeMarker);
     }
 
-    public function testGetClassAnnotati() : void
+    public function testGetClassAnnotati(): void
     {
         $fakeMarker = $this->invocation->getMethod()->getDeclaringClass()->getAnnotation(FakeClassMarker::class);
         $this->assertInstanceOf(FakeClassMarker::class, $fakeMarker);

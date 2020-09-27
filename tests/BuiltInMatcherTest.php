@@ -11,31 +11,29 @@ use ReflectionMethod;
 
 class BuiltInMatcherTest extends TestCase
 {
-    /**
-     * @var BuiltinMatcher
-     */
+    /** @var BuiltinMatcher */
     private $matcher;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->matcher = new BuiltinMatcher('startsWith', ['Ray']);
     }
 
-    public function testMatchesClass() : void
+    public function testMatchesClass(): void
     {
         $class = new ReflectionClass(FakeClass::class);
         $isMatched = $this->matcher->matchesClass($class, ['Ray\Aop']);
         $this->assertTrue($isMatched);
     }
 
-    public function testMatchesMethod() : void
+    public function testMatchesMethod(): void
     {
         $method = new ReflectionMethod(FakeClass::class, 'getDouble');
         $isMatched = $this->matcher->matchesMethod($method, ['get']);
         $this->assertTrue($isMatched);
     }
 
-    public function testInvalidBuiltinMatcher() : void
+    public function testInvalidBuiltinMatcher(): void
     {
         $this->expectException(InvalidMatcherException::class);
         new BuiltinMatcher('invalid', []);

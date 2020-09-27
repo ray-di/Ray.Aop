@@ -9,8 +9,8 @@ use PhpParser\ParserFactory as PhpParserFactory;
 
 class ParserFactory
 {
-    public function newInstance() : Parser
+    public function newInstance(): Parser
     {
-        return (new PhpParserFactory)->create(PhpParserFactory::PREFER_PHP7);
+        return (new PhpParserFactory())->create(PhpParserFactory::PREFER_PHP7);
     }
 }

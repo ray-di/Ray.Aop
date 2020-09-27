@@ -6,9 +6,7 @@ namespace Ray\Aop;
 
 final class AnnotatedMatcher extends BuiltinMatcher
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $annotation;
 
     /**

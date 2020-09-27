@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use PHPUnit\Framework\TestCase;
+
+use function assert;
 use function class_exists;
 use function passthru;
-use PHPUnit\Framework\TestCase;
+use function serialize;
+use function unserialize;
 
 class WeaverTest extends TestCase
 {
-    public function test__construct() : Weaver
+    public function testConstruct(): Weaver
     {
-        $matcher = new Matcher;
-        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor]);
-        $bind = (new Bind)->bind(FakeWeaverMock::class, [$pointcut]);
+        $matcher = new Matcher();
+        $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor()]);
+        $bind = (new Bind())->bind(FakeWeaverMock::class, [$pointcut]);
         $weaver = new Weaver($bind, __DIR__ . '/tmp');
         $this->assertInstanceOf(Weaver::class, $weaver);
 
@@ -22,9 +26,9 @@ class WeaverTest extends TestCase
     }
 
     /**
-     * @depends test__construct
+     * @depends testConstruct
      */
-    public function testWeave(Weaver $weaver) : void
+    public function testWeave(Weaver $weaver): void
     {
         $className = $weaver->weave(FakeWeaverMock::class);
         $this->assertTrue(class_exists($className, false));
@@ -36,20 +40,20 @@ class WeaverTest extends TestCase
      * @covers \Ray\Aop\Weaver::loadClass
      * @covers \Ray\Aop\Weaver::weave
      */
-    public function testWeaveLoad() : void
+    public function testWeaveLoad(): void
     {
-        $matcher = new Matcher;
+        $matcher = new Matcher();
         $pointcut = new Pointcut($matcher->any(), $matcher->any(), []);
-        $bind = (new Bind)->bind(FakeWeaverMock::class, [$pointcut]);
+        $bind = (new Bind())->bind(FakeWeaverMock::class, [$pointcut]);
         $weaver = new Weaver($bind, __DIR__ . '/tmp_unerase');
         $className = $weaver->weave(FakeWeaverMock::class);
         $this->assertTrue(class_exists($className, false));
     }
 
     /**
-     * @depends test__construct
+     * @depends testConstruct
      */
-    public function testNewInstance(Weaver $weaver) : void
+    public function testNewInstance(Weaver $weaver): void
     {
         $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
         assert($weaved instanceof FakeWeaverMock);
@@ -58,9 +62,9 @@ class WeaverTest extends TestCase
     }
 
     /**
-     * @depends test__construct
+     * @depends testConstruct
      */
-    public function testCachedWeaver(Weaver $weaver) : void
+    public function testCachedWeaver(Weaver $weaver): void
     {
         $weaver = unserialize(serialize($weaver));
         $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
@@ -69,15 +73,15 @@ class WeaverTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    public function testWeaveCompiled() : void
+    public function testWeaveCompiled(): void
     {
         passthru('php ' . __DIR__ . '/script/weave.php');
         $pointcut = new Pointcut(
-            (new Matcher)->any(),
-            (new Matcher)->any(),
-            [new FakeInterceptor]
+            (new Matcher())->any(),
+            (new Matcher())->any(),
+            [new FakeInterceptor()]
         );
-        $bind = (new Bind);
+        $bind = (new Bind());
         $bind->bind(FakeWeaverScript::class, [$pointcut]);
         $weaver = new Weaver($bind, __DIR__ . '/tmp');
         $className = $weaver->weave(FakeWeaverScript::class);

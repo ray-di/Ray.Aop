@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use function array_merge;
+use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
-use function implode;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -19,35 +18,34 @@ use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
 use RuntimeException;
 
+use function array_merge;
+use function assert;
+use function file_get_contents;
+use function get_class;
+use function implode;
+use function is_array;
+use function is_bool;
+use function serialize;
+
 final class CodeGen implements CodeGenInterface
 {
-    /**
-     * @var \PhpParser\Parser
-     */
+    /** @var Parser */
     private $parser;
 
-    /**
-     * @var \PhpParser\BuilderFactory
-     */
+    /** @var BuilderFactory */
     private $factory;
 
-    /**
-     * @var CodeGenMethod
-     */
+    /** @var CodeGenMethod */
     private $codeGenMethod;
 
-    /**
-     * @var AnnotationReader
-     */
+    /** @var AnnotationReader */
     private $reader;
 
-    /**
-     * @var AopClassName
-     */
+    /** @var AopClassName */
     private $aopClassName;
 
     /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws AnnotationException
      */
     public function __construct(
         Parser $parser,
@@ -56,8 +54,8 @@ final class CodeGen implements CodeGenInterface
     ) {
         $this->parser = $parser;
         $this->factory = $factory;
-        $this->codeGenMethod = new CodeGenMethod($parser, $factory);
-        $this->reader = new AnnotationReader;
+        $this->codeGenMethod = new CodeGenMethod($parser);
+        $this->reader = new AnnotationReader();
         $this->aopClassName = $aopClassName;
     }
 
@@ -66,7 +64,7 @@ final class CodeGen implements CodeGenInterface
      *
      * @param ReflectionClass<object> $sourceClass
      */
-    public function generate(ReflectionClass $sourceClass, BindInterface $bind) : Code
+    public function generate(ReflectionClass $sourceClass, BindInterface $bind): Code
     {
         $source = $this->getVisitorCode($sourceClass);
         assert($source->class instanceof Class_);
@@ -96,7 +94,7 @@ final class CodeGen implements CodeGenInterface
      *
      * @param ReflectionClass<object> $class
      */
-    private function getVisitorCode(ReflectionClass $class) : CodeVisitor
+    private function getVisitorCode(ReflectionClass $class): CodeVisitor
     {
         $traverser = new NodeTraverser();
         $visitor = new CodeVisitor();
@@ -105,10 +103,12 @@ final class CodeGen implements CodeGenInterface
         if (is_bool($fileName)) {
             throw new InvalidSourceClassException(get_class($class));
         }
+
         $file = file_get_contents($fileName);
         if ($file === false) {
             throw new RuntimeException($fileName); // @codeCoverageIgnore
         }
+
         $stmts = $this->parser->parse($file);
         if (is_array($stmts)) {
             $traverser->traverse($stmts);
@@ -120,7 +120,7 @@ final class CodeGen implements CodeGenInterface
     /**
      * @param ReflectionClass<object> $class
      */
-    private function getClassAnnotation(ReflectionClass $class) : string
+    private function getClassAnnotation(ReflectionClass $class): string
     {
         $classAnnotations = $this->reader->getClassAnnotations($class);
 
@@ -132,7 +132,7 @@ final class CodeGen implements CodeGenInterface
      *
      * @return Property[]
      */
-    private function getAopProps(ReflectionClass $class) : array
+    private function getAopProps(ReflectionClass $class): array
     {
         $pros = [];
         $pros[] = $this->factory
@@ -168,7 +168,7 @@ final class CodeGen implements CodeGenInterface
     /**
      * @param ReflectionClass<object> $class
      */
-    private function getMethodAnnotations(ReflectionClass $class) : string
+    private function getMethodAnnotations(ReflectionClass $class): string
     {
         $methodsAnnotation = [];
         $methods = $class->getMethods();
@@ -177,6 +177,7 @@ final class CodeGen implements CodeGenInterface
             if ($annotations === []) {
                 continue;
             }
+
             $methodsAnnotation[$method->name] = $annotations;
         }
 
@@ -184,7 +185,7 @@ final class CodeGen implements CodeGenInterface
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     private function getNamespace(CodeVisitor $source)
     {

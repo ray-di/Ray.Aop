@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Ray\Aop;
 
 /**
@@ -7,27 +10,27 @@ namespace Ray\Aop;
  */
 class FakePhp7ReturnTypeClass
 {
-    public function returnTypeArray() : array
+    public function returnTypeArray(): array
     {
         return [1, 2, 3];
     }
 
-    public function returnTypeBool() : bool
+    public function returnTypeBool(): bool
     {
         return true;
     }
 
-    public function returnTypeFloat() : float
+    public function returnTypeFloat(): float
     {
         return 1.234;
     }
 
-    public function returnTypeInteger() : int
+    public function returnTypeInteger(): int
     {
         return 1;
     }
 
-    public function returnTypeString() : string
+    public function returnTypeString(): string
     {
         return 'this is string';
     }

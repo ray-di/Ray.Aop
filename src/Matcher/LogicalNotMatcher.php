@@ -8,14 +8,16 @@ use Ray\Aop\AbstractMatcher;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function assert;
+
 final class LogicalNotMatcher extends AbstractMatcher
 {
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(ReflectionClass $class, array $arguments) : bool
+    public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
-        list($matcher) = $arguments;
+        [$matcher] = $arguments;
         assert($matcher instanceof AbstractMatcher);
 
         return ! $matcher->matchesClass($class, $matcher->getArguments());
@@ -24,9 +26,9 @@ final class LogicalNotMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(ReflectionMethod $method, array $arguments) : bool
+    public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
-        list($matcher) = $arguments;
+        [$matcher] = $arguments;
         assert($matcher instanceof AbstractMatcher);
 
         return ! $matcher->matchesMethod($method, [$arguments]);

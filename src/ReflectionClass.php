@@ -6,20 +6,21 @@ namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 
+use function is_string;
+use function unserialize;
+
 /**
  * @extends \ReflectionClass<object>
  */
 class ReflectionClass extends \ReflectionClass implements Reader
 {
-    /**
-     * @var null|WeavedInterface
-     */
+    /** @var WeavedInterface|null */
     private $object;
 
     /**
      * Set dependencies
      */
-    public function setObject(WeavedInterface $object) : void
+    public function setObject(WeavedInterface $object): void
     {
         $this->object = $object;
     }
@@ -29,7 +30,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
      *
      * @psalm-suppress NoInterfaceProperties
      */
-    public function getAnnotations() : array
+    public function getAnnotations(): array
     {
         $object = $this->object;
         if (isset($object->classAnnotations) && is_string($object->classAnnotations)) {
@@ -38,8 +39,9 @@ class ReflectionClass extends \ReflectionClass implements Reader
 
             return $annotations;
         }
+
         /** @var array<int, object> $annotations */
-        $annotations = (new AnnotationReader)->getClassAnnotations(new \ReflectionClass($this->name));
+        $annotations = (new AnnotationReader())->getClassAnnotations(new \ReflectionClass($this->name));
 
         return $annotations;
     }

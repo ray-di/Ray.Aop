@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class PointcutTest extends TestCase
 {
-    public function testNew() : void
+    public function testNew(): void
     {
         $pointCunt = new Pointcut(
             new BuiltinMatcher('startsWith', ['Ray']),

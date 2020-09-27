@@ -15,31 +15,24 @@ use Ray\Aop\Exception\MultipleClassInOneFileException;
 
 final class CodeVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @var ?Namespace_
-     */
+    /** @var ?Namespace_ */
     public $namespace;
 
-    /**
-     * @var Declare_[]
-     */
+    /** @var Declare_[] */
     public $declare = [];
 
-    /**
-     * @var Use_[]
-     */
+    /** @var Use_[] */
     public $use = [];
 
-    /**
-     * @var null|Class_
-     */
+    /** @var Class_|null */
     public $class;
 
-    /**
-     * @var ClassMethod[]
-     */
+    /** @var ClassMethod[] */
     public $classMethod = [];
 
+    /**
+     * @return null
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof Declare_) {
@@ -47,11 +40,13 @@ final class CodeVisitor extends NodeVisitorAbstract
 
             return null;
         }
+
         if ($node instanceof Use_) {
             $this->use[] = $node;
 
             return null;
         }
+
         if ($node instanceof Namespace_) {
             $this->namespace = $node;
 
@@ -61,7 +56,7 @@ final class CodeVisitor extends NodeVisitorAbstract
         return $this->enterNodeClass($node);
     }
 
-    private function validateClass(Class_ $class) : void
+    private function validateClass(Class_ $class): void
     {
         $isClassAlreadyDeclared = $this->class instanceof Class_;
         if ($isClassAlreadyDeclared) {
@@ -82,6 +77,7 @@ final class CodeVisitor extends NodeVisitorAbstract
 
             return null;
         }
+
         if ($node instanceof ClassMethod) {
             $this->classMethod[] = $node;
         }

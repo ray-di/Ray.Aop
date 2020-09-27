@@ -4,51 +4,56 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use function class_exists;
+use Doctrine\Common\Annotations\AnnotationException;
 use PhpParser\BuilderFactory;
 use Ray\Aop\Exception\NotWritableException;
 
+use function array_keys;
+use function assert;
+use function class_exists;
+use function file_exists;
+use function is_writable;
+use function method_exists;
+
 final class Compiler implements CompilerInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $classDir;
 
-    /**
-     * @var CodeGenInterface
-     */
+    /** @var CodeGenInterface */
     private $codeGen;
 
-    /**
-     * @var AopClassName
-     */
+    /** @var AopClassName */
     private $aopClassName;
 
     /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws AnnotationException
      */
     public function __construct(string $classDir)
     {
         if (! is_writable($classDir)) {
             throw new NotWritableException($classDir);
         }
+
         $this->classDir = $classDir;
         $this->aopClassName = new AopClassName($classDir);
         $this->codeGen = new CodeGen(
-            (new ParserFactory)->newInstance(),
-            new BuilderFactory,
+            (new ParserFactory())->newInstance(),
+            new BuilderFactory(),
             $this->aopClassName
         );
     }
 
+    /**
+     * @return list<string>
+     */
     public function __sleep()
     {
         return ['classDir'];
     }
 
     /**
-     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws AnnotationException
      */
     public function __wakeup()
     {
@@ -73,15 +78,17 @@ final class Compiler implements CompilerInterface
     /**
      * {@inheritdoc}
      */
-    public function compile(string $class, BindInterface $bind) : string
+    public function compile(string $class, BindInterface $bind): string
     {
         if ($this->hasNoBinding($class, $bind)) {
             return $class;
         }
+
         $aopClassName = ($this->aopClassName)($class, $bind->toString(''));
         if (class_exists($aopClassName, false)) {
             return $aopClassName;
         }
+
         $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
 
         return $aopClassName;
@@ -90,7 +97,7 @@ final class Compiler implements CompilerInterface
     /**
      * @param class-string $class
      */
-    private function hasNoBinding(string $class, BindInterface $bind) : bool
+    private function hasNoBinding(string $class, BindInterface $bind): bool
     {
         $hasMethod = $this->hasBoundMethod($class, $bind);
 
@@ -100,7 +107,7 @@ final class Compiler implements CompilerInterface
     /**
      * @param class-string $class
      */
-    private function hasBoundMethod(string $class, BindInterface $bind) : bool
+    private function hasBoundMethod(string $class, BindInterface $bind): bool
     {
         $bindingMethods = array_keys($bind->getBindings());
         $hasMethod = false;
@@ -116,7 +123,7 @@ final class Compiler implements CompilerInterface
     /**
      * @param \ReflectionClass<object> $sourceClass
      */
-    private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind) : void
+    private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind): void
     {
         $code = $this->codeGen->generate($sourceClass, $bind);
         $file = $code->save($this->classDir, $aopClassName);

@@ -1,6 +1,6 @@
 <?php
 
-use Ray\Aop\FakeNum;
+declare(strict_types=1);
 
 /** doc comment of FakeMock */
 class FakeGlobalNamespaced
