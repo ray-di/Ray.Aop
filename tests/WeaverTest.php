@@ -26,7 +26,7 @@ class WeaverTest extends TestCase
     }
 
     /**
-     * @depends test__construct
+     * @depends testConstruct
      */
     public function testWeave(Weaver $weaver): void
     {
@@ -51,7 +51,7 @@ class WeaverTest extends TestCase
     }
 
     /**
-     * @depends test__construct
+     * @depends testConstruct
      */
     public function testNewInstance(Weaver $weaver): void
     {
@@ -62,7 +62,7 @@ class WeaverTest extends TestCase
     }
 
     /**
-     * @depends test__construct
+     * @depends testConstruct
      */
     public function testCachedWeaver(Weaver $weaver): void
     {

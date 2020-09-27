@@ -61,7 +61,7 @@ class CodeGenPhp71Test extends TestCase
         $bind = new Bind();
         $bind->bindInterceptors('nullableParam', []);
         $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = 'function nullableParam(?int $id, string $name = null)';
+        $expected = 'function nullableParam(?int $id, ?string $name = null)';
         $this->assertStringContainsString($expected, $code->code);
     }
 
@@ -70,7 +70,7 @@ class CodeGenPhp71Test extends TestCase
         $bind = new Bind();
         $bind->bindInterceptors('typed', []);
         $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = 'public function typed(\SplObjectStorage $storage)';
+        $expected = 'public function typed(SplObjectStorage $storage)';
         $this->assertStringContainsString($expected, $code->code);
     }
 
