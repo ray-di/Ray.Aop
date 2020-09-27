@@ -6,11 +6,12 @@ namespace Ray\Aop\Demo;
 
 use Ray\Aop\Compiler;
 use RuntimeException;
+use function var_dump;
 
 require __DIR__ . '/bootstrap.php';
 
-$cache = '.cache';
-if (! file_exists(__DIR__ . '/.cache')) {
+$cache = __DIR__ . '/.cache';
+if (! file_exists($cache)) {
     throw new RuntimeException('Run cache-write.php first');
 }
 
