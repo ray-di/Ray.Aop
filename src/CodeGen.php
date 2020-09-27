@@ -54,7 +54,7 @@ final class CodeGen implements CodeGenInterface
     ) {
         $this->parser = $parser;
         $this->factory = $factory;
-        $this->codeGenMethod = new CodeGenMethod($parser, $factory);
+        $this->codeGenMethod = new CodeGenMethod($parser);
         $this->reader = new AnnotationReader();
         $this->aopClassName = $aopClassName;
     }
