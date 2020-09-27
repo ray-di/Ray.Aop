@@ -42,16 +42,14 @@ final class CodeGenMethod
             $methodName = $classMethod->name->name;
             $isBindingMethod = in_array($methodName, $bindingMethods, true);
             $isPublic = $classMethod->flags === Class_::MODIFIER_PUBLIC;
-            if (! $isBindingMethod || ! $isPublic) {
-                continue;
+            if ($isBindingMethod && $isPublic) {
+                $methodInsideStatements = $this->getTemplateMethodNodeStmts(
+                    $classMethod->getReturnType()
+                );
+                // replace statements in the method
+                $classMethod->stmts = $methodInsideStatements;
+                $methods[] = $classMethod;
             }
-
-            $methodInsideStatements = $this->getTemplateMethodNodeStmts(
-                $classMethod->getReturnType()
-            );
-            // replace statements in the method
-            $classMethod->stmts = $methodInsideStatements;
-            $methods[] = $classMethod;
         }
 
         return $methods;
