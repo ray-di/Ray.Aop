@@ -4,5 +4,6 @@
 build
 composer.lock
 coverage.xml
+demo/tmp
 vendor
 .phpcs-cache

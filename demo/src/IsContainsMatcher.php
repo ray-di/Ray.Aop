@@ -8,12 +8,14 @@ use Ray\Aop\AbstractMatcher;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function strpos;
+
 final class IsContainsMatcher extends AbstractMatcher
 {
     /**
      * {@inheritdoc}
      */
-    public function matchesClass(ReflectionClass $class, array $arguments) : bool
+    public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
         [$contains] = $arguments;
 
@@ -23,7 +25,7 @@ final class IsContainsMatcher extends AbstractMatcher
     /**
      * {@inheritdoc}
      */
-    public function matchesMethod(ReflectionMethod $method, array $arguments) : bool
+    public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
         [$contains] = $arguments;
 
