@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationException;
-use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -22,18 +21,13 @@ final class CodeGenMethod
     /** @var Parser */
     private $parser;
 
-    /** @var BuilderFactory */
-    private $factory;
-
     /**
      * @throws AnnotationException
      */
     public function __construct(
-        Parser $parser,
-        BuilderFactory $factory
+        Parser $parser
     ) {
         $this->parser = $parser;
-        $this->factory = $factory;
     }
 
     /**

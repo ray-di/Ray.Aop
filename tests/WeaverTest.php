@@ -14,7 +14,7 @@ use function unserialize;
 
 class WeaverTest extends TestCase
 {
-    public function test__construct(): Weaver
+    public function testConstruct(): Weaver
     {
         $matcher = new Matcher();
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor()]);

@@ -63,4 +63,5 @@
             <property name="maxLinesCountBeforeWithoutComment" value="0"/>
         </properties>
     </rule>
+    <exclude-pattern>*/tests/Fake/*</exclude-pattern>
 </ruleset>
