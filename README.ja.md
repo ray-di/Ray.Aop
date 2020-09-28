@@ -74,11 +74,11 @@ use Ray\Aop\Sample\Annotation\NotOnWeekends;
 use Ray\Aop\Sample\Annotation\RealBillingService;
 
 $pointcut = new Pointcut(
-    (new Matcher)->any(),
-    (new Matcher)->annotatedWith(NotOnWeekends::class),
-    [new WeekendBlocker]
+    (new Matcher())->any(),
+    (new Matcher())->annotatedWith(NotOnWeekends::class),
+    [new WeekendBlocker()]
 );
-$bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
+$bind = (new Bind())->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [], $bind);
 
 try {
@@ -99,7 +99,7 @@ chargeOrder not allowed on weekends!
 
 ```php
 <?php
-    $bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
+    $bind = (new Bind())->bindInterceptors('chargeOrder', [new WeekendBlocker()]);
     $compiler = new Weaver($bind, $tmpDir);
     $billing = $compiler->newInstance('RealBillingService', [], $bind);
     try {
@@ -118,7 +118,6 @@ chargeOrder not allowed on weekends!
 
 ```php
 use Ray\Aop\AbstractMatcher;
-use Ray\Aop\Matcher;
 
 class IsContainsMatcher extends AbstractMatcher
 {
@@ -127,7 +126,7 @@ class IsContainsMatcher extends AbstractMatcher
      */
     public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
-        list($contains) = $arguments;
+        [$contains] = $arguments;
 
         return (strpos($class->name, $contains) !== false);
     }
@@ -137,7 +136,7 @@ class IsContainsMatcher extends AbstractMatcher
      */
     public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
-        list($contains) = $arguments;
+        [$contains] = $arguments;
 
         return (strpos($method->name, $contains) !== false);
     }
@@ -146,9 +145,9 @@ class IsContainsMatcher extends AbstractMatcher
 
 ```php
 $pointcut = new Pointcut(
-    (new Matcher)->any(),
+    (new Matcher())->any(),
     new IsContainsMatcher('charge'),
-    [new WeekendBlocker]
+    [new WeekendBlocker()]
 );
 $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
@@ -159,7 +158,7 @@ $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, 
 `Weaver`オブジェクトはキャッシュ可能です。コンパイル、束縛、アノテーション読み込みコストを削減します。
 
 ```php
-$weaver = unserialize(file_get_contentes('./serializedWever'));
+$weaver = unserialize(file_get_contentes('./serializedWeaver'));
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
 ```
 

@@ -75,9 +75,9 @@ use Ray\Aop\Sample\Annotation\NotOnWeekends;
 use Ray\Aop\Sample\Annotation\RealBillingService;
 
 $pointcut = new Pointcut(
-    (new Matcher)->any(),
-    (new Matcher)->annotatedWith(NotOnWeekends::class),
-    [new WeekendBlocker]
+    (new Matcher())->any(),
+    (new Matcher())->annotatedWith(NotOnWeekends::class),
+    [new WeekendBlocker()]
 );
 $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [], $bind);
@@ -129,7 +129,7 @@ class IsContainsMatcher extends AbstractMatcher
      */
     public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
-        list($contains) = $arguments;
+        [$contains] = $arguments;
 
         return (strpos($class->name, $contains) !== false);
     }
@@ -139,7 +139,7 @@ class IsContainsMatcher extends AbstractMatcher
      */
     public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
-        list($contains) = $arguments;
+        [$contains] = $arguments;
 
         return (strpos($method->name, $contains) !== false);
     }
@@ -148,11 +148,11 @@ class IsContainsMatcher extends AbstractMatcher
 
 ```php
 $pointcut = new Pointcut(
-    (new Matcher)->any(),
+    (new Matcher())->any(),
     new IsContainsMatcher('charge'),
-    [new WeekendBlocker]
+    [new WeekendBlocker()]
 );
-$bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
+$bind = (new Bind())->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
 ```
 
@@ -161,7 +161,7 @@ $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, 
 Cached `Weaver` object can save the compiling, binding, annotation reading costs.
 
 ```php
-$weaver = unserialize(file_get_contentes('./serializedWever'));
+$weaver = unserialize(file_get_contentes('./serializedWeaver'));
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
 ```
 
