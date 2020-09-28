@@ -1,9 +1,8 @@
-.php_cs.cache
-.phpcs-cache
-.phpunit.result.cache
-build
-composer.lock
-coverage.xml
-demo/tmp
-vendor
-.phpcs-cache
+/vendor/
+/build/
+/tests/tmp/
+/demo/tmp/
+/.phpcs-cache
+/.phpunit.result.cache
+/composer.lock
+/coverage.xml
