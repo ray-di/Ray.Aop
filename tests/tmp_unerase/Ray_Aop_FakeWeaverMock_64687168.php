@@ -1,11 +1,12 @@
 <?php
 
+declare (strict_types=1);
 namespace Ray\Aop;
 
 use Ray\Aop\WeavedInterface;
 use Ray\Aop\ReflectiveMethodInvocation as Invocation;
 /** doc comment of FakeMock */
-class FakeWeaverMock_M1MRNnE extends \Ray\Aop\FakeWeaverMock implements WeavedInterface
+class FakeWeaverMock_64687168 extends \Ray\Aop\FakeWeaverMock implements WeavedInterface
 {
     public $bind;
     public $bindings = [];
@@ -40,7 +41,7 @@ class FakeWeaverMock_M1MRNnE extends \Ray\Aop\FakeWeaverMock implements WeavedIn
         $this->isAspect = true;
         return $result;
     }
-    public function returnValue(FakeNum $num = null)
+    public function returnValue(?FakeNum $num = null)
     {
         if (!$this->isAspect) {
             $this->isAspect = true;
