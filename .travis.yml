@@ -54,7 +54,6 @@ jobs:
       script:
         - ~/.composer/vendor/bin/phpstan analyse -c phpstan.neon --no-progress --no-interaction
         - ~/.composer/vendor/bin/psalm --show-info=false --shepherd
-        - ~/.composer/vendor/bin/psalm -c psalm.compiler.xml --show-info=true
         - ~/.composer/vendor/bin/phpmetrics --exclude=Exception src
         - ~/.composer/vendor/bin/composer-require-checker check ./composer.json
 
