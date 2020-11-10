@@ -1,0 +1,56 @@
+name: "Code Quality"
+
+on:
+  pull_request:
+    branches:
+      - "*.x"
+  push:
+    branches:
+      - "*.x"
+  workflow_dispatch:
+
+jobs:
+  code_coverage:
+    name: "Code coverage"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+#          - "7.2"
+#          - "7.3"
+          - "7.4"
+    steps:
+      - name: "Setup PHP ${{ matrix.php-version }}"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: pcov
+          php-version: ${{ matrix.php-version }}
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Install dependencies with Composer"
+        run: "composer install --no-interaction --no-progress --no-suggest"
+      - name: "PHPUnit"
+        run: "./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml --coverage-text"
+      - name: "Codecov"
+        run: "bash <(curl -s https://codecov.io/bash) -cF php"
+
+#  static_analysis:
+#    name: "Static analysis"
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        php-version:
+#          - "7.2"
+#          - "7.3"
+#          - "7.4"
+#
+#  coding_standards:
+#    name: "Coding standards"
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        php-version:
+#          - "7.2"
+#          - "7.3"
+#          - "7.4"
+
