@@ -83,18 +83,19 @@ jobs:
 #          - "7.2"
 #          - "7.3"
           - "7.4"
-        - name: "Setup PHP ${{ matrix.php-version }}"
-          uses: shivammathur/setup-php@v2
-          with:
-            coverage: pcov
-            php-version: ${{ matrix.php-version }}
-        - name: "Checkout"
-          uses: actions/checkout@v2
-        - name: "Validate composer.json and composer.lock"
-          run: "composer validate"
-        - name: "composer self-update"
-          run: "composer self-update"
-        - name: "Install tools"
-          run: "composer global require --dev doctrine/coding-standard ^8.1"
-        - name: "PHP_CodeSniffer"
-          run: "composer global exec -v -- phpcs --standard=./phpcs.xml src tests"
+    steps:
+      - name: "Setup PHP ${{ matrix.php-version }}"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: pcov
+          php-version: ${{ matrix.php-version }}
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Validate composer.json and composer.lock"
+        run: "composer validate"
+      - name: "composer self-update"
+        run: "composer self-update"
+      - name: "Install tools"
+        run: "composer global require --dev doctrine/coding-standard ^8.1"
+      - name: "PHP_CodeSniffer"
+        run: "composer global exec -v -- phpcs --standard=./phpcs.xml src tests"
