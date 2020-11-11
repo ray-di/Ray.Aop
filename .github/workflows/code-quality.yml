@@ -61,26 +61,40 @@ jobs:
         run: "composer validate"
       - name: "composer self-update"
         run: "composer self-update"
-      - name: "Install dependencies with Composer"
-        run: "composer install --no-interaction --no-progress --no-suggest"
+#      - name: "Install dependencies with Composer"
+#        run: "composer install --no-interaction --no-progress --no-suggest"
       - name: "Install tools"
         run: "composer global require --dev phpstan/phpstan ^0.12 vimeo/psalm ^3.11 phpmetrics/phpmetrics ^2.6 maglnet/composer-require-checker ^2.0"
       - name : "PHPStan"
-        run: "~/.composer/vendor/bin/phpstan analyse -c phpstan.neon --no-progress --no-interaction"
+        run: "composer global exec -v -- phpstan analyse -c phpstan.neon --no-progress --no-interaction"
       - name : "Psalm"
-        run: "~/.composer/vendor/bin/psalm --show-info=false --shepherd"
+        run: "composer global exec -v -- psalm --show-info=false --shepherd"
       - name : "PhpMetrics"
-        run: "~/.composer/vendor/bin/phpmetrics --exclude=Exception src"
+        run: "composer global exec -v -- phpmetrics --exclude=Exception src"
       - name : "composer-require-checker"
-        run: "~/.composer/vendor/bin/composer-require-checker check ./composer.json"
+        run: "composer global exec -v -- composer-require-checker check ./composer.json"
 
-#  coding_standards:
-#    name: "Coding standards"
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        php-version:
+  coding_standards:
+    name: "Coding standards"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
 #          - "7.2"
 #          - "7.3"
-#          - "7.4"
-
+          - "7.4"
+        - name: "Setup PHP ${{ matrix.php-version }}"
+          uses: shivammathur/setup-php@v2
+          with:
+            coverage: pcov
+            php-version: ${{ matrix.php-version }}
+        - name: "Checkout"
+          uses: actions/checkout@v2
+        - name: "Validate composer.json and composer.lock"
+          run: "composer validate"
+        - name: "composer self-update"
+          run: "composer self-update"
+        - name: "Install tools"
+          run: "composer global require --dev doctrine/coding-standard ^8.1"
+        - name: "PHP_CodeSniffer"
+          run: "composer global exec -v -- phpcs --standard=./phpcs.xml src tests"
