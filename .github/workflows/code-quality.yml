@@ -8,6 +8,7 @@ on:
     branches:
       - "*.x"
   workflow_dispatch:
+    - "*"
 
 jobs:
   code_coverage:
@@ -27,6 +28,10 @@ jobs:
           php-version: ${{ matrix.php-version }}
       - name: "Checkout"
         uses: actions/checkout@v2
+      - name: "Validate composer.json and composer.lock"
+        run: "composer validate"
+      - name: "composer self-update"
+        run: "composer self-update"
       - name: "Install dependencies with Composer"
         run: "composer install --no-interaction --no-progress --no-suggest"
       - name: "PHPUnit"
