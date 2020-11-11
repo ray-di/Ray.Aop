@@ -8,7 +8,8 @@ on:
     branches:
       - "*.x"
   workflow_dispatch:
-    - "*"
+    branches:
+      - "*"
 
 jobs:
   code_coverage:
