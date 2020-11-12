@@ -1,0 +1,41 @@
+name: "Code Quality"
+
+on:
+  pull_request:
+    branches:
+      - "*.x"
+  push:
+    branches:
+      - "*.x"
+  workflow_dispatch:
+    branches:
+      - "*"
+
+jobs:
+  code_coverage:
+    name: "Code coverage"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+#          - "7.2"
+#          - "7.3"
+          - "7.4"
+    steps:
+      - name: "Setup PHP ${{ matrix.php-version }}"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: pcov
+          php-version: ${{ matrix.php-version }}
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Validate composer.json and composer.lock"
+        run: "composer validate"
+      - name: "composer self-update"
+        run: "composer self-update"
+      - name: "Install dependencies with Composer"
+        run: "composer install --no-interaction --no-progress --no-suggest"
+      - name: "Test"
+        run: "composer global exec -v -- phpunit"
+      - name: "Run demo"
+        run: "php ./demo/run.php"
