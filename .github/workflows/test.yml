@@ -13,7 +13,7 @@ on:
 
 jobs:
   unit_test:
-    name: "Unit test"
+    name: "Unit Test"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -36,6 +36,6 @@ jobs:
       - name: "Install dependencies with Composer"
         run: "composer install --no-interaction --no-progress --no-suggest"
       - name: "Test"
-        run: "composer global exec -v -- phpunit"
+        run: "./vendor/bin/phpunit"
       - name: "Run demo"
         run: "php ./demo/run.php"
