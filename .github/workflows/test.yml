@@ -1,4 +1,4 @@
-name: "Code Quality"
+name: "Code Test"
 
 on:
   pull_request:
@@ -12,8 +12,8 @@ on:
       - "*"
 
 jobs:
-  code_coverage:
-    name: "Code coverage"
+  unit_test:
+    name: "Unit test"
     runs-on: ubuntu-latest
     strategy:
       matrix:
