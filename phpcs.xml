@@ -39,7 +39,6 @@
         <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit.EarlyExitNotUsed"/>
         <!-- /Option -->
         <!-- Exclude Fake files form Doctrine CS -->
-        <exclude-pattern>*/tests/Fake/*</exclude-pattern>
     </rule>
 
     <!-- Additional Rules -->
@@ -64,4 +63,5 @@
         </properties>
     </rule>
     <exclude-pattern>*/tests/Fake/*</exclude-pattern>
+    <exclude-pattern>*/tmp_unerase/*</exclude-pattern>
 </ruleset>
