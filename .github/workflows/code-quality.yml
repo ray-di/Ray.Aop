@@ -20,8 +20,8 @@ jobs:
         php-version:
 #          - "7.2"
 #          - "7.3"
-          - "7.4"
-#          - "8.0"
+#          - "7.4"
+          - "8.0"
     steps:
       - name: "Setup PHP ${{ matrix.php-version }}"
         uses: shivammathur/setup-php@v2
@@ -49,8 +49,8 @@ jobs:
         php-version:
 #          - "7.2"
 #          - "7.3"
-          - "7.4"
-#          - "8.0"
+#          - "7.4"
+          - "8.0"
     steps:
       - name: "Setup PHP ${{ matrix.php-version }}"
         uses: shivammathur/setup-php@v2
@@ -84,8 +84,8 @@ jobs:
         php-version:
 #          - "7.2"
 #          - "7.3"
-          - "7.4"
-#          - "8.0"
+#          - "7.4"
+          - "8.0"
     steps:
       - name: "Setup PHP ${{ matrix.php-version }}"
         uses: shivammathur/setup-php@v2
