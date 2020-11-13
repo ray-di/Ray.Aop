@@ -12,8 +12,8 @@ on:
       - "*"
 
 jobs:
-  unit_test:
-    name: "Unit Test"
+  standard:
+    name: "Standard Test"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -39,3 +39,59 @@ jobs:
         run: "./vendor/bin/phpunit"
       - name: "Run demo"
         run: "php ./demo/run.php"
+
+  lowest_dependencies:
+    name: "Lowest dependencies Test"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+#          - "7.2"
+#          - "7.3"
+          - "7.4"
+    steps:
+      - name: "Setup PHP ${{ matrix.php-version }}"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          php-version: ${{ matrix.php-version }}
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Validate composer.json and composer.lock"
+        run: "composer validate"
+      - name: "composer self-update"
+        run: "composer self-update"
+      - name: "Install dependencies with Composer"
+        run: "composer install --no-interaction --no-progress --no-suggest --prefer-dist --prefer-lowest"
+      - name: "Test"
+        run: "./vendor/bin/phpunit"
+      - name: "Run demo"
+        run: "php ./demo/run.php"
+
+  nightly:
+    name: "Nightly Test"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - "nightly"
+    steps:
+      - name: "Setup PHP ${{ matrix.php-version }}"
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          php-version: ${{ matrix.php-version }}
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Validate composer.json and composer.lock"
+        run: "composer validate"
+      - name: "composer self-update"
+        run: "composer self-update"
+      - name: "Install dependencies with Composer"
+        run: "composer install --no-interaction --no-progress --no-suggest --ignore-platform-reqs"
+      - name: "Test"
+        run: "./vendor/bin/phpunit"
+        continue-on-error: true
+      - name: "Run demo"
+        run: "php ./demo/run.php"
+        continue-on-error: true
