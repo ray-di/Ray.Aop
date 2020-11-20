@@ -29,7 +29,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
      */
     public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
-        /** @var array<string> $arguments */
+        /** @var array<class-string> $arguments */
         [$annotation] = $arguments;
         $annotation = $this->reader->getClassAnnotation($class, $annotation);
 
@@ -41,7 +41,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
      */
     public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
-        /** @var array<string> $arguments */
+        /** @var array<class-string> $arguments */
         [$annotation] = $arguments;
         $annotation = $this->reader->getMethodAnnotation($method, $annotation);
 
