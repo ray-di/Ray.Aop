@@ -31,13 +31,21 @@ jobs:
         run: "composer validate"
       - name: "composer self-update"
         run: "composer self-update"
+      - name: "Get composer cache directory"
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: "Cache composer dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "${{ steps.composer-cache.outputs.dir }}"
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
       - name: "Install dependencies with Composer"
-        run: "composer install --no-interaction --no-progress --no-suggest"
+        run: "composer install --no-interaction --no-progress --no-suggest -–prefer-dist"
       - name: "PHPUnit"
         run: "./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml --coverage-text"
       - name: "Codecov"
         run: "bash <(curl -s https://codecov.io/bash) -cF php"
-
   static_analysis:
     name: "Static analysis"
     runs-on: ubuntu-latest
@@ -58,8 +66,17 @@ jobs:
         run: "composer validate"
       - name: "composer self-update"
         run: "composer self-update"
+      - name: "Get composer cache directory"
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: "Cache composer dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "${{ steps.composer-cache.outputs.dir }}"
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
       - name: "Install dependencies with Composer"
-        run: "composer install --no-interaction --no-progress --no-suggest"
+        run: "composer install --no-interaction --no-progress --no-suggest –-prefer-dist"
       - name: "Install tools"
         run: "composer global require --dev phpmetrics/phpmetrics ^2.6 maglnet/composer-require-checker ^2.0"
       - name : "PHPStan"
@@ -91,9 +108,18 @@ jobs:
         run: "composer validate"
       - name: "composer self-update"
         run: "composer self-update"
+      - name: "Get composer cache directory"
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: "Cache composer dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "${{ steps.composer-cache.outputs.dir }}"
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
       - name: "Install dependencies with Composer"
         run: |
-          composer install --no-interaction --no-progress --no-suggest
+          composer install --no-interaction --no-progress --no-suggest -–prefer-dist
           composer global require --dev doctrine/coding-standard ^8.1
       - name: "PHP_CodeSniffer"
         run: phpcs --report=checkstyle --standard=./phpcs.xml src tests
