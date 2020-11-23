@@ -63,9 +63,9 @@ jobs:
       - name: "Install tools"
         run: "composer global require --dev phpmetrics/phpmetrics ^2.6 maglnet/composer-require-checker ^2.0"
       - name : "PHPStan"
-        run: "phpstan analyse -c phpstan.neon --no-progress --no-interaction | cs2pr"
+        run: "phpstan analyse -c phpstan.neon --no-progress --no-interaction --error-format=checkstyle | cs2pr"
       - name : "Psalm"
-        run: "psalm --show-info=false --shepherd | cs2pr"
+        run: "psalm --show-info=false --shepherd --output-format=checkstyle | cs2pr"
       - name : "PhpMetrics"
         run: "composer global exec -v -- phpmetrics --exclude=Exception src"
       - name : "composer-require-checker"
@@ -83,7 +83,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: cs2pr, phpcs
+          tools: phpcs, cs2pr
           coverage: none
       - name: "Checkout"
         uses: actions/checkout@v2
@@ -96,4 +96,4 @@ jobs:
           composer install --no-interaction --no-progress --no-suggest
           composer global require --dev doctrine/coding-standard ^8.1
       - name: "PHP_CodeSniffer"
-        run: phpcs --standard=./phpcs.xml src tests
+        run: phpcs --report=checkstyle --standard=./phpcs.xml src tests
