@@ -51,8 +51,8 @@ jobs:
       - name: "Setup PHP ${{ matrix.php-version }}"
         uses: shivammathur/setup-php@v2
         with:
-          coverage: none
           php-version: ${{ matrix.php-version }}
+          coverage: none
       - name: "Checkout"
         uses: actions/checkout@v2
       - name: "Validate composer.json and composer.lock"
@@ -79,8 +79,8 @@ jobs:
       - name: "Setup PHP ${{ matrix.php-version }}"
         uses: shivammathur/setup-php@v2
         with:
-          coverage: none
           php-version: ${{ matrix.php-version }}
+          coverage: none
       - name: "Checkout"
         uses: actions/checkout@v2
       - name: "Validate composer.json and composer.lock"
