@@ -92,8 +92,8 @@ jobs:
       - name: "composer self-update"
         run: "composer self-update"
       - name: "Install dependencies with Composer"
-        run: "composer install --no-interaction --no-progress --no-suggest"
-      - name: "PHP_CodeSniffer"
         run: |
+          composer install --no-interaction --no-progress --no-suggest
           composer global require --dev doctrine/coding-standard ^8.1
-          phpcs --standard=./phpcs.xml src tests | cs2pr
+      - name: "PHP_CodeSniffer"
+        run: phpcs --standard=./phpcs.xml src tests | cs2pr
