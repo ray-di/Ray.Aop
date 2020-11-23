@@ -96,4 +96,4 @@ jobs:
           composer install --no-interaction --no-progress --no-suggest
           composer global require --dev doctrine/coding-standard ^8.1
       - name: "PHP_CodeSniffer"
-        run: phpcs --standard=./phpcs.xml src tests | cs2pr
+        run: phpcs --standard=./phpcs.xml src tests
