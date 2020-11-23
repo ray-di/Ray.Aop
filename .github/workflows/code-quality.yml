@@ -41,7 +41,7 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
       - name: "Install dependencies with Composer"
-        run: "composer install --no-interaction --no-progress --no-suggest -–prefer-dist"
+        run: "composer install --no-interaction --no-progress --prefer-dist"
       - name: "PHPUnit"
         run: "./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml --coverage-text"
       - name: "Codecov"
@@ -76,7 +76,7 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
       - name: "Install dependencies with Composer"
-        run: "composer install --no-interaction --no-progress --no-suggest –-prefer-dist"
+        run: "composer install --no-interaction --no-progress --prefer-dist"
       - name: "Install tools"
         run: "composer global require --dev phpmetrics/phpmetrics ^2.6 maglnet/composer-require-checker ^2.0"
       - name : "PHPStan"
@@ -119,7 +119,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: "Install dependencies with Composer"
         run: |
-          composer install --no-interaction --no-progress --no-suggest -–prefer-dist
+          composer install --no-interaction --no-progress --prefer-dist
           composer global require --dev doctrine/coding-standard ^8.1
       - name: "PHP_CodeSniffer"
         run: phpcs --report=checkstyle --standard=./phpcs.xml src tests
