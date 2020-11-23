@@ -50,7 +50,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: phpstan, psalm, cs2pr
+          tools: phpstan, psalm:3.11, cs2pr
           coverage: none
       - name: "Checkout"
         uses: actions/checkout@v2
