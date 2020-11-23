@@ -65,7 +65,7 @@ jobs:
       - name : "PHPStan"
         run: "phpstan analyse -c phpstan.neon --no-progress --no-interaction --error-format=checkstyle | cs2pr"
       - name : "Psalm"
-        run: "psalm --show-info=true --shepherd --output-format=checkstyle"
+        run: "psalm --output-format=checkstyle | cs2pr"
       - name : "PhpMetrics"
         run: "composer global exec -v -- phpmetrics --exclude=Exception src"
       - name : "composer-require-checker"
