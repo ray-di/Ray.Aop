@@ -83,7 +83,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: phpcs, cs2pr
+          tools: cs2pr, phpcs
           coverage: none
       - name: "Checkout"
         uses: actions/checkout@v2
