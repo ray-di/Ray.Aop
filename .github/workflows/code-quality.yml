@@ -44,7 +44,7 @@ jobs:
 #        run: "composer install --no-interaction --no-progress --prefer-dist"
 
       - name: "composer"
-        uses: ../.github/actions/composer
+        uses: ./.github/actions/composer
 
       - name: "PHPUnit"
         run: "./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml --coverage-text"
