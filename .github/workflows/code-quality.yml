@@ -67,9 +67,9 @@ jobs:
       - name : "Psalm"
         run: "psalm --show-info=false --shepherd | cs2pr"
       - name : "PhpMetrics"
-        run: "composer global exec -v -- phpmetrics --exclude=Exception src | cs2pr"
+        run: "composer global exec -v -- phpmetrics --exclude=Exception src"
       - name : "composer-require-checker"
-        run: "composer global exec -v -- composer-require-checker check ./composer.json | cs2pr"
+        run: "composer global exec -v -- composer-require-checker check ./composer.json"
 
   coding_standards:
     name: "Coding standards"
@@ -94,4 +94,6 @@ jobs:
       - name: "Install dependencies with Composer"
         run: "composer install --no-interaction --no-progress --no-suggest"
       - name: "PHP_CodeSniffer"
-        run: "phpcs --standard=./phpcs.xml src tests | cs2pr"
+        run: |
+          composer global require --dev doctrine/coding-standard ^8.1
+          phpcs --standard=./phpcs.xml src tests | cs2pr
