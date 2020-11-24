@@ -9,7 +9,7 @@ interface Reader
     /**
      * Gets the annotations applied to a method.
      *
-     * @return object[] an array of Annotations
+     * @return list<object> an array of Annotations
      */
     public function getAnnotations(): array;
 
