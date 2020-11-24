@@ -41,4 +41,4 @@ jobs:
           composer global require --dev doctrine/coding-standard ^8.1
 
       - name: "Run PHP_CodeSniffer"
-        run: "phpcs --report=checkstyle --standard=./phpcs.xml src tests | cs2pr"
+        run: "phpcs --standard=./phpcs.xml --report=checkstyle -q src tests | cs2pr"

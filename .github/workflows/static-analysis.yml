@@ -41,7 +41,7 @@ jobs:
         run: "phpstan analyse -c phpstan.neon --no-progress --no-interaction --error-format=checkstyle | cs2pr"
 
   static-analysis-psalm:
-    name: "Static Analysis with PHPStan"
+    name: "Static Analysis with Psalm"
     runs-on: ubuntu-latest
 
     strategy:
