@@ -56,7 +56,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: psalm:3.18.0, cs2pr
+          tools: psalm:4.2.1, cs2pr
           coverage: none
 
       - name: "Get composer cache directory"
