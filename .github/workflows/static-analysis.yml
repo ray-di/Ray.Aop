@@ -1,79 +1,28 @@
-name: "Code Quality"
+name: "Static Analysis"
 
 on:
   ["pull_request", "push", "workflow_dispatch"]
 
 jobs:
-  code_coverage:
-    name: "Code coverage"
+  static-analysis-phpstan:
+    name: "Static Analysis with PHPStan"
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         php-version:
           - "7.4"
-
     steps:
-      - name: "Setup PHP ${{ matrix.php-version }}"
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          coverage: pcov
-
       - name: "Checkout"
         uses: actions/checkout@v2
 
-      - name: "Validate composer.json and composer.lock"
-        run: "composer validate"
-
-      - name: "composer self-update"
-        run: "composer self-update"
-
-      - name: "Get composer cache directory"
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: "Cache composer dependencies"
-        uses: actions/cache@v2
-        with:
-          path: "${{ steps.composer-cache.outputs.dir }}"
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: "Install dependencies with Composer"
-        run: "composer install --no-interaction --no-progress --prefer-dist"
-
-      - name: "PHPUnit"
-        run: "./vendor/bin/phpunit -v --coverage-clover ./build/logs/clover.xml --coverage-text"
-
-      - name: "Codecov"
-        run: "bash <(curl -s https://codecov.io/bash) -cF php"
-
-  static_analysis:
-    name: "Static analysis"
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        php-version:
-          - "7.4"
-    steps:
       - name: "Setup PHP ${{ matrix.php-version }}"
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: phpstan, psalm:3.18.0, cs2pr
+          tools: phpstan, cs2pr
           coverage: none
 
-      - name: "Checkout"
-        uses: actions/checkout@v2
-
-      - name: "Validate composer.json and composer.lock"
-        run: "composer validate"
-
-      - name: "composer self-update"
-        run: "composer self-update"
-
       - name: "Get composer cache directory"
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -88,23 +37,47 @@ jobs:
       - name: "Install dependencies with Composer"
         run: "composer install --no-interaction --no-progress --prefer-dist"
 
-      - name: "Install tools"
-        run: "composer global require --dev phpmetrics/phpmetrics ^2.6 maglnet/composer-require-checker ^2.0"
-
-      - name : "PHPStan"
+      - name : "Run PHPStan"
         run: "phpstan analyse -c phpstan.neon --no-progress --no-interaction --error-format=checkstyle | cs2pr"
 
-      - name : "Psalm"
+  static-analysis-psalm:
+    name: "Static Analysis with PHPStan"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.4"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Setup PHP ${{ matrix.php-version }}"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: psalm:3.18.0, cs2pr
+          coverage: none
+
+      - name: "Get composer cache directory"
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: "Cache composer dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "${{ steps.composer-cache.outputs.dir }}"
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: "Install dependencies with Composer"
+        run: "composer install --no-interaction --no-progress --prefer-dist"
+
+      - name : "Run Psalm"
         run: "psalm --output-format=checkstyle | cs2pr"
 
-      - name : "PhpMetrics"
-        run: "composer global exec -v -- phpmetrics --exclude=Exception src"
-
-      - name : "composer-require-checker"
-        run: "composer global exec -v -- composer-require-checker check ./composer.json"
-
-  coding_standards:
-    name: "Coding standards"
+  static-analysis-php-metrics:
+    name: "Static Analysis with PhpMetrics"
     runs-on: ubuntu-latest
 
     strategy:
@@ -113,21 +86,15 @@ jobs:
           - "7.4"
 
     steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
       - name: "Setup PHP ${{ matrix.php-version }}"
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: phpcs, cs2pr
+          tools: phpstan, cs2pr
           coverage: none
-
-      - name: "Checkout"
-        uses: actions/checkout@v2
-
-      - name: "Validate composer.json and composer.lock"
-        run: "composer validate"
-
-      - name: "composer self-update"
-        run: "composer self-update"
 
       - name: "Get composer cache directory"
         id: composer-cache
@@ -143,7 +110,46 @@ jobs:
       - name: "Install dependencies with Composer"
         run: |
           composer install --no-interaction --no-progress --prefer-dist
-          composer global require --dev doctrine/coding-standard ^8.1
+          composer global require --dev phpmetrics/phpmetrics ^2.6
 
-      - name: "PHP_CodeSniffer"
-        run: phpcs --report=checkstyle --standard=./phpcs.xml src tests
+      - name : "Run PhpMetrics"
+        run: "composer global exec -v -- phpmetrics --exclude=Exception src"
+
+  static-analysis-composer-require-checker:
+    name: "Static Analysis with ComposerRequireChecker"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.4"
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Setup PHP ${{ matrix.php-version }}"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpstan, cs2pr
+          coverage: none
+
+      - name: "Get composer cache directory"
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: "Cache composer dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "${{ steps.composer-cache.outputs.dir }}"
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: "Install dependencies with Composer"
+        run: |
+          composer install --no-interaction --no-progress --prefer-dist
+          composer global require --dev maglnet/composer-require-checker ^2.0
+
+      - name : "Run composer-require-checker"
+        run: "composer global exec -v -- composer-require-checker check ./composer.json"
