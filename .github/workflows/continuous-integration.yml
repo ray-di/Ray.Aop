@@ -53,11 +53,11 @@ jobs:
       - name: "Run PHPUnit"
         run: "./vendor/bin/phpunit --coverage-clover=coverage.xml"
 
-      - name: "Upload coverage file"
-        uses: "actions/upload-artifact@v2"
+      - name: "Upload coverage"
+      - uses: actions/checkout@master
+      - uses: codecov/codecov-action@v1
         with:
-          name: "phpunit-sqlite-${{ matrix.deps }}-${{ matrix.php-version }}.coverage"
-          path: "coverage.xml"
+          fail_ci_if_error: true
 
       - name: "Run demo"
         run: "php ./demo/run.php"
