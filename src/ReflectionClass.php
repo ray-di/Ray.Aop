@@ -34,13 +34,13 @@ class ReflectionClass extends \ReflectionClass implements Reader
     {
         $object = $this->object;
         if (isset($object->classAnnotations) && is_string($object->classAnnotations)) {
-            /** @var array<int, object> $annotations */
+            /** @var list<object> $annotations */
             $annotations = unserialize($object->classAnnotations, ['allowed_classes' => true]);
 
             return $annotations;
         }
 
-        /** @var array<int, object> $annotations */
+        /** @var list<object> $annotations */
         $annotations = (new AnnotationReader())->getClassAnnotations(new \ReflectionClass($this->name));
 
         return $annotations;
