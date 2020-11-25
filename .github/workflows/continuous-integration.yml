@@ -51,7 +51,7 @@ jobs:
         if: "${{ matrix.deps == 'low' }}"
 
       - name: "Run PHPUnit"
-        run: "./vendor/bin/phpunit"
+        run: "./vendor/bin/phpunit --coverage-clover=coverage.xml"
 
       - name: "Upload coverage file"
         uses: "actions/upload-artifact@v2"
