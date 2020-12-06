@@ -28,7 +28,7 @@ final class CachedClass
 
     public function require(): bool
     {
-        if (is_file($this->path) && ! class_exists($this->path, false)) {
+        if (is_file($this->path) && ! class_exists($this->class, false)) {
             assert(file_exists($this->path)); // https://github.com/vimeo/psalm/issues/4788
             require $this->path;
 
