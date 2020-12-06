@@ -66,7 +66,6 @@ final class Compiler implements CompilerInterface
     public function newInstance(string $class, array $args, BindInterface $bind)
     {
         $compiledClass = $this->compile($class, $bind);
-        assert(class_exists($compiledClass));
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
         if (isset($instance->bindings)) {
             $instance->bindings = $bind->getBindings();
@@ -90,6 +89,7 @@ final class Compiler implements CompilerInterface
         }
 
         $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
+        assert(class_exists($aopClassName, false));
 
         return $aopClassName;
     }
@@ -129,6 +129,6 @@ final class Compiler implements CompilerInterface
         $file = $code->save($this->classDir, $aopClassName);
         assert(file_exists($file));
         require_once $file;
-        class_exists($aopClassName); // ensue class is created
+        assert(class_exists($aopClassName));
     }
 }

@@ -89,7 +89,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     private function getCachedAnnotations(string $methodAnnotations): array
     {
         /** @var array<string, list<object>> $annotations */
-        $annotations = unserialize((string) $methodAnnotations, ['allowed_classes' => true]);
+        $annotations = unserialize($methodAnnotations, ['allowed_classes' => true]);
         if (array_key_exists($this->method, $annotations)) {
             return $annotations[$this->method];
         }
