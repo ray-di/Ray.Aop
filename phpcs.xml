@@ -64,4 +64,5 @@
     </rule>
     <exclude-pattern>*/tests/Fake/*</exclude-pattern>
     <exclude-pattern>*/tmp_unerase/*</exclude-pattern>
+    <exclude-pattern>*/tests/aop_cache/*</exclude-pattern>
 </ruleset>

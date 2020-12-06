@@ -26,7 +26,7 @@ use function unserialize;
 class CompilerTest extends TestCase
 {
     /** @var BindInterface */
-    private $bind;
+    protected $bind;
 
     /** @var CompilerInterface */
     protected $compiler;
@@ -192,9 +192,20 @@ class CompilerTest extends TestCase
         $this->assertSame(FakeMock::class, $class);
     }
 
-    public function testAnnotation(): void
+    public function testInherited(): string
     {
         $class = $this->compiler->compile(FakeAnnotateClass::class, $this->bind);
+        $compiled = (new ReflectionClass($class))->newInstanceWithoutConstructor();
+        $this->assertInstanceOf(FakeAnnotateClass::class, $compiled);
+
+        return $class;
+    }
+
+    /**
+     * @depends testInherited
+     */
+    public function testAnnotation(string $class): void
+    {
         $annotations = (new AnnotationReader())->getMethodAnnotations(new ReflectionMethod($class, 'getDouble'));
         $this->assertCount(4, $annotations);
     }

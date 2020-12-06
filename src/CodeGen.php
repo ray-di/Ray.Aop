@@ -140,8 +140,7 @@ final class CodeGen implements CodeGenInterface
             ->makePublic()
             ->getNode();
 
-        $pros[] =
-            $this->factory->property('bindings')
+        $pros[] = $this->factory->property('bindings')
                 ->makePublic()
                 ->setDefault([])
                 ->getNode();
