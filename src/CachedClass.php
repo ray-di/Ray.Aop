@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use function assert;
 use function class_exists;
 use function file_exists;
+use function is_file;
 
 final class CachedClass
 {
@@ -26,7 +28,8 @@ final class CachedClass
 
     public function require(): bool
     {
-        if (file_exists($this->path) && ! class_exists($this->path, false)) {
+        if (is_file($this->path) && ! class_exists($this->path, false)) {
+            assert(file_exists($this->path)); // https://github.com/vimeo/psalm/issues/4788
             require $this->path;
 
             return true;
