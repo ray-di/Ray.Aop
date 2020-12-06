@@ -28,8 +28,8 @@ class CompilerTest extends TestCase
     /** @var BindInterface */
     private $bind;
 
-    /** @var Compiler */
-    private $compiler;
+    /** @var CompilerInterface */
+    protected $compiler;
 
     protected function setUp(): void
     {
