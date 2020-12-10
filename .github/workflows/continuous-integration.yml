@@ -17,8 +17,12 @@ jobs:
           - "8.0"
         deps:
           - "normal"
+        upload-coverage:
+          - "no"
         include:
           - deps: "low"
+            php-version: "7.4"
+          - upload-coverage: "yes"
             php-version: "7.4"
 
     steps:
@@ -52,9 +56,11 @@ jobs:
 
       - name: "Run PHPUnit"
         run: "./vendor/bin/phpunit --coverage-clover=coverage.xml"
+        if: "${{ matrix.upload-coverage == 'yes' }}"
 
       - name: "Upload coverage report"
         run: "bash <(curl -s https://codecov.io/bash)"
+        if: "${{ matrix.upload-coverage == 'yes' }}"
 
       - name: "Run demo"
         run: "php ./demo/run.php"
