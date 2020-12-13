@@ -20,9 +20,9 @@ jobs:
         report-coverage:
           - "nothing"
         include:
-          - deps: "low"
+          - deps: "lowest"
             php-version: "8.0"
-          - report-coverage: "upload"
+          - report-coverage: true
             php-version: "8.0"
 
     steps:
@@ -52,17 +52,17 @@ jobs:
 
       - name: "Update lowest dependencies with Composer"
         run: "composer update --prefer-dist --prefer-lowest"
-        if: "${{ matrix.deps == 'low' }}"
+        if: "${{ matrix.deps == 'lowest' }}"
 
       - name: "Run PHPUnit"
         run: "./vendor/bin/phpunit --coverage-clover=coverage.xml"
-        if: "${{ matrix.report-coverage == 'upload' }}"
+        if: "${{ matrix.report-coverage}}"
 
       - name: "Upload coverage report"
         uses: codecov/codecov-action@v1
         with:
           file: ./coverage.xml
-        if: "${{ matrix.report-coverage == 'upload' }}"
+        if: "${{ matrix.report-coverage}}"
 
       - name: "Run demo"
         run: "php ./demo/run.php"
