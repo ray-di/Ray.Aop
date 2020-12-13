@@ -12,13 +12,13 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
-        "doctrine/annotations": "^1.10",
+        "php": "^7.3 || ^8.0",
         "doctrine/cache": "^1.10",
+        "doctrine/annotations": "^1.11",
         "nikic/php-parser": "^4.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5 || ^9.3"
+        "phpunit/phpunit": "^9.3"
     },
     "config": {
         "sort-packages": true
@@ -48,6 +48,7 @@
         "pcov": ["php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"],
         "cs": ["phpcs --standard=./phpcs.xml src tests"],
         "cs-fix": ["phpcbf src tests"],
+        "clear": ["phpstan clear-result-cache", "psalm --clear-cache"],
         "sa": ["phpstan analyse -c phpstan.neon", "psalm --show-info=true"],
         "metrics": ["@test", "phpmetrics --report-html=build/metrics --exclude=Exception --log-junit=build/junit.xml --junit=build/junit.xml src"]
     }
