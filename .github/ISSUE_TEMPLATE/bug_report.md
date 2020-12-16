@@ -22,5 +22,5 @@ labels: Bug
 
 #### How to reproduce
 
-<!--- Describe exactly how to reproduce the problem, using a minimal test-case or working code sample -->
+<!--- Describe exactly how to reproduce the problem, using a minimal test-case or working code sample. -->
 
