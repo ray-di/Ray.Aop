@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationReader;
+use Ray\ServiceLocator\ServiceLocator;
 
 use function array_key_exists;
 use function assert;
@@ -63,7 +63,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
 
         assert(class_exists($this->class));
         /** @var list<object> $annotations */
-        $annotations = (new AnnotationReader())->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
+        $annotations = ServiceLocator::getReader()->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
 
         return $annotations;
     }
@@ -89,7 +89,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     private function getCachedAnnotations(string $methodAnnotations): array
     {
         /** @var array<string, list<object>> $annotations */
-        $annotations = unserialize((string) $methodAnnotations, ['allowed_classes' => true]);
+        $annotations = unserialize($methodAnnotations, ['allowed_classes' => true]);
         if (array_key_exists($this->method, $annotations)) {
             return $annotations[$this->method];
         }
