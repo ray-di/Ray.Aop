@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationReader;
+use Ray\ServiceLocator\ServiceLocator;
 
 use function is_string;
 use function unserialize;
@@ -41,7 +41,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
         }
 
         /** @var list<object> $annotations */
-        $annotations = (new AnnotationReader())->getClassAnnotations(new \ReflectionClass($this->name));
+        $annotations = ServiceLocator::getReader()->getClassAnnotations(new \ReflectionClass($this->name));
 
         return $annotations;
     }
