@@ -4,7 +4,7 @@ namespace Ray\ServiceLocator;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
-use Koriym\Attributes\AttributesReader;
+use Koriym\Attributes\AttributeReader;
 use Koriym\Attributes\DualReader;
 
 final class ServiceLocator
@@ -22,7 +22,7 @@ final class ServiceLocator
     public static function getReader(): Reader
     {
         if (! self::$reader) {
-            self::$reader = new DualReader(new AnnotationReader(), new AttributesReader());
+            self::$reader = new DualReader(new AnnotationReader(), new AttributeReader());
         }
 
         return self::$reader;
