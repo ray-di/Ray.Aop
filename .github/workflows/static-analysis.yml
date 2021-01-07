@@ -109,4 +109,4 @@ jobs:
           composer require --dev maglnet/composer-require-checker ^2.0
 
       - name: Run composer-require-checker
-        run: ./vendor/bin/composer-require-checker check --config-file=php-require-checker.config.json ./composer.json
+        run: ./vendor/bin/composer-require-checker check ./composer.json
