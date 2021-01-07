@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader as DoctrineReader;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use Ray\Aop\Exception\InvalidSourceClassException;
+use Ray\ServiceLocator\ServiceLocator;
 use ReflectionClass;
 use RuntimeException;
 
@@ -38,7 +39,7 @@ final class CodeGen implements CodeGenInterface
     /** @var CodeGenMethod */
     private $codeGenMethod;
 
-    /** @var AnnotationReader */
+    /** @var DoctrineReader */
     private $reader;
 
     /** @var AopClassName */
@@ -55,7 +56,7 @@ final class CodeGen implements CodeGenInterface
         $this->parser = $parser;
         $this->factory = $factory;
         $this->codeGenMethod = new CodeGenMethod($parser);
-        $this->reader = new AnnotationReader();
+        $this->reader = ServiceLocator::getReader();
         $this->aopClassName = $aopClassName;
     }
 

@@ -15,6 +15,7 @@
         "php": "^7.3 || ^8.0",
         "doctrine/cache": "^1.10",
         "doctrine/annotations": "^1.11",
+        "koriym/attributes": "^0.2",
         "nikic/php-parser": "^4.2"
     },
     "require-dev": {
@@ -25,7 +26,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Ray\\Aop\\": ["src/"]
+            "Ray\\Aop\\": ["src/"],
+            "Ray\\ServiceLocator\\": ["sl-src/"]
         },
         "files": ["annotation_loader.php"]
     },

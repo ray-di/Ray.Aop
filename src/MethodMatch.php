@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
+use Ray\ServiceLocator\ServiceLocator;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -13,7 +14,7 @@ use function get_class;
 
 final class MethodMatch
 {
-    /** @var AnnotationReader */
+    /** @var Reader */
     private $reader;
 
     /** @var BindInterface */
@@ -22,7 +23,7 @@ final class MethodMatch
     public function __construct(BindInterface $bind)
     {
         $this->bind = $bind;
-        $this->reader = new AnnotationReader();
+        $this->reader = ServiceLocator::getReader();
     }
 
     /**

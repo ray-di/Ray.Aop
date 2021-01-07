@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Ray\Aop\Matcher;
 
 use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use Ray\Aop\AbstractMatcher;
+use Ray\ServiceLocator\ServiceLocator;
 use ReflectionClass;
 use ReflectionMethod;
 
 final class AnnotatedWithMatcher extends AbstractMatcher
 {
-    /** @var AnnotationReader */
+    /** @var Reader */
     private $reader;
 
     /**
@@ -21,7 +22,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
     public function __construct()
     {
         parent::__construct();
-        $this->reader = new AnnotationReader();
+        $this->reader = ServiceLocator::getReader();
     }
 
     /**
@@ -31,7 +32,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
     {
         /** @var array<class-string> $arguments */
         [$annotation] = $arguments;
-        $annotation = $this->reader->getClassAnnotation($class, $annotation);
+        $annotation = $this->reader->getClassAnnotation($class, $annotation); // @phpstan-ignore-line
 
         return (bool) $annotation;
     }
@@ -43,7 +44,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
     {
         /** @var array<class-string> $arguments */
         [$annotation] = $arguments;
-        $annotation = $this->reader->getMethodAnnotation($method, $annotation);
+        $annotation = $this->reader->getMethodAnnotation($method, $annotation); // @phpstan-ignore-line
 
         return (bool) $annotation;
     }

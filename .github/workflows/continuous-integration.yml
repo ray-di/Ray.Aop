@@ -1,60 +1,65 @@
-name: "Continuous Integration"
-
+name: Continuous Integration
 on:
-  ["pull_request", "push", "workflow_dispatch"]
-
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '42 15 * * *'
 jobs:
   phpunit:
-    name: "PHPUnit"
+    name: PHPUnit
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
+        operating-system:
+          - ubuntu-latest
+          - windows-latest
         php-version:
-          - "7.3"
-          - "7.4"
-          - "8.0"
+          - '7.3'
+          - '7.4'
+          - '8.0'
         dependencies:
-          - "lowest"
-          - "highest"
-
+          - lowest
+          - highest
     steps:
-      - name: "Checkout"
+      - name: Checkout
         uses: actions/checkout@v1
 
-      - name: "Setup PHP ${{ matrix.php-version }}"
+      - name: Setup PHP ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          coverage: "pcov"
-          ini-values: "zend.assertions=1"
+          coverage: pcov
+          ini-values: zend.assertions=1
 
-      - name: "Get composer cache directory"
+      - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: "Cache composer dependencies"
+      - name: Cache dependencies
         uses: actions/cache@v2
         with:
-          path: "${{ steps.composer-cache.outputs.dir }}"
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: "Install lowest dependencies"
+      - name: Install lowest dependencies
         if: ${{ matrix.dependencies == 'lowest' }}
-        run: "composer update --prefer-lowest --no-interaction --no-progress --no-suggest"
+        run: >-
+          composer update --prefer-lowest --no-interaction --no-progress
+          --no-suggest
 
-      - name: "Install highest dependencies"
+      - name: Install highest dependencies
         if: ${{ matrix.dependencies == 'highest' }}
-        run: "composer update --no-interaction --no-progress --no-suggest"
+        run: composer update --no-interaction --no-progress --no-suggest
 
-      - name: "Run PHPUnit"
-        run: "./vendor/bin/phpunit --coverage-clover=coverage.xml"
+      - name: Run test suite
+        run: ./vendor/bin/phpunit --coverage-clover=coverage.xml
 
-      - name: "Upload coverage report"
+      - name: Upload coverage report
         uses: codecov/codecov-action@v1
         with:
           file: ./coverage.xml
 
-      - name: "Run demo"
-        run: "php ./demo/run.php"
+      - name: Run Demo
+        run: php demo/run.php
