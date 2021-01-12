@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\NodeTraverser;
+use PhpParser\Parser;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
 use RuntimeException;
@@ -16,12 +17,12 @@ use function is_bool;
 
 final class VisitorFactory
 {
-    /** @var CodeGen */
-    private $codeGen;
+    /** @var Parser */
+    private $parser;
 
-    public function __construct(CodeGen $codeGen)
+    public function __construct(Parser $parser)
     {
-        $this->codeGen = $codeGen;
+        $this->parser = $parser;
     }
 
     /**
@@ -42,7 +43,7 @@ final class VisitorFactory
             throw new RuntimeException($fileName); // @codeCoverageIgnore
         }
 
-        $stmts = $this->codeGen->getParser()->parse($file);
+        $stmts = $this->parser->parse($file);
         if (is_array($stmts)) {
             $traverser->traverse($stmts);
         }
