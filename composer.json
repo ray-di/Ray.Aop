@@ -1,9 +1,7 @@
 {
     "name": "ray/aop",
     "description": "An aspect oriented framework",
-    "keywords": [
-        "AOP"
-    ],
+    "keywords": ["AOP"],
     "license": "MIT",
     "authors": [
         {
