@@ -1,8 +1,10 @@
 name: Coding Standards
+
 on:
   push:
   pull_request:
   workflow_dispatch:
+
 jobs:
   coding-standards:
     name: Coding Standards
