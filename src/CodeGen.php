@@ -12,20 +12,13 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\NodeTraverser;
 use PhpParser\Parser;
-use Ray\Aop\Exception\InvalidSourceClassException;
 use Ray\ServiceLocator\ServiceLocator;
 use ReflectionClass;
-use RuntimeException;
 
 use function array_merge;
 use function assert;
-use function file_get_contents;
-use function get_class;
 use function implode;
-use function is_array;
-use function is_bool;
 use function serialize;
 
 final class CodeGen implements CodeGenInterface
@@ -45,6 +38,9 @@ final class CodeGen implements CodeGenInterface
     /** @var AopClassName */
     private $aopClassName;
 
+    /** @var VisitorFactory */
+    private $visitoryFactory;
+
     /**
      * @throws AnnotationException
      */
@@ -58,6 +54,7 @@ final class CodeGen implements CodeGenInterface
         $this->codeGenMethod = new CodeGenMethod($parser);
         $this->reader = ServiceLocator::getReader();
         $this->aopClassName = $aopClassName;
+        $this->visitoryFactory = new VisitorFactory($this);
     }
 
     /**
@@ -67,55 +64,27 @@ final class CodeGen implements CodeGenInterface
      */
     public function generate(ReflectionClass $sourceClass, BindInterface $bind): Code
     {
-        $source = $this->getVisitorCode($sourceClass);
-        assert($source->class instanceof Class_);
-        $methods = $this->codeGenMethod->getMethods($bind, $source);
+        $visitor = ($this->visitoryFactory)($sourceClass);
+        assert($visitor->class instanceof Class_);
+        $methods = $this->codeGenMethod->getMethods($bind, $visitor);
         $propStms = $this->getAopProps($sourceClass);
-        $classStm = $source->class;
-        $newClassName = ($this->aopClassName)((string) $source->class->name, $bind->toString(''));
+        $classStm = $visitor->class;
+        $newClassName = ($this->aopClassName)((string) $visitor->class->name, $bind->toString(''));
         $classStm->name = new Identifier($newClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('WeavedInterface');
         /** @var array<int, Stmt> $stmts */
         $stmts = array_merge($propStms, $methods);
         $classStm->stmts = $stmts;
-        $ns = $this->getNamespace($source);
+        $ns = $this->getNamespace($visitor);
         $stmt = $this->factory->namespace($ns)
             ->addStmt($this->factory->use(WeavedInterface::class))
             ->addStmt($this->factory->use(ReflectiveMethodInvocation::class)->as('Invocation'))
-            ->addStmts($source->use)
+            ->addStmts($visitor->use)
             ->addStmt($classStm)
             ->getNode();
 
-        return new Code(array_merge($source->declare, [$stmt]));
-    }
-
-    /**
-     * Return "declare()" and "use" statement code
-     *
-     * @param ReflectionClass<object> $class
-     */
-    private function getVisitorCode(ReflectionClass $class): CodeVisitor
-    {
-        $traverser = new NodeTraverser();
-        $visitor = new CodeVisitor();
-        $traverser->addVisitor($visitor);
-        $fileName = $class->getFileName();
-        if (is_bool($fileName)) {
-            throw new InvalidSourceClassException(get_class($class));
-        }
-
-        $file = file_get_contents($fileName);
-        if ($file === false) {
-            throw new RuntimeException($fileName); // @codeCoverageIgnore
-        }
-
-        $stmts = $this->parser->parse($file);
-        if (is_array($stmts)) {
-            $traverser->traverse($stmts);
-        }
-
-        return $visitor;
+        return new Code(array_merge($visitor->declare, [$stmt]));
     }
 
     /**
@@ -194,5 +163,10 @@ final class CodeGen implements CodeGenInterface
         $ns = implode('\\', $parts);
 
         return $ns ? $ns : null;
+    }
+
+    public function getParser(): Parser
+    {
+        return $this->parser;
     }
 }
