@@ -15,7 +15,14 @@ class CodeGenPhp71Test extends TestCase
 
     protected function setUp(): void
     {
-        $this->codeGen = new CodeGen((new ParserFactory())->newInstance(), new BuilderFactory(), new AopClassName(''));
+        $parser = (new ParserFactory())->newInstance();
+        $factory = new BuilderFactory();
+        $aopClassName = new AopClassName(__DIR__ . '/tmp');
+        $this->codeGen = new CodeGen(
+            $factory,
+            new VisitorFactory($parser),
+            new AopClass($parser, $factory, $aopClassName)
+        );
     }
 
     public function testReturnTypeVoid(): void
