@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Parser;
 use ReflectionClass;
 
 use function array_merge;
@@ -23,13 +22,13 @@ final class CodeGen implements CodeGenInterface
     private $aopClass;
 
     public function __construct(
-        Parser $parser,
         BuilderFactory $factory,
-        AopClassName $aopClassName
+        VisitorFactory $visitorFactory,
+        AopClass $aopClass
     ) {
         $this->factory = $factory;
-        $this->visitoryFactory = new VisitorFactory($parser);
-        $this->aopClass = new AopClass($parser, $factory, $aopClassName);
+        $this->visitoryFactory = $visitorFactory;
+        $this->aopClass = $aopClass;
     }
 
     /**
