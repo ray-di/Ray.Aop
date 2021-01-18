@@ -14,7 +14,7 @@ final class ServiceLocator
      */
     private static $reader;
 
-    public static function setReaedr(Reader $reader): void
+    public static function setReader(Reader $reader): void
     {
         self::$reader = $reader;
     }
