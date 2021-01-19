@@ -4,60 +4,31 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationException;
-use Doctrine\Common\Annotations\Reader as DoctrineReader;
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Property;
-use PhpParser\NodeTraverser;
-use PhpParser\Parser;
-use Ray\Aop\Exception\InvalidSourceClassException;
-use Ray\ServiceLocator\ServiceLocator;
 use ReflectionClass;
-use RuntimeException;
 
 use function array_merge;
-use function assert;
-use function file_get_contents;
-use function get_class;
 use function implode;
-use function is_array;
-use function is_bool;
-use function serialize;
 
 final class CodeGen implements CodeGenInterface
 {
-    /** @var Parser */
-    private $parser;
-
     /** @var BuilderFactory */
     private $factory;
 
-    /** @var CodeGenMethod */
-    private $codeGenMethod;
+    /** @var VisitorFactory */
+    private $visitoryFactory;
 
-    /** @var DoctrineReader */
-    private $reader;
+    /** @var AopClass  */
+    private $aopClass;
 
-    /** @var AopClassName */
-    private $aopClassName;
-
-    /**
-     * @throws AnnotationException
-     */
     public function __construct(
-        Parser $parser,
         BuilderFactory $factory,
-        AopClassName $aopClassName
+        VisitorFactory $visitorFactory,
+        AopClass $aopClass
     ) {
-        $this->parser = $parser;
         $this->factory = $factory;
-        $this->codeGenMethod = new CodeGenMethod($parser);
-        $this->reader = ServiceLocator::getReader();
-        $this->aopClassName = $aopClassName;
+        $this->visitoryFactory = $visitorFactory;
+        $this->aopClass = $aopClass;
     }
 
     /**
@@ -67,121 +38,17 @@ final class CodeGen implements CodeGenInterface
      */
     public function generate(ReflectionClass $sourceClass, BindInterface $bind): Code
     {
-        $source = $this->getVisitorCode($sourceClass);
-        assert($source->class instanceof Class_);
-        $methods = $this->codeGenMethod->getMethods($bind, $source);
-        $propStms = $this->getAopProps($sourceClass);
-        $classStm = $source->class;
-        $newClassName = ($this->aopClassName)((string) $source->class->name, $bind->toString(''));
-        $classStm->name = new Identifier($newClassName);
-        $classStm->extends = new Name('\\' . $sourceClass->name);
-        $classStm->implements[] = new Name('WeavedInterface');
-        /** @var array<int, Stmt> $stmts */
-        $stmts = array_merge($propStms, $methods);
-        $classStm->stmts = $stmts;
-        $ns = $this->getNamespace($source);
+        $visitor = ($this->visitoryFactory)($sourceClass);
+        $classStm = ($this->aopClass)($visitor, $sourceClass, $bind);
+        $ns = $this->getNamespace($visitor);
         $stmt = $this->factory->namespace($ns)
             ->addStmt($this->factory->use(WeavedInterface::class))
             ->addStmt($this->factory->use(ReflectiveMethodInvocation::class)->as('Invocation'))
-            ->addStmts($source->use)
+            ->addStmts($visitor->use)
             ->addStmt($classStm)
             ->getNode();
 
-        return new Code(array_merge($source->declare, [$stmt]));
-    }
-
-    /**
-     * Return "declare()" and "use" statement code
-     *
-     * @param ReflectionClass<object> $class
-     */
-    private function getVisitorCode(ReflectionClass $class): CodeVisitor
-    {
-        $traverser = new NodeTraverser();
-        $visitor = new CodeVisitor();
-        $traverser->addVisitor($visitor);
-        $fileName = $class->getFileName();
-        if (is_bool($fileName)) {
-            throw new InvalidSourceClassException(get_class($class));
-        }
-
-        $file = file_get_contents($fileName);
-        if ($file === false) {
-            throw new RuntimeException($fileName); // @codeCoverageIgnore
-        }
-
-        $stmts = $this->parser->parse($file);
-        if (is_array($stmts)) {
-            $traverser->traverse($stmts);
-        }
-
-        return $visitor;
-    }
-
-    /**
-     * @param ReflectionClass<object> $class
-     */
-    private function getClassAnnotation(ReflectionClass $class): string
-    {
-        $classAnnotations = $this->reader->getClassAnnotations($class);
-
-        return serialize($classAnnotations);
-    }
-
-    /**
-     * @param ReflectionClass<object> $class
-     *
-     * @return Property[]
-     */
-    private function getAopProps(ReflectionClass $class): array
-    {
-        $pros = [];
-        $pros[] = $this->factory
-            ->property('bind')
-            ->makePublic()
-            ->getNode();
-
-        $pros[] = $this->factory->property('bindings')
-                ->makePublic()
-                ->setDefault([])
-                ->getNode();
-
-        $pros[] = $this->factory
-            ->property('methodAnnotations')
-            ->setDefault($this->getMethodAnnotations($class))
-            ->makePublic()
-            ->getNode();
-        $pros[] = $this->factory
-            ->property('classAnnotations')
-            ->setDefault($this->getClassAnnotation($class))
-            ->makePublic()
-            ->getNode();
-        $pros[] = $this->factory
-            ->property('isAspect')
-            ->makePrivate()
-            ->setDefault(true)
-            ->getNode();
-
-        return $pros;
-    }
-
-    /**
-     * @param ReflectionClass<object> $class
-     */
-    private function getMethodAnnotations(ReflectionClass $class): string
-    {
-        $methodsAnnotation = [];
-        $methods = $class->getMethods();
-        foreach ($methods as $method) {
-            $annotations = $this->reader->getMethodAnnotations($method);
-            if ($annotations === []) {
-                continue;
-            }
-
-            $methodsAnnotation[$method->name] = $annotations;
-        }
-
-        return serialize($methodsAnnotation);
+        return new Code(array_merge($visitor->declare, [$stmt]));
     }
 
     /**

@@ -37,10 +37,13 @@ final class Compiler implements CompilerInterface
 
         $this->classDir = $classDir;
         $this->aopClassName = new AopClassName($classDir);
+        $parser = (new ParserFactory())->newInstance();
+        $factory = new BuilderFactory();
+        $aopClassName = new AopClassName($classDir);
         $this->codeGen = new CodeGen(
-            (new ParserFactory())->newInstance(),
-            new BuilderFactory(),
-            $this->aopClassName
+            $factory,
+            new VisitorFactory($parser),
+            new AopClass($parser, $factory, $aopClassName)
         );
     }
 

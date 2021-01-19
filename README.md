@@ -20,16 +20,11 @@ A [Matcher](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php)
 
 To illustrate how method interceptors work with Ray.Aop, we'll forbid calls to our pizza billing system on weekends. The delivery guys only work Monday thru Friday so we'll prevent pizza from being ordered when it can't be delivered! This example is structurally similar to use of AOP for authorization.
 
-To mark select methods as weekdays-only, we define an annotation. (Ray.Aop uses Doctrine Annotations)
+To mark select methods as weekdays-only, we define an attribute.
 
 ```php
 <?php
-/**
- * NotOnWeekends
- *
- * @Annotation
- * @Target("METHOD")
- */
+#[Attribute(Attribute::TARGET_METHOD)]
 final class NotOnWeekends
 {
 }
@@ -41,9 +36,7 @@ final class NotOnWeekends
 <?php
 class RealBillingService
 {
-    /**
-     * @NotOnWeekends
-     */
+    #[NotOnWeekends] 
     public function chargeOrder(PizzaOrder $order, CreditCard $creditCard)
     {
 ```
@@ -101,15 +94,15 @@ chargeOrder not allowed on weekends!
 
 ```php
 <?php
-    $bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-    $compiler = new Weaver($bind, $tmpDir);
-    $billing = $compiler->newInstance('RealBillingService', [], $bind);
-    try {
-        echo $billing->chargeOrder();
-    } catch (\RuntimeException $e) {
-        echo $e->getMessage() . "\n";
-        exit(1);
-    }
+$bind = (new Bind)->bindInterceptors('chargeOrder', [new WeekendBlocker]);
+$compiler = new Weaver($bind, $tmpDir);
+$billing = $compiler->newInstance('RealBillingService', [], $bind);
+try {
+    echo $billing->chargeOrder();
+} catch (\RuntimeException $e) {
+    echo $e->getMessage() . "\n";
+    exit(1);
+}
 ```
 
 Own matcher
@@ -170,16 +163,15 @@ $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, 
 
 The order of interceptor invocation are determined by following rules.
 
- * Basically, it will be invoked in bind order.
- * `PriorityPointcut` has most priority.
- * Annotation method match is followed by `PriorityPointcut`. Invoked in annotation order as follows.
+* Basically, it will be invoked in bind order.
+* `PriorityPointcut` has most priority.
+* Annotation method match is followed by `PriorityPointcut`. Invoked in annotation order as follows.
+
 
 ```php
-/**
- * @Auth    // 1st
- * @Cache   // 2nd
- * @Log     // 3rd
- */
+#[Auth]   // 1st
+#[Cache]  // 2nd
+#[Log]    // 3rd
 ```
 
 ## Limitations
@@ -188,8 +180,8 @@ Behind the scenes, method interception is implemented by generating code at runt
 
 This approach imposes limits on what classes and methods can be intercepted:
 
- * Classes must be *non-final*
- * Methods must be *public*
+* Classes must be *non-final*
+* Methods must be *public*
 
 # Interceptor
 
@@ -216,12 +208,12 @@ class MyInterceptor implements MethodInterceptor
 
 With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
 
- * [`$invocation->proceed()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L41) - Invoke method
- * [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L30) -  Get method reflection
- * [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L50) - Get object
- * [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php#L25) - Get parameters
- * [`$invocation->getNamedArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php#L32) - Get named parameters
-An extended `ClassRefletion` and `MethodReflection` holds methos to get annotation(s).
+* [`$invocation->proceed()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L41) - Invoke method
+* [`$invocation->getMethod()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php#L30) -  Get method reflection
+* [`$invocation->getThis()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php#L50) - Get object
+* [`$invocation->getArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php#L25) - Get parameters
+* [`$invocation->getNamedArguments()`](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php#L32) - Get named parameters
+  An extended `ClassRefletion` and `MethodReflection` holds methos to get annotation(s).
 
 ```php
 /** @var $method \Ray\Aop\ReflectionMethod */
@@ -229,12 +221,17 @@ $method = $invocation->getMethod();
 /** @var $class \Ray\Aop\ReflectionClass */
 $class = $invocation->getMethod()->getDeclaringClass();
 ```
- 
- * `$method->getAnnotations()`     - Get method annotations
- * `$method->getAnnotation($name)` - Get method annotation
- * `$class->->getAnnotations()`    - Get class annotations
- * `$class->->getAnnotation($name)`     - Get class annotation
-  
+
+* `$method->getAnnotations()`     - Get method annotations
+* `$method->getAnnotation($name)` - Get method annotation
+* `$class->->getAnnotations()`    - Get class annotations
+* `$class->->getAnnotation($name)`     - Get class annotation
+
+## Annotation/Attribute
+
+Ray.Aop can be used either with [doctrine/annotation](https://github.com/doctrine/annotations) in PHP 7/8 or with an [Attributes](https://www.php.net/manual/en/language.attributes.overview.php) in PHP8.
+See the annotation code examples in the older [README(v2.9)](https://github.com/ray-di/Ray.Aop/blob/2.9.9/README.md).
+
 ## AOP Alliance
 
 The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html).
@@ -256,10 +253,15 @@ Here's how to install Ray.Aop from source and run the unit tests and demos.
 git clone https://github.com/ray-di/Ray.Aop.git
 cd Ray.Aop
 composer install
-vendor/bin/phpunit
+composer test
 php demo/run.php
 ```
 
-See also the DI framework [Ray.Di](https://github.com/ray-di/Ray.Di) which integrates DI and AOP.
+## Integrated DI framework
 
-* This documentation for the most part is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP).
+* See also the DI framework [Ray.Di](https://github.com/ray-di/Ray.Di) which integrates DI and AOP.
+
+
+---
+
+* Note: This documentation of the most part is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP).
