@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\NotWritableException;
 
-use function class_exists;
 use function dirname;
 use function file_put_contents;
 use function is_string;
@@ -33,7 +32,6 @@ final class Code
 
     public function save(string $classDir, string $aopClassName): string
     {
-        class_exists($aopClassName);
         $flatName = str_replace('\\', '_', $aopClassName);
         $filename = sprintf('%s/%s.php', $classDir, $flatName);
         $tmpFile = tempnam(dirname($filename), 'swap');
