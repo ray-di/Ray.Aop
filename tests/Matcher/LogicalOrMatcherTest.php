@@ -75,5 +75,4 @@ class LogicalOrMatcherTest extends TestCase
         $isMatched = (new LogicalOrMatcher())->matchesMethod($method, [$matcher, new FakeMatcher(false)]);
         $this->assertTrue($isMatched);
     }
-
 }
