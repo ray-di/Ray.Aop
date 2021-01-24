@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Ray\Aop\Matcher;
 
 use PHPUnit\Framework\TestCase;
+use Ray\Aop\AnnotatedMatcher;
+use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeMatcher;
 use ReflectionClass;
@@ -63,6 +65,14 @@ class LogicalOrMatcherTest extends TestCase
         $method = new ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
         $isMatched = (new LogicalOrMatcher())->matchesMethod($method, [new FakeMatcher(false), new FakeMatcher(false), new FakeMatcher(false), new FakeMatcher(true)]);
 
+        $this->assertTrue($isMatched);
+    }
+
+    public function testMatchesMethodWithRealMatcher(): void
+    {
+        $matcher = new AnnotatedMatcher('annotatedWith', [FakeMarker::class]);
+        $method = new ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
+        $isMatched = (new LogicalOrMatcher())->matchesMethod($method, [$matcher, new FakeMatcher(false)]);
         $this->assertTrue($isMatched);
     }
 }
