@@ -31,6 +31,6 @@ final class LogicalNotMatcher extends AbstractMatcher
         [$matcher] = $arguments;
         assert($matcher instanceof AbstractMatcher);
 
-        return ! $matcher->matchesMethod($method, [$arguments]);
+        return ! $matcher->matchesMethod($method, $matcher->getArguments());
     }
 }
