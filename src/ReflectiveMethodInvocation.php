@@ -85,8 +85,11 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         $params = $this->getMethod()->getParameters();
         $namedParams = [];
         foreach ($params as $param) {
-            /** @psalm-suppress MixedAssignment */
-            $namedParams[$param->getName()] = $args[$param->getPosition()];
+            $pos = $param->getPosition();
+            if (isset($args[$pos])) {
+                /** @psalm-suppress MixedAssignment */
+                $namedParams[$param->getName()] = $args[$pos];
+            }
         }
 
         return new ArrayObject($namedParams);
