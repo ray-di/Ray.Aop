@@ -51,7 +51,7 @@ final class AopClass
         $classStm->name = new Identifier($newClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('WeavedInterface');
-        /** @var array<int, Stmt> $stmts */
+        /** @var list<Stmt> $stmts */
         $stmts = array_merge($propStms, $methods);
         $classStm->stmts = $stmts;
 
