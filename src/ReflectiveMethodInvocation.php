@@ -8,6 +8,7 @@ use ArrayObject;
 use ReflectionClass;
 use ReflectionObject;
 
+use function array_key_exists;
 use function array_shift;
 use function assert;
 use function call_user_func_array;
@@ -86,7 +87,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         $namedParams = [];
         foreach ($params as $param) {
             $pos = $param->getPosition();
-            if (isset($args[$pos])) {
+            if (array_key_exists($pos, (array) $args)) {
                 /** @psalm-suppress MixedAssignment */
                 $namedParams[$param->getName()] = $args[$pos];
             }
