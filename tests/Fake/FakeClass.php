@@ -46,7 +46,7 @@ class FakeClass
         return $c * 3;
     }
 
-    public function defaultValue(int $a = 1)
+    public function defaultValue(int $a = 1, $b = null)
     {
     }
 }

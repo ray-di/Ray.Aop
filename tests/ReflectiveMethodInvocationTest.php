@@ -90,9 +90,9 @@ class ReflectiveMethodInvocationTest extends TestCase
      */
     public function testGetNamedArgumentsWithDefaultValue(): void
     {
-        $invocation = new ReflectiveMethodInvocation(new FakeWeavedClass(), 'defaultValue', [], [new FakeInterceptor(), new FakeInterceptor()]);
+        $invocation = new ReflectiveMethodInvocation(new FakeWeavedClass(), 'defaultValue', [1, null], [new FakeInterceptor(), new FakeInterceptor()]);
         $args = $invocation->getNamedArguments();
-        $this->assertSame((array) $args, []);
+        $this->assertSame((array) $args, ['a' => 1, 'b' => null]);
     }
 
     public function testGetAnnotation(): void
