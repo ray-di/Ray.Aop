@@ -74,7 +74,7 @@ $pointcut = new Pointcut(
     [new WeekendBlocker()]
 );
 $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
-$billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [], $bind);
+$billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, []);
 
 try {
     echo $billing->chargeOrder();
