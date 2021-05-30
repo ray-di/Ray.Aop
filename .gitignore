@@ -1,6 +1,7 @@
 /vendor/
 /build/
 /tests/tmp/
+/tests/aop_cache/
 /demo/tmp/
 /.phpcs-cache
 /.phpunit.result.cache
