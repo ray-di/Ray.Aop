@@ -4,7 +4,7 @@
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/Ray-Di/Ray.Aop/?branch=2.x)
 [![codecov](https://codecov.io/gh/ray-di/Ray.Aop/branch/2.x/graph/badge.svg?token=KCQXtu01zc)](https://codecov.io/gh/ray-di/Ray.Aop)
-[![Type Coverage](https://shepherd.dev/github/ray-di/Ray.Aop/coverage.svg)](https://shepherd.dev/github/bearsunday/Ray.Aop)
+[![Type Coverage](https://shepherd.dev/github/ray-di/Ray.Aop/coverage.svg)](https://shepherd.dev/github/ray-di/Ray.Aop)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/ray-di/Ray.Aop/Continuous%20Integration/2.x)](https://github.com/ray-di/Ray.Aop/actions)
 [![Total Downloads](https://poser.pugx.org/ray/aop/downloads)](https://packagist.org/packages/ray/aop)
 
@@ -74,7 +74,7 @@ $pointcut = new Pointcut(
     [new WeekendBlocker()]
 );
 $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
-$billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [], $bind);
+$billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, []);
 
 try {
     echo $billing->chargeOrder();
