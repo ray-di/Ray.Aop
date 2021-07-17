@@ -48,4 +48,9 @@ final class AnnotatedWithMatcher extends AbstractMatcher
 
         return (bool) $annotation;
     }
+
+    public function __wakeup()
+    {
+        $this->__construct();
+    }
 }
