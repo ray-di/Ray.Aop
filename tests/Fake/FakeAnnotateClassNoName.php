@@ -18,7 +18,7 @@ class FakeAnnotateClassNoName
     /**
      * @FakeMarker3
      * @FakeMarker2
-     * @FakeMarker
+     * @FakeMarker(1)
      */
     public function getDouble($a)
     {
