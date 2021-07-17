@@ -32,7 +32,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
     {
         /** @var array<class-string> $arguments */
         [$annotation] = $arguments;
-        $annotation = $this->reader->getClassAnnotation($class, $annotation); // @phpstan-ignore-line
+        $annotation = $this->reader->getClassAnnotation($class, $annotation);
 
         return (bool) $annotation;
     }
@@ -44,7 +44,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
     {
         /** @var array<class-string> $arguments */
         [$annotation] = $arguments;
-        $annotation = $this->reader->getMethodAnnotation($method, $annotation); // @phpstan-ignore-line
+        $annotation = $this->reader->getMethodAnnotation($method, $annotation);
 
         return (bool) $annotation;
     }
