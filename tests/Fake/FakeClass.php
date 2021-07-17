@@ -21,7 +21,7 @@ class FakeClass
     }
 
     /**
-     * @FakeMarker
+     * @FakeMarker(1)
      */
     public function add($n)
     {
