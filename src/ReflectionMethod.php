@@ -69,7 +69,10 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     }
 
     /**
-     * {@inheritdoc}
+     * @param class-string<T> $annotationName
+     * @return T|null
+     *
+     * @template T of object
      */
     public function getAnnotation(string $annotationName)
     {
