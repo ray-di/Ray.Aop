@@ -74,6 +74,8 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
      * @return T|null
      *
      * @template T of object
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
     public function getAnnotation(string $annotationName)
     {
