@@ -70,6 +70,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
 
     /**
      * @param class-string<T> $annotationName
+     *
      * @return T|null
      *
      * @template T of object
