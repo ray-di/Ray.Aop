@@ -85,9 +85,6 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->assertSame((array) $args, ['n' => 1]);
     }
 
-    /**
-     * @covers ReflectiveMethodInvocation::getNamedArguments
-     */
     public function testGetNamedArgumentsWithDefaultValue(): void
     {
         $invocation = new ReflectiveMethodInvocation(new FakeWeavedClass(), 'defaultValue', [1, null], [new FakeInterceptor(), new FakeInterceptor()]);
