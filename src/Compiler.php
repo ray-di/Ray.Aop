@@ -86,8 +86,8 @@ final class Compiler implements CompilerInterface
         if ($this->hasNoBinding($class, $bind)) {
             return $class;
         }
-
-        $aopClassName = ($this->aopClassName)($class, $bind->toString(''));
+        $classReflection = new ReflectionClass($class);
+        $aopClassName = sprintf('%s_%s', $class, filemtime($classReflection->getFileName()));
         if (class_exists($aopClassName, false)) {
             return $aopClassName;
         }
@@ -128,6 +128,7 @@ final class Compiler implements CompilerInterface
      */
     private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind): void
     {
+        array_map('unlink', glob($this->classDir . '/' . preg_replace('/\\\/', '_', $sourceClass->name) . '_*.php'));
         $code = $this->codeGen->generate($sourceClass, $bind);
         $file = $code->save($this->classDir, $aopClassName);
         assert(file_exists($file));

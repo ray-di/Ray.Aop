@@ -8,3 +8,4 @@
 /coverage.xml
 /vendor-bin/**/vendor
 /.phpunit-cache
+.idea
