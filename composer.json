@@ -33,7 +33,7 @@
         "psr-4": {
             "Ray\\Aop\\": ["tests/", "tests/Fake/"]
         },
-        "files": ["tests/Fake/FakeGlobalNamespaced.php"]
+        "files": ["tests/Fake/FakeGlobalNamespaced.php", "tests/Fake/FakeGlobalEmptyNamespaced.php"]
     },
     "suggest": {
         "ray/di": "A dependency injection framework"
