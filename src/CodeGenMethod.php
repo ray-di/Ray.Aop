@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -28,9 +27,6 @@ final class CodeGenMethod
     /** @var VisitorFactory */
     private $visitorFactory;
 
-    /**
-     * @throws AnnotationException
-     */
     public function __construct(
         Parser $parser
     ) {
