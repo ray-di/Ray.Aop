@@ -19,6 +19,7 @@ use function assert;
 use function class_exists;
 use function in_array;
 
+/** @SuppressWarnings(PHPMD.CouplingBetweenObjects) */
 final class CodeGenMethod
 {
     /** @var Parser */
