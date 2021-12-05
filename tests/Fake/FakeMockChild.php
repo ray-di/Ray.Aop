@@ -6,5 +6,4 @@ namespace Ray\Aop;
 
 class FakeMockChild extends FakeMock
 {
-
 }
