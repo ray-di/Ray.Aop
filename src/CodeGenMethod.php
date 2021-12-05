@@ -129,8 +129,9 @@ final class CodeGenMethod
         ReflectionMethod $bindingMethod,
         CodeVisitor $code
     ): ClassMethod {
+        $bindingMethodName = $bindingMethod->getName();
         foreach ($code->classMethod as $classMethod) {
-            if ($classMethod->name->name === $bindingMethod->getName()) {
+            if ($classMethod->name->name === $bindingMethodName) {
                 return $classMethod;
             }
         }
