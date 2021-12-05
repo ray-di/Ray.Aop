@@ -72,6 +72,9 @@ final class CodeGenMethod
         return new ReflectionClass($className);
     }
 
+   /**
+    * @return class-string
+    */
     private function getClassName(CodeVisitor $code): string
     {
         assert($code->class instanceof Class_);
