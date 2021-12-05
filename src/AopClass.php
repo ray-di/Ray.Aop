@@ -44,7 +44,7 @@ final class AopClass
     public function __invoke(CodeVisitor $visitor, ReflectionClass $sourceClass, BindInterface $bind): Class_
     {
         assert($visitor->class instanceof Class_);
-        $methods = $this->codeGenMethod->getMethods($bind, $visitor);
+        $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $visitor);
         $propStms = ($this->aopProps)($sourceClass);
         $classStm = $visitor->class;
         $newClassName = ($this->aopClassName)((string) $visitor->class->name, $bind->toString(''));

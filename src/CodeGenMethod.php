@@ -16,7 +16,6 @@ use ReflectionMethod;
 
 use function array_keys;
 use function assert;
-use function class_exists;
 use function in_array;
 
 /** @SuppressWarnings(PHPMD.CouplingBetweenObjects) */
@@ -36,12 +35,13 @@ final class CodeGenMethod
     }
 
     /**
+     * @param ReflectionClass<object> $reflectionClass
+     *
      * @return ClassMethod[]
      */
-    public function getMethods(BindInterface $bind, CodeVisitor $code): array
+    public function getMethods(ReflectionClass $reflectionClass, BindInterface $bind, CodeVisitor $code): array
     {
         $bindingMethods = array_keys($bind->getBindings());
-        $reflectionClass = $this->getReflectionClass($code);
         $reflectionMethods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
         $methods = [];
         foreach ($reflectionMethods as $reflectionMethod) {
@@ -59,47 +59,6 @@ final class CodeGenMethod
         }
 
         return $methods;
-    }
-
-    /** @return ReflectionClass<object>  */
-    private function getReflectionClass(CodeVisitor $code): ReflectionClass
-    {
-        $className = $this->getClassName($code);
-
-        return new ReflectionClass($className);
-    }
-
-   /**
-    * @return class-string
-    */
-    private function getClassName(CodeVisitor $code): string
-    {
-        assert($code->class instanceof Class_);
-        assert($code->class->name instanceof Identifier);
-
-        $className = $code->class->name->name;
-        $namespace = $this->getNamespace($code);
-        $classString = $namespace === null ? $className : $namespace . '\\' . $className;
-
-        if (! class_exists($classString)) {
-            throw new InvalidSourceClassException($classString); // @codeCoverageIgnore
-        }
-
-        return $classString;
-    }
-
-    private function getNamespace(CodeVisitor $code): ?string
-    {
-        if ($code->namespace === null) {
-            return null;
-        }
-
-        $namespace = $code->namespace->name;
-        if ($namespace === null) {
-            return null;
-        }
-
-        return $namespace->toString();
     }
 
     /**
