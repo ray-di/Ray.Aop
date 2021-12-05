@@ -65,9 +65,6 @@ final class CodeGenMethod
     private function getReflectionClass(CodeVisitor $code): ReflectionClass
     {
         $className = $this->getClassName($code);
-        if (! class_exists($className)) {
-            throw new InvalidSourceClassException($className); // @codeCoverageIgnore
-        }
 
         return new ReflectionClass($className);
     }
@@ -82,12 +79,13 @@ final class CodeGenMethod
 
         $className = $code->class->name->name;
         $namespace = $this->getNamespace($code);
+        $classString = $namespace === null ? $className : $namespace . '\\' . $className;
 
-        if ($namespace === null) {
-            return $className;
+        if (! class_exists($classString)) {
+            throw new InvalidSourceClassException($classString); // @codeCoverageIgnore
         }
 
-        return $namespace . '\\' . $className;
+        return $classString;
     }
 
     private function getNamespace(CodeVisitor $code): ?string
