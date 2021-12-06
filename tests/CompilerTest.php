@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use FakeGlobalEmptyNamespaced;
 use FakeGlobalNamespaced;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -20,6 +21,7 @@ use function assert;
 use function class_exists;
 use function file_get_contents;
 use function passthru;
+use function property_exists;
 use function serialize;
 use function unserialize;
 
@@ -115,6 +117,26 @@ class CompilerTest extends TestCase
         $num = new FakeNum();
         $num->value = 1;
         $result = $weaved->returnSame(1);
+        $this->assertSame(2, $result);
+    }
+
+    public function testParentMethodIntercept(): void
+    {
+        $mock = $this->compiler->newInstance(FakeMockChild::class, [], $this->bind);
+        assert($mock instanceof FakeMockChild);
+        assert(property_exists($mock, 'bindings'));
+        $mock->bindings = $this->bind->getBindings();
+        $result = $mock->returnSame(1);
+        $this->assertSame(2, $result);
+    }
+
+    public function testParentOfParentMethodIntercept(): void
+    {
+        $mock = $this->compiler->newInstance(FakeMockChildChild::class, [], $this->bind);
+        assert($mock instanceof FakeMockChild);
+        assert(property_exists($mock, 'bindings'));
+        $mock->bindings = $this->bind->getBindings();
+        $result = $mock->returnSame(1);
         $this->assertSame(2, $result);
     }
 
@@ -290,6 +312,14 @@ class CompilerTest extends TestCase
         $mock = $this->compiler->newInstance(FakeGlobalNamespaced::class, [], $this->bind);
         assert($mock instanceof FakeGlobalNamespaced);
         $this->assertInstanceOf(FakeGlobalNamespaced::class, $mock);
+        $this->assertSame(2, $mock->returnSame(1));
+    }
+
+    public function testEmptyNamespaceClass(): void
+    {
+        $mock = $this->compiler->newInstance(FakeGlobalEmptyNamespaced::class, [], $this->bind);
+        assert($mock instanceof FakeGlobalEmptyNamespaced);
+        $this->assertInstanceOf(FakeGlobalEmptyNamespaced::class, $mock);
         $this->assertSame(2, $mock->returnSame(1));
     }
 

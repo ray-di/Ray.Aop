@@ -4,45 +4,51 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\AnnotationException;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeAbstract;
 use PhpParser\Parser;
+use Ray\Aop\Exception\InvalidSourceClassException;
+use ReflectionClass;
+use ReflectionMethod;
 
 use function array_keys;
 use function assert;
 use function in_array;
 
+/** @SuppressWarnings(PHPMD.CouplingBetweenObjects) */
 final class CodeGenMethod
 {
     /** @var Parser */
     private $parser;
 
-    /**
-     * @throws AnnotationException
-     */
+    /** @var VisitorFactory */
+    private $visitorFactory;
+
     public function __construct(
         Parser $parser
     ) {
         $this->parser = $parser;
+        $this->visitorFactory = new VisitorFactory($parser);
     }
 
     /**
+     * @param ReflectionClass<object> $reflectionClass
+     *
      * @return ClassMethod[]
      */
-    public function getMethods(BindInterface $bind, CodeVisitor $code): array
+    public function getMethods(ReflectionClass $reflectionClass, BindInterface $bind, CodeVisitor $code): array
     {
         $bindingMethods = array_keys($bind->getBindings());
-        $classMethods = $code->classMethod;
+        $reflectionMethods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
         $methods = [];
-        foreach ($classMethods as $classMethod) {
-            $methodName = $classMethod->name->name;
+        foreach ($reflectionMethods as $reflectionMethod) {
+            $methodName = $reflectionMethod->getName();
             $isBindingMethod = in_array($methodName, $bindingMethods, true);
-            $isPublic = $classMethod->flags === Class_::MODIFIER_PUBLIC;
-            if ($isBindingMethod && $isPublic) {
+            if ($isBindingMethod) {
+                $classMethod = $this->getClassMethod($reflectionClass, $reflectionMethod, $code);
                 $methodInsideStatements = $this->getTemplateMethodNodeStmts(
                     $classMethod->getReturnType()
                 );
@@ -74,5 +80,28 @@ final class CodeGenMethod
     private function isReturnVoid(?NodeAbstract $returnType): bool
     {
         return $returnType instanceof Identifier && $returnType->name === 'void';
+    }
+
+    /** @param ReflectionClass<object> $sourceClass */
+    private function getClassMethod(
+        ReflectionClass $sourceClass,
+        ReflectionMethod $bindingMethod,
+        CodeVisitor $code
+    ): ClassMethod {
+        $bindingMethodName = $bindingMethod->getName();
+        foreach ($code->classMethod as $classMethod) {
+            if ($classMethod->name->name === $bindingMethodName) {
+                return $classMethod;
+            }
+        }
+
+        $parentClass = $sourceClass->getParentClass();
+        if ($parentClass === false) {
+            throw new InvalidSourceClassException($sourceClass->getName()); // @codeCoverageIgnore
+        }
+
+        $code = ($this->visitorFactory)($parentClass);
+
+        return $this->getClassMethod($parentClass, $bindingMethod, $code);
     }
 }
