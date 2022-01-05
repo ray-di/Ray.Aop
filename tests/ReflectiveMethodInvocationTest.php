@@ -98,7 +98,7 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->assertInstanceOf(FakeMarker::class, $fakeMarker);
     }
 
-    public function testGetClassAnnotati(): void
+    public function testGetClassAnnotation(): void
     {
         $fakeMarker = $this->invocation->getMethod()->getDeclaringClass()->getAnnotation(FakeClassMarker::class);
         $this->assertInstanceOf(FakeClassMarker::class, $fakeMarker);
