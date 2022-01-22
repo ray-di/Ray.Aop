@@ -16,10 +16,12 @@ interface CompilerInterface
     /**
      * Return new instance weaved interceptor(s)
      *
-     * @param class-string      $class
+     * @param class-string<T>   $class
      * @param array<int, mixed> $args
      *
-     * @return object
+     * @return T
+     *
+     * @template T of object
      */
     public function newInstance(string $class, array $args, BindInterface $bind);
 }

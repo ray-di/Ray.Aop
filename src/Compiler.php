@@ -75,6 +75,8 @@ final class Compiler implements CompilerInterface
             $instance->bindings = $bind->getBindings();
         }
 
+        assert($instance instanceof $class);
+
         return $instance;
     }
 

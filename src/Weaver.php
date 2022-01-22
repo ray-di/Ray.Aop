@@ -37,8 +37,12 @@ final class Weaver
     }
 
     /**
-     * @param class-string      $class
+     * @param class-string<T>   $class
      * @param array<int, mixed> $args
+     *
+     * @return T
+     *
+     * @template T of object
      */
     public function newInstance(string $class, array $args): object
     {
@@ -46,6 +50,7 @@ final class Weaver
         $instance = (new ReflectionClass($aopClass))->newInstanceArgs($args);
         assert(isset($instance->bindings));
         $instance->bindings = $this->bind->getBindings();
+        assert($instance instanceof $class);
 
         return $instance;
     }
