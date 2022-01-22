@@ -65,6 +65,7 @@ final class Compiler implements CompilerInterface
 
     /**
      * {@inheritdoc}
+     *
      * @psalm-suppress InvalidReturnType
      */
     public function newInstance(string $class, array $args, BindInterface $bind)
