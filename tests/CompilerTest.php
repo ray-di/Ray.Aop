@@ -194,6 +194,7 @@ class CompilerTest extends TestCase
     public function testSerialize(): void
     {
         $compiler = unserialize(serialize($this->compiler));
+        assert($compiler instanceof Compiler);
         $class = $compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
     }

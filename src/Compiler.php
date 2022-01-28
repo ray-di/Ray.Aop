@@ -64,7 +64,9 @@ final class Compiler implements CompilerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @template T of object
      */
     public function newInstance(string $class, array $args, BindInterface $bind)
     {
@@ -74,6 +76,8 @@ final class Compiler implements CompilerInterface
         if (isset($instance->bindings)) {
             $instance->bindings = $bind->getBindings();
         }
+
+        assert($instance instanceof $class);
 
         return $instance;
     }
