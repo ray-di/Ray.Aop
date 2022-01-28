@@ -64,9 +64,9 @@ final class Compiler implements CompilerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
-     * @psalm-suppress InvalidReturnType
+     * @template T of object
      */
     public function newInstance(string $class, array $args, BindInterface $bind)
     {
@@ -79,7 +79,6 @@ final class Compiler implements CompilerInterface
 
         assert($instance instanceof $class);
 
-        /** @psalm-suppress InvalidReturnStatement */
         return $instance;
     }
 
