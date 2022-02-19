@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
@@ -31,7 +32,9 @@ final class VisitorFactory
     public function __invoke(ReflectionClass $class): CodeVisitor
     {
         $traverser = new NodeTraverser();
+        $nameResolver = new NameResolver();
         $visitor = new CodeVisitor();
+        $traverser->addVisitor($nameResolver);
         $traverser->addVisitor($visitor);
         $fileName = $class->getFileName();
         if (is_bool($fileName)) {
