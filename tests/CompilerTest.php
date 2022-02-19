@@ -137,7 +137,7 @@ class CompilerTest extends TestCase
         $mock = $this->compiler->newInstance(FakeTypedMockChild::class, [], $bind);
         assert($mock instanceof FakeTypedMockChild);
         assert(property_exists($mock, 'bindings'));
-        $mock->bindings = $this->bind->getBindings();
+        $mock->bindings = $bind->getBindings();
         $result = $mock->passIterator(new ArrayIterator());
         $this->assertInstanceOf(ArrayIterator::class, $result);
     }
