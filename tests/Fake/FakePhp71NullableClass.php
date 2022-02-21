@@ -44,6 +44,7 @@ class FakePhp71NullableClass
     {
     }
 
+    /** @FakeMarker3 */
     #[FakeMarker3]
     public function attributed()
     {

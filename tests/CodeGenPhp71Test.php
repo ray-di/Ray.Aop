@@ -98,4 +98,13 @@ class CodeGenPhp71Test extends TestCase
         $expected = '#[\Ray\Aop\Annotation\FakeMarker3]';
         $this->assertStringContainsString($expected, $code->code);
     }
+
+    public function testUseAnnotation(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('attributed', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $expected = "use Ray\\Aop\\Annotation\\FakeMarker3;\n";
+        $this->assertStringContainsString($expected, $code->code);
+    }
 }
