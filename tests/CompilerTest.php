@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use ArrayIterator;
 use Doctrine\Common\Annotations\AnnotationReader;
 use FakeGlobalEmptyNamespaced;
 use FakeGlobalNamespaced;
@@ -128,6 +129,17 @@ class CompilerTest extends TestCase
         $mock->bindings = $this->bind->getBindings();
         $result = $mock->returnSame(1);
         $this->assertSame(2, $result);
+    }
+
+    public function testTypedParentMethodIntercept(): void
+    {
+        $bind = (new Bind())->bindInterceptors('passIterator', [new NullInterceptor()]);
+        $mock = $this->compiler->newInstance(FakeTypedMockChild::class, [], $bind);
+        assert($mock instanceof FakeTypedMockChild);
+        assert(property_exists($mock, 'bindings'));
+        $mock->bindings = $bind->getBindings();
+        $result = $mock->passIterator(new ArrayIterator());
+        $this->assertInstanceOf(ArrayIterator::class, $result);
     }
 
     public function testParentOfParentMethodIntercept(): void
