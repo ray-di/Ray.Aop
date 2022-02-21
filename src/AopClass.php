@@ -45,7 +45,7 @@ final class AopClass
     {
         assert($visitor->class instanceof Class_);
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $visitor);
-        $propStms = ($this->aopProps)($sourceClass);
+        $propStms = ($this->aopProps)($sourceClass, $visitor);
         $classStm = $visitor->class;
         $newClassName = ($this->aopClassName)((string) $visitor->class->name, $bind->toString(''));
         $classStm->name = new Identifier($newClassName);
