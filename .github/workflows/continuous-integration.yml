@@ -46,6 +46,14 @@ jobs:
             dependencies: lowest
             os: ubuntu-latest
             experimental: false
+          - php-version: "8.1"
+            os: windows-latest
+            dependencies: highest
+            experimental: false
+          - php-version: "8.1"
+            os: macos-latest
+            dependencies: highest
+            experimental: false
           - php-version: "8.2"
             dependencies: lowest-ignore
             os: ubuntu-latest
