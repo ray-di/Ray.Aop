@@ -3,9 +3,9 @@
 /demo                            export-ignore
 /vendor-bin                      export-ignore
 /.gitattributes                  export-ignore
+/.github                         export-ignore
 /.gitignore                      export-ignore
 /.scrutinizer.yml                export-ignore
-/php.ini                         export-ignore
 /codecov.yml                     export-ignore
 /phpcs.xml                       export-ignore
 /phpmd.xml                       export-ignore
