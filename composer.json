@@ -55,5 +55,6 @@
         "metrics": ["./vendor/bin/phpmetrics --report-html=build/metrics --exclude=Exception src"],
         "phpmd": ["./vendor/bin/phpmd src text ./phpmd.xml"],
         "build": ["@cs", "@sa", "@pcov", "@metrics"]
-    }
+    },
+    "minimum-stability": "alpha"
 }

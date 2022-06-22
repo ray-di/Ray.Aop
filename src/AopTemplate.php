@@ -25,7 +25,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
     {
         if (! $this->isAspect) {
             $this->isAspect = true;
-            call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
+            call_user_func_array([parent::class, __FUNCTION__], func_get_args());
 
             return; 
         }
@@ -50,7 +50,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
         if (! $this->isAspect) {
             $this->isAspect = true;
 
-            return call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
+            return call_user_func_array([parent::class, __FUNCTION__], func_get_args());
         }
         $this->isAspect = false;
         $result = (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
