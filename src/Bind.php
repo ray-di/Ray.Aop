@@ -42,6 +42,8 @@ final class Bind implements BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
         $class = new ReflectionClass($class);
+        $atributeIsClass = $this->checkAttributeInClass($class, $pointcuts);
+        $this->methodMatch->setAtributeIsClass($atributeIsClass);
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
             ($this->methodMatch)($class, $method, $pointcuts);
@@ -98,5 +100,17 @@ final class Bind implements BindInterface
         }
 
         return $keyPointcuts;
+    }
+
+
+    private function checkAttributeInClass(ReflectionClass $class, array $pointcuts): bool
+    {
+        foreach ($class->getAttributes() as $attribute) {
+            if ($attribute->getName() === key($pointcuts)) {
+                return true;
+            }
+        }
+
+        return true;
     }
 }

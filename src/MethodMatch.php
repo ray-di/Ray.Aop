@@ -20,6 +20,8 @@ final class MethodMatch
     /** @var BindInterface */
     private $bind;
 
+    private bool $attributeIsClass = false;
+
     public function __construct(BindInterface $bind)
     {
         $this->bind = $bind;
@@ -56,7 +58,7 @@ final class MethodMatch
     private function annotatedMethodMatchBind(ReflectionClass $class, ReflectionMethod $method, Pointcut $pointCut): void
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
-        if (! $isMethodMatch) {
+        if ((!$isMethodMatch && !$this->attributeIsClass) || str_starts_with($method->name, '__construct')) {
             return;
         }
 
@@ -93,5 +95,10 @@ final class MethodMatch
         }
 
         return $pointcuts;
+    }
+
+    public function setAtributeIsClass(bool $atributeIsClass): void
+    {
+        $this->attributeIsClass = $atributeIsClass;
     }
 }
