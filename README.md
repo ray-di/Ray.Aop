@@ -89,6 +89,80 @@ Putting it all together, (and waiting until Saturday), we see the method is inte
 ```
 chargeOrder not allowed on weekends!
 ```
+## Example: Forbidding all method calls on weekends
+
+To illustrate how method interceptors work with Ray.Aop, we'll forbid calls to our pizza billing system on weekends. The delivery guys only work Monday thru Friday so we'll prevent pizza from being ordered when it can't be delivered! This example is structurally similar to use of AOP for authorization.
+
+To mark select methods as weekdays-only, we define an attribute.
+
+```php
+<?php
+#[Attribute(Attribute::TARGET_METHOD)]
+final class NotOnWeekends extends \Ray\Aop\Annotation\AllPublicMethods
+{
+}
+```
+
+...and apply it to the class that need to be intercepted:
+
+```php
+<?php
+#[NotOnWeekends] 
+class RealBillingService
+{
+    public function chargeOrder(PizzaOrder $order, CreditCard $creditCard)
+    {
+```
+
+Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling `$invocation->proceed()`:
+
+```php
+<?php
+class WeekendBlocker implements MethodInterceptor
+{
+    public function invoke(MethodInvocation $invocation)
+    {
+        $today = getdate();
+        if ($today['weekday'][0] === 'S') {
+            throw new \RuntimeException(
+                $invocation->getMethod()->getName() . " not allowed on weekends!"
+            );
+        }
+        return $invocation->proceed();
+    }
+}
+```
+
+Finally, we configure everything. In this case we match any class with our `@NotOnWeekends` annotation:
+
+```php
+<?php
+
+use Ray\Aop\Sample\Annotation\NotOnWeekends;
+use Ray\Aop\Sample\Annotation\RealBillingService;
+
+$pointcut = new Pointcut(
+    (new Matcher())->any(),
+    (new Matcher())->annotatedWith(NotOnWeekends::class),
+    [new WeekendBlocker()]
+);
+$bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
+$billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, []);
+
+try {
+    echo $billing->chargeOrder();
+} catch (\RuntimeException $e) {
+    echo $e->getMessage() . "\n";
+    exit(1);
+}
+```
+
+Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:
+
+```
+chargeOrder not allowed on weekends!
+```
+
 
 ## Explicit method name match
 
