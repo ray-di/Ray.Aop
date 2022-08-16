@@ -106,11 +106,14 @@ final class Bind implements BindInterface
     private function checkAttributeInClass(ReflectionClass $class, array $pointcuts): bool
     {
         foreach ($class->getAttributes() as $attribute) {
-            if ($attribute->getName() === key($pointcuts)) {
+            var_dump($attribute->getName());
+            if ($attribute->getName() === key($pointcuts) &&
+                method_exists($attribute->newInstance(),'isAllMethods') &&
+                $attribute->newInstance()->isAllMethods()) {
                 return true;
             }
         }
 
-        return true;
+        return false;
     }
 }

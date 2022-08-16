@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
+use Ray\Aop\Annotation\FakeAllPublicMethods;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker2;
 use Ray\Aop\Annotation\FakeMarker3;
@@ -108,6 +109,19 @@ class BindTest extends TestCase
         $actual = $this->bind->getBindings();
         $expect = [
             'getDouble' => [$onion4, $onion3, $onion2, $onion1],
+        ];
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testAllPublicMethodsAnnotation(): void
+    {
+        $onion1 = new FakeOnionInterceptor1();
+        $pointcut1 = new Pointcut((new Matcher())->any(), (new Matcher())->annotatedWith(FakeAllPublicMethods::class), [$onion1]);
+        $this->bind->bind(FakeAnnotateClassAllPublicMethods::class, [$pointcut1]);
+        $actual = $this->bind->getBindings();
+        $expect = [
+            'getDouble' => [$onion1],
+            'getSome' => [$onion1],
         ];
         $this->assertSame($expect, $actual);
     }
