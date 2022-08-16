@@ -14,9 +14,7 @@ use Attribute;
 class AllPublicMethods
 {
     private bool $allMethods = true;
-    /**
-     * @return bool
-     */
+
     final public function isAllMethods(): bool
     {
         return $this->allMethods;
