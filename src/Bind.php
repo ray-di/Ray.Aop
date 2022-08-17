@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationException;
+use ReflectionAttribute;
 use ReflectionClass;
 
 use function array_key_exists;
 use function array_merge;
+use function method_exists;
 use function serialize;
 
 final class Bind implements BindInterface
@@ -42,6 +44,8 @@ final class Bind implements BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
         $class = new ReflectionClass($class);
+        $atributeIsClass = $this->checkAttributeInClass($class, $pointcuts);
+        $this->methodMatch->setAtributeIsClass($atributeIsClass);
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
             ($this->methodMatch)($class, $method, $pointcuts);
@@ -98,5 +102,24 @@ final class Bind implements BindInterface
         }
 
         return $keyPointcuts;
+    }
+
+    /**
+     * @param Pointcut[] $pointcuts
+     */
+    private function checkAttributeInClass(ReflectionClass $class, array $pointcuts): bool
+    {
+        foreach ($class->getAttributes() as $attribute) {
+            if (
+                $attribute instanceof ReflectionAttribute
+                && array_key_exists($attribute->getName(), $pointcuts)
+                && method_exists($attribute->newInstance(), 'isAllMethods')
+                && $attribute->newInstance()->isAllMethods()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
