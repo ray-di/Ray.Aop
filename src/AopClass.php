@@ -14,6 +14,7 @@ use ReflectionClass;
 
 use function array_merge;
 use function assert;
+use function class_exists;
 use function strpos;
 use function strrchr;
 use function substr;
@@ -50,8 +51,9 @@ final class AopClass
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $visitor);
         $propStms = ($this->aopProps)($sourceClass, $visitor);
         $classStm = $visitor->class;
+        assert(class_exists($sourceClass->name));
         $newClassName = ($this->aopClassName)($sourceClass->name, $bind->toString(''));
-        $shortClassName = strpos($newClassName, '\\') === false ? $newClassName : substr(strrchr($newClassName, '\\'), 1);
+        $shortClassName = strpos($newClassName, '\\') === false ? $newClassName : substr((string) strrchr($newClassName, '\\'), 1);
         $classStm->name = new Identifier($shortClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('WeavedInterface');

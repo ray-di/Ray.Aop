@@ -18,9 +18,12 @@ final class AopClassName
         $this->classDir = $classDir;
     }
 
+    /**
+     * @param class-string $class
+     */
     public function __invoke(string $class, string $bindName): string
     {
-        $fileTime = filemtime((new ReflectionClass($class))->getFileName());
+        $fileTime = filemtime((string) (new ReflectionClass($class))->getFileName());
 
         return sprintf('%s_%s', $class, crc32($fileTime . $bindName . $this->classDir));
     }
