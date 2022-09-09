@@ -63,7 +63,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
 
         assert(class_exists($this->class));
         /** @var list<object> $annotations */
-        $annotations = ServiceLocator::getReader()->getMethodAnnotations(new \ReflectionMethod($this->class, (string) $this->name));
+        $annotations = ServiceLocator::getReader()->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
 
         return $annotations;
     }

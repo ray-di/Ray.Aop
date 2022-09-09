@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use function crc32;
+use function filemtime;
 use function sprintf;
 
 final class AopClassName
@@ -19,6 +20,8 @@ final class AopClassName
 
     public function __invoke(string $class, string $bindName): string
     {
-        return sprintf('%s_%s', $class, crc32($bindName . $this->classDir));
+        $fileTime = filemtime((new ReflectionClass($class))->getFileName());
+
+        return sprintf('%s_%s', $class, crc32($fileTime . $bindName . $this->classDir));
     }
 }
