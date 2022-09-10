@@ -23,15 +23,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
     private $isAspect = true;
     public function templateMethod($a, $b)
     {
-        if (! $this->isAspect) {
-            $this->isAspect = true;
-            call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
-
-            return; 
-        }
-        $this->isAspect = false;
-        (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
-        $this->isAspect = true;
+        $this->_intercept(func_get_args(), __FUNCTION__);
     }
 }
 EOT;
@@ -47,16 +39,7 @@ class AopTemplate extends \Ray\Aop\FakeMock implements Ray\Aop\WeavedInterface
     private $isAspect = true;
     public function templateMethod($a, $b)
     {
-        if (! $this->isAspect) {
-            $this->isAspect = true;
-
-            return call_user_func_array([$this, 'parent::' . __FUNCTION__], func_get_args());
-        }
-        $this->isAspect = false;
-        $result = (new Invocation($this, __FUNCTION__, func_get_args(), $this->bindings[__FUNCTION__]))->proceed();
-        $this->isAspect = true;
-        
-        return $result;
+        return $this->_intercept(func_get_args(), __FUNCTION__);
     }
 }
 EOT;

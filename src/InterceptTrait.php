@@ -8,7 +8,7 @@ use Ray\Aop\ReflectiveMethodInvocation as Invocation;
 
 use function call_user_func_array;
 
-trait AopTrait
+trait InterceptTrait
 {
     /** @var array<string, string> */
     private $bind;
@@ -24,7 +24,7 @@ trait AopTrait
      *
      * @return mixed
      */
-    private function __aop(array $args, string $func)
+    private function _intercept(array $args, string $func)
     {
         if (! $this->isAspect) {
             $this->isAspect = true;

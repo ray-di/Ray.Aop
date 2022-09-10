@@ -38,7 +38,7 @@ final class AopClass
         $this->aopClassName = $aopClassName;
         $this->codeGenMethod = new CodeGenMethod($parser);
         $this->aopProps = new AopProps($factory);
-        $this->traitStmt = $factory->useTrait('\Ray\Aop\AopTrait')->getNode();
+        $this->traitStmt = $factory->useTrait('\Ray\Aop\InterceptTrait')->getNode();
     }
 
     /**

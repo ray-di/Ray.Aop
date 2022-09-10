@@ -35,17 +35,6 @@ class AopProps
     {
         $pros = [];
         $pros[] = $this->factory
-            ->property('bind')
-            ->makePublic()
-            ->getNode();
-
-        $pros[] =
-            $this->factory->property('bindings')
-                ->makePublic()
-                ->setDefault([])
-                ->getNode();
-
-        $pros[] = $this->factory
             ->property('methodAnnotations')
             ->setDefault($this->getMethodAnnotations($class))
             ->makePublic()
@@ -54,11 +43,6 @@ class AopProps
             ->property('classAnnotations')
             ->setDefault($this->getClassAnnotation($class))
             ->makePublic()
-            ->getNode();
-        $pros[] = $this->factory
-            ->property('isAspect')
-            ->makePrivate()
-            ->setDefault(true)
             ->getNode();
 
         return $pros;
