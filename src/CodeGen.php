@@ -42,8 +42,6 @@ final class CodeGen implements CodeGenInterface
         $classStm = ($this->aopClass)($visitor, $sourceClass, $bind);
         $ns = $this->getNamespace($visitor);
         $stmt = $this->factory->namespace($ns)
-            ->addStmt($this->factory->use(WeavedInterface::class))
-            ->addStmt($this->factory->use(ReflectiveMethodInvocation::class)->as('Invocation'))
             ->addStmts($visitor->use)
             ->addStmt($classStm)
             ->getNode();

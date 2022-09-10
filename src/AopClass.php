@@ -56,7 +56,7 @@ final class AopClass
         $shortClassName = strpos($newClassName, '\\') === false ? $newClassName : substr((string) strrchr($newClassName, '\\'), 1);
         $classStm->name = new Identifier($shortClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
-        $classStm->implements[] = new Name('WeavedInterface');
+        $classStm->implements[] = new Name('\Ray\Aop\WeavedInterface');
         /** @var list<Stmt> $stmts */
         $stmts = array_merge([$this->traitStmt], $methods);
         $classStm->stmts = $stmts;
