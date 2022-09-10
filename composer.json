@@ -20,7 +20,10 @@
         "phpunit/phpunit": "^9.3"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
     },
     "autoload": {
         "psr-4": {
@@ -40,7 +43,6 @@
     },
     "scripts" :{
         "post-install-cmd": ["@composer bin all install --ansi"],
-        "post-update-cmd": ["@composer bin all update --ansi"],
         "test": ["./vendor/bin/phpunit"],
         "tests": ["@cs", "@test", "@sa"],
         "coverage": ["php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"],
@@ -52,5 +54,11 @@
         "metrics": ["./vendor/bin/phpmetrics --report-html=build/metrics --exclude=Exception src"],
         "phpmd": ["./vendor/bin/phpmd src text ./phpmd.xml"],
         "build": ["@cs", "@sa", "@pcov", "@metrics"]
+    },
+    "extra": {
+        "bamarni-bin": {
+            "forward-command": true,
+            "bin-links": true
+        }
     }
 }
