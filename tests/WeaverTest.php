@@ -67,6 +67,7 @@ class WeaverTest extends TestCase
     public function testCachedWeaver(Weaver $weaver): void
     {
         $weaver = unserialize(serialize($weaver));
+        /** @var Weaver $weaver */
         $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
         assert($weaved instanceof FakeWeaverMock);
         $result = $weaved->returnSame(1);
