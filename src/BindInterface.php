@@ -32,10 +32,6 @@ interface BindInterface
 
     /**
      * Return hash
-     *
-     * @param string $salt
-     *
-     * @return string
      */
-    public function toString($salt);
+    public function __toString(): string;
 }

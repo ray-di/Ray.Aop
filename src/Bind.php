@@ -74,10 +74,8 @@ final class Bind implements BindInterface
     /**
      * {@inheritdoc}
      */
-    public function toString($salt): string
+    public function __toString(): string
     {
-        unset($salt);
-
         return serialize($this->bindings);
     }
 

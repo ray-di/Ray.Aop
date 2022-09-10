@@ -52,7 +52,7 @@ final class AopClass
         $propStms = ($this->aopProps)($sourceClass, $visitor);
         $classStm = $visitor->class;
         assert(class_exists($sourceClass->name));
-        $newClassName = ($this->aopClassName)($sourceClass->name, $bind->toString(''));
+        $newClassName = ($this->aopClassName)($sourceClass->name, (string) $bind);
         $shortClassName = strpos($newClassName, '\\') === false ? $newClassName : substr((string) strrchr($newClassName, '\\'), 1);
         $classStm->name = new Identifier($shortClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);

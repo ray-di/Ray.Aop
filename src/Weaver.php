@@ -30,7 +30,7 @@ final class Weaver
     public function __construct(BindInterface $bind, string $classDir)
     {
         $this->bind = $bind;
-        $this->bindName = $bind->toString('');
+        $this->bindName = (string) $bind;
         $this->compiler = new Compiler($classDir);
         $this->classDir = $classDir;
         $this->aopClassName = new AopClassName($classDir);
