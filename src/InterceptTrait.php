@@ -24,7 +24,7 @@ trait InterceptTrait
      *
      * @return mixed
      */
-    private function _intercept(array $args, string $func)
+    private function _intercept(array $args, string $func) // phpcs:ignore
     {
         if (! $this->isAspect) {
             $this->isAspect = true;
