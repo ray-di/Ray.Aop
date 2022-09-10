@@ -93,14 +93,15 @@ final class Compiler implements CompilerInterface
             return $class;
         }
 
-        $aopClassName = ($this->aopClassName)($class, (string) $bind);
-        if (class_exists($aopClassName, false)) {
-            return $aopClassName;
+        $aopClass = ($this->aopClassName)($class, (string) $bind);
+        if (class_exists($aopClass, false)) {
+            return $aopClass;
         }
 
-        $this->requireFile($aopClassName, new ReflectionClass($class), $bind);
+        /** @var class-string $aopClass */
+        $this->requireFile($aopClass, new ReflectionClass($class), $bind);
 
-        return $aopClassName;
+        return $aopClass;
     }
 
     /**
@@ -130,6 +131,7 @@ final class Compiler implements CompilerInterface
     }
 
     /**
+     * @param class-string             $aopClassName
      * @param \ReflectionClass<object> $sourceClass
      */
     private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind): void
