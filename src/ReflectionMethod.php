@@ -35,10 +35,8 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
         assert($parencClass instanceof \ReflectionClass);
         $originalClass = $parencClass->name;
         assert(class_exists($originalClass));
-        $class = new ReflectionClass($originalClass);
-        $class->setObject($this->object);
 
-        return $class;
+        return new ReflectionClass($originalClass);
     }
 
     /**

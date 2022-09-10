@@ -6,9 +6,6 @@ namespace Ray\Aop;
 
 use Ray\ServiceLocator\ServiceLocator;
 
-use function is_string;
-use function unserialize;
-
 /**
  * @extends \ReflectionClass<object>
  */
