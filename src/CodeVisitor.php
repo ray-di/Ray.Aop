@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 use Ray\Aop\Exception\MultipleClassInOneFileException;
+
+use function get_class;
+use function implode;
 
 final class CodeVisitor extends NodeVisitorAbstract
 {
@@ -42,7 +47,7 @@ final class CodeVisitor extends NodeVisitorAbstract
         }
 
         if ($node instanceof Use_) {
-            $this->use[] = $node;
+            $this->addUse($node);
 
             return null;
         }
@@ -83,5 +88,19 @@ final class CodeVisitor extends NodeVisitorAbstract
         }
 
         return null;
+    }
+
+    /** @param array<object> $annotations */
+    public function addUses(array $annotations): void
+    {
+        foreach ($annotations as $annotation) {
+            $this->addUse(new Use_([new UseUse(new Name(get_class($annotation)))]));
+        }
+    }
+
+    private function addUse(Use_ $use): void
+    {
+        $index = implode('\\', $use->uses[0]->name->parts);
+        $this->use[$index] = $use;
     }
 }

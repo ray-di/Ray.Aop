@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Composer\Autoload;
+use Ray\Aop\Annotation\FakeMarker3;
 use SplObjectStorage;
 
 class FakePhp71NullableClass
@@ -34,11 +35,18 @@ class FakePhp71NullableClass
         return $ids[0];
     }
 
-    public function typed(SplObjectStorage $storage)
+    public function typed(SplObjectStorage $storage): SplObjectStorage
     {
+        return $storage;
     }
 
     public function useTyped(CodeGen $codeGen)
+    {
+    }
+
+    /** @FakeMarker3 */
+    #[FakeMarker3]
+    public function attributed()
     {
     }
 }

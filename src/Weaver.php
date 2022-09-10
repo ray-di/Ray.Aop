@@ -30,15 +30,19 @@ final class Weaver
     public function __construct(BindInterface $bind, string $classDir)
     {
         $this->bind = $bind;
-        $this->bindName = $bind->toString('');
+        $this->bindName = (string) $bind;
         $this->compiler = new Compiler($classDir);
         $this->classDir = $classDir;
         $this->aopClassName = new AopClassName($classDir);
     }
 
     /**
-     * @param class-string      $class
+     * @param class-string<T>   $class
      * @param array<int, mixed> $args
+     *
+     * @return T
+     *
+     * @template T of object
      */
     public function newInstance(string $class, array $args): object
     {
@@ -46,6 +50,7 @@ final class Weaver
         $instance = (new ReflectionClass($aopClass))->newInstanceArgs($args);
         assert(isset($instance->bindings));
         $instance->bindings = $this->bind->getBindings();
+        assert($instance instanceof $class);
 
         return $instance;
     }

@@ -3,17 +3,15 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
         bootstrap="tests/bootstrap.php">
-  <coverage processUncoveredFiles="true" cacheDirectory="./.phpunit-cache">
-    <include>
-      <directory suffix=".php">src</directory>
-    </include>
-  </coverage>
   <testsuites>
     <testsuite name="Ray.Aop Test Suite">
       <directory>tests</directory>
     </testsuite>
   </testsuites>
-  <php>
-    <ini name="error_reporting" value="-1"/>
-  </php>
+  <coverage cacheDirectory=".phpunit.cache/code-coverage"
+            processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </coverage>
 </phpunit>

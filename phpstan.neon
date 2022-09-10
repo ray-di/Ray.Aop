@@ -3,7 +3,7 @@ parameters:
   paths:
     - src
     - tests
-  excludes_analyse:
-    - %currentWorkingDirectory%/tests/tmp/*
-    - %currentWorkingDirectory%/tests/tmp_unerase/*
-    - %currentWorkingDirectory%/tests/Fake/*
+  excludePaths:
+    - tests/tmp/*
+    - tests/tmp_unerase/*
+    - tests/Fake/*

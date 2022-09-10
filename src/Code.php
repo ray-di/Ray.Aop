@@ -13,7 +13,6 @@ use function file_put_contents;
 use function is_string;
 use function rename;
 use function sprintf;
-use function str_replace;
 use function tempnam;
 use function unlink;
 
@@ -30,10 +29,8 @@ final class Code
         $this->code = (new Standard(['shortArraySyntax' => true]))->prettyPrintFile($stmt) . PHP_EOL;
     }
 
-    public function save(string $classDir, string $aopClassName): string
+    public function save(string $filename): string
     {
-        $flatName = str_replace('\\', '_', $aopClassName);
-        $filename = sprintf('%s/%s.php', $classDir, $flatName);
         $tmpFile = tempnam(dirname($filename), 'swap');
         if (is_string($tmpFile) && file_put_contents($tmpFile, $this->code) && rename($tmpFile, $filename)) {
             return $filename;

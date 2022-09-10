@@ -31,17 +31,17 @@ class AopProps
      *
      * @return Property[]
      */
-    public function __invoke(ReflectionClass $class): array
+    public function __invoke(ReflectionClass $class, CodeVisitor $visitor): array
     {
         $pros = [];
         $pros[] = $this->factory
             ->property('methodAnnotations')
-            ->setDefault($this->getMethodAnnotations($class))
+            ->setDefault($this->getMethodAnnotations($class, $visitor))
             ->makePublic()
             ->getNode();
         $pros[] = $this->factory
             ->property('classAnnotations')
-            ->setDefault($this->getClassAnnotation($class))
+            ->setDefault($this->getClassAnnotation($class, $visitor))
             ->makePublic()
             ->getNode();
 
@@ -51,7 +51,7 @@ class AopProps
     /**
      * @param ReflectionClass<object> $class
      */
-    private function getMethodAnnotations(ReflectionClass $class): string
+    private function getMethodAnnotations(ReflectionClass $class, CodeVisitor $visitor): string
     {
         $methodsAnnotation = [];
         $methods = $class->getMethods();
@@ -62,6 +62,7 @@ class AopProps
             }
 
             $methodsAnnotation[$method->name] = $annotations;
+            $visitor->addUses($annotations);
         }
 
         return serialize($methodsAnnotation);
@@ -72,9 +73,10 @@ class AopProps
      *
      * @template T of object
      */
-    private function getClassAnnotation(ReflectionClass $class): string
+    private function getClassAnnotation(ReflectionClass $class, CodeVisitor $visitor): string
     {
         $classAnnotations = $this->reader->getClassAnnotations($class);
+        $visitor->addUses($classAnnotations);
 
         return serialize($classAnnotations);
     }

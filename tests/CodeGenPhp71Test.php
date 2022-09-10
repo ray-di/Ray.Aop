@@ -77,7 +77,7 @@ class CodeGenPhp71Test extends TestCase
         $bind = new Bind();
         $bind->bindInterceptors('typed', []);
         $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = 'public function typed(SplObjectStorage $storage)';
+        $expected = 'public function typed(\SplObjectStorage $storage) : \SplObjectStorage';
         $this->assertStringContainsString($expected, $code->code);
     }
 
@@ -86,7 +86,25 @@ class CodeGenPhp71Test extends TestCase
         $bind = new Bind();
         $bind->bindInterceptors('useTyped', []);
         $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
-        $expected = 'public function useTyped(CodeGen $codeGen)';
+        $expected = 'public function useTyped(\Ray\Aop\CodeGen $codeGen)';
+        $this->assertStringContainsString($expected, $code->code);
+    }
+
+    public function testAttribute(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('attributed', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $expected = '#[\Ray\Aop\Annotation\FakeMarker3]';
+        $this->assertStringContainsString($expected, $code->code);
+    }
+
+    public function testUseAnnotation(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('attributed', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
+        $expected = "use Ray\\Aop\\Annotation\\FakeMarker3;\n";
         $this->assertStringContainsString($expected, $code->code);
     }
 }

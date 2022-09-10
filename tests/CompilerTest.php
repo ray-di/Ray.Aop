@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use ArrayIterator;
 use Doctrine\Common\Annotations\AnnotationReader;
+use FakeGlobalEmptyNamespaced;
 use FakeGlobalNamespaced;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -20,6 +22,7 @@ use function assert;
 use function class_exists;
 use function file_get_contents;
 use function passthru;
+use function property_exists;
 use function serialize;
 use function unserialize;
 
@@ -118,6 +121,37 @@ class CompilerTest extends TestCase
         $this->assertSame(2, $result);
     }
 
+    public function testParentMethodIntercept(): void
+    {
+        $mock = $this->compiler->newInstance(FakeMockChild::class, [], $this->bind);
+        assert($mock instanceof FakeMockChild);
+        assert(property_exists($mock, 'bindings'));
+        $mock->bindings = $this->bind->getBindings();
+        $result = $mock->returnSame(1);
+        $this->assertSame(2, $result);
+    }
+
+    public function testTypedParentMethodIntercept(): void
+    {
+        $bind = (new Bind())->bindInterceptors('passIterator', [new NullInterceptor()]);
+        $mock = $this->compiler->newInstance(FakeTypedMockChild::class, [], $bind);
+        assert($mock instanceof FakeTypedMockChild);
+        assert(property_exists($mock, 'bindings'));
+        $mock->bindings = $bind->getBindings();
+        $result = $mock->passIterator(new ArrayIterator());
+        $this->assertInstanceOf(ArrayIterator::class, $result);
+    }
+
+    public function testParentOfParentMethodIntercept(): void
+    {
+        $mock = $this->compiler->newInstance(FakeMockChildChild::class, [], $this->bind);
+        assert($mock instanceof FakeMockChild);
+        assert(property_exists($mock, 'bindings'));
+        $mock->bindings = $this->bind->getBindings();
+        $result = $mock->returnSame(1);
+        $this->assertSame(2, $result);
+    }
+
     public function testGetPrivateVal(): void
     {
         $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
@@ -172,7 +206,7 @@ class CompilerTest extends TestCase
     public function testSerialize(): void
     {
         $compiler = unserialize(serialize($this->compiler));
-        /** @var Compiler $compiler */
+        assert($compiler instanceof Compiler);
         $class = $compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
     }
@@ -291,6 +325,14 @@ class CompilerTest extends TestCase
         $mock = $this->compiler->newInstance(FakeGlobalNamespaced::class, [], $this->bind);
         assert($mock instanceof FakeGlobalNamespaced);
         $this->assertInstanceOf(FakeGlobalNamespaced::class, $mock);
+        $this->assertSame(2, $mock->returnSame(1));
+    }
+
+    public function testEmptyNamespaceClass(): void
+    {
+        $mock = $this->compiler->newInstance(FakeGlobalEmptyNamespaced::class, [], $this->bind);
+        assert($mock instanceof FakeGlobalEmptyNamespaced);
+        $this->assertInstanceOf(FakeGlobalEmptyNamespaced::class, $mock);
         $this->assertSame(2, $mock->returnSame(1));
     }
 
