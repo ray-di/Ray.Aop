@@ -50,14 +50,13 @@ final class AopClass
     {
         assert($visitor->class instanceof Class_);
         $methods = $this->codeGenMethod->getMethods($bind, $visitor);
-        $propStms = ($this->aopProps)($sourceClass);
         $classStm = $visitor->class;
         $newClassName = ($this->aopClassName)((string) $visitor->class->name, $bind->toString(''));
         $classStm->name = new Identifier($newClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('WeavedInterface');
         /** @var list<Stmt> $stmts */
-        $stmts = array_merge($propStms, [$this->traitStmt], $methods);
+        $stmts = array_merge([$this->traitStmt], $methods);
         $classStm->stmts = $stmts;
 
         return $classStm;

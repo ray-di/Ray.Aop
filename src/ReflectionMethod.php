@@ -6,13 +6,9 @@ namespace Ray\Aop;
 
 use Ray\ServiceLocator\ServiceLocator;
 
-use function array_key_exists;
 use function assert;
 use function class_exists;
 use function is_object;
-use function is_string;
-use function property_exists;
-use function unserialize;
 
 final class ReflectionMethod extends \ReflectionMethod implements Reader
 {
@@ -56,11 +52,6 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
      */
     public function getAnnotations(): array
     {
-        $object = $this->object;
-        if (is_object($object) && property_exists($object, 'methodAnnotations') && is_string($object->methodAnnotations)) {
-            return $this->getCachedAnnotations($object->methodAnnotations);
-        }
-
         assert(class_exists($this->class));
         /** @var list<object> $annotations */
         $annotations = ServiceLocator::getReader()->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
@@ -87,19 +78,5 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
         }
 
         return null;
-    }
-
-    /**
-     * @return list<object>
-     */
-    private function getCachedAnnotations(string $methodAnnotations): array
-    {
-        /** @var array<string, list<object>> $annotations */
-        $annotations = unserialize($methodAnnotations, ['allowed_classes' => true]);
-        if (array_key_exists($this->method, $annotations)) {
-            return $annotations[$this->method];
-        }
-
-        return [];
     }
 }
