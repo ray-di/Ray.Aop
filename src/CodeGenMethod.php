@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\Parser;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
@@ -34,7 +35,7 @@ final class CodeGenMethod
     /**
      * @param ReflectionClass<object> $reflectionClass
      *
-     * @return ClassMethod[]
+     * @return array<ClassMethod|Nop>
      */
     public function getMethods(ReflectionClass $reflectionClass, BindInterface $bind, CodeVisitor $code): array
     {
@@ -48,6 +49,7 @@ final class CodeGenMethod
                 $classMethod = $this->getClassMethod($reflectionClass, $reflectionMethod, $code);
                 // replace statements in the method
                 $classMethod->stmts = $this->callIntercept->getStmts($classMethod->getReturnType());
+                $methods[] = new Nop();
                 $methods[] = $classMethod;
             }
         }
