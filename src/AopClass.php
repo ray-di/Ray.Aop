@@ -28,9 +28,6 @@ final class AopClass
     /** @var AopClassName */
     private $aopClassName;
 
-    /** @var AopProps */
-    private $aopProps;
-
     /** @var Node */
     private $traitStmt;
 
@@ -41,7 +38,6 @@ final class AopClass
     ) {
         $this->aopClassName = $aopClassName;
         $this->codeGenMethod = new CodeGenMethod($parser);
-        $this->aopProps = new AopProps($factory);
         $this->traitStmt = $factory->useTrait('\Ray\Aop\InterceptTrait')->getNode();
     }
 
@@ -54,7 +50,6 @@ final class AopClass
     {
         assert($visitor->class instanceof Class_);
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $visitor);
-        $propStms = ($this->aopProps)($sourceClass, $visitor);
         $classStm = $visitor->class;
         assert(class_exists($sourceClass->name));
         $newClassName = ($this->aopClassName)($sourceClass->name, (string) $bind);
