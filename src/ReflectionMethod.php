@@ -9,6 +9,7 @@ use Ray\ServiceLocator\ServiceLocator;
 use function assert;
 use function class_exists;
 use function is_object;
+use function is_string;
 
 final class ReflectionMethod extends \ReflectionMethod implements Reader
 {
@@ -47,6 +48,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     public function getAnnotations(): array
     {
         assert(class_exists($this->class));
+        assert(is_string($this->name));
         /** @var list<object> $annotations */
         $annotations = ServiceLocator::getReader()->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
 
