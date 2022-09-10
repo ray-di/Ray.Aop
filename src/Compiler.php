@@ -14,6 +14,8 @@ use function class_exists;
 use function file_exists;
 use function is_writable;
 use function method_exists;
+use function sprintf;
+use function str_replace;
 
 final class Compiler implements CompilerInterface
 {
@@ -91,7 +93,7 @@ final class Compiler implements CompilerInterface
             return $class;
         }
 
-        $aopClassName = ($this->aopClassName)($class, $bind->toString(''));
+        $aopClassName = ($this->aopClassName)($class, (string) $bind);
         if (class_exists($aopClassName, false)) {
             return $aopClassName;
         }
@@ -132,10 +134,21 @@ final class Compiler implements CompilerInterface
      */
     private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind): void
     {
-        $code = $this->codeGen->generate($sourceClass, $bind);
-        $file = $code->save($this->classDir, $aopClassName);
-        assert(file_exists($file));
+        $file = $this->getFileName($aopClassName);
+        if (! file_exists($file)) {
+            $code = $this->codeGen->generate($sourceClass, $bind);
+            $code->save($file);
+            assert(file_exists($file));
+        }
+
         require_once $file;
         class_exists($aopClassName); // ensue class is created
+    }
+
+    private function getFileName(string $aopClassName): string
+    {
+        $flatName = str_replace('\\', '_', $aopClassName);
+
+        return sprintf('%s/%s.php', $this->classDir, $flatName);
     }
 }
