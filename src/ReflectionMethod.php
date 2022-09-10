@@ -15,16 +15,12 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     /** @var ?WeavedInterface */
     private $object;
 
-    /** @var string */
-    private $method = '';
-
     /**
      * Set dependencies
      */
-    public function setObject(WeavedInterface $object, \ReflectionMethod $method): void
+    public function setObject(WeavedInterface $object): void
     {
         $this->object = $object;
-        $this->method = $method->name;
     }
 
     public function getDeclaringClass(): ReflectionClass
