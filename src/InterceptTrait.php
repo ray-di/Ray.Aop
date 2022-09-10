@@ -23,6 +23,8 @@ trait InterceptTrait
      * @param array<string, mixed> $args
      *
      * @return mixed
+     *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
     private function _intercept(array $args, string $func) // phpcs:ignore
     {
