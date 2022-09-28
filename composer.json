@@ -42,6 +42,7 @@
         "ray/di": "A dependency injection framework"
     },
     "scripts" :{
+        "bin": "echo 'bin not installed'",
         "post-install-cmd": ["@composer bin all install --ansi"],
         "post-update-cmd": ["@composer bin all update --ansi"],
         "test": ["./vendor/bin/phpunit"],
@@ -55,6 +56,12 @@
         "metrics": ["./vendor/bin/phpmetrics --report-html=build/metrics --exclude=Exception src"],
         "phpmd": ["./vendor/bin/phpmd src text ./phpmd.xml"],
         "build": ["@cs", "@sa", "@pcov", "@metrics"]
+    },
+    "extra": {
+        "bamarni-bin": {
+            "forward-command": true,
+            "bin-links": true
+        }
     },
     "minimum-stability": "alpha"
 }

@@ -4,40 +4,38 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Class_;
+use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\NodeAbstract;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\Parser;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
 use ReflectionMethod;
 
 use function array_keys;
-use function assert;
 use function in_array;
 
 /** @SuppressWarnings(PHPMD.CouplingBetweenObjects) */
 final class CodeGenMethod
 {
-    /** @var Parser */
-    private $parser;
-
     /** @var VisitorFactory */
     private $visitorFactory;
 
+    /** @var CallIntercept */
+    private $callIntercept;
+
     public function __construct(
-        Parser $parser
+        Parser $parser,
+        BuilderFactory $factory
     ) {
-        $this->parser = $parser;
         $this->visitorFactory = new VisitorFactory($parser);
+        $this->callIntercept = new CallIntercept($factory);
     }
 
     /**
      * @param ReflectionClass<object> $reflectionClass
      *
-     * @return ClassMethod[]
+     * @return array<ClassMethod|Nop>
      */
     public function getMethods(ReflectionClass $reflectionClass, BindInterface $bind, CodeVisitor $code): array
     {
@@ -49,37 +47,14 @@ final class CodeGenMethod
             $isBindingMethod = in_array($methodName, $bindingMethods, true);
             if ($isBindingMethod) {
                 $classMethod = $this->getClassMethod($reflectionClass, $reflectionMethod, $code);
-                $methodInsideStatements = $this->getTemplateMethodNodeStmts(
-                    $classMethod->getReturnType()
-                );
                 // replace statements in the method
-                $classMethod->stmts = $methodInsideStatements;
+                $classMethod->stmts = $this->callIntercept->getStmts($classMethod->getReturnType());
+                $methods[] = new Nop();
                 $methods[] = $classMethod;
             }
         }
 
         return $methods;
-    }
-
-    /**
-     * @return Stmt[]
-     */
-    private function getTemplateMethodNodeStmts(?NodeAbstract $returnType): array
-    {
-        $code = $this->isReturnVoid($returnType) ? AopTemplate::RETURN_VOID : AopTemplate::RETURN;
-        $parts = $this->parser->parse($code);
-        assert(isset($parts[0]));
-        $node = $parts[0];
-        assert($node instanceof Class_);
-        $methodNode = $node->getMethods()[0];
-        assert($methodNode->stmts !== null);
-
-        return $methodNode->stmts;
-    }
-
-    private function isReturnVoid(?NodeAbstract $returnType): bool
-    {
-        return $returnType instanceof Identifier && $returnType->name === 'void';
     }
 
     /** @param ReflectionClass<object> $sourceClass */

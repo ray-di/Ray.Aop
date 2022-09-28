@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
@@ -27,8 +28,8 @@ final class AopClass
     /** @var AopClassName */
     private $aopClassName;
 
-    /** @var AopProps */
-    private $aopProps;
+    /** @var Node */
+    private $traitStmt;
 
     public function __construct(
         Parser $parser,
@@ -36,8 +37,8 @@ final class AopClass
         AopClassName $aopClassName
     ) {
         $this->aopClassName = $aopClassName;
-        $this->codeGenMethod = new CodeGenMethod($parser);
-        $this->aopProps = new AopProps($factory);
+        $this->codeGenMethod = new CodeGenMethod($parser, $factory);
+        $this->traitStmt = $factory->useTrait('\Ray\Aop\InterceptTrait')->getNode();
     }
 
     /**
@@ -49,16 +50,15 @@ final class AopClass
     {
         assert($visitor->class instanceof Class_);
         $methods = $this->codeGenMethod->getMethods($sourceClass, $bind, $visitor);
-        $propStms = ($this->aopProps)($sourceClass, $visitor);
         $classStm = $visitor->class;
         assert(class_exists($sourceClass->name));
         $newClassName = ($this->aopClassName)($sourceClass->name, (string) $bind);
         $shortClassName = strpos($newClassName, '\\') === false ? $newClassName : substr((string) strrchr($newClassName, '\\'), 1);
         $classStm->name = new Identifier($shortClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
-        $classStm->implements[] = new Name('WeavedInterface');
+        $classStm->implements[] = new Name('\Ray\Aop\WeavedInterface');
         /** @var list<Stmt> $stmts */
-        $stmts = array_merge($propStms, $methods);
+        $stmts = array_merge([$this->traitStmt], $methods);
         $classStm->stmts = $stmts;
 
         return $classStm;

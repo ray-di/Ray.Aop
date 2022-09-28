@@ -40,7 +40,7 @@ class CodeGenPhp71Test extends TestCase
         $bind->bindInterceptors('returnTypeVoid', []);
         $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind);
         $this->assertStringNotContainsString('return ', $code->code);
-        $this->assertStringContainsString('return;', $code->code);
+        $this->assertStringNotContainsString('return $this->_intecept', $code->code);
     }
 
     public function testReturnTypeNullable(): Code

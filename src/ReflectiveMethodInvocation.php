@@ -61,7 +61,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
             assert($class instanceof ReflectionClass);
             assert(class_exists($class->name));
             $method = new ReflectionMethod($class->name, $this->method);
-            $method->setObject($this->object, $method);
+            $method->setObject($this->object);
 
             return $method;
         }
