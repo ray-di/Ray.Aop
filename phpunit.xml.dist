@@ -2,7 +2,9 @@
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-        bootstrap="tests/bootstrap.php">
+        bootstrap="tests/bootstrap.php"
+        convertDeprecationsToExceptions="true"
+>
   <testsuites>
     <testsuite name="Ray.Aop Test Suite">
       <directory>tests</directory>
