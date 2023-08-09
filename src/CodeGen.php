@@ -54,7 +54,7 @@ final class CodeGen implements CodeGenInterface
      */
     private function getNamespace(CodeVisitor $source)
     {
-        $parts = $source->namespace->name->parts ?? [];
+        $parts = isset($source->namespace->name) ?  $source->namespace->name->getParts() : [];
         $ns = implode('\\', $parts);
 
         return $ns ? $ns : null;

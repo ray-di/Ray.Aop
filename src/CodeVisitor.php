@@ -89,7 +89,7 @@ final class CodeVisitor extends NodeVisitorAbstract
 
     private function addUse(Use_ $use): void
     {
-        $index = implode('\\', $use->uses[0]->name->parts);
+        $index = implode('\\', $use->uses[0]->name->getParts());
         $this->use[$index] = $use;
     }
 }
