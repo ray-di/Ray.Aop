@@ -353,4 +353,11 @@ class CompilerTest extends TestCase
         $bind = (new Bind())->bindInterceptors('foo', [new FakeDoubleInterceptor()]);
         $compiler->newInstance(FakeTwoClass::class, [], $bind);
     }
+
+    public function testNewInstanceWithAnonymousClass(): void
+    {
+        $mock = $this->compiler->newInstance(FakeAnonymousClass::class, [], $this->bind);
+        $this->assertInstanceOf(FakeAnonymousClass::class, $mock);
+        $this->assertInstanceOf(WeavedInterface::class, $mock);
+    }
 }
