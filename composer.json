@@ -62,6 +62,5 @@
             "forward-command": true,
             "bin-links": true
         }
-    },
-    "minimum-stability": "alpha"
+    }
 }
