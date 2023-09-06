@@ -52,7 +52,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getMethod(): ReflectionMethod
     {
@@ -70,7 +70,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getArguments(): ArrayObject
     {
@@ -78,7 +78,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getNamedArguments(): ArrayObject
     {
@@ -97,7 +97,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function proceed()
     {
@@ -110,7 +110,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getThis()
     {

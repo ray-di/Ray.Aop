@@ -20,12 +20,11 @@ class BuiltinMatcher extends AbstractMatcher
     /** @var AbstractMatcher */
     private $matcher;
 
-    /**
-     * @param mixed[] $arguments
-     */
+    /** @param mixed[] $arguments */
     public function __construct(string $matcherName, array $arguments)
     {
         parent::__construct();
+
         $this->matcherName = $matcherName;
         $this->arguments = $arguments;
         $matcherClass = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';
@@ -39,7 +38,7 @@ class BuiltinMatcher extends AbstractMatcher
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
@@ -47,7 +46,7 @@ class BuiltinMatcher extends AbstractMatcher
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {

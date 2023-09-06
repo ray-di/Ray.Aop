@@ -19,24 +19,20 @@ final class Bind implements BindInterface
     /** @var MethodMatch */
     private $methodMatch;
 
-    /**
-     * @throws AnnotationException
-     */
+    /** @throws AnnotationException */
     public function __construct()
     {
         $this->methodMatch = new MethodMatch($this);
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     public function __sleep(): array
     {
         return ['bindings'];
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function bind(string $class, array $pointcuts): BindInterface
     {
@@ -51,7 +47,7 @@ final class Bind implements BindInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function bindInterceptors(string $method, array $interceptors): BindInterface
     {
@@ -64,7 +60,7 @@ final class Bind implements BindInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getBindings(): array
     {
@@ -72,7 +68,7 @@ final class Bind implements BindInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function __toString(): string
     {

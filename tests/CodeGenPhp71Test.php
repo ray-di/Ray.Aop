@@ -54,9 +54,7 @@ class CodeGenPhp71Test extends TestCase
         return $code;
     }
 
-    /**
-     * @depends testReturnTypeNullable
-     */
+    /** @depends testReturnTypeNullable */
     public function testContainsStatement(Code $code): void
     {
         $this->assertStringContainsString("declare (strict_types=1);\n", $code->code);

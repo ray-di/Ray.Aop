@@ -6,13 +6,11 @@ namespace Ray\Aop;
 
 use Ray\ServiceLocator\ServiceLocator;
 
-/**
- * @extends \ReflectionClass<object>
- */
+/** @extends \ReflectionClass<object> */
 class ReflectionClass extends \ReflectionClass implements Reader
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @psalm-suppress NoInterfaceProperties
      */
@@ -25,7 +23,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getAnnotation(string $annotationName)
     {

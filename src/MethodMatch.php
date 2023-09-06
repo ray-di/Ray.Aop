@@ -50,9 +50,7 @@ final class MethodMatch
         }
     }
 
-    /**
-     * @param ReflectionClass<object> $class
-     */
+    /** @param ReflectionClass<object> $class */
     private function annotatedMethodMatchBind(ReflectionClass $class, ReflectionMethod $method, Pointcut $pointCut): void
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());

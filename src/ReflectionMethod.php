@@ -41,7 +41,7 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @psalm-suppress NoInterfaceProperties
      */

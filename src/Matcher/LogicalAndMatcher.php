@@ -13,7 +13,7 @@ use function assert;
 final class LogicalAndMatcher extends AbstractMatcher
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
@@ -27,7 +27,7 @@ final class LogicalAndMatcher extends AbstractMatcher
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {

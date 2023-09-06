@@ -12,7 +12,7 @@ use ReflectionMethod;
 final class AnnotatedWithMatcher extends AbstractMatcher
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
@@ -24,7 +24,7 @@ final class AnnotatedWithMatcher extends AbstractMatcher
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {

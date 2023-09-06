@@ -37,6 +37,7 @@ class CompilerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->compiler = new Compiler(__DIR__ . '/tmp');
         $matcher = new Matcher();
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor()]);
@@ -64,9 +65,7 @@ class CompilerTest extends TestCase
         $this->assertSame($class1File, $class2File);
     }
 
-    /**
-     * @depends testNewInstance
-     */
+    /** @depends testNewInstance */
     public function testParentClassName(object $class): void
     {
         $parent = (new ReflectionClass($class))->getParentClass();
@@ -77,9 +76,7 @@ class CompilerTest extends TestCase
         $this->assertSame(FakeMock::class, $parent->getName());
     }
 
-    /**
-     * @depends testNewInstance
-     */
+    /** @depends testNewInstance */
     public function testBuildClassWeaved(FakeMock $weaved): void
     {
         assert(isset($weaved->bindings));
@@ -99,9 +96,7 @@ class CompilerTest extends TestCase
         return $weaved;
     }
 
-    /**
-     * @depends testNewInstance
-     */
+    /** @depends testNewInstance */
     public function testWeavedInterceptorWorks(FakeMock $weaved): void
     {
         $result = $weaved->returnSame(1);
@@ -110,9 +105,7 @@ class CompilerTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    /**
-     * @depends testNewInstance
-     */
+    /** @depends testNewInstance */
     public function testMethodReturnValue(FakeMock $weaved): void
     {
         $num = new FakeNum();
@@ -283,9 +276,7 @@ class CompilerTest extends TestCase
         $this->assertInstanceOf(FakeMarker3::class, $annotation);
     }
 
-    /**
-     * @depends testMethodAnnotationReader
-     */
+    /** @depends testMethodAnnotationReader */
     public function testClassAnnotationReader(): void
     {
         $classAnnotation = FakeMethodAnnotationReaderInterceptor::$classAnnotation;

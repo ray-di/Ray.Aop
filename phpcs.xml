@@ -41,6 +41,7 @@ com
         <!-- /Base -->
         <!-- Option -->
         <exclude name="SlevomatCodingStandard.ControlStructures.EarlyExit.EarlyExitNotUsed"/>
+        <exclude name="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall.MissingTrailingComma"/>
         <!-- /Option -->
         <!-- Exclude Fake files form Doctrine CS -->
     </rule>

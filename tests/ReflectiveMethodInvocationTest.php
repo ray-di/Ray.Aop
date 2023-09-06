@@ -20,6 +20,7 @@ class ReflectiveMethodInvocationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->fake = new FakeClass();
         $this->invocation = new ReflectiveMethodInvocation($this->fake, 'add', [1]);
     }

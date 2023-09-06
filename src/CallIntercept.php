@@ -37,9 +37,7 @@ final class CallIntercept
         $this->return = new Return_($methodCall);
     }
 
-    /**
-     * @return list<Expression>|list<Return_>
-     */
+    /** @return list<Expression>|list<Return_> */
     public function getStmts(?NodeAbstract $returnType): array
     {
         $isVoid = $returnType instanceof Identifier && ($returnType->name === 'void' || $returnType->name === 'never');

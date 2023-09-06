@@ -9,12 +9,11 @@ final class AnnotatedMatcher extends BuiltinMatcher
     /** @var string */
     public $annotation;
 
-    /**
-     * @param array<int, string> $arguments
-     */
+    /** @param array<int, string> $arguments */
     public function __construct(string $matcherName, array $arguments)
     {
         parent::__construct($matcherName, $arguments);
+
         $this->annotation = $arguments[0];
     }
 }

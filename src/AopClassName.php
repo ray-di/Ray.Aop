@@ -18,9 +18,7 @@ final class AopClassName
         $this->classDir = $classDir;
     }
 
-    /**
-     * @param class-string $class
-     */
+    /** @param class-string $class */
     public function __invoke(string $class, string $bindings): string
     {
         $fileTime = filemtime((string) (new ReflectionClass($class))->getFileName());

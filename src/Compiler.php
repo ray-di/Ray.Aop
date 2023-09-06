@@ -28,9 +28,7 @@ final class Compiler implements CompilerInterface
     /** @var AopClassName */
     private $aopClassName;
 
-    /**
-     * @throws AnnotationException
-     */
+    /** @throws AnnotationException */
     public function __construct(string $classDir)
     {
         if (! is_writable($classDir)) {
@@ -49,17 +47,13 @@ final class Compiler implements CompilerInterface
         );
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     public function __sleep()
     {
         return ['classDir'];
     }
 
-    /**
-     * @throws AnnotationException
-     */
+    /** @throws AnnotationException */
     public function __wakeup()
     {
         $this->__construct($this->classDir);
@@ -85,7 +79,7 @@ final class Compiler implements CompilerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function compile(string $class, BindInterface $bind): string
     {
@@ -104,9 +98,7 @@ final class Compiler implements CompilerInterface
         return $aopClass;
     }
 
-    /**
-     * @param class-string $class
-     */
+    /** @param class-string $class */
     private function hasNoBinding(string $class, BindInterface $bind): bool
     {
         $hasMethod = $this->hasBoundMethod($class, $bind);
@@ -114,9 +106,7 @@ final class Compiler implements CompilerInterface
         return ! $bind->getBindings() && ! $hasMethod;
     }
 
-    /**
-     * @param class-string $class
-     */
+    /** @param class-string $class */
     private function hasBoundMethod(string $class, BindInterface $bind): bool
     {
         $bindingMethods = array_keys($bind->getBindings());
