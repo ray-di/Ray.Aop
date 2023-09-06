@@ -49,7 +49,7 @@
         "cs": ["phpcs --standard=./phpcs.xml src tests"],
         "cs-fix": ["phpcbf src tests"],
         "clean": ["phpstan clear-result-cache", "psalm --clear-cache", "rm -rf tests/tmp/*.php"],
-        "sa": ["psalm --show-info=true", "phpstan analyse -c phpstan.neon"],
+        "sa": ["psalm --monochrome --show-info=true", "phpstan --memory-limit=-1 analyse -c phpstan.neon"],
         "metrics": ["phpmetrics --report-html=build/metrics --exclude=Exception src"],
         "phpmd": ["phpmd src text ./phpmd.xml"],
         "build": ["@cs", "@sa", "@pcov", "@metrics"]
