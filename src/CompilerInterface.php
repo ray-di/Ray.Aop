@@ -16,8 +16,8 @@ interface CompilerInterface
     /**
      * Return new instance weaved interceptor(s)
      *
-     * @param class-string<T>   $class
-     * @param array<int, mixed> $args
+     * @param class-string<T> $class
+     * @param list<mixed>     $args
      *
      * @return T
      *

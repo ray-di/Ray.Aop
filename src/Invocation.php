@@ -25,7 +25,7 @@ interface Invocation extends Joinpoint
     /**
      * Get the named arguments as an array object.
      *
-     * @return ArrayObject<string, mixed> the argument of the invocation  [`paramName1'=>'arg1', `paramName2'=>'arg2']
+     * @return ArrayObject<non-empty-string, mixed> the argument of the invocation  [`paramName1'=>'arg1', `paramName2'=>'arg2']
      */
     public function getNamedArguments(): ArrayObject;
 }

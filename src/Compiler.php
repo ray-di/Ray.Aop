@@ -22,7 +22,7 @@ final class Compiler implements CompilerInterface
     /** @var string */
     public $classDir;
 
-    /** @var CodeGenInterface */
+    /** @var CodeGen */
     private $codeGen;
 
     /** @var AopClassName */
@@ -37,26 +37,19 @@ final class Compiler implements CompilerInterface
 
         $this->classDir = $classDir;
         $this->aopClassName = new AopClassName($classDir);
-        $parser = (new ParserFactory())->newInstance();
-        $factory = new BuilderFactory();
-        $aopClassName = new AopClassName($classDir);
-        $this->codeGen = new CodeGen(
-            $factory,
-            new VisitorFactory($parser),
-            new AopClass($parser, $factory, $aopClassName)
-        );
+        $this->codeGen = $this->createCodeGen();
     }
 
     /** @return list<string> */
     public function __sleep()
     {
-        return ['classDir'];
+        return ['classDir', 'aopClassName'];
     }
 
     /** @throws AnnotationException */
     public function __wakeup()
     {
-        $this->__construct($this->classDir);
+        $this->codeGen = $this->createCodeGen();
     }
 
     /**
@@ -134,7 +127,7 @@ final class Compiler implements CompilerInterface
         }
 
         require_once $file;
-        class_exists($aopClassName); // ensue class is created
+        class_exists($aopClassName); // ensure class is created
     }
 
     private function getFileName(string $aopClassName): string
@@ -142,5 +135,17 @@ final class Compiler implements CompilerInterface
         $flatName = str_replace('\\', '_', $aopClassName);
 
         return sprintf('%s/%s.php', $this->classDir, $flatName);
+    }
+
+    public function createCodeGen(): CodeGen
+    {
+        $parser = (new ParserFactory())->newInstance();
+        $factory = new BuilderFactory();
+
+        return new CodeGen(
+            $factory,
+            new VisitorFactory($parser),
+            new AopClass($parser, $factory, $this->aopClassName)
+        );
     }
 }

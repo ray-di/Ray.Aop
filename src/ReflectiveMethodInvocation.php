@@ -88,12 +88,13 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         foreach ($params as $param) {
             $pos = $param->getPosition();
             if (array_key_exists($pos, (array) $args)) {
+                $name = $param->getName();
                 /** @psalm-suppress MixedAssignment */
-                $namedParams[$param->getName()] = $args[$pos];
+                $namedParams[$name] = $args[$pos];
             }
         }
 
-        return new ArrayObject($namedParams);
+        return new ArrayObject($namedParams); // @phpstan-ignore-line
     }
 
     /**

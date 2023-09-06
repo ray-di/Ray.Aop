@@ -9,7 +9,6 @@ use Ray\ServiceLocator\ServiceLocator;
 use function assert;
 use function class_exists;
 use function is_object;
-use function is_string;
 
 final class ReflectionMethod extends \ReflectionMethod implements Reader
 {
@@ -24,18 +23,19 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
         $this->object = $object;
     }
 
+    /**
+     * @psalm-external-mutation-free
+     * @psalm-suppress MethodSignatureMismatch
+     */
     public function getDeclaringClass(): ReflectionClass
     {
         if (! is_object($this->object)) {
-            assert(class_exists($this->class));
-
             return new ReflectionClass($this->class);
         }
 
         $parencClass = (new \ReflectionClass($this->object))->getParentClass();
         assert($parencClass instanceof \ReflectionClass);
         $originalClass = $parencClass->name;
-        assert(class_exists($originalClass));
 
         return new ReflectionClass($originalClass);
     }
@@ -48,7 +48,6 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     public function getAnnotations(): array
     {
         assert(class_exists($this->class));
-        assert(is_string($this->name));
         /** @var list<object> $annotations */
         $annotations = ServiceLocator::getReader()->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
 
