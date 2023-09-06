@@ -73,7 +73,7 @@ final class CodeVisitor extends NodeVisitorAbstract
      */
     private function enterNodeClass(Node $node)
     {
-        if ($node instanceof Class_) {
+        if ($node instanceof Class_ && $node->name !== null) {
             $this->validateClass($node);
             $this->class = $node;
 
