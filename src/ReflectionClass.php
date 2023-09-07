@@ -51,6 +51,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
      */
     public function getMethods($filter = null): array
     {
+        unset($filter);
         $methods = [];
         $methodNames = get_class_methods($this->name);
         foreach ($methodNames as $methodName) {
