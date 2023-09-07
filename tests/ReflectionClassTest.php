@@ -10,7 +10,7 @@ use function count;
 
 class ReflectionClassTest extends TestCase
 {
-    /** @var ReflectionClass */
+    /** @var ReflectionClass<object> */
     private $class;
 
     public function setUp(): void
@@ -49,7 +49,7 @@ class ReflectionClassTest extends TestCase
     }
 
     /** @param array<ReflectionMethod> $array */
-    private function assertAllInstanceOfMethod(array $array)
+    private function assertAllInstanceOfMethod(array $array): void
     {
         foreach ($array as $item) {
             $this->assertInstanceOf(ReflectionMethod::class, $item);
