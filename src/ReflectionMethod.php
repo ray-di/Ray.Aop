@@ -24,6 +24,8 @@ final class ReflectionMethod extends \ReflectionMethod implements Reader
     }
 
     /**
+     * @return ReflectionClass<object>
+     *
      * @psalm-external-mutation-free
      * @psalm-suppress MethodSignatureMismatch
      */
