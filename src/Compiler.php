@@ -137,7 +137,7 @@ final class Compiler implements CompilerInterface
         return sprintf('%s/%s.php', $this->classDir, $flatName);
     }
 
-    public function createCodeGen(): CodeGen
+    private function createCodeGen(): CodeGen
     {
         $parser = (new ParserFactory())->newInstance();
         $factory = new BuilderFactory();
