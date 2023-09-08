@@ -4,32 +4,24 @@ declare(strict_types=1);
 
 namespace Ray\Aop\Matcher;
 
-use Doctrine\Common\Annotations\Reader;
 use Ray\Aop\AbstractMatcher;
-use Ray\ServiceLocator\ServiceLocator;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function assert;
+
 final class AnnotatedWithMatcher extends AbstractMatcher
 {
-    /** @var Reader */
-    private $reader;
-
-    public function __construct()
-    {
-        $this->reader = ServiceLocator::getReader();
-
-        parent::__construct();
-    }
-
     /**
      * {@inheritDoc}
      */
     public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
+        assert($class instanceof \Ray\Aop\ReflectionClass);
         /** @var array<class-string> $arguments */
         [$annotation] = $arguments;
-        $annotation = $this->reader->getClassAnnotation($class, $annotation);
+        /** @psalm-suppress MixedAssignment $annotation */
+        $annotation = $class->getAnnotation($annotation);
 
         return (bool) $annotation;
     }
@@ -39,9 +31,11 @@ final class AnnotatedWithMatcher extends AbstractMatcher
      */
     public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
+        assert($method instanceof \Ray\Aop\ReflectionMethod);
         /** @var array<class-string> $arguments */
         [$annotation] = $arguments;
-        $annotation = $this->reader->getMethodAnnotation($method, $annotation);
+
+        $annotation = $method->getAnnotation($annotation);
 
         return (bool) $annotation;
     }

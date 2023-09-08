@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationException;
-use ReflectionClass;
 
 use function array_key_exists;
 use function array_merge;
@@ -37,10 +36,11 @@ final class Bind implements BindInterface
     public function bind(string $class, array $pointcuts): BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
-        $class = new ReflectionClass($class);
-        $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
+        $reflectionClass = new ReflectionClass($class);
+        $methods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
-            ($this->methodMatch)($class, $method, $pointcuts);
+            $rayMethod = new ReflectionMethod($reflectionClass->getName(), $method->getName());
+            ($this->methodMatch)($reflectionClass, $rayMethod, $pointcuts);
         }
 
         return $this;

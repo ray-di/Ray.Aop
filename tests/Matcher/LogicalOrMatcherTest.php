@@ -9,8 +9,8 @@ use Ray\Aop\AnnotatedMatcher;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeMatcher;
-use ReflectionClass;
-use ReflectionMethod;
+use Ray\Aop\ReflectionClass;
+use Ray\Aop\ReflectionMethod;
 
 class LogicalOrMatcherTest extends TestCase
 {
