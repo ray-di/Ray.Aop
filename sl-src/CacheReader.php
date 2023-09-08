@@ -1,8 +1,11 @@
 <?php
 
-namespace Doctrine\Common\Annotations;
+declare(strict_types=1);
 
-use Psr\Cache\CacheItemPoolInterface;
+namespace Ray\ServiceLocator;
+
+use Doctrine\Common\Annotations\Reader;
+use LogicException;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -14,21 +17,21 @@ use function assert;
 use function filemtime;
 use function max;
 use function rawurlencode;
-use function time;
 
 /**
- * A cache aware annotation reader.
+ * Minimal cache aware annotation reader
+ *
+ * This code is taken from original PsrCachedReader.php in doctrine/annotation and modified.
+ *
+ * @see https://github.com/doctrine/annotations/commits/2.0.x/lib/Doctrine/Common/Annotations/PsrCachedReader.php
  */
-final class PsrCachedReader implements Reader
+final class CacheReader implements Reader
 {
     /** @var Reader */
     private $delegate;
 
-    /** @var CacheItemPoolInterface */
+    /** @var Cache */
     private $cache;
-
-    /** @var bool */
-    private $debug;
 
     /** @var array<string, array<object>> */
     private $loadedAnnotations = [];
@@ -36,17 +39,16 @@ final class PsrCachedReader implements Reader
     /** @var int[] */
     private $loadedFilemtimes = [];
 
-    public function __construct(Reader $reader, CacheItemPoolInterface $cache, bool $debug = false)
+    public function __construct(Reader $reader, Cache $cache)
     {
         $this->delegate = $reader;
         $this->cache    = $cache;
-        $this->debug    = (bool) $debug;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getClassAnnotations(ReflectionClass $class)
+    public function getClassAnnotations(ReflectionClass $class) // @phpstan-ignore-line
     {
         $cacheKey = $class->getName();
 
@@ -62,7 +64,7 @@ final class PsrCachedReader implements Reader
     /**
      * {@inheritDoc}
      */
-    public function getClassAnnotation(ReflectionClass $class, $annotationName)
+    public function getClassAnnotation(ReflectionClass $class, $annotationName) // @phpstan-ignore-line
     {
         foreach ($this->getClassAnnotations($class) as $annot) {
             if ($annot instanceof $annotationName) {
@@ -78,16 +80,7 @@ final class PsrCachedReader implements Reader
      */
     public function getPropertyAnnotations(ReflectionProperty $property)
     {
-        $class    = $property->getDeclaringClass();
-        $cacheKey = $class->getName() . '$' . $property->getName();
-
-        if (isset($this->loadedAnnotations[$cacheKey])) {
-            return $this->loadedAnnotations[$cacheKey];
-        }
-
-        $annots = $this->fetchFromCache($cacheKey, $class, 'getPropertyAnnotations', $property);
-
-        return $this->loadedAnnotations[$cacheKey] = $annots;
+        throw new LogicException(__FUNCTION__ . ' Not Supported');
     }
 
     /**
@@ -95,13 +88,7 @@ final class PsrCachedReader implements Reader
      */
     public function getPropertyAnnotation(ReflectionProperty $property, $annotationName)
     {
-        foreach ($this->getPropertyAnnotations($property) as $annot) {
-            if ($annot instanceof $annotationName) {
-                return $annot;
-            }
-        }
-
-        return null;
+        throw new LogicException(__FUNCTION__ . ' Not Supported');
     }
 
     /**
@@ -135,56 +122,33 @@ final class PsrCachedReader implements Reader
         return null;
     }
 
-    public function clearLoadedAnnotations(): void
-    {
-        $this->loadedAnnotations = [];
-        $this->loadedFilemtimes  = [];
-    }
-
-    /** @return mixed[] */
-    private function fetchFromCache(
+    /**
+     * @return array<object>
+     *
+     * @psalm-suppress MixedInferredReturnType
+     */
+    private function fetchFromCache(  // @phpstan-ignore-line
         string $cacheKey,
         ReflectionClass $class,
         string $method,
         Reflector $reflector
     ): array {
-        $cacheKey = rawurlencode($cacheKey);
+        $cacheKey = rawurlencode($cacheKey) . $this->getLastModification($class);
 
-        $item = $this->cache->getItem($cacheKey);
-        if (($this->debug && ! $this->refresh($cacheKey, $class)) || ! $item->isHit()) {
-            $this->cache->save($item->set($this->delegate->{$method}($reflector)));
-        }
-
-        return $item->get();
-    }
-
-    /**
-     * Used in debug mode to check if the cache is fresh.
-     *
-     * @return bool Returns true if the cache was fresh, or false if the class
-     * being read was modified since writing to the cache.
-     */
-    private function refresh(string $cacheKey, ReflectionClass $class): bool
-    {
-        $lastModification = $this->getLastModification($class);
-        if ($lastModification === 0) {
-            return true;
-        }
-
-        $item = $this->cache->getItem('[C]' . $cacheKey);
-        if ($item->isHit() && $item->get() >= $lastModification) {
-            return true;
-        }
-
-        $this->cache->save($item->set(time()));
-
-        return false;
+        return $this->cache->get(
+            $cacheKey,
+            /** @return array<object> */
+            function () use ($method, $reflector): array {
+                /** @psalm-suppress MixedReturnStatement */
+                return $this->delegate->{$method}($reflector);
+            }
+        );
     }
 
     /**
      * Returns the time the class was last modified, testing traits and parents
      */
-    private function getLastModification(ReflectionClass $class): int
+    private function getLastModification(ReflectionClass $class): int  // @phpstan-ignore-line
     {
         $filename = $class->getFileName();
 
@@ -210,7 +174,7 @@ final class PsrCachedReader implements Reader
         return $this->loadedFilemtimes[$filename] = $lastModification;
     }
 
-    private function getTraitLastModificationTime(ReflectionClass $reflectionTrait): int
+    private function getTraitLastModificationTime(ReflectionClass $reflectionTrait): int  // @phpstan-ignore-line
     {
         $fileName = $reflectionTrait->getFileName();
 
