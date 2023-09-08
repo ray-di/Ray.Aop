@@ -155,6 +155,23 @@ $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
 ```
 
+マッチャーはdoctrineアノテーション、またはPHP8アトリビュートの読み込みをサポートします。
+
+```php
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
+    {
+        assert($class instanceof \Ray\Aop\ReflectionClass);
+        $classAnnotation = $class->getAnnotation(Foo::class); // @Foo or #[Foo]
+        // ...
+    }
+
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
+    {
+         assert($method instanceof \Ray\Aop\ReflectionMethod);
+         $methodAnnotation = $method->getAnnotation(Bar::class);
+    }
+```
+
 ## パフォーマンス
 
 `Weaver`オブジェクトはキャッシュ可能です。コンパイル、束縛、アノテーション読み込みコストを削減します。

@@ -150,6 +150,23 @@ $bind = (new Bind())->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
 ```
 
+The matcher supports reading doctrine annotations or PHP8 attributes.
+
+```php
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
+    {
+        assert($class instanceof \Ray\Aop\ReflectionClass);
+        $classAnnotation = $class->getAnnotation(Foo::class); // @Foo or #[Foo]
+        // ...
+    }
+
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
+    {
+         assert($method instanceof \Ray\Aop\ReflectionMethod);
+         $methodAnnotation = $method->getAnnotation(Bar::class);
+    }
+```
+
 ## Performance boost
 
 Cached `Weaver` object can save the compiling, binding, annotation reading costs.
