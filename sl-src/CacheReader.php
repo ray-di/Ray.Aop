@@ -24,6 +24,8 @@ use function rawurlencode;
  * This code is taken from original PsrCachedReader.php in doctrine/annotation and modified.
  *
  * @see https://github.com/doctrine/annotations/commits/2.0.x/lib/Doctrine/Common/Annotations/PsrCachedReader.php
+ *
+ * Many thanks to the Doctrine team for their great contributions to the PHP community over the years.
  */
 final class CacheReader implements Reader
 {
