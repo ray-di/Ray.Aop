@@ -58,7 +58,7 @@ final class CacheReader implements Reader
             return $this->loadedAnnotations[$cacheKey];
         }
 
-        $annots = $this->fetchFromCache($cacheKey, $class, 'getClassAnnotations', $class);
+        $annots = $this->fetchFromCache($cacheKey, $class, __FUNCTION__, $class);
 
         return $this->loadedAnnotations[$cacheKey] = $annots;
     }
@@ -105,7 +105,7 @@ final class CacheReader implements Reader
             return $this->loadedAnnotations[$cacheKey];
         }
 
-        $annots = $this->fetchFromCache($cacheKey, $class, 'getMethodAnnotations', $method);
+        $annots = $this->fetchFromCache($cacheKey, $class, __FUNCTION__, $method);
 
         return $this->loadedAnnotations[$cacheKey] = $annots;
     }
