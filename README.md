@@ -262,18 +262,6 @@ The recommended way to install Ray.Aop is through [Composer](https://github.com/
 $ composer require ray/aop ^2.0
 ```
 
-## Testing Ray.Aop
-
-Here's how to install Ray.Aop from source and run the unit tests and demos.
-
-```bash
-git clone https://github.com/ray-di/Ray.Aop.git
-cd Ray.Aop
-composer install
-composer test
-php demo/run.php
-```
-
 ## Integrated DI framework
 
 * See also the DI framework [Ray.Di](https://github.com/ray-di/Ray.Di) which integrates DI and AOP.

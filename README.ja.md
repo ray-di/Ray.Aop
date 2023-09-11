@@ -259,11 +259,6 @@ $class = $invocation->getMethod()->getDeclaringClass();
 
 このメソッドインターセプターのAPIは[AOPアライアンス](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html)の部分実装です。
 
-## 要件
-
-* PHP 5.6+
-* hhvm
-
 ## インストール
 
 Ray.Aopの推奨インストール方法は、[Composer](https://github.com/composer/composer)でのインストールです。
@@ -273,17 +268,11 @@ Ray.Aopの推奨インストール方法は、[Composer](https://github.com/comp
 $ composer require ray/aop ~2.0
 ```
 
-## Ray.Aopのテスト
+## パフォーマンス
 
-Ray.Aopをソースからインストールし、ユニットテストとデモを実行するには次のようにします。
+AOP
 
-```bash
-git clone https://github.com/ray-di/Ray.Aop.git
-cd Ray.Aop
-composer install
-vendor/bin/phpunit
-php demo/run.php
-```
+## DI Framework
 
 DIとAOPを統合したDIフレームワーク[Ray.Di](https://github.com/ray-di/Ray.Di)もご覧ください。
 
