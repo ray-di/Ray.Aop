@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationException;
-use ReflectionClass;
 
 use function array_key_exists;
 use function array_merge;
@@ -19,39 +18,36 @@ final class Bind implements BindInterface
     /** @var MethodMatch */
     private $methodMatch;
 
-    /**
-     * @throws AnnotationException
-     */
+    /** @throws AnnotationException */
     public function __construct()
     {
         $this->methodMatch = new MethodMatch($this);
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     public function __sleep(): array
     {
         return ['bindings'];
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function bind(string $class, array $pointcuts): BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
-        $class = new ReflectionClass($class);
-        $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
+        $reflectionClass = new ReflectionClass($class);
+        $methods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
-            ($this->methodMatch)($class, $method, $pointcuts);
+            $rayMethod = new ReflectionMethod($reflectionClass->getName(), $method->getName());
+            ($this->methodMatch)($reflectionClass, $rayMethod, $pointcuts);
         }
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function bindInterceptors(string $method, array $interceptors): BindInterface
     {
@@ -64,7 +60,7 @@ final class Bind implements BindInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getBindings(): array
     {
@@ -72,7 +68,7 @@ final class Bind implements BindInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function __toString(): string
     {

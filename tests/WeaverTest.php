@@ -25,9 +25,7 @@ class WeaverTest extends TestCase
         return $weaver;
     }
 
-    /**
-     * @depends testConstruct
-     */
+    /** @depends testConstruct */
     public function testWeave(Weaver $weaver): void
     {
         $className = $weaver->weave(FakeWeaverMock::class);
@@ -50,9 +48,7 @@ class WeaverTest extends TestCase
         $this->assertTrue(class_exists($className, false));
     }
 
-    /**
-     * @depends testConstruct
-     */
+    /** @depends testConstruct */
     public function testNewInstance(Weaver $weaver): void
     {
         $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
@@ -61,9 +57,7 @@ class WeaverTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    /**
-     * @depends testConstruct
-     */
+    /** @depends testConstruct */
     public function testCachedWeaver(Weaver $weaver): void
     {
         $weaver = unserialize(serialize($weaver));

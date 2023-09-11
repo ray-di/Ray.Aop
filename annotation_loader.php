@@ -4,4 +4,6 @@ declare(strict_types=1);
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
-AnnotationRegistry::registerLoader('class_exists');
+if (method_exists(AnnotationRegistry::class, 'registerLoader')) {
+    AnnotationRegistry::registerLoader('class_exists');
+}

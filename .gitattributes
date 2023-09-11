@@ -16,3 +16,5 @@
 # Configure diff output for .php and .phar files.
 *.php diff=php
 *.phar -diff
+
+/vendor-bin/**/composer.lock binary

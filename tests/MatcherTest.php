@@ -11,9 +11,7 @@ use ReflectionException;
 
 class MatcherTest extends TestCase
 {
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testReturnBuildInMatcher(): void
     {
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher())->any());
@@ -28,9 +26,7 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher())->subclassesOf(FakeClass::class));
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testValidationForAnnotatedWith(): void
     {
         $this->expectException(InvalidAnnotationException::class);
@@ -38,9 +34,7 @@ class MatcherTest extends TestCase
         (new Matcher())->annotatedWith('__invalid_class');
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     public function testValidationForSubclassesOf(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^7.2 || ^8.0",
-        "doctrine/annotations": "^1.12",
+        "doctrine/annotations": "^1.12 || ^2.0",
         "koriym/attributes": "^1.0.3",
         "nikic/php-parser": "^4.16"
     },
@@ -42,19 +42,16 @@
         "ray/di": "A dependency injection framework"
     },
     "scripts" :{
-        "bin": "echo 'bin not installed'",
-        "post-install-cmd": ["@composer bin all install --ansi"],
-        "post-update-cmd": ["@composer bin all update --ansi"],
-        "test": ["./vendor/bin/phpunit"],
+        "test": ["phpunit"],
         "tests": ["@cs", "@test", "@sa"],
-        "coverage": ["php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"],
-        "pcov": ["php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"],
-        "cs": ["phpcs --standard=./phpcs.xml src tests"],
-        "cs-fix": ["./vendor/bin/phpcbf src tests"],
-        "clean": ["./vendor/bin/phpstan clear-result-cache", "./vendor/bin/psalm --clear-cache", "rm -rf tests/tmp/*.php"],
-        "sa": ["./vendor/bin/psalm --show-info=true", "./vendor/bin/phpstan analyse -c phpstan.neon"],
-        "metrics": ["./vendor/bin/phpmetrics --report-html=build/metrics --exclude=Exception src"],
-        "phpmd": ["./vendor/bin/phpmd src text ./phpmd.xml"],
+        "coverage": ["php -dzend_extension=xdebug.so -dxdebug.mode=coverage phpunit --coverage-text --coverage-html=build/coverage"],
+        "pcov": ["php -dextension=pcov.so -d pcov.enabled=1 phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"],
+        "cs": ["phpcs --standard=./phpcs.xml sl-src src tests"],
+        "cs-fix": ["phpcbf sl-src src tests"],
+        "clean": ["phpstan clear-result-cache", "psalm --clear-cache", "rm -rf tests/tmp/*.php"],
+        "sa": ["psalm --monochrome --show-info=true", "phpstan --memory-limit=-1 analyse -c phpstan.neon"],
+        "metrics": ["phpmetrics --report-html=build/metrics --exclude=Exception src"],
+        "phpmd": ["phpmd src text ./phpmd.xml"],
         "build": ["@cs", "@sa", "@pcov", "@metrics"]
     },
     "extra": {
@@ -62,6 +59,5 @@
             "forward-command": true,
             "bin-links": true
         }
-    },
-    "minimum-stability": "alpha"
+    }
 }

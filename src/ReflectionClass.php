@@ -6,13 +6,16 @@ namespace Ray\Aop;
 
 use Ray\ServiceLocator\ServiceLocator;
 
+use function get_class_methods;
+
 /**
- * @extends \ReflectionClass<object>
+ * @template T of object
+ * @template-extends \ReflectionClass<T>
  */
 class ReflectionClass extends \ReflectionClass implements Reader
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @psalm-suppress NoInterfaceProperties
      */
@@ -25,7 +28,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getAnnotation(string $annotationName)
     {
@@ -37,5 +40,38 @@ class ReflectionClass extends \ReflectionClass implements Reader
         }
 
         return null;
+    }
+
+    /**
+     * @param int|null $filter
+     *
+     * @return list<ReflectionMethod>
+     *
+     * @psalm-external-mutation-free
+     */
+    public function getMethods($filter = null): array
+    {
+        unset($filter);
+        $methods = [];
+        $methodNames = get_class_methods($this->name);
+        foreach ($methodNames as $methodName) {
+            $methods[] = new ReflectionMethod($this->name, $methodName);
+        }
+
+        return $methods;
+    }
+
+    /**
+     * @psalm-suppress MethodSignatureMismatch
+     * @psalm-external-mutation-free
+     */
+    public function getConstructor(): ?ReflectionMethod
+    {
+        $parent = parent::getConstructor();
+        if ($parent === null) {
+            return null;
+        }
+
+        return new ReflectionMethod($parent->class, $parent->name);
     }
 }

@@ -1,6 +1,7 @@
 parameters:
   level: max
   paths:
+    - sl-src
     - src
     - tests
   excludePaths:

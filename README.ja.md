@@ -155,6 +155,23 @@ $bind = (new Bind)->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
 ```
 
+マッチャーはdoctrineアノテーション、またはPHP8アトリビュートの読み込みをサポートします。
+
+```php
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
+    {
+        assert($class instanceof \Ray\Aop\ReflectionClass);
+        $classAnnotation = $class->getAnnotation(Foo::class); // @Foo or #[Foo]
+        // ...
+    }
+
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
+    {
+         assert($method instanceof \Ray\Aop\ReflectionMethod);
+         $methodAnnotation = $method->getAnnotation(Bar::class);
+    }
+```
+
 ## パフォーマンス
 
 `Weaver`オブジェクトはキャッシュ可能です。コンパイル、束縛、アノテーション読み込みコストを削減します。
@@ -242,11 +259,6 @@ $class = $invocation->getMethod()->getDeclaringClass();
 
 このメソッドインターセプターのAPIは[AOPアライアンス](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html)の部分実装です。
 
-## 要件
-
-* PHP 5.6+
-* hhvm
-
 ## インストール
 
 Ray.Aopの推奨インストール方法は、[Composer](https://github.com/composer/composer)でのインストールです。
@@ -256,17 +268,23 @@ Ray.Aopの推奨インストール方法は、[Composer](https://github.com/comp
 $ composer require ray/aop ~2.0
 ```
 
-## Ray.Aopのテスト
+## パフォーマンス
 
-Ray.Aopをソースからインストールし、ユニットテストとデモを実行するには次のようにします。
+AOPクラスのコンパイルにより、Ray.Aopは高速に動作します。アノテーションの読み込みは初回コンパイル時のみなので、ランタイムのパフォーマンスに影響を与えません。開発段階や最初の実行時にも、ファイルのタイムスタンプを利用してPHPファイルがキャッシュされ、通常はアノテーション生成のコストを気にする必要はありませんが、アプリケーションのブートストラップでアノテーションリーダーの設定を行うことで、初回コンパイル時のパフォーマンスが向上します。特に大規模なアプリケーションでこの設定は役立ちます。
 
-```bash
-git clone https://github.com/ray-di/Ray.Aop.git
-cd Ray.Aop
-composer install
-vendor/bin/phpunit
-php demo/run.php
+### APCu
+
+```php
+SevericeLocator::setReader(new PsrCachedReader(new Reader(), $apcuCache));
 ```
+
+### アトリビュートのみ使用（推奨）
+
+```php
+SevericeLocator::setReader(new AttributeReader);`
+```
+
+## DI Framework
 
 DIとAOPを統合したDIフレームワーク[Ray.Di](https://github.com/ray-di/Ray.Di)もご覧ください。
 

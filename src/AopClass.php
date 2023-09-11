@@ -42,7 +42,7 @@ final class AopClass
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param ReflectionClass<object> $sourceClass
      */

@@ -32,7 +32,7 @@ final class CodeGen implements CodeGenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @param ReflectionClass<object> $sourceClass
      */
@@ -49,9 +49,7 @@ final class CodeGen implements CodeGenInterface
         return new Code(array_merge($visitor->declare, [$stmt]));
     }
 
-    /**
-     * @return string|null
-     */
+    /** @return string|null */
     private function getNamespace(CodeVisitor $source)
     {
         $parts = isset($source->namespace->name) ?  $source->namespace->name->getParts() : [];

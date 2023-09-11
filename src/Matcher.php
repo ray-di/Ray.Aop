@@ -12,7 +12,7 @@ use function class_exists;
 class Matcher implements MatcherInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function any()
     {
@@ -20,7 +20,7 @@ class Matcher implements MatcherInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function annotatedWith($annotationName): AbstractMatcher
     {
@@ -32,7 +32,7 @@ class Matcher implements MatcherInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function subclassesOf($superClass): AbstractMatcher
     {
@@ -44,7 +44,7 @@ class Matcher implements MatcherInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function startsWith($prefix): AbstractMatcher
     {
@@ -72,7 +72,7 @@ class Matcher implements MatcherInterface
     // @codingStandardsIgnoreEnd
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function logicalNot(AbstractMatcher $matcher): AbstractMatcher
     {

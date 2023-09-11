@@ -26,9 +26,7 @@ final class VisitorFactory
         $this->parser = $parser;
     }
 
-    /**
-     * @param ReflectionClass<object> $class
-     */
+    /** @param ReflectionClass<object> $class */
     public function __invoke(ReflectionClass $class): CodeVisitor
     {
         $traverser = new NodeTraverser();

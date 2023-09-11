@@ -150,6 +150,23 @@ $bind = (new Bind())->bind(RealBillingService::class, [$pointcut]);
 $billing = (new Weaver($bind, $tmpDir))->newInstance(RealBillingService::class, [$arg1, $arg2]);
 ```
 
+The matcher supports reading doctrine annotations or PHP8 attributes.
+
+```php
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
+    {
+        assert($class instanceof \Ray\Aop\ReflectionClass);
+        $classAnnotation = $class->getAnnotation(Foo::class); // @Foo or #[Foo]
+        // ...
+    }
+
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
+    {
+         assert($method instanceof \Ray\Aop\ReflectionMethod);
+         $methodAnnotation = $method->getAnnotation(Bar::class);
+    }
+```
+
 ## Performance boost
 
 Cached `Weaver` object can save the compiling, binding, annotation reading costs.
@@ -245,16 +262,20 @@ The recommended way to install Ray.Aop is through [Composer](https://github.com/
 $ composer require ray/aop ^2.0
 ```
 
-## Testing Ray.Aop
+## Performance
 
-Here's how to install Ray.Aop from source and run the unit tests and demos.
+Compilation of the AOP class allows Ray.Aop to run faster. Annotations are only loaded at first compile time, so they do not affect runtime performance. During the development phase and even at first runtime, PHP files are cached using the file timestamps, so normally you do not need to worry about the cost of annotation generation, but by setting up an annotation reader in the application bootstrap, first-time compile time performance. This setting is especially useful for large applications.
 
-```bash
-git clone https://github.com/ray-di/Ray.Aop.git
-cd Ray.Aop
-composer install
-composer test
-php demo/run.php
+### APCu
+
+```php
+SevericeLocator::setReader(new PsrCachedReader(new Reader(), $apcuCache));
+```
+
+### PHP8 attributes only (recommended)
+
+```php
+SevericeLocator::setReader(new AttributeReader);`
 ```
 
 ## Integrated DI framework

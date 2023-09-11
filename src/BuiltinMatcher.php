@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\InvalidMatcherException;
-use ReflectionClass;
 use ReflectionMethod;
 
 use function assert;
@@ -20,12 +19,11 @@ class BuiltinMatcher extends AbstractMatcher
     /** @var AbstractMatcher */
     private $matcher;
 
-    /**
-     * @param mixed[] $arguments
-     */
+    /** @param mixed[] $arguments */
     public function __construct(string $matcherName, array $arguments)
     {
         parent::__construct();
+
         $this->matcherName = $matcherName;
         $this->arguments = $arguments;
         $matcherClass = 'Ray\Aop\Matcher\\' . ucwords($this->matcherName) . 'Matcher';
@@ -39,15 +37,15 @@ class BuiltinMatcher extends AbstractMatcher
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function matchesClass(ReflectionClass $class, array $arguments): bool
+    public function matchesClass(\ReflectionClass $class, array $arguments): bool
     {
         return $this->matcher->matchesClass($class, $arguments);
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {

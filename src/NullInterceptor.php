@@ -6,9 +6,7 @@ namespace Ray\Aop;
 
 class NullInterceptor implements MethodInterceptor
 {
-    /**
-     * @return mixed
-     */
+    /** @return mixed */
     public function invoke(MethodInvocation $invocation)
     {
         return $invocation->proceed();

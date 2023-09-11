@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\FakeAnnotateClass;
 use Ray\Aop\FakeResource;
-use ReflectionClass;
-use ReflectionMethod;
+use Ray\Aop\ReflectionClass;
+use Ray\Aop\ReflectionMethod;
 
 class AnnotatedWithMatcherTest extends TestCase
 {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Doctrine\Common\Annotations\Reader;
-use Ray\ServiceLocator\ServiceLocator;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -14,26 +12,22 @@ use function get_class;
 
 final class MethodMatch
 {
-    /** @var Reader */
-    private $reader;
-
     /** @var BindInterface */
     private $bind;
 
     public function __construct(BindInterface $bind)
     {
         $this->bind = $bind;
-        $this->reader = ServiceLocator::getReader();
     }
 
     /**
      * @param ReflectionClass<object> $class
      * @param Pointcut[]              $pointcuts
      */
-    public function __invoke(ReflectionClass $class, ReflectionMethod $method, array $pointcuts): void
+    public function __invoke(ReflectionClass $class, \Ray\Aop\ReflectionMethod $method, array $pointcuts): void
     {
         /** @var array<int, object> $annotations */
-        $annotations = $this->reader->getMethodAnnotations($method);
+        $annotations = $method->getAnnotations();
         // priority bind
         foreach ($pointcuts as $key => $pointcut) {
             if ($pointcut instanceof PriorityPointcut) {
@@ -50,9 +44,7 @@ final class MethodMatch
         }
     }
 
-    /**
-     * @param ReflectionClass<object> $class
-     */
+    /** @param ReflectionClass<object> $class */
     private function annotatedMethodMatchBind(ReflectionClass $class, ReflectionMethod $method, Pointcut $pointCut): void
     {
         $isMethodMatch = $pointCut->methodMatcher->matchesMethod($method, $pointCut->methodMatcher->getArguments());
