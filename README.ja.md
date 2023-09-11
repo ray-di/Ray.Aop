@@ -270,7 +270,19 @@ $ composer require ray/aop ~2.0
 
 ## パフォーマンス
 
-AOP
+AOPクラスのコンパイルにより、Ray.Aopは高速に動作します。アノテーションの読み込みは初回コンパイル時のみなので、ランタイムのパフォーマンスに影響を与えません。開発段階や最初の実行時にも、ファイルのタイムスタンプを利用してPHPファイルがキャッシュされ、通常はアノテーション生成のコストを気にする必要はありませんが、アプリケーションのブートストラップでアノテーションリーダーの設定を行うことで、初回コンパイル時のパフォーマンスが向上します。特に大規模なアプリケーションでこの設定は役立ちます。
+
+### APCu
+
+```php
+SevericeLocator::setReader(new PsrCachedReader(new Reader(), $apcuCache));
+```
+
+### アトリビュートのみ使用（推奨）
+
+```php
+SevericeLocator::setReader(new AttributeReader);`
+```
 
 ## DI Framework
 

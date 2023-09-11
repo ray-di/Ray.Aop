@@ -262,6 +262,22 @@ The recommended way to install Ray.Aop is through [Composer](https://github.com/
 $ composer require ray/aop ^2.0
 ```
 
+## Performance
+
+Compilation of the AOP class allows Ray.Aop to run faster. Annotations are only loaded at first compile time, so they do not affect runtime performance. During the development phase and even at first runtime, PHP files are cached using the file timestamps, so normally you do not need to worry about the cost of annotation generation, but by setting up an annotation reader in the application bootstrap, first-time compile time performance. This setting is especially useful for large applications.
+
+### APCu
+
+```php
+SevericeLocator::setReader(new PsrCachedReader(new Reader(), $apcuCache));
+```
+
+### PHP8 attributes only (recommended)
+
+```php
+SevericeLocator::setReader(new AttributeReader);`
+```
+
 ## Integrated DI framework
 
 * See also the DI framework [Ray.Di](https://github.com/ray-di/Ray.Di) which integrates DI and AOP.
