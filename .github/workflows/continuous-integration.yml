@@ -7,8 +7,9 @@ on:
 
 jobs:
   ci:
-    uses: ray-di/.github/.github/workflows/continuous-integration.yml@v1
+    uses: ray-di/.github/.github/workflows/continuous-integration.yml@next_stable
     with:
       old_stable: '["7.2", "7.3", "7.4", "8.0", "8.1"]'
       current_stable: 8.2
+      next_stable: 8.3
       script: demo/run.php
