@@ -10,7 +10,6 @@ use function array_keys;
 use function implode;
 use function in_array;
 use function is_array;
-use function preg_replace;
 use function token_get_all;
 
 use const T_CLASS;
@@ -20,17 +19,16 @@ use const T_STRING;
 
 class AopCodeGen
 {
-    public function generate(string $code, string $postfix, BindInterface $bind, array $traits = [InterceptTrait::class], string $replacement = 'return $this->_intercept(func_get_args(), __FUNCTION__);')
+    public function generate(string $code, string $postfix, BindInterface $bind, array $traits = [InterceptTrait::class], string $replacement = 'return $this->_intercept(func_get_args(), __FUNCTION__);}')
     {
         $tokens = token_get_all($code);
-        $newCode = '';
         $inClass = false;
         $inMethod = false;
         $curlyBraceCount = 0;
         $methodStarted = false;
         $className = '';
-        $skip = false;
-
+        $firstBraceAfterClassHit = false;
+        $newCode = new AopCodeGenNewCode();
         $iterator = new ArrayIterator($tokens);
         $bindings = array_keys($bind->getBindings());
 
@@ -40,15 +38,19 @@ class AopCodeGen
 
             if ($id === T_CLASS) {
                 $inClass = true;
-                $newCode .= $text . ' ';
+                $newCode->add($text . ' ');
                 continue;
             }
 
             if ($inClass && $id === T_STRING && empty($className)) {
                 $className = $text;
-                $newClassName = $className . $postfix;
-                $newCode .= $newClassName . ' extends ' . $className . ' ';
+                $newClassName = $text . $postfix;
+                $newCode->add($newClassName . ' extends ' . $className . ' ');
                 continue;
+            }
+
+            if ($text === '{' && $inClass && ! $firstBraceAfterClassHit) {
+                $newCode->commit();
             }
 
             if ($inClass && $id === T_EXTENDS) {
@@ -59,9 +61,9 @@ class AopCodeGen
             }
 
             if ($inClass && $text === '{' && ! $inMethod) {
-                $newCode .= '{';
+                $newCode->add('{');
                 if (! empty($traits)) {
-                    $newCode .= ' use \\' . implode(', ', $traits) . '; ';
+                    $newCode->add(' use \\' . implode(', ', $traits) . '; ');
                 }
 
                 continue;
@@ -72,9 +74,8 @@ class AopCodeGen
                 $methodStarted = false;
                 $currentMethodName = $iterator->offsetGet($iterator->key() + 2)[1];
                 if (! in_array($currentMethodName, $bindings)) {
-                    // テキストの最後に現れた ;, {, } 以降を削除
-                    $newCode = preg_replace('/(?<=[;{}])[^;{}]*$/', '', $newCode);
-                    $skip = true;
+                    $newCode->clear();
+                    $newCode->ignore(true);
                 }
             }
 
@@ -84,22 +85,19 @@ class AopCodeGen
                     $methodStarted = true;
                 } elseif ($text === '}') {
                     $curlyBraceCount--;
+                    $newCode->ignore(false);
                 }
 
                 if ($methodStarted) {
-                    if ($curlyBraceCount === 1 && $text === '{' && ! $skip) {
-                        $newCode .= '{ ' . $replacement . ' ';
+                    if ($curlyBraceCount === 1 && $text === '{') {
+                        $newCode->add('{ ' . $replacement . ' ');
                         continue;
                     }
 
                     if ($curlyBraceCount === 0) {
-                        if (! $skip) {
-                            $newCode .= '}';
-                        }
-
+                        $newCode->commit();
                         $inMethod = false;
                         $methodStarted = false;
-                        $skip = false;
                         continue;
                     }
 
@@ -107,11 +105,11 @@ class AopCodeGen
                 }
             }
 
-            if (! $skip) {
-                $newCode .= $text;
-            }
+            $newCode->add($text);
         }
 
-        return $newCode;
+        $newCode->commit();
+
+        return $newCode->code;
     }
 }
