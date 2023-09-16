@@ -36,18 +36,6 @@ final class Compiler implements CompilerInterface
         $this->classDir = $classDir;
     }
 
-    /** @return list<string> */
-    public function __sleep()
-    {
-        return ['classDir', 'aopClassName'];
-    }
-
-    /** @throws AnnotationException */
-    public function __wakeup()
-    {
-        $this->codeGen = $this->createCodeGen();
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -81,7 +69,7 @@ final class Compiler implements CompilerInterface
             return $className->fqn;
         }
 
-        $this->requireFile($className, new ReflectionClass($class), $bind);
+        $this->requireFile($className, new \ReflectionClass($class), $bind);
 
         return $className->fqn;
     }

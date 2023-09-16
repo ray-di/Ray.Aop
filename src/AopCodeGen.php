@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use ArrayIterator;
+use Reflection;
+use ReflectionMethod;
+use ReflectionUnionType;
 
 use function array_keys;
-use function array_slice;
-use function class_exists;
-use function explode;
+use function array_map;
 use function file_get_contents;
-use function file_put_contents;
 use function implode;
 use function in_array;
 use function is_array;
-use function sys_get_temp_dir;
-use function tempnam;
+use function sprintf;
 use function token_get_all;
-use function unlink;
+use function var_export;
+use function version_compare;
 
-use const PHP_EOL;
+use const PHP_VERSION;
 use const T_CLASS;
 use const T_EXTENDS;
 use const T_FUNCTION;
@@ -137,29 +137,106 @@ class AopCodeGen
             return;
         }
 
-        $parentCode = $this->generate($parent, '__tmp', $bind);
-        $tempFile = tempnam(sys_get_temp_dir(), 'tmp_') . '.php';
-        file_put_contents($tempFile, $parentCode);
-        require $tempFile;
-        unlink($tempFile);
-        $parentClass = $parent->getName() . '__tmp';
-        class_exists($parentClass);
-        $reflectionClass = new ReflectionClass($parentClass);
-        $methods = $reflectionClass->getMethods();
-        $methodCode = '';
-        foreach ($methods as $method) {
-            $methodCode .= $this->extractLines($parentCode, $method->getStartLine(), $method->getEndLine()) . PHP_EOL . PHP_EOL;
+//        $parentCode = $this->generate($parent, '__tmp', $bind);
+//        $tempFile = tempnam(sys_get_temp_dir(), 'tmp_') . '.php';
+//        file_put_contents($tempFile, $parentCode);
+//        require $tempFile;
+//        unlink($tempFile);
+//        $parentClass = $parent->getName() . '__tmp';
+//        class_exists($parentClass);
+        $parentMethods = $parent->getMethods();
+        foreach ($parentMethods as $method) {
+            $signature = $this->getMethodSignature($method);
+            $additionalMethods[] = sprintf("    %s\n    { return \$this->_intercept(func_get_args(), __FUNCTION__); }\n", $signature);
         }
 
-        $newCode->insert($methodCode);
+        $newCode->insert(implode("\n", $additionalMethods));
         $newCode->commit();
     }
 
-    private function extractLines($string, $startLine, $endLine)
+    private function prependBackslashIfNotPrimitive($type)
     {
-        $lines = explode(PHP_EOL, $string);
-        $selectedLines = array_slice($lines, $startLine - 1, $endLine - $startLine + 1);
+        $primitives = ['int', 'float', 'bool', 'string', 'array', 'callable', 'iterable', 'mixed', 'void', 'object', 'self', 'parent'];
+        if (in_array($type, $primitives, true)) {
+            return $type;
+        }
 
-        return implode(PHP_EOL, $selectedLines);
+        return '\\' . $type;
+    }
+
+    private function getMethodSignature(ReflectionMethod $method)
+    {
+        $signatureParts = [];
+
+        // PHPDocを取得
+        if ($docComment = $method->getDocComment()) {
+            $signatureParts[] = $docComment;
+        }
+
+        // アトリビュートを取得 (PHP 8.0+ の場合のみ)
+        if (version_compare(PHP_VERSION, '8.0.0', '>=')) {
+            foreach ($method->getAttributes() as $attribute) {
+                $args = array_map(static function ($arg) {
+                    return var_export($arg, true);
+                }, $attribute->getArguments());
+
+                $signatureParts[] = sprintf('#[\\%s(%s)]', $attribute->getName(), implode(', ', $args));
+            }
+        }
+
+        // アクセス修飾子を取得
+        $modifier = implode(' ', Reflection::getModifierNames($method->getModifiers()));
+        $signatureParts[] = $modifier;
+
+        // メソッド名とパラメータを取得
+        $params = [];
+        foreach ($method->getParameters() as $param) {
+            $paramStr = '';
+
+            // パラメータの型を取得
+            if ($paramType = $param->getType()) {
+                if (version_compare(PHP_VERSION, '8.0.0', '>=') && $paramType instanceof ReflectionUnionType) {
+                    $types = array_map(function ($type) {
+                        return $this->prependBackslashIfNotPrimitive($type->getName());
+                    }, $paramType->getTypes());
+                    $paramStr .= implode('|', $types) . ' ';
+                } else {
+                    $paramTypeStr = $this->prependBackslashIfNotPrimitive($paramType->getName());
+                    $paramStr .= $paramTypeStr . ' ';
+                }
+            }
+
+            // パラメータが参照渡しの場合
+            if ($param->isPassedByReference()) {
+                $paramStr .= '&';
+            }
+
+            // パラメータ名を取得
+            $paramStr .= '$' . $param->getName();
+
+            // デフォルト値を取得
+            if ($param->isOptional() && $param->isDefaultValueAvailable()) {
+                $paramStr .= ' = ' . var_export($param->getDefaultValue(), true);
+            }
+
+            $params[] = $paramStr;
+        }
+
+        $returnType = '';
+        if ($method->hasReturnType()) {
+            $rType = $method->getReturnType();
+            if (version_compare(PHP_VERSION, '8.0.0', '>=') && $rType instanceof ReflectionUnionType) {
+                $types = array_map(static function ($type) {
+                    return $type->prependBackslashIfNotPrimitive($type->getName());
+                }, $rType->getTypes());
+                $returnType = ': ' . ($rType->allowsNull() ? '?' : '') . implode('|', $types);
+            } else {
+                $returnType = ': ' . ($rType->allowsNull() ? '?' : '') . $this->prependBackslashIfNotPrimitive($rType->getName());
+            }
+        }
+
+        $signatureParts[] = sprintf('function %s(%s)%s', $method->getName(), implode(', ', $params), $returnType);
+
+        return implode(' ', $signatureParts);
     }
 }
