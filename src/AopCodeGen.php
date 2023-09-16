@@ -6,8 +6,11 @@ namespace Ray\Aop;
 
 use ArrayIterator;
 
+use function array_keys;
 use function implode;
+use function in_array;
 use function is_array;
+use function preg_replace;
 use function token_get_all;
 
 use const T_CLASS;
@@ -26,8 +29,10 @@ class AopCodeGen
         $curlyBraceCount = 0;
         $methodStarted = false;
         $className = '';
+        $skip = false;
 
         $iterator = new ArrayIterator($tokens);
+        $bindings = array_keys($bind->getBindings());
 
         for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
             $token = $iterator->current();
@@ -65,6 +70,12 @@ class AopCodeGen
             if ($id === T_FUNCTION) {
                 $inMethod = true;
                 $methodStarted = false;
+                $currentMethodName = $iterator->offsetGet($iterator->key() + 2)[1];
+                if (! in_array($currentMethodName, $bindings)) {
+                    // テキストの最後に現れた ;, {, } 以降を削除
+                    $newCode = preg_replace('/(?<=[;{}])[^;{}]*$/', '', $newCode);
+                    $skip = true;
+                }
             }
 
             if ($inMethod) {
@@ -76,15 +87,19 @@ class AopCodeGen
                 }
 
                 if ($methodStarted) {
-                    if ($curlyBraceCount === 1 && $text === '{') {
+                    if ($curlyBraceCount === 1 && $text === '{' && ! $skip) {
                         $newCode .= '{ ' . $replacement . ' ';
                         continue;
                     }
 
                     if ($curlyBraceCount === 0) {
-                        $newCode .= '}';
+                        if (! $skip) {
+                            $newCode .= '}';
+                        }
+
                         $inMethod = false;
                         $methodStarted = false;
+                        $skip = false;
                         continue;
                     }
 
@@ -92,7 +107,9 @@ class AopCodeGen
                 }
             }
 
-            $newCode .= $text;
+            if (! $skip) {
+                $newCode .= $text;
+            }
         }
 
         return $newCode;
