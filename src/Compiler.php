@@ -12,6 +12,8 @@ use function array_keys;
 use function assert;
 use function class_exists;
 use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function is_writable;
 use function method_exists;
 use function sprintf;
@@ -25,9 +27,6 @@ final class Compiler implements CompilerInterface
     /** @var CodeGen */
     private $codeGen;
 
-    /** @var AopClassName */
-    private $aopClassName;
-
     /** @throws AnnotationException */
     public function __construct(string $classDir)
     {
@@ -36,8 +35,6 @@ final class Compiler implements CompilerInterface
         }
 
         $this->classDir = $classDir;
-        $this->aopClassName = new AopClassName($classDir);
-        $this->codeGen = $this->createCodeGen();
     }
 
     /** @return list<string> */
@@ -80,15 +77,14 @@ final class Compiler implements CompilerInterface
             return $class;
         }
 
-        $aopClass = ($this->aopClassName)($class, (string) $bind);
-        if (class_exists($aopClass, false)) {
-            return $aopClass;
+        $className = new AopPostfixClassName($class, (string) $bind);
+        if (class_exists($className->fqn, false)) {
+            return $className->fqn;
         }
 
-        /** @var class-string $aopClass */
-        $this->requireFile($aopClass, new ReflectionClass($class), $bind);
+        $this->requireFile($className, new ReflectionClass($class), $bind);
 
-        return $aopClass;
+        return $className->fqn;
     }
 
     /** @param class-string $class */
@@ -105,29 +101,28 @@ final class Compiler implements CompilerInterface
         $bindingMethods = array_keys($bind->getBindings());
         $hasMethod = false;
         foreach ($bindingMethods as $bindingMethod) {
-            if (method_exists($class, $bindingMethod)) {
-                $hasMethod = true;
+            if (! method_exists($class, $bindingMethod)) {
+                continue;
             }
+
+            $hasMethod = true;
         }
 
         return $hasMethod;
     }
 
-    /**
-     * @param class-string             $aopClassName
-     * @param \ReflectionClass<object> $sourceClass
-     */
-    private function requireFile(string $aopClassName, \ReflectionClass $sourceClass, BindInterface $bind): void
+    /** @param \ReflectionClass<object> $sourceClass */
+    private function requireFile(AopPostfixClassName $className, \ReflectionClass $sourceClass, BindInterface $bind): void
     {
-        $file = $this->getFileName($aopClassName);
+        $file = $this->getFileName($className->fqn);
         if (! file_exists($file)) {
-            $code = $this->codeGen->generate($sourceClass, $bind);
-            $code->save($file);
-            assert(file_exists($file));
+            $souceCode = file_get_contents($sourceClass->getFileName());
+            $aopCode = (new AopCodeGen())->generate($souceCode, $className->postFix, $bind);
+            file_put_contents($file, $aopCode);
         }
 
         require_once $file;
-        class_exists($aopClassName); // ensure class is created
+        class_exists($className->fqn); // ensure class is created
     }
 
     private function getFileName(string $aopClassName): string

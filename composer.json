@@ -11,6 +11,8 @@
     ],
     "require": {
         "php": "^7.2 || ^8.0",
+        "ext-hash": "*",
+        "ext-tokenizer": "*",
         "doctrine/annotations": "^1.12 || ^2.0",
         "koriym/attributes": "^1.0.3",
         "nikic/php-parser": "^4.16"
