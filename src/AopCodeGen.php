@@ -60,10 +60,16 @@ class AopCodeGen
                 continue;
             }
 
+            if ($text === ';' && $inClass && ! $inMethod) {
+                $newCode->clear();
+                continue;
+            }
+
             if ($inClass && $text === '{' && ! $inMethod) {
                 $newCode->add('{');
                 if (! empty($traits)) {
                     $newCode->add(' use \\' . implode(', ', $traits) . '; ');
+                    $newCode->commit();
                 }
 
                 continue;
