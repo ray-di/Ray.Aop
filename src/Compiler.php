@@ -12,7 +12,6 @@ use function array_keys;
 use function assert;
 use function class_exists;
 use function file_exists;
-use function file_get_contents;
 use function file_put_contents;
 use function is_writable;
 use function method_exists;
@@ -116,8 +115,7 @@ final class Compiler implements CompilerInterface
     {
         $file = $this->getFileName($className->fqn);
         if (! file_exists($file)) {
-            $souceCode = file_get_contents($sourceClass->getFileName());
-            $aopCode = (new AopCodeGen())->generate($souceCode, $className->postFix, $bind);
+            $aopCode = (new AopCodeGen())->generate($sourceClass, $className->postFix, $bind);
             file_put_contents($file, $aopCode);
         }
 

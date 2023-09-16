@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use function preg_replace;
+
 class AopCodeGenNewCode
 {
     /** @var string */
@@ -46,5 +48,11 @@ class AopCodeGenNewCode
     public function ignore(bool $ignore)
     {
         $this->ignore = $ignore;
+    }
+
+    public function insert(string $code): void
+    {
+        $replacement = $code . '}';
+        $this->code = preg_replace('/\}\s*$/', $replacement, $this->code);
     }
 }

@@ -7,11 +7,20 @@ namespace Ray\Aop;
 use ArrayIterator;
 
 use function array_keys;
+use function array_slice;
+use function class_exists;
+use function explode;
+use function file_get_contents;
+use function file_put_contents;
 use function implode;
 use function in_array;
 use function is_array;
+use function sys_get_temp_dir;
+use function tempnam;
 use function token_get_all;
+use function unlink;
 
+use const PHP_EOL;
 use const T_CLASS;
 use const T_EXTENDS;
 use const T_FUNCTION;
@@ -19,8 +28,9 @@ use const T_STRING;
 
 class AopCodeGen
 {
-    public function generate(string $code, string $postfix, BindInterface $bind, array $traits = [InterceptTrait::class], string $replacement = 'return $this->_intercept(func_get_args(), __FUNCTION__);}')
+    public function generate(\ReflectionClass $sourceClass, string $postfix, BindInterface $bind, array $traits = [InterceptTrait::class], string $replacement = 'return $this->_intercept(func_get_args(), __FUNCTION__);}')
     {
+        $code = file_get_contents($sourceClass->getFileName());
         $tokens = token_get_all($code);
         $inClass = false;
         $inMethod = false;
@@ -115,7 +125,41 @@ class AopCodeGen
         }
 
         $newCode->commit();
+        $this->addParentClass($newCode, $sourceClass, $bind);
 
         return $newCode->code;
+    }
+
+    public function addParentClass(AopCodeGenNewCode $newCode, \ReflectionClass $sourceClass, BindInterface $bind): void
+    {
+        $parent = $sourceClass->getParentClass();
+        if (! $parent) {
+            return;
+        }
+
+        $parentCode = $this->generate($parent, '__tmp', $bind);
+        $tempFile = tempnam(sys_get_temp_dir(), 'tmp_') . '.php';
+        file_put_contents($tempFile, $parentCode);
+        require $tempFile;
+        unlink($tempFile);
+        $parentClass = $parent->getName() . '__tmp';
+        class_exists($parentClass);
+        $reflectionClass = new ReflectionClass($parentClass);
+        $methods = $reflectionClass->getMethods();
+        $methodCode = '';
+        foreach ($methods as $method) {
+            $methodCode .= $this->extractLines($parentCode, $method->getStartLine(), $method->getEndLine()) . PHP_EOL . PHP_EOL;
+        }
+
+        $newCode->insert($methodCode);
+        $newCode->commit();
+    }
+
+    private function extractLines($string, $startLine, $endLine)
+    {
+        $lines = explode(PHP_EOL, $string);
+        $selectedLines = array_slice($lines, $startLine - 1, $endLine - $startLine + 1);
+
+        return implode(PHP_EOL, $selectedLines);
     }
 }
