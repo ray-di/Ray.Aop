@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-class FakePhp8Types
+use Ray\Aop\Annotation\FakeMarker;
+use Ray\Aop\Annotation\FakeMarker4;
+
+class FakePhp8Types implements FakeNullInterface, FakeNullInterface1
 {
     // A method with no type declaration
     public function method1($param1) {}
@@ -49,5 +52,11 @@ class FakePhp8Types
     // Method with nullable union return type
     public function method19(): null|int|string { return null; }
     public function method20(): \DateTime|string|null { return null; }
+
+    /**
+     * PHPDoc
+     */
+    #[FakeMarker4([1, 2], 3)]
+    public function method21() {}
 
 }

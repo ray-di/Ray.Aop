@@ -24,7 +24,9 @@ final class AopCodeGenNewCode
         }
 
         if ($text === '}') {
+            // @codeCoverageIgnoreStart
             $this->curlyBraceCount--;
+            // @codeCoverageIgnoreEnd
         }
 
         $this->code .= $text;
