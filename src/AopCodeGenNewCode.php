@@ -43,12 +43,12 @@ class AopCodeGenNewCode
     public function insert(string $code): void
     {
         $replacement = $code . '}';
-        $this->code = preg_replace('/\}\s*$/', $replacement, $this->code);
+        $this->code = preg_replace('/}\s*$/', $replacement, $this->code);
     }
 
     public function implementsInterface(string $interfaceName): void
     {
-        $pattern = '/(class\s+\w+\s+(?:extends\s+\w+\s+)?)(?:(implements\s+\w+(?:,\s*\w+)*))?/';
+        $pattern = '/(class\s+\w+\s+(?:extends\s+\w+\s+)?)(implements\s+\w+(?:,\s*\w+)*)?/';
 
         $this->code = preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
             if (isset($matches[2])) {
