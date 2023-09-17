@@ -112,7 +112,11 @@ final class AopCodeGenMethodSignature
 
         // 単一型の Nullableのチェックをユニオンタイプのチェックの後に移動
         if ($type && $type->allowsNull()) {
-            $typeStr = 'null|' . $typeStr;
+            if (PHP_VERSION_ID >= 80000) {
+                $typeStr = 'null|' . $typeStr;
+            } else {
+                $typeStr = '?' . $typeStr;
+            }
         }
 
         return $typeStr;
