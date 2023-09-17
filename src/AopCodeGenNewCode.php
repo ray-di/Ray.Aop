@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use function preg_replace;
 use function preg_replace_callback;
+use function rtrim;
 
 class AopCodeGenNewCode
 {
@@ -18,9 +19,20 @@ class AopCodeGenNewCode
     /** @var bool  */
     private $ignore = false;
 
+    /** @var int  */
+    private $curlyBraceCount = 0;
+
     /** @return void */
     public function add(string $text)
     {
+        if ($text === '{') {
+            $this->curlyBraceCount++;
+        }
+
+        if ($text === '}') {
+            $this->curlyBraceCount--;
+        }
+
         if ($this->ignore) {
             return;
         }
@@ -68,7 +80,15 @@ class AopCodeGenNewCode
             }
 
             // implements が存在しない場合
-            return $matches[1] . 'implements \\' . $interfaceName;
+            return rtrim($matches[1], "\n") . 'implements \\' . $interfaceName;
         }, $this->code);
+    }
+
+    public function finalyze()
+    {
+        while ($this->curlyBraceCount !== 0) {
+            $this->code .= '}';
+            $this->curlyBraceCount--;
+        }
     }
 }

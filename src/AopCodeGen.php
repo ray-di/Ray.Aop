@@ -8,6 +8,7 @@ use ArrayIterator;
 use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionParameter;
 use ReflectionUnionType;
 
 use function array_keys;
@@ -16,11 +17,13 @@ use function file_get_contents;
 use function implode;
 use function in_array;
 use function is_array;
+use function ltrim;
 use function sprintf;
 use function token_get_all;
 use function var_export;
 use function version_compare;
 
+use const PHP_EOL;
 use const PHP_VERSION;
 use const T_CLASS;
 use const T_EXTENDS;
@@ -77,13 +80,10 @@ class AopCodeGen
             }
 
             if ($inClass && $text === '{' && ! $inMethod) {
-                $newCode->add('{');
-                if (! empty($traits)) {
-                    $newCode->add(' use \\' . implode(', ', $traits) . '; ');
-                    $newCode->commit();
-                }
+                $newCode->add(sprintf("{\n    use \%s;\n}\n", InterceptTrait::class));
+                $newCode->commit();
 
-                continue;
+                break;
             }
 
             if ($id === T_FUNCTION) {
@@ -127,43 +127,39 @@ class AopCodeGen
 
         $newCode->commit();
         $newCode->implementsInterface(WeavedInterface::class);
-        $this->addParentClass($newCode, $sourceClass, $bind);
+        $this->addMethods($newCode, $sourceClass, $bind);
+        $newCode->finalyze();
 
         return $newCode->code;
     }
 
-    public function addParentClass(AopCodeGenNewCode $newCode, ReflectionClass $sourceClass, BindInterface $bind): void
+    public function addMethods(AopCodeGenNewCode $newCode, ReflectionClass $class, BindInterface $bind): void
     {
-        $parent = $sourceClass->getParentClass();
-        if (! $parent) {
+        if (! $class) {
             return;
         }
 
-//        $parentCode = $this->generate($parent, '__tmp', $bind);
-//        $tempFile = tempnam(sys_get_temp_dir(), 'tmp_') . '.php';
-//        file_put_contents($tempFile, $parentCode);
-//        require $tempFile;
-//        unlink($tempFile);
-//        $parentClass = $parent->getName() . '__tmp';
-//        class_exists($parentClass);
-        $parentMethods = $parent->getMethods();
+        $bindings = array_keys($bind->getBindings());
+
+        $parentMethods = $class->getMethods();
+        $statement = '\$this->_intercept(func_get_args(), __FUNCTION__);';
+        $additionalMethods = [];
         foreach ($parentMethods as $method) {
+            if (! in_array($method->getName(), $bindings)) {
+                continue;
+            }
+
             $signature = $this->getMethodSignature($method);
-            $additionalMethods[] = sprintf("    %s\n    { return \$this->_intercept(func_get_args(), __FUNCTION__); }\n", $signature);
+            $isVoid = $method->hasReturnType() && $method->getReturnType()->getName() === 'void';
+            $return = $isVoid ? '' : 'return ';
+            $additionalMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, $statement);
         }
 
-        $newCode->insert(implode("\n", $additionalMethods));
+        if ($additionalMethods) {
+            $newCode->insert(implode("\n", $additionalMethods));
+        }
+
         $newCode->commit();
-    }
-
-    private function prependBackslashIfNotPrimitive($type)
-    {
-        $primitives = ['int', 'float', 'bool', 'string', 'array', 'callable', 'iterable', 'mixed', 'void', 'object', 'self', 'parent'];
-        if (in_array($type, $primitives, true)) {
-            return $type;
-        }
-
-        return '\\' . $type;
     }
 
     private function getMethodSignature(ReflectionMethod $method)
@@ -172,7 +168,7 @@ class AopCodeGen
 
         // PHPDocを取得
         if ($docComment = $method->getDocComment()) {
-            $signatureParts[] = $docComment;
+            $signatureParts[] = $docComment . PHP_EOL;
         }
 
         // アトリビュートを取得 (PHP 8.0+ の場合のみ)
@@ -182,8 +178,12 @@ class AopCodeGen
                     return var_export($arg, true);
                 }, $attribute->getArguments());
 
-                $signatureParts[] = sprintf('#[\\%s(%s)]', $attribute->getName(), implode(', ', $args));
+                $signatureParts[] = sprintf('    #[\\%s(%s)]', $attribute->getName(), implode(', ', $args)) . PHP_EOL;
             }
+        }
+
+        if ($signatureParts) {
+            $signatureParts[] = '    '; // インデント追加
         }
 
         // アクセス修飾子を取得
@@ -198,12 +198,12 @@ class AopCodeGen
             // パラメータの型を取得
             if ($paramType = $param->getType()) {
                 if (version_compare(PHP_VERSION, '8.0.0', '>=') && $paramType instanceof ReflectionUnionType) {
-                    $types = array_map(function ($type) {
-                        return $this->prependBackslashIfNotPrimitive($type->getName());
+                    $types = array_map(function ($param) {
+                        return $this->prependBackslashIfNotPrimitive($param);
                     }, $paramType->getTypes());
                     $paramStr .= implode('|', $types) . ' ';
                 } else {
-                    $paramTypeStr = $this->prependBackslashIfNotPrimitive($paramType->getName());
+                    $paramTypeStr = $this->prependBackslashIfNotPrimitive($param);
                     $paramStr .= $paramTypeStr . ' ';
                 }
             }
@@ -233,12 +233,44 @@ class AopCodeGen
                 }, $rType->getTypes());
                 $returnType = ': ' . ($rType->allowsNull() ? '?' : '') . implode('|', $types);
             } else {
-                $returnType = ': ' . ($rType->allowsNull() ? '?' : '') . $this->prependBackslashIfNotPrimitive($rType->getName());
+                $returnType = ': ' . ($rType->allowsNull() ? '?' : '') . $this->prependBackslashIfNotPrimitiveFromTypeName($rType->getName());
             }
         }
 
         $signatureParts[] = sprintf('function %s(%s)%s', $method->getName(), implode(', ', $params), $returnType);
 
         return implode(' ', $signatureParts);
+    }
+
+    function prependBackslashIfNotPrimitive(ReflectionParameter $parameter)
+    {
+        $primitives = ['int', 'float', 'string', 'bool', 'array', 'callable', 'iterable', 'void', 'mixed', 'object', 'null', 'false', 'resource', 'static'];
+
+        $type = $parameter->getType();
+        if (! $type) {
+            return '';
+        }
+
+        $typeName = $type->getName();
+
+        // If it's a variadic parameter, add the ... prefix.
+        $prefix = $parameter->isVariadic() ? ' ...' : '';
+
+        if (in_array($typeName, $primitives)) {
+            return $typeName . $prefix;
+        }
+
+        return $prefix . '\\' . ltrim($typeName, '\\');
+    }
+
+    private function prependBackslashIfNotPrimitiveFromTypeName($typeName)
+    {
+        $primitives = ['int', 'float', 'string', 'bool', 'array', 'callable', 'iterable', 'void', 'mixed', 'object', 'null', 'false', 'resource', 'static'];
+
+        if (in_array($typeName, $primitives)) {
+            return $typeName;
+        }
+
+        return '\\' . ltrim($typeName, '\\');
     }
 }

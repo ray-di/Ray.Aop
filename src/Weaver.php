@@ -62,21 +62,21 @@ final class Weaver
      */
     public function weave(string $class): string
     {
-        $aopClass = ($this->aopClassName)($class, $this->bindName);
-        if (class_exists($aopClass, false)) {
-            return $aopClass;
+        $aopClass = new AopPostfixClassName($class, $this->bindName);
+        if (class_exists($aopClass->fqn, false)) {
+            return $aopClass->fqn;
         }
 
-        if ($this->loadClass($aopClass)) {
-            assert(class_exists($aopClass));
+        if ($this->loadClass($aopClass->fqn)) {
+            assert(class_exists($aopClass->fqn));
 
-            return $aopClass;
+            return $aopClass->fqn;
         }
 
         $this->compiler->compile($class, $this->bind);
-        assert(class_exists($aopClass));
+        assert(class_exists($aopClass->fqn));
 
-        return $aopClass;
+        return $aopClass->fqn;
     }
 
     private function loadClass(string $class): bool
