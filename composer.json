@@ -29,14 +29,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Ray\\Aop\\": ["src/", "src-deprecated"],
+            "Ray\\Aop\\": ["src/"],
             "Ray\\ServiceLocator\\": ["sl-src/"]
         },
         "files": ["annotation_loader.php"]
     },
     "autoload-dev": {
         "psr-4": {
-            "Ray\\Aop\\": ["tests/", "tests/Fake/"]
+            "Ray\\Aop\\": ["tests/", "src-deprecated", "tests/Fake/"]
         },
         "files": ["tests/Fake/FakeGlobalNamespaced.php", "tests/Fake/FakeGlobalEmptyNamespaced.php"]
     },
