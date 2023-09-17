@@ -32,13 +32,13 @@ final class AopCodeGenMethodSignature
         $signatureParts = [];
 
         // PHPDocを取得
-        if ($docComment = $method->getDocComment()) {
+        $docComment = $method->getDocComment();
+        if ($docComment) {
             $signatureParts[] = $docComment . PHP_EOL;
         }
 
         // アトリビュートを取得 (PHP 8.0+ の場合のみ)
         if (PHP_VERSION_ID >= 80000) {
-            $a = $method->getAttributes();
             /** @psalm-suppress MixedAssignment */
             foreach ($method->getAttributes() as $attribute) {
                 $args = array_map(/** @param mixed $arg */static function ($arg): string {
@@ -64,7 +64,8 @@ final class AopCodeGenMethodSignature
         }
 
         $returnType = '';
-        if ($rType = $method->getReturnType()) {
+        $rType = $method->getReturnType();
+        if ($rType) {
             $returnType = ': ' . $this->getTypeString($rType);
         }
 
