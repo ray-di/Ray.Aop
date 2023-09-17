@@ -7,6 +7,7 @@ namespace Ray\Aop;
 use ArrayIterator;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionUnionType;
 
 use function array_keys;
@@ -42,7 +43,6 @@ final class AopCodeGen
         $code = file_get_contents($fileName);
         $tokens = token_get_all($code);
         $inClass = false;
-        $inMethod = false;
         $className = '';
         $newCode = new AopCodeGenNewCode();
         $iterator = new ArrayIterator($tokens);
@@ -71,7 +71,7 @@ final class AopCodeGen
                 continue;
             }
 
-            if ($inClass && $text === '{' && ! $inMethod) {
+            if ($inClass && $text === '{') {
                 $newCode->add(sprintf("{\n    use \%s;\n}\n", InterceptTrait::class));
 
                 break;
@@ -100,7 +100,12 @@ final class AopCodeGen
             }
 
             $signature = $this->methodSignature->get($method);
-            $isVoid = $method->hasReturnType() && (! $method->getReturnType() instanceof ReflectionUnionType) && $method->getReturnType()->getName()  === 'void';
+            $isVoid = false;
+            if ($method->hasReturnType() && (! $method->getReturnType() instanceof ReflectionUnionType)) {
+                $nt = $method->getReturnType();
+                $isVoid = $nt instanceof ReflectionNamedType && $nt->getName()  === 'void';
+            }
+
             $return = $isVoid ? '' : 'return ';
             $additionalMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, $statement);
         }

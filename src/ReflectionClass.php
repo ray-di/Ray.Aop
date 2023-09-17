@@ -76,6 +76,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
         return new ReflectionMethod($parent->class, $parent->name);
     }
 
+    /** @psalm-external-mutation-free */
     #[ReturnTypeWillChange]
     public function getParentClass()
     {

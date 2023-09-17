@@ -23,7 +23,11 @@ use const PHP_VERSION_ID;
 
 final class AopCodeGenMethodSignature
 {
-    public function get(ReflectionMethod $method)
+    /**
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress MixedMethodCall
+     */
+    public function get(ReflectionMethod $method): string
     {
         $signatureParts = [];
 
@@ -34,8 +38,9 @@ final class AopCodeGenMethodSignature
 
         // アトリビュートを取得 (PHP 8.0+ の場合のみ)
         if (PHP_VERSION_ID >= 80000) {
+            /** @psalm-suppress MixedAssignment */
             foreach ($method->getAttributes() as $attribute) {
-                $args = array_map(static function ($arg) {
+                $args = array_map(/** @param mixed $arg */static function ($arg): string {
                     return var_export($arg, true);
                 }, $attribute->getArguments());
 
@@ -98,7 +103,7 @@ final class AopCodeGenMethodSignature
         } elseif (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
             $types = array_map(static function (ReflectionNamedType $t) {
                 return $t->isBuiltin() ? $t->getName() : '\\' . $t->getName();
-            }, $type->getTypes());
+            }, (array) $type->getTypes());
 
             return implode('|', $types);
         }
