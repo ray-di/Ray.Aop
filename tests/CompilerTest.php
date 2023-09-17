@@ -336,14 +336,6 @@ class CompilerTest extends TestCase
         $this->assertTrue($mock->returnTypeVoidCalled);
     }
 
-    public function testCompileMultipleFile(): void
-    {
-        $this->markTestSkipped('複数のクラスは単純に無視され、例外は発生しない');
-        $compiler = new Compiler(__DIR__ . '/tmp');
-        $bind = (new Bind())->bindInterceptors('foo', [new FakeDoubleInterceptor()]);
-        $compiler->newInstance(FakeTwoClass::class, [], $bind);
-    }
-
     public function testNewInstanceWithAnonymousClass(): void
     {
         $mock = $this->compiler->newInstance(FakeAnonymousClass::class, [], $this->bind);
