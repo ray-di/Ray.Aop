@@ -33,7 +33,16 @@ final class AopCodeGen
         $this->methodSignature = new AopCodeGenMethodSignature();
     }
 
-    /** @param ReflectionClass<object> $sourceClass */
+    /**
+     * Generate AOP class
+     *
+     * Powered by PHP token and reflection
+     *
+     * @param ReflectionClass<object> $sourceClass
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     */
     public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix = '_aop'): string
     {
         $fileName = (string) $sourceClass->getFileName();
