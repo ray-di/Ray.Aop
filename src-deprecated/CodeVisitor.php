@@ -12,9 +12,9 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeVisitorAbstract;
 use Ray\Aop\Exception\MultipleClassInOneFileException;
-
 use function implode;
 
+/** @deprecated  */
 final class CodeVisitor extends NodeVisitorAbstract
 {
     /** @var ?Namespace_ */

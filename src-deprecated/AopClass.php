@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Parser;
 use ReflectionClass;
-
 use function array_merge;
 use function assert;
 use function class_exists;
@@ -20,6 +19,7 @@ use function strpos;
 use function strrchr;
 use function substr;
 
+/** @deprecated  */
 final class AopClass
 {
     /** @var CodeGenMethod */
@@ -57,7 +57,7 @@ final class AopClass
         $classStm->name = new Identifier($shortClassName);
         $classStm->extends = new Name('\\' . $sourceClass->name);
         $classStm->implements[] = new Name('\Ray\Aop\WeavedInterface');
-        /** @var list<Stmt> $stmts */
+        /** @var Stmt $stmts */
         $stmts = array_merge([$this->traitStmt], $methods);
         $classStm->stmts = $stmts;
 

@@ -10,12 +10,12 @@ use PhpParser\Parser;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
 use RuntimeException;
-
 use function file_get_contents;
 use function get_class;
 use function is_array;
 use function is_bool;
 
+/** @deprecated  */
 final class VisitorFactory
 {
     /** @var Parser */

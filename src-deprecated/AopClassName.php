@@ -8,6 +8,7 @@ use function crc32;
 use function filemtime;
 use function sprintf;
 
+/** @deprecated  */
 final class AopClassName
 {
     /** @var string */

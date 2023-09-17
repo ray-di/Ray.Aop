@@ -10,7 +10,8 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeAbstract;
 
-final class CallIntercept
+final class
+CallIntercept
 {
     /**
      * $this->_intercept(func_get_args(), __FUNCTION__);
@@ -37,7 +38,7 @@ final class CallIntercept
         $this->return = new Return_($methodCall);
     }
 
-    /** @return list<Expression>|list<Return_> */
+    /** @return Return_|Return_ */
     public function getStmts(?NodeAbstract $returnType): array
     {
         $isVoid = $returnType instanceof Identifier && ($returnType->name === 'void' || $returnType->name === 'never');

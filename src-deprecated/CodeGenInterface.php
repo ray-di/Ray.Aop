@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use ReflectionClass;
 
+/** @deprecated  */
 interface CodeGenInterface
 {
     /** @param ReflectionClass<object> $sourceClass */

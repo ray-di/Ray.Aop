@@ -7,7 +7,6 @@ namespace Ray\Aop;
 use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard;
 use Ray\Aop\Exception\NotWritableException;
-
 use function dirname;
 use function file_put_contents;
 use function is_string;
@@ -15,9 +14,9 @@ use function rename;
 use function sprintf;
 use function tempnam;
 use function unlink;
-
 use const PHP_EOL;
 
+/** @deprecated  */
 final class Code
 {
     /** @var string */

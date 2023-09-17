@@ -7,6 +7,7 @@ namespace Ray\Aop;
 use PhpParser\Parser;
 use PhpParser\ParserFactory as PhpParserFactory;
 
+/** @deprecated  */
 class ParserFactory
 {
     public function newInstance(): Parser

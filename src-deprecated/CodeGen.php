@@ -6,10 +6,10 @@ namespace Ray\Aop;
 
 use PhpParser\BuilderFactory;
 use ReflectionClass;
-
 use function array_merge;
 use function implode;
 
+/** @deprecated  */
 final class CodeGen implements CodeGenInterface
 {
     /** @var BuilderFactory */

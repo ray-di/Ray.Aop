@@ -11,11 +11,13 @@ use PhpParser\Parser;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
 use ReflectionMethod;
-
 use function array_keys;
 use function in_array;
 
-/** @SuppressWarnings(PHPMD.CouplingBetweenObjects) */
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @deprecated
+ */
 final class CodeGenMethod
 {
     /** @var VisitorFactory */
