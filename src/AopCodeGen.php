@@ -27,24 +27,19 @@ use const PHP_EOL;
 use const PHP_VERSION;
 use const T_CLASS;
 use const T_EXTENDS;
-use const T_FUNCTION;
 use const T_STRING;
 
 class AopCodeGen
 {
-    public function generate(ReflectionClass $sourceClass, string $postfix, BindInterface $bind, array $traits = [InterceptTrait::class], string $replacement = 'return $this->_intercept(func_get_args(), __FUNCTION__);}')
+    public function generate(ReflectionClass $sourceClass, string $postfix, BindInterface $bind): string
     {
         $code = file_get_contents($sourceClass->getFileName());
         $tokens = token_get_all($code);
         $inClass = false;
         $inMethod = false;
-        $curlyBraceCount = 0;
-        $methodStarted = false;
         $className = '';
-        $firstBraceAfterClassHit = false;
         $newCode = new AopCodeGenNewCode();
         $iterator = new ArrayIterator($tokens);
-        $bindings = array_keys($bind->getBindings());
 
         for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
             $token = $iterator->current();
@@ -63,19 +58,10 @@ class AopCodeGen
                 continue;
             }
 
-            if ($text === '{' && $inClass && ! $firstBraceAfterClassHit) {
-                $newCode->commit();
-            }
-
             if ($inClass && $id === T_EXTENDS) {
                 $iterator->next();  // Skip extends keyword
                 $iterator->next();  // Skip class name
                 $iterator->next();  // Skip space
-                continue;
-            }
-
-            if ($text === ';' && $inClass && ! $inMethod) {
-                $newCode->clear();
                 continue;
             }
 
@@ -84,42 +70,6 @@ class AopCodeGen
                 $newCode->commit();
 
                 break;
-            }
-
-            if ($id === T_FUNCTION) {
-                $inMethod = true;
-                $methodStarted = false;
-                $currentMethodName = $iterator->offsetGet($iterator->key() + 2)[1];
-                if (! in_array($currentMethodName, $bindings)) {
-                    $newCode->clear();
-                    $newCode->ignore(true);
-                }
-            }
-
-            if ($inMethod) {
-                if ($text === '{') {
-                    $curlyBraceCount++;
-                    $methodStarted = true;
-                } elseif ($text === '}') {
-                    $curlyBraceCount--;
-                    $newCode->ignore(false);
-                }
-
-                if ($methodStarted) {
-                    if ($curlyBraceCount === 1 && $text === '{') {
-                        $newCode->add('{ ' . $replacement . ' ');
-                        continue;
-                    }
-
-                    if ($curlyBraceCount === 0) {
-                        $newCode->commit();
-                        $inMethod = false;
-                        $methodStarted = false;
-                        continue;
-                    }
-
-                    continue;  // We skip adding other contents inside the method
-                }
             }
 
             $newCode->add($text);
@@ -133,12 +83,8 @@ class AopCodeGen
         return $newCode->code;
     }
 
-    public function addMethods(AopCodeGenNewCode $newCode, ReflectionClass $class, BindInterface $bind): void
+    private function addMethods(AopCodeGenNewCode $newCode, ReflectionClass $class, BindInterface $bind): void
     {
-        if (! $class) {
-            return;
-        }
-
         $bindings = array_keys($bind->getBindings());
 
         $parentMethods = $class->getMethods();

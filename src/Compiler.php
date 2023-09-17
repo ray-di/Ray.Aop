@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationException;
-use PhpParser\BuilderFactory;
 use Ray\Aop\Exception\NotWritableException;
+use ReflectionClass;
 
 use function array_keys;
 use function assert;
@@ -23,7 +23,7 @@ final class Compiler implements CompilerInterface
     /** @var string */
     public $classDir;
 
-    /** @var CodeGen */
+    /** @var AopCodeGen */
     private $codeGen;
 
     /** @throws AnnotationException */
@@ -34,6 +34,7 @@ final class Compiler implements CompilerInterface
         }
 
         $this->classDir = $classDir;
+        $this->codeGen = new AopCodeGen();
     }
 
     /**
@@ -69,7 +70,7 @@ final class Compiler implements CompilerInterface
             return $className->fqn;
         }
 
-        $this->requireFile($className, new \ReflectionClass($class), $bind);
+        $this->requireFile($className, new ReflectionClass($class), $bind);
 
         return $className->fqn;
     }
@@ -98,12 +99,12 @@ final class Compiler implements CompilerInterface
         return $hasMethod;
     }
 
-    /** @param \ReflectionClass<object> $sourceClass */
-    private function requireFile(AopPostfixClassName $className, \ReflectionClass $sourceClass, BindInterface $bind): void
+    /** @param ReflectionClass<object> $sourceClass */
+    private function requireFile(AopPostfixClassName $className, ReflectionClass $sourceClass, BindInterface $bind): void
     {
         $file = $this->getFileName($className->fqn);
         if (! file_exists($file)) {
-            $aopCode = (new AopCodeGen())->generate($sourceClass, $className->postFix, $bind);
+            $aopCode = $this->codeGen->generate($sourceClass, $className->postFix, $bind);
             file_put_contents($file, $aopCode);
         }
 
@@ -116,17 +117,5 @@ final class Compiler implements CompilerInterface
         $flatName = str_replace('\\', '_', $aopClassName);
 
         return sprintf('%s/%s.php', $this->classDir, $flatName);
-    }
-
-    private function createCodeGen(): CodeGen
-    {
-        $parser = (new ParserFactory())->newInstance();
-        $factory = new BuilderFactory();
-
-        return new CodeGen(
-            $factory,
-            new VisitorFactory($parser),
-            new AopClass($parser, $factory, $this->aopClassName)
-        );
     }
 }
