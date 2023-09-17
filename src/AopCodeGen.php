@@ -5,35 +5,44 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use ArrayIterator;
+use Ray\Aop\Exception\InvalidSourceClassException;
 use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionParameter;
+use ReflectionType;
 use ReflectionUnionType;
 
 use function array_keys;
 use function array_map;
+use function class_exists;
+use function file_exists;
 use function file_get_contents;
 use function implode;
 use function in_array;
 use function is_array;
-use function ltrim;
 use function sprintf;
+use function str_replace;
 use function token_get_all;
 use function var_export;
-use function version_compare;
 
 use const PHP_EOL;
-use const PHP_VERSION;
+use const PHP_VERSION_ID;
 use const T_CLASS;
 use const T_EXTENDS;
 use const T_STRING;
 
-class AopCodeGen
+final class AopCodeGen
 {
-    public function generate(ReflectionClass $sourceClass, string $postfix, BindInterface $bind): string
+    public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix = '_aop'): string
     {
-        $code = file_get_contents($sourceClass->getFileName());
+        $fileName = $sourceClass->getFileName();
+        if (! file_exists((string) $fileName)) {
+            throw new InvalidSourceClassException($sourceClass->getName());
+        }
+
+        $code = file_get_contents($fileName);
         $tokens = token_get_all($code);
         $inClass = false;
         $inMethod = false;
@@ -67,7 +76,6 @@ class AopCodeGen
 
             if ($inClass && $text === '{' && ! $inMethod) {
                 $newCode->add(sprintf("{\n    use \%s;\n}\n", InterceptTrait::class));
-                $newCode->commit();
 
                 break;
             }
@@ -75,12 +83,11 @@ class AopCodeGen
             $newCode->add($text);
         }
 
-        $newCode->commit();
         $newCode->implementsInterface(WeavedInterface::class);
         $this->addMethods($newCode, $sourceClass, $bind);
-        $newCode->finalyze();
+        $newCode->getCodeText();
 
-        return $newCode->code;
+        return $newCode->getCodeText();
     }
 
     private function addMethods(AopCodeGenNewCode $newCode, ReflectionClass $class, BindInterface $bind): void
@@ -96,7 +103,7 @@ class AopCodeGen
             }
 
             $signature = $this->getMethodSignature($method);
-            $isVoid = $method->hasReturnType() && $method->getReturnType()->getName() === 'void';
+            $isVoid = $method->hasReturnType() && (! $method->getReturnType() instanceof ReflectionUnionType) && $method->getReturnType()->getName()  === 'void';
             $return = $isVoid ? '' : 'return ';
             $additionalMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, $statement);
         }
@@ -105,7 +112,6 @@ class AopCodeGen
             $newCode->insert(implode("\n", $additionalMethods));
         }
 
-        $newCode->commit();
     }
 
     private function getMethodSignature(ReflectionMethod $method)
@@ -118,7 +124,7 @@ class AopCodeGen
         }
 
         // アトリビュートを取得 (PHP 8.0+ の場合のみ)
-        if (version_compare(PHP_VERSION, '8.0.0', '>=')) {
+        if (PHP_VERSION_ID >= 80000) {
             foreach ($method->getAttributes() as $attribute) {
                 $args = array_map(static function ($arg) {
                     return var_export($arg, true);
@@ -139,84 +145,60 @@ class AopCodeGen
         // メソッド名とパラメータを取得
         $params = [];
         foreach ($method->getParameters() as $param) {
-            $paramStr = '';
-
-            // パラメータの型を取得
-            if ($paramType = $param->getType()) {
-                if (version_compare(PHP_VERSION, '8.0.0', '>=') && $paramType instanceof ReflectionUnionType) {
-                    $types = array_map(function ($param) {
-                        return $this->prependBackslashIfNotPrimitive($param);
-                    }, $paramType->getTypes());
-                    $paramStr .= implode('|', $types) . ' ';
-                } else {
-                    $paramTypeStr = $this->prependBackslashIfNotPrimitive($param);
-                    $paramStr .= $paramTypeStr . ' ';
-                }
-            }
-
-            // パラメータが参照渡しの場合
-            if ($param->isPassedByReference()) {
-                $paramStr .= '&';
-            }
-
-            // パラメータ名を取得
-            $paramStr .= '$' . $param->getName();
-
-            // デフォルト値を取得
-            if ($param->isOptional() && $param->isDefaultValueAvailable()) {
-                $paramStr .= ' = ' . var_export($param->getDefaultValue(), true);
-            }
-
-            $params[] = $paramStr;
+            $params[] = $this->generateParameterCode($param);
         }
 
         $returnType = '';
-        if ($method->hasReturnType()) {
-            $rType = $method->getReturnType();
-            if (version_compare(PHP_VERSION, '8.0.0', '>=') && $rType instanceof ReflectionUnionType) {
-                $types = array_map(static function ($type) {
-                    return $type->prependBackslashIfNotPrimitive($type->getName());
-                }, $rType->getTypes());
-                $returnType = ': ' . ($rType->allowsNull() ? '?' : '') . implode('|', $types);
-            } else {
-                $returnType = ': ' . ($rType->allowsNull() ? '?' : '') . $this->prependBackslashIfNotPrimitiveFromTypeName($rType->getName());
-            }
+        if ($rType = $method->getReturnType()) {
+            $returnType = ': ' . $this->getTypeString($rType);
         }
 
-        $signatureParts[] = sprintf('function %s(%s)%s', $method->getName(), implode(', ', $params), $returnType);
+        $parmsList = implode(', ', $params);
+
+        $signatureParts[] = sprintf('function %s(%s)%s', $method->getName(), $parmsList, $returnType);
 
         return implode(' ', $signatureParts);
     }
 
-    function prependBackslashIfNotPrimitive(ReflectionParameter $parameter)
+    function generateParameterCode(ReflectionParameter $param): string
     {
-        $primitives = ['int', 'float', 'string', 'bool', 'array', 'callable', 'iterable', 'void', 'mixed', 'object', 'null', 'false', 'resource', 'static'];
+        $typeStr = $this->getTypeString($param->getType());
+        $typeStrWithSpace = $typeStr ? $typeStr . ' ' : $typeStr;
+        // Variadicのチェック
+        $variadicStr = $param->isVariadic() ? '...' : '';
 
-        $type = $parameter->getType();
-        if (! $type) {
-            return '';
+        // 参照渡しのチェック
+        $referenceStr = $param->isPassedByReference() ? '&' : '';
+
+        // デフォルト値のチェック
+        $defaultStr = '';
+        if ($param->isDefaultValueAvailable()) {
+            $default = var_export($param->getDefaultValue(), true);
+            $defaultStr = ' = ' . str_replace(["\r", "\n"], '', $default);
         }
 
-        $typeName = $type->getName();
-
-        // If it's a variadic parameter, add the ... prefix.
-        $prefix = $parameter->isVariadic() ? ' ...' : '';
-
-        if (in_array($typeName, $primitives)) {
-            return $typeName . $prefix;
-        }
-
-        return $prefix . '\\' . ltrim($typeName, '\\');
+        return "{$typeStrWithSpace}{$referenceStr}{$variadicStr}\${$param->getName()}{$defaultStr}";
     }
 
-    private function prependBackslashIfNotPrimitiveFromTypeName($typeName)
+    public function getTypeString(?ReflectionType $type): string
     {
-        $primitives = ['int', 'float', 'string', 'bool', 'array', 'callable', 'iterable', 'void', 'mixed', 'object', 'null', 'false', 'resource', 'static'];
+        $typeStr = '';
 
-        if (in_array($typeName, $primitives)) {
-            return $typeName;
+        if ($type instanceof ReflectionNamedType) {
+            $typeStr = $type->isBuiltin() ? $type->getName() : '\\' . $type->getName();
+        } elseif (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
+            $types = array_map(static function (ReflectionNamedType $t) {
+                return $t->isBuiltin() ? $t->getName() : '\\' . $t->getName();
+            }, $type->getTypes());
+
+            return implode('|', $types);
         }
 
-        return '\\' . ltrim($typeName, '\\');
+        // 単一型の Nullableのチェックをユニオンタイプのチェックの後に移動
+        if ($type && $type->allowsNull()) {
+            $typeStr = 'null|' . $typeStr;
+        }
+
+        return $typeStr;
     }
 }

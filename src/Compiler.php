@@ -104,7 +104,7 @@ final class Compiler implements CompilerInterface
     {
         $file = $this->getFileName($className->fqn);
         if (! file_exists($file)) {
-            $aopCode = $this->codeGen->generate($sourceClass, $className->postFix, $bind);
+            $aopCode = $this->codeGen->generate($sourceClass, $bind, $className->postFix);
             file_put_contents($file, $aopCode);
         }
 

@@ -8,13 +8,10 @@ use function preg_replace;
 use function preg_replace_callback;
 use function rtrim;
 
-class AopCodeGenNewCode
+final class AopCodeGenNewCode
 {
     /** @var string */
-    private $tmp = '';
-
-    /** @var string */
-    public $code = '';
+    private $code = '';
 
     /** @var int  */
     private $curlyBraceCount = 0;
@@ -30,14 +27,7 @@ class AopCodeGenNewCode
             $this->curlyBraceCount--;
         }
 
-        $this->tmp .= $text;
-    }
-
-    /** @return void */
-    public function commit()
-    {
-        $this->code .= $this->tmp;
-        $this->tmp = '';
+        $this->code .= $text;
     }
 
     public function insert(string $code): void
@@ -61,11 +51,13 @@ class AopCodeGenNewCode
         }, $this->code);
     }
 
-    public function finalyze()
+    public function getCodeText()
     {
         while ($this->curlyBraceCount !== 0) {
             $this->code .= '}';
             $this->curlyBraceCount--;
         }
+
+        return $this->code;
     }
 }
