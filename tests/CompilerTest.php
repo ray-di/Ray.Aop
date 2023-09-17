@@ -339,7 +339,6 @@ class CompilerTest extends TestCase
     public function testCompileMultipleFile(): void
     {
         $this->markTestSkipped('複数のクラスは単純に無視され、例外は発生しない');
-//        $this->expectException(MultipleClassInOneFileException::class);
         $compiler = new Compiler(__DIR__ . '/tmp');
         $bind = (new Bind())->bindInterceptors('foo', [new FakeDoubleInterceptor()]);
         $compiler->newInstance(FakeTwoClass::class, [], $bind);

@@ -30,17 +30,18 @@ final class AopCodeGenNewCode
         $this->code .= $text;
     }
 
+    /** @param  non-empty-string $code */
     public function insert(string $code): void
     {
         $replacement = $code . '}';
-        $this->code = preg_replace('/}\s*$/', $replacement, $this->code);
+        $this->code = (string) preg_replace('/}\s*$/', $replacement, $this->code);
     }
 
     public function implementsInterface(string $interfaceName): void
     {
         $pattern = '/(class\s+\w+\s+(?:extends\s+\w+\s+)?)(implements\s+\w+(?:,\s*\w+)*)?/';
 
-        $this->code = preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
+        $this->code = (string) preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
             if (isset($matches[2])) {
                 // 既に implements が存在する場合
                 return $matches[1] . $matches[2] . ', \\' . $interfaceName;

@@ -33,14 +33,15 @@ final class AopCodeGen
         $this->methodSignature = new AopCodeGenMethodSignature();
     }
 
+    /** @param ReflectionClass<object> $sourceClass */
     public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix = '_aop'): string
     {
-        $fileName = $sourceClass->getFileName();
-        if (! file_exists((string) $fileName)) {
+        $fileName = (string) $sourceClass->getFileName();
+        if (! file_exists($fileName)) {
             throw new InvalidSourceClassException($sourceClass->getName());
         }
 
-        $code = file_get_contents($fileName);
+        $code = (string) file_get_contents($fileName);
         $tokens = token_get_all($code);
         $inClass = false;
         $className = '';
@@ -87,6 +88,7 @@ final class AopCodeGen
         return $newCode->getCodeText();
     }
 
+    /** @param ReflectionClass<object> $class */
     private function addMethods(AopCodeGenNewCode $newCode, ReflectionClass $class, BindInterface $bind): void
     {
         $bindings = array_keys($bind->getBindings());
