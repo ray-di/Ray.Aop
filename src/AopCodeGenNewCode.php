@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use function preg_replace;
+use function preg_replace_callback;
 
 class AopCodeGenNewCode
 {
@@ -54,5 +55,20 @@ class AopCodeGenNewCode
     {
         $replacement = $code . '}';
         $this->code = preg_replace('/\}\s*$/', $replacement, $this->code);
+    }
+
+    public function implementsInterface(string $interfaceName): void
+    {
+        $pattern = '/(class\s+\w+\s+(?:extends\s+\w+\s+)?)(?:(implements\s+\w+(?:,\s*\w+)*))?/';
+
+        $this->code = preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
+            if (isset($matches[2])) {
+                // 既に implements が存在する場合
+                return $matches[1] . $matches[2] . ', \\' . $interfaceName;
+            }
+
+            // implements が存在しない場合
+            return $matches[1] . 'implements \\' . $interfaceName;
+        }, $this->code);
     }
 }

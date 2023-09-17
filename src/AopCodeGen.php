@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use ArrayIterator;
 use Reflection;
+use ReflectionClass;
 use ReflectionMethod;
 use ReflectionUnionType;
 
@@ -28,7 +29,7 @@ use const T_STRING;
 
 class AopCodeGen
 {
-    public function generate(\ReflectionClass $sourceClass, string $postfix, BindInterface $bind, array $traits = [InterceptTrait::class], string $replacement = 'return $this->_intercept(func_get_args(), __FUNCTION__);}')
+    public function generate(ReflectionClass $sourceClass, string $postfix, BindInterface $bind, array $traits = [InterceptTrait::class], string $replacement = 'return $this->_intercept(func_get_args(), __FUNCTION__);}')
     {
         $code = file_get_contents($sourceClass->getFileName());
         $tokens = token_get_all($code);
@@ -125,12 +126,13 @@ class AopCodeGen
         }
 
         $newCode->commit();
+        $newCode->implementsInterface(WeavedInterface::class);
         $this->addParentClass($newCode, $sourceClass, $bind);
 
         return $newCode->code;
     }
 
-    public function addParentClass(AopCodeGenNewCode $newCode, \ReflectionClass $sourceClass, BindInterface $bind): void
+    public function addParentClass(AopCodeGenNewCode $newCode, ReflectionClass $sourceClass, BindInterface $bind): void
     {
         $parent = $sourceClass->getParentClass();
         if (! $parent) {
