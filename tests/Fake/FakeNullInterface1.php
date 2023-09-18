@@ -12,4 +12,5 @@ use function func_get_args;
 use function is_callable;
 
 interface FakeNullInterface1
-{}
+{
+}
