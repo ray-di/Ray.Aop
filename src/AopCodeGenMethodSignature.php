@@ -23,6 +23,14 @@ use const PHP_VERSION_ID;
 
 final class AopCodeGenMethodSignature
 {
+    /** @var string */
+    private $nullableStr;
+
+    public function __construct(int $phpVersion)
+    {
+        $this->nullableStr = $phpVersion >= 80000 ? 'null|' : '?';
+    }
+
     /**
      * @psalm-suppress MixedArgument
      * @psalm-suppress MixedMethodCall
@@ -110,9 +118,9 @@ final class AopCodeGenMethodSignature
             return implode('|', $types);
         }
 
-        // 単一型の Nullableのチェックをユニオンタイプのチェックの後に移動
+        // 単一型の Nullableのチェック
         if ($type && $type->allowsNull()) {
-            $typeStr = PHP_VERSION_ID >= 80000 ? 'null|' . $typeStr : '?' . $typeStr;
+            $typeStr = $this->nullableStr . $typeStr;
         }
 
         return $typeStr;

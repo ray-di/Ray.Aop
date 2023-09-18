@@ -19,6 +19,7 @@ use function is_array;
 use function sprintf;
 use function token_get_all;
 
+use const PHP_VERSION_ID;
 use const T_CLASS;
 use const T_EXTENDS;
 use const T_STRING;
@@ -30,7 +31,7 @@ final class AopCodeGen
 
     public function __construct()
     {
-        $this->methodSignature = new AopCodeGenMethodSignature();
+        $this->methodSignature = new AopCodeGenMethodSignature(PHP_VERSION_ID);
     }
 
     /**
