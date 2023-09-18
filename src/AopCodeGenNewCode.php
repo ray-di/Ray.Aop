@@ -56,6 +56,7 @@ final class AopCodeGenNewCode
 
     public function getCodeText(): string
     {
+        // close opened curly brace
         while ($this->curlyBraceCount !== 0) {
             $this->code .= '}';
             $this->curlyBraceCount--;

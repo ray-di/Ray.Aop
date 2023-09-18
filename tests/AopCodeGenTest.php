@@ -29,7 +29,7 @@ class AopCodeGenTest extends TestCase
     {
         $bind = new Bind();
         $bind->bindInterceptors('run', []);
-        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
         $expected = 'function run(string $a, int $b, float $c, bool $d): array';
         $this->assertStringContainsString($expected, $code);
     }
@@ -38,7 +38,7 @@ class AopCodeGenTest extends TestCase
     {
         $bind = new Bind();
         $bind->bindInterceptors('returnTypeArray', []);
-        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7ReturnTypeClass::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7ReturnTypeClass::class), $bind, '_test');
         $expected = 'function returnTypeArray(): array';
         $this->assertStringContainsString($expected, $code);
     }
@@ -51,12 +51,12 @@ class AopCodeGenTest extends TestCase
             $bind->bindInterceptors('method' . (string) $i, []);
         }
 
-        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
         $tempFile = tempnam(sys_get_temp_dir(), 'tmp_') . '.php';
         file_put_contents($tempFile, $code);
         require $tempFile;
         unlink($tempFile);
-        $this->assertTrue(class_exists('\Ray\Aop\FakePhp8Types_aop'));
+        $this->assertTrue(class_exists('\Ray\Aop\FakePhp8Types_test'));
 
         $this->assertStringContainsString('public function method1($param1)', $code);
         $this->assertStringContainsString('public function method2(string $param1)', $code);
@@ -84,6 +84,6 @@ class AopCodeGenTest extends TestCase
     public function testInvalidSourceClass(): void
     {
         $this->expectException(InvalidSourceClassException::class);
-        $this->codeGen->generate(new ReflectionClass(stdClass::class), new Bind());
+        $this->codeGen->generate(new ReflectionClass(stdClass::class), new Bind(), '_test');
     }
 }

@@ -26,6 +26,7 @@ use const T_STRING;
 
 final class AopCodeGen
 {
+    public const INTERCEPT_STATEMENT = '\$this->_intercept(__FUNCTION__, func_get_args());';
     /** @var AopCodeGenMethodSignature */
     private $methodSignature;
 
@@ -44,7 +45,7 @@ final class AopCodeGen
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix = '_aop'): string
+    public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix): string
     {
         $fileName = (string) $sourceClass->getFileName();
         if (! file_exists($fileName)) {
@@ -93,7 +94,6 @@ final class AopCodeGen
 
         $newCode->implementsInterface(WeavedInterface::class);
         $this->addMethods($newCode, $sourceClass, $bind);
-        $newCode->getCodeText();
 
         return $newCode->getCodeText();
     }
@@ -104,7 +104,6 @@ final class AopCodeGen
         $bindings = array_keys($bind->getBindings());
 
         $parentMethods = $class->getMethods();
-        $statement = '\$this->_intercept(func_get_args(), __FUNCTION__);';
         $additionalMethods = [];
         foreach ($parentMethods as $method) {
             if (! in_array($method->getName(), $bindings)) {
@@ -119,7 +118,7 @@ final class AopCodeGen
             }
 
             $return = $isVoid ? '' : 'return ';
-            $additionalMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, $statement);
+            $additionalMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, self::INTERCEPT_STATEMENT);
         }
 
         if ($additionalMethods) {
