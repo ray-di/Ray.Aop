@@ -10,7 +10,7 @@ use function call_user_func_array;
 
 trait InterceptTrait
 {
-    /** @var array<string, array<class-string<MethodInterceptor>> */
+    /** @var array<string, array<class-string<MethodInterceptor>>> */
     public $bindings = [];
 
     /** @var bool */
