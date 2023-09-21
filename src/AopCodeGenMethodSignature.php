@@ -109,10 +109,12 @@ final class AopCodeGenMethodSignature
         $typeStr = '';
 
         if ($type instanceof ReflectionNamedType) {
-            $typeStr = $type->isBuiltin() ? $type->getName() : '\\' . $type->getName();
+            /** @psalm-suppress TypeDoesNotContainType */
+            $typeStr = $type->isBuiltin() || $type->getName() === 'self' ? $type->getName() : '\\' . $type->getName();
         } elseif (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
             $types = array_map(static function (ReflectionNamedType $t) {
-                return $t->isBuiltin() ? $t->getName() : '\\' . $t->getName();
+                /** @psalm-suppress TypeDoesNotContainType */
+                return $t->isBuiltin() || $t->getName() === 'self' ? $t->getName() : '\\' . $t->getName();
             }, (array) $type->getTypes());
 
             return implode('|', $types);
