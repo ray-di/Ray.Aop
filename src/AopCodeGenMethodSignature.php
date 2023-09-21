@@ -21,6 +21,7 @@ use function var_export;
 use const PHP_EOL;
 use const PHP_VERSION_ID;
 
+/** @SuppressWarnings(PHPMD.CyclomaticComplexity) */
 final class AopCodeGenMethodSignature
 {
     /** @var string */
