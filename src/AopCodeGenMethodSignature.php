@@ -14,12 +14,14 @@ use ReflectionUnionType;
 use function array_map;
 use function class_exists;
 use function implode;
+use function is_numeric;
+use function preg_replace;
 use function sprintf;
 use function str_replace;
 use function var_export;
 
 use const PHP_EOL;
-use const PHP_VERSION_ID;
+use const PHP_MAJOR_VERSION;
 
 /** @SuppressWarnings(PHPMD.CyclomaticComplexity) */
 final class AopCodeGenMethodSignature
@@ -47,14 +49,19 @@ final class AopCodeGenMethodSignature
         }
 
         // アトリビュートを取得 (PHP 8.0+ の場合のみ)
-        if (PHP_VERSION_ID >= 80000) {
+        if (PHP_MAJOR_VERSION >= 8) {
             /** @psalm-suppress MixedAssignment */
             foreach ($method->getAttributes() as $attribute) {
-                $args = array_map(/** @param mixed $arg */static function ($arg): string {
-                    return str_replace(["\r", "\n"], '', var_export($arg, true));
-                }, $attribute->getArguments());
+                $argsList = $attribute->getArguments();
+                $formattedArgs = [];
 
-                $signatureParts[] = sprintf('    #[\\%s(%s)]', $attribute->getName(), implode(', ', $args)) . PHP_EOL;
+                foreach ($argsList as $name => $value) {
+                    $formattedValue = preg_replace('/\s+/', ' ', var_export($value, true));
+                    $argRepresentation = is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
+                    $formattedArgs[] = $argRepresentation;
+                }
+
+                $signatureParts[] = sprintf('    #[\\%s(%s)]', $attribute->getName(), implode(', ', $formattedArgs)) . PHP_EOL;
             }
         }
 

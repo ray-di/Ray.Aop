@@ -47,7 +47,7 @@ class AopCodeGenTest extends TestCase
     public function testUnionType(): void
     {
         $bind = new Bind();
-        for ($i = 1; $i <= 21; $i++) {
+        for ($i = 1; $i <= 22; $i++) {
             $bind->bindInterceptors('method' . (string) $i, []);
         }
 
@@ -78,7 +78,17 @@ class AopCodeGenTest extends TestCase
         $this->assertStringContainsString('public function method18(): string|int', $code);
         $this->assertStringContainsString('public function method19(): string|int|null', $code);
         $this->assertStringContainsString('public function method20(): \DateTime|string|null', $code);
-        $this->assertStringContainsString(' #[\Ray\Aop\Annotation\FakeMarker4(array (  0 => 1,  1 => 2,), 3)]', $code);
+        $this->assertStringContainsString(<<<'EOT'
+    /**
+     * PHPDoc
+     */
+     #[\Ray\Aop\Annotation\FakeMarker4(array ( 0 => 1, 1 => 2, ), 3)]
+      public function method21()
+EOT, $code);
+        $this->assertStringContainsString(<<<'EOT'
+#[\Ray\Aop\Annotation\FakeMarkerName(a: 1, b: 'string', c: true)]
+      public function method22()
+EOT, $code);
     }
 
     public function testInvalidSourceClass(): void
