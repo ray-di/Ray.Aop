@@ -8,7 +8,6 @@ use ArrayObject;
 use ReflectionClass;
 use ReflectionObject;
 
-use function array_key_exists;
 use function array_shift;
 use function assert;
 use function call_user_func_array;
