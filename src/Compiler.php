@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Doctrine\Common\Annotations\AnnotationException;
+use ParseError;
+use Ray\Aop\Exception\CompilationFailedException;
 use Ray\Aop\Exception\NotWritableException;
 use ReflectionClass;
 
@@ -70,7 +72,15 @@ final class Compiler implements CompilerInterface
             return $className->fqn;
         }
 
-        $this->requireFile($className, new ReflectionClass($class), $bind);
+        try {
+            $this->requireFile($className, new ReflectionClass($class), $bind);
+        } catch (ParseError $e) {
+            // @codeCoverageIgnoreStart
+            $msg = sprintf('class:%s Compilation failed in Ray.Aop. This is most likely a bug in Ray.Aop, please report it to the issue. https://github.com/ray-di/Ray.Aop/issues', $class);
+
+            throw new CompilationFailedException($msg);
+            // @codeCoverageIgnoreEnd
+        }
 
         return $className->fqn;
     }
