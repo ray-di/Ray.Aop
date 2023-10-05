@@ -6,7 +6,7 @@ namespace Ray\Aop;
 
 use function preg_replace;
 use function preg_replace_callback;
-use function rtrim;
+use function sprintf;
 
 final class AopCodeGenNewCode
 {
@@ -41,18 +41,18 @@ final class AopCodeGenNewCode
 
     public function implementsInterface(string $interfaceName): void
     {
-        $pattern = '@(class\s+\w+\s*(?:extends\s+\w+)?)\s*(implements\s+[\w]+)@';
-
+        $pattern = '/(class\s+[\w\s]+extends\s+\w+)(?:\s+implements\s+(.+))?/';
         $this->code = (string) preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
             if (isset($matches[2])) {
                 // 既に implements が存在する場合
-                // $match[1] class  FakeWeaverScript_41394265 extends FakeWeaverScript
-                // $match[2] implements FakeNullInterface
-                return $matches[1] . ' ' . $matches[2] . ', \\' . $interfaceName;
+                // $match[0] class  FakePhp8Types_test extends FakePhp8Types  implements FakeNullInterface, \Ray\Aop\FakeNullInterface1
+                // $match[1] class  FakePhp8Types_test extends FakePhp8Types
+                // $match[2] FakeNullInterface, \Ray\Aop\FakeNullInterface1
+                return sprintf('%s implements %s, \%s', $matches[1], $matches[2], $interfaceName);
             }
 
             // implements が存在しない場合
-            return rtrim($matches[1], "\n") . 'implements \\' . $interfaceName;
+            return sprintf('%s implements \%s', $matches[0], $interfaceName);
         }, $this->code);
     }
 
