@@ -41,7 +41,7 @@ final class AopCodeGenNewCode
 
     public function implementsInterface(string $interfaceName): void
     {
-        $pattern = '/(class\s+\w+\s+(?:extends\s+\w+\s+)?)(implements\s+\w+(?:,\s*\w+)*)?/';
+        $pattern = '@(class\s+\w+\s*(?:extends\s+\w+)?)\s*(implements\s+[\w]+)@';
 
         $this->code = (string) preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
             if (isset($matches[2])) {
