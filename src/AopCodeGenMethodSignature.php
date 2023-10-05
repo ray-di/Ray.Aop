@@ -135,7 +135,7 @@ final class AopCodeGenMethodSignature
 
         // PHP 8.0+
         if (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
-            $types = array_map(static function ($t) {
+            $types = array_map(/** @param ReflectionNamedType $t */static function ($t) {
                 /** @psalm-suppress TypeDoesNotContainType */
                 $isBuiltinOrSelf = $t->isBuiltin() || $t->getName() === 'self';
 
