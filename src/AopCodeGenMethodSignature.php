@@ -14,6 +14,7 @@ use ReflectionUnionType;
 use function array_map;
 use function class_exists;
 use function implode;
+use function in_array;
 use function is_numeric;
 use function preg_replace;
 use function sprintf;
@@ -114,25 +115,36 @@ final class AopCodeGenMethodSignature
 
     public function getTypeString(?ReflectionType $type): string
     {
-        $typeStr = '';
+        if (! $type) {
+            return '';
+        }
 
-        if ($type instanceof ReflectionNamedType) {
+        // PHP 7.4+
+        if (class_exists('ReflectionNamedType') && $type instanceof ReflectionNamedType) {
             /** @psalm-suppress TypeDoesNotContainType */
-            $typeStr = $type->isBuiltin() || $type->getName() === 'self' || $type->getName() === 'static' ? $type->getName() : '\\' . $type->getName();
-        } elseif (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
-            $types = array_map(static function (ReflectionNamedType $t) {
+            $isBuiltinOrSelf = $type->isBuiltin() || in_array($type->getName(), ['self', 'static'], true);
+            $typeStr = $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
+
+            // Check for Nullable in single types
+            if ($type->allowsNull()) {
+                $typeStr = $this->nullableStr . $typeStr;
+            }
+
+            return $typeStr;
+        }
+
+        // PHP 8.0+
+        if (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
+            $types = array_map(static function ($t) {
                 /** @psalm-suppress TypeDoesNotContainType */
-                return $t->isBuiltin() || $t->getName() === 'self' ? $t->getName() : '\\' . $t->getName();
+                $isBuiltinOrSelf = $t->isBuiltin() || $t->getName() === 'self';
+
+                return $isBuiltinOrSelf ? $t->getName() : '\\' . $t->getName();
             }, (array) $type->getTypes());
 
             return implode('|', $types);
         }
 
-        // 単一型の Nullableのチェック
-        if ($type && $type->allowsNull()) {
-            $typeStr = $this->nullableStr . $typeStr;
-        }
-
-        return $typeStr;
+        return '';
     }
 }
