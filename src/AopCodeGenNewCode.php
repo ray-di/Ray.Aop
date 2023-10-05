@@ -46,7 +46,9 @@ final class AopCodeGenNewCode
         $this->code = (string) preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
             if (isset($matches[2])) {
                 // 既に implements が存在する場合
-                return $matches[1] . $matches[2] . ', \\' . $interfaceName;
+                // $match[1] class  FakeWeaverScript_41394265 extends FakeWeaverScript
+                // $match[2] implements FakeNullInterface
+                return $matches[1] . ' ' . $matches[2] . ', \\' . $interfaceName;
             }
 
             // implements が存在しない場合
