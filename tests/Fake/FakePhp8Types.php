@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker4;
 use Ray\Aop\Annotation\FakeMarkerName;
 
-class FakePhp8Types implements FakeNullInterface, FakeNullInterface1
+class FakePhp8Types implements FakeNullInterface, \Ray\Aop\FakeNullInterface1
 {
     // A method with no type declaration
     public function method1($param1) {}
