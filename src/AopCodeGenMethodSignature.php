@@ -118,7 +118,7 @@ final class AopCodeGenMethodSignature
 
         if ($type instanceof ReflectionNamedType) {
             /** @psalm-suppress TypeDoesNotContainType */
-            $typeStr = $type->isBuiltin() || $type->getName() === 'self' ? $type->getName() : '\\' . $type->getName();
+            $typeStr = $type->isBuiltin() || $type->getName() === 'self' || $type->getName() === 'static' ? $type->getName() : '\\' . $type->getName();
         } elseif (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
             $types = array_map(static function (ReflectionNamedType $t) {
                 /** @psalm-suppress TypeDoesNotContainType */
