@@ -121,8 +121,10 @@ final class AopCodeGen
             $additionalMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, self::INTERCEPT_STATEMENT);
         }
 
-        if ($additionalMethods) {
-            $newCode->insert(implode("\n", $additionalMethods));
+        if (! $additionalMethods) {
+            return;
         }
+
+        $newCode->insert(implode("\n", $additionalMethods));
     }
 }
