@@ -12,6 +12,7 @@ use ReflectionType;
 use ReflectionUnionType;
 
 use function array_map;
+use function assert;
 use function class_exists;
 use function implode;
 use function in_array;
@@ -119,20 +120,6 @@ final class AopCodeGenMethodSignature
             return '';
         }
 
-        // PHP 7.4+
-        if (class_exists('ReflectionNamedType') && $type instanceof ReflectionNamedType) {
-            /** @psalm-suppress TypeDoesNotContainType */
-            $isBuiltinOrSelf = $type->isBuiltin() || in_array($type->getName(), ['self', 'static'], true);
-            $typeStr = $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
-
-            // Check for Nullable in single types
-            if ($type->allowsNull()) {
-                $typeStr = $this->nullableStr . $typeStr;
-            }
-
-            return $typeStr;
-        }
-
         // PHP 8.0+
         if (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
             $types = array_map(/** @param ReflectionNamedType $t */static function ($t) {
@@ -145,6 +132,17 @@ final class AopCodeGenMethodSignature
             return implode('|', $types);
         }
 
-        return '';
+        assert($type instanceof ReflectionNamedType);
+
+        /** @psalm-suppress TypeDoesNotContainType */
+        $isBuiltinOrSelf = $type->isBuiltin() || in_array($type->getName(), ['self', 'static'], true);
+        $typeStr = $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
+
+        // Check for Nullable in single types
+        if ($type->allowsNull()) {
+            $typeStr = $this->nullableStr . $typeStr;
+        }
+
+        return $typeStr;
     }
 }
