@@ -44,7 +44,7 @@ class AopCodeGenTest extends TestCase
     }
 
     /** @requires PHP 8.1 */
-    public function testUnionType(): void
+    public function testVariousMethodSignature(): void
     {
         $bind = new Bind();
         for ($i = 1; $i <= 22; $i++) {
