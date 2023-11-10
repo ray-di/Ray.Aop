@@ -36,7 +36,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Ray\\Aop\\": ["tests/", "src-deprecated", "tests/Fake/", "src-deprecated"]
+            "Ray\\Aop\\": ["tests/", "tests/Fake/"]
         },
         "files": ["tests/Fake/FakeGlobalNamespaced.php", "tests/Fake/FakeGlobalEmptyNamespaced.php"]
     },
