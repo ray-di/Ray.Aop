@@ -87,6 +87,29 @@ class AopCodeGenTest extends TestCase
       public function method22()', $code);
     }
 
+    /** @requires PHP 8.1 */
+    public function testVariousMethodSignaturePhp82(): void
+    {
+        $bind = new Bind();
+        for ($i = 100; $i <= 106; $i++) {
+            $bind->bindInterceptors('method' . (string) $i, []);
+        }
+
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp82Types::class), $bind, '_test');
+        $tempFile = tempnam(sys_get_temp_dir(), 'tmp_') . '.php';
+        file_put_contents($tempFile, $code);
+        require $tempFile;
+        unlink($tempFile);
+        $this->assertTrue(class_exists('\Ray\Aop\FakePhp82Types_test'));
+        $this->assertStringContainsString('public function method100(): false', $code);
+        $this->assertStringContainsString('public function method101(): true', $code);
+        $this->assertStringContainsString('public function method102(): null', $code);
+        $this->assertStringContainsString('public function method103(): \Ray\Aop\FakeNullInterface & \Ray\Aop\FakeNullInterface1', $code);
+        $this->assertStringContainsString('public function method104(): \Ray\Aop\FakeNullInterface|\Ray\Aop\FakeNullInterface1', $code);
+        $this->assertStringContainsString('public function method105(): \Ray\Aop\FakeNullInterface|string', $code);
+        $this->assertStringContainsString('public function method106(): (\Ray\Aop\FakeNullInterface&\Ray\Aop\FakeNullInterface1)|string', $code);
+    }
+
     public function testInvalidSourceClass(): void
     {
         $this->expectException(InvalidSourceClassException::class);

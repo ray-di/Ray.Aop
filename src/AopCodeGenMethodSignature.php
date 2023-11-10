@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Reflection;
+use ReflectionIntersectionType;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
@@ -15,7 +16,6 @@ use function array_map;
 use function assert;
 use function class_exists;
 use function implode;
-use function in_array;
 use function is_numeric;
 use function preg_replace;
 use function sprintf;
@@ -122,27 +122,50 @@ final class AopCodeGenMethodSignature
 
         // PHP 8.0+
         if (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
-            $types = array_map(/** @param ReflectionNamedType $t */static function ($t) {
-                /** @psalm-suppress TypeDoesNotContainType */
-                $isBuiltinOrSelf = $t->isBuiltin() || $t->getName() === 'self';
+            $types = array_map(/** @param ReflectionNamedType|ReflectionNamedType $t */static function ($t) {
+                if ($t instanceof ReflectionIntersectionType) {
+                    $intersectionTypes = array_map(/** @param ReflectionNamedType $t */ static function ($t) {
+                        return self::getFqnType($t);
+                    }, $t->getTypes());
 
-                return $isBuiltinOrSelf ? $t->getName() : '\\' . $t->getName();
+                    return sprintf('(%s)', implode('&', $intersectionTypes));
+                }
+
+                return self::getFqnType($t);
             }, (array) $type->getTypes());
 
             return implode('|', $types);
         }
 
-        assert($type instanceof ReflectionNamedType);
+        if ($type instanceof ReflectionNamedType) {
+            $typeStr = self::getFqnType($type);
+            // Check for Nullable in single types
+            if ($type->allowsNull() && $type->getName() !== 'null') {
+                $typeStr = $this->nullableStr . $typeStr;
+            }
 
-        /** @psalm-suppress TypeDoesNotContainType */
-        $isBuiltinOrSelf = $type->isBuiltin() || in_array($type->getName(), ['self', 'static'], true);
-        $typeStr = $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
-
-        // Check for Nullable in single types
-        if ($type->allowsNull()) {
-            $typeStr = $this->nullableStr . $typeStr;
+            return $typeStr;
         }
 
-        return $typeStr;
+        assert($type instanceof ReflectionIntersectionType);
+
+        return $this->intersectionTypeToString($type);
+    }
+
+    public function intersectionTypeToString(ReflectionIntersectionType $intersectionType): string
+    {
+        $types = $intersectionType->getTypes();
+        $typeStrings = array_map(static function ($type) {
+            return '\\' . $type->getName();
+        }, $types);
+
+        return implode(' & ', $typeStrings);
+    }
+
+    public static function getFqnType(ReflectionNamedType $type): string
+    {
+        $isBuiltinOrSelf = $type->isBuiltin() || $type->getName() === 'self';
+
+        return $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
     }
 }
