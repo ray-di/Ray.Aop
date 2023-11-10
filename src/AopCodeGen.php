@@ -104,7 +104,7 @@ final class AopCodeGen
         $bindings = array_keys($bind->getBindings());
 
         $parentMethods = $class->getMethods();
-        $additionalMethods = [];
+        $interceptedMethods = [];
         foreach ($parentMethods as $method) {
             if (! in_array($method->getName(), $bindings)) {
                 continue;
@@ -118,13 +118,13 @@ final class AopCodeGen
             }
 
             $return = $isVoid ? '' : 'return ';
-            $additionalMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, self::INTERCEPT_STATEMENT);
+            $interceptedMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, self::INTERCEPT_STATEMENT);
         }
 
-        if (! $additionalMethods) {
+        if (! $interceptedMethods) {
             return;
         }
 
-        $newCode->insert(implode("\n", $additionalMethods));
+        $newCode->insert(implode("\n", $interceptedMethods));
     }
 }
