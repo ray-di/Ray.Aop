@@ -115,8 +115,8 @@ class CompilerTest extends TestCase
 
     public function testParentMethodIntercept(): void
     {
-        $mock = $this->compiler->newInstance(FakeMockChild::class, [], $this->bind);
-        assert($mock instanceof FakeMockChild);
+        $mock = $this->compiler->newInstance(FakeMockGrandChild::class, [], $this->bind);
+        assert($mock instanceof FakeMockGrandChild);
         assert(property_exists($mock, 'bindings'));
         $mock->bindings = $this->bind->getBindings();
         $result = $mock->returnSame(1);
@@ -126,8 +126,8 @@ class CompilerTest extends TestCase
     public function testTypedParentMethodIntercept(): void
     {
         $bind = (new Bind())->bindInterceptors('passIterator', [new NullInterceptor()]);
-        $mock = $this->compiler->newInstance(FakeTypedMockChild::class, [], $bind);
-        assert($mock instanceof FakeTypedMockChild);
+        $mock = $this->compiler->newInstance(FakeTypedMockGrandChild::class, [], $bind);
+        assert($mock instanceof FakeTypedMockGrandChild);
         assert(property_exists($mock, 'bindings'));
         $mock->bindings = $bind->getBindings();
         $result = $mock->passIterator(new ArrayIterator());
