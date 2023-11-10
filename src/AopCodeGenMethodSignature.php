@@ -5,16 +5,9 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Reflection;
-use ReflectionIntersectionType;
 use ReflectionMethod;
-use ReflectionNamedType;
 use ReflectionParameter;
-use ReflectionType;
-use ReflectionUnionType;
 
-use function array_map;
-use function assert;
-use function class_exists;
 use function implode;
 use function is_numeric;
 use function preg_replace;
@@ -28,12 +21,13 @@ use const PHP_MAJOR_VERSION;
 /** @SuppressWarnings(PHPMD.CyclomaticComplexity) */
 final class AopCodeGenMethodSignature
 {
-    /** @var string */
-    private $nullableStr;
+    /** @var TypeString */
+    private $typeString;
 
     public function __construct(int $phpVersion)
     {
-        $this->nullableStr = $phpVersion >= 80000 ? 'null|' : '?';
+        $nullableStr = $phpVersion >= 80000 ? 'null|' : '?';
+        $this->typeString = new TypeString($nullableStr);
     }
 
     /**
@@ -84,7 +78,7 @@ final class AopCodeGenMethodSignature
         $returnType = '';
         $rType = $method->getReturnType();
         if ($rType) {
-            $returnType = ': ' . $this->getTypeString($rType);
+            $returnType = ': ' . ($this->typeString)($rType);
         }
 
         $parmsList = implode(', ', $params);
@@ -96,7 +90,7 @@ final class AopCodeGenMethodSignature
 
     public function generateParameterCode(ReflectionParameter $param): string
     {
-        $typeStr = $this->getTypeString($param->getType());
+        $typeStr = ($this->typeString)($param->getType());
         $typeStrWithSpace = $typeStr ? $typeStr . ' ' : $typeStr;
         // Variadicのチェック
         $variadicStr = $param->isVariadic() ? '...' : '';
@@ -112,60 +106,5 @@ final class AopCodeGenMethodSignature
         }
 
         return "{$typeStrWithSpace}{$referenceStr}{$variadicStr}\${$param->getName()}{$defaultStr}";
-    }
-
-    public function getTypeString(?ReflectionType $type): string
-    {
-        if (! $type) {
-            return '';
-        }
-
-        // PHP 8.0+
-        if (class_exists('ReflectionUnionType') && $type instanceof ReflectionUnionType) {
-            $types = array_map(/** @param ReflectionNamedType|ReflectionNamedType $t */static function ($t) {
-                if ($t instanceof ReflectionIntersectionType) {
-                    $intersectionTypes = array_map(/** @param ReflectionNamedType $t */ static function ($t) {
-                        return self::getFqnType($t);
-                    }, $t->getTypes());
-
-                    return sprintf('(%s)', implode('&', $intersectionTypes));
-                }
-
-                return self::getFqnType($t);
-            }, (array) $type->getTypes());
-
-            return implode('|', $types);
-        }
-
-        if ($type instanceof ReflectionNamedType) {
-            $typeStr = self::getFqnType($type);
-            // Check for Nullable in single types
-            if ($type->allowsNull() && $type->getName() !== 'null') {
-                $typeStr = $this->nullableStr . $typeStr;
-            }
-
-            return $typeStr;
-        }
-
-        assert($type instanceof ReflectionIntersectionType);
-
-        return $this->intersectionTypeToString($type);
-    }
-
-    public function intersectionTypeToString(ReflectionIntersectionType $intersectionType): string
-    {
-        $types = $intersectionType->getTypes();
-        $typeStrings = array_map(static function ($type) {
-            return '\\' . $type->getName();
-        }, $types);
-
-        return implode(' & ', $typeStrings);
-    }
-
-    public static function getFqnType(ReflectionNamedType $type): string
-    {
-        $isBuiltinOrSelf = $type->isBuiltin() || $type->getName() === 'self';
-
-        return $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
     }
 }
