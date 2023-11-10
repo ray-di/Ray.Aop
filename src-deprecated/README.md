@@ -2,6 +2,6 @@
 
 ```json
 "psr-4": {
-            "Ray\\Aop\\": ["vendor/reay/aop/src-deprecated"]
+            "Ray\\Aop\\": ["vendor/ray/aop/src-deprecated"]
         },
 ```
