@@ -8,7 +8,7 @@ use function preg_replace;
 use function preg_replace_callback;
 use function sprintf;
 
-final class AopCodeGenNewCode
+final class GeneratedCode
 {
     /** @var string */
     private $code = '';

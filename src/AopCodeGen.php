@@ -27,12 +27,12 @@ use const T_STRING;
 final class AopCodeGen
 {
     public const INTERCEPT_STATEMENT = '\$this->_intercept(__FUNCTION__, func_get_args());';
-    /** @var AopCodeGenMethodSignature */
+    /** @var MethodSignatureString */
     private $methodSignature;
 
     public function __construct()
     {
-        $this->methodSignature = new AopCodeGenMethodSignature(PHP_VERSION_ID);
+        $this->methodSignature = new MethodSignatureString(PHP_VERSION_ID);
     }
 
     /**
@@ -56,7 +56,7 @@ final class AopCodeGen
         $tokens = token_get_all($code);
         $inClass = false;
         $className = '';
-        $newCode = new AopCodeGenNewCode();
+        $newCode = new GeneratedCode();
         $iterator = new ArrayIterator($tokens);
 
         for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
@@ -99,7 +99,7 @@ final class AopCodeGen
     }
 
     /** @param ReflectionClass<object> $class */
-    private function addMethods(AopCodeGenNewCode $newCode, ReflectionClass $class, BindInterface $bind): void
+    private function addMethods(GeneratedCode $newCode, ReflectionClass $class, BindInterface $bind): void
     {
         $bindings = array_keys($bind->getBindings());
 

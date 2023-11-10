@@ -19,7 +19,7 @@ use const PHP_EOL;
 use const PHP_MAJOR_VERSION;
 
 /** @SuppressWarnings(PHPMD.CyclomaticComplexity) */
-final class AopCodeGenMethodSignature
+final class MethodSignatureString
 {
     /** @var TypeString */
     private $typeString;
