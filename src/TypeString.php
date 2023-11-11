@@ -63,7 +63,7 @@ final class TypeString
 
     public function getUnionType(ReflectionUnionType $type): string
     {
-        $types = array_map(/** @param ReflectionNamedType|ReflectionNamedType $t */ static function ($t) {
+        $types = array_map(/** @param ReflectionNamedType|ReflectionIntersectionType $t */ static function ($t) {
             if ($t instanceof ReflectionIntersectionType) {
                 $intersectionTypes = array_map(/** @param ReflectionNamedType $t */ static function ($t) {
                     return self::getFqnType($t);
@@ -73,14 +73,14 @@ final class TypeString
             }
 
             return self::getFqnType($t);
-        }, (array) $type->getTypes());
+        }, $type->getTypes());
 
         return implode('|', $types);
     }
 
     private static function getFqnType(ReflectionNamedType $type): string
     {
-        $isBuiltinOrSelf = $type->isBuiltin() || $type->getName() === 'self';
+        $isBuiltinOrSelf = $type->isBuiltin();
 
         return $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
     }
