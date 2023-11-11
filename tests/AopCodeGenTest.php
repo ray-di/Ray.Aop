@@ -87,7 +87,7 @@ class AopCodeGenTest extends TestCase
       public function method22()', $code);
     }
 
-    /** @requires PHP 8.1 */
+    /** @requires PHP 8.2 */
     public function testVariousMethodSignaturePhp82(): void
     {
         $bind = new Bind();
