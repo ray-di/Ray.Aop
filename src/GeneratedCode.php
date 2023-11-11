@@ -103,6 +103,11 @@ final class GeneratedCode
         $this->insert(implode("\n", $interceptedMethods));
     }
 
+    public function addIntercepterTrait(): void
+    {
+        $this->add(sprintf("{\n    use \%s;\n}\n", InterceptTrait::class));
+    }
+
     public function getCodeText(): string
     {
         // close opened curly brace

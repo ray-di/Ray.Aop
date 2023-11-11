@@ -46,29 +46,32 @@ final class AopCodeGen
             $token = $iterator->current();
             [$id, $text] = is_array($token) ? $token : [null, $token];
 
-            if ($id === T_CLASS) {
+            $isClassKeyword = $id === T_CLASS;
+            if ($isClassKeyword) {
                 $inClass = true;
                 $newCode->add($text . ' ');
                 continue;
             }
 
-            if ($inClass && $id === T_STRING && empty($className)) {
+            $isClassName = $inClass && $id === T_STRING && empty($className);
+            if ($isClassName) {
                 $className = $text;
-                $newClassName = $text . $postfix;
-                $newCode->add($newClassName . ' extends ' . $className . ' ');
+                $newClassName = $className . $postfix;
+                $newCode->add($newClassName . ' extends ' . $text . ' ');
                 continue;
             }
 
-            if ($inClass && $id === T_EXTENDS) {
+            $isExtendsKeyword = $id === T_EXTENDS;
+            if ($isExtendsKeyword) {
                 $iterator->next();  // Skip extends keyword
-                $iterator->next();  // Skip class name
+                $iterator->next();  // Skip parent class name
                 $iterator->next();  // Skip space
                 continue;
             }
 
-            if ($inClass && $text === '{') {
-                $newCode->add(sprintf("{\n    use \%s;\n}\n", InterceptTrait::class));
-
+            $isClassSignatureEnds = $inClass && $text === '{';
+            if ($isClassSignatureEnds) {
+                $newCode->addIntercepterTrait();
                 break;
             }
 
