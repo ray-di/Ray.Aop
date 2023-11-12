@@ -4,16 +4,24 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
 use function array_keys;
+use function file_exists;
+use function file_get_contents;
 use function implode;
 use function in_array;
 use function preg_replace;
 use function preg_replace_callback;
 use function sprintf;
+use function token_get_all;
+
+use const T_CLASS;
+use const T_EXTENDS;
+use const T_STRING;
 
 final class GeneratedCode
 {
@@ -60,6 +68,54 @@ final class GeneratedCode
     {
         $newClassName = $className . $postfix;
         $this->add($newClassName . ' extends ' . $className . ' ');
+    }
+
+    /** @param ReflectionClass<object> $sourceClass */
+    public function parseClass(ReflectionClass $sourceClass, string $postfix): void
+    {
+        $fileName = (string) $sourceClass->getFileName();
+        if (! file_exists($fileName)) {
+            throw new InvalidSourceClassException($sourceClass->getName());
+        }
+
+        $code = (string) file_get_contents($fileName);
+        /** @var array<int, array{int, string, int}|string> $tokens */
+        $tokens = token_get_all($code);
+        $iterator = new TokenIterator($tokens);
+        $inClass = false;
+        $className = '';
+
+        for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
+            [$id, $text] = $iterator->getToken();
+            $isClassKeyword = $id === T_CLASS;
+            if ($isClassKeyword) {
+                $inClass = true;
+                $this->add($text);
+                continue;
+            }
+
+            $isClassName = $inClass && $id === T_STRING && empty($className);
+            if ($isClassName) {
+                $className = $text;
+                $this->addClassName($className, $postfix);
+                continue;
+            }
+
+            $isExtendsKeyword = $id === T_EXTENDS;
+            if ($isExtendsKeyword) {
+                $iterator->skipExtends();
+                continue;
+            }
+
+            $isClassSignatureEnds = $inClass && $text === '{';
+            if ($isClassSignatureEnds) {
+                $this->addIntercepterTrait();
+
+                return;
+            }
+
+            $this->add($text);
+        }
     }
 
     public function implementsInterface(string $interfaceName): void
