@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use ArrayIterator;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
 
 use function file_exists;
 use function file_get_contents;
-use function is_array;
-use function sprintf;
 use function token_get_all;
 
 use const PHP_VERSION_ID;
@@ -36,36 +33,36 @@ final class AopCodeGen
         }
 
         $code = (string) file_get_contents($fileName);
+
+        // array<int, array{int, string, int}|string> in phpstorm
+        // list<array{0: int, 1: string, 2: int}|string> in psalm
+        /** @var array<int, array{int, string, int}|string> $tokens */
         $tokens = token_get_all($code);
+
         $inClass = false;
         $className = '';
         $newCode = new GeneratedCode(new MethodSignatureString(PHP_VERSION_ID));
-        $iterator = new ArrayIterator($tokens);
+        $iterator = new TokenIterator($tokens);
 
         for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
-            $token = $iterator->current();
-            [$id, $text] = is_array($token) ? $token : [null, $token];
-
+            [$id, $text] = $iterator->getToken();
             $isClassKeyword = $id === T_CLASS;
             if ($isClassKeyword) {
                 $inClass = true;
-                $newCode->add($text . ' ');
+                $newCode->add($text);
                 continue;
             }
 
             $isClassName = $inClass && $id === T_STRING && empty($className);
             if ($isClassName) {
                 $className = $text;
-                $newClassName = $className . $postfix;
-                $newCode->add($newClassName . ' extends ' . $text . ' ');
+                $newCode->addClassName($className, $postfix);
                 continue;
             }
 
             $isExtendsKeyword = $id === T_EXTENDS;
             if ($isExtendsKeyword) {
-                $iterator->next();  // Skip extends keyword
-                $iterator->next();  // Skip parent class name
-                $iterator->next();  // Skip space
+                $iterator->skipExtends();
                 continue;
             }
 

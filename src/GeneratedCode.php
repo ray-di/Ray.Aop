@@ -56,6 +56,12 @@ final class GeneratedCode
         $this->code = (string) preg_replace('/}\s*$/', $replacement, $this->code);
     }
 
+    public function addClassName(string $className, string $postfix): void
+    {
+        $newClassName = $className . $postfix;
+        $this->add($newClassName . ' extends ' . $className . ' ');
+    }
+
     public function implementsInterface(string $interfaceName): void
     {
         $pattern = '/(class\s+[\w\s]+extends\s+\w+)(?:\s+implements\s+(.+))?/';
