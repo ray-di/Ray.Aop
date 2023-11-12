@@ -13,17 +13,14 @@ final class AopCodeGen
     /**
      * Generate AOP class
      *
-     * Powered by PHP token and reflection
+     * PHP token for class and reflection method
      *
      * @param ReflectionClass<object> $sourceClass
      */
     public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix): string
     {
         $code = new GeneratedCode(new MethodSignatureString(PHP_VERSION_ID));
-        $code->parseClass($sourceClass, $postfix);
-        $code->implementsInterface(WeavedInterface::class);
-        $code->addMethods($sourceClass, $bind);
 
-        return $code->getCodeText();
+        return $code->generate($sourceClass, $bind, $postfix);
     }
 }

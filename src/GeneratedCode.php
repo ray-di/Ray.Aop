@@ -41,8 +41,18 @@ final class GeneratedCode
         $this->methodSignature = $methodSignature;
     }
 
+    /** @param ReflectionClass<object> $sourceClass */
+    public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix): string
+    {
+        $this->parseClass($sourceClass, $postfix);
+        $this->implementsInterface(WeavedInterface::class);
+        $this->addMethods($sourceClass, $bind);
+
+        return $this->getCodeText();
+    }
+
     /** @return void */
-    public function add(string $text)
+    private function add(string $text)
     {
         if ($text === '{') {
             $this->curlyBraceCount++;
@@ -58,20 +68,20 @@ final class GeneratedCode
     }
 
     /** @param  non-empty-string $code */
-    public function insert(string $code): void
+    private function insert(string $code): void
     {
         $replacement = $code . '}';
         $this->code = (string) preg_replace('/}\s*$/', $replacement, $this->code);
     }
 
-    public function addClassName(string $className, string $postfix): void
+    private function addClassName(string $className, string $postfix): void
     {
         $newClassName = $className . $postfix;
         $this->add($newClassName . ' extends ' . $className . ' ');
     }
 
     /** @param ReflectionClass<object> $sourceClass */
-    public function parseClass(ReflectionClass $sourceClass, string $postfix): void
+    private function parseClass(ReflectionClass $sourceClass, string $postfix): void
     {
         $fileName = (string) $sourceClass->getFileName();
         if (! file_exists($fileName)) {
@@ -118,7 +128,7 @@ final class GeneratedCode
         }
     }
 
-    public function implementsInterface(string $interfaceName): void
+    private function implementsInterface(string $interfaceName): void
     {
         $pattern = '/(class\s+[\w\s]+extends\s+\w+)(?:\s+implements\s+(.+))?/';
         $this->code = (string) preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
@@ -136,7 +146,7 @@ final class GeneratedCode
     }
 
     /** @param ReflectionClass<object> $class */
-    public function addMethods(ReflectionClass $class, BindInterface $bind): void
+    private function addMethods(ReflectionClass $class, BindInterface $bind): void
     {
         $bindings = array_keys($bind->getBindings());
 
@@ -165,12 +175,12 @@ final class GeneratedCode
         $this->insert(implode("\n", $interceptedMethods));
     }
 
-    public function addIntercepterTrait(): void
+    private function addIntercepterTrait(): void
     {
         $this->add(sprintf("{\n    use \%s;\n}\n", InterceptTrait::class));
     }
 
-    public function getCodeText(): string
+    private function getCodeText(): string
     {
         // close opened curly brace
         while ($this->curlyBraceCount !== 0) {
