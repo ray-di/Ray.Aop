@@ -15,14 +15,16 @@ use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
 
-class AopCodeGenTest extends TestCase
+use const PHP_VERSION_ID;
+
+class AopCodeTest extends TestCase
 {
-    /** @var AopCodeGen */
+    /** @var AopCode */
     private $codeGen;
 
     protected function setUp(): void
     {
-        $this->codeGen = new AopCodeGen();
+        $this->codeGen = new AopCode(new MethodSignatureString(PHP_VERSION_ID));
     }
 
     public function testTypeDeclarations(): void

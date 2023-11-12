@@ -20,13 +20,12 @@ use function method_exists;
 use function sprintf;
 use function str_replace;
 
+use const PHP_VERSION_ID;
+
 final class Compiler implements CompilerInterface
 {
     /** @var string */
     public $classDir;
-
-    /** @var AopCodeGen */
-    private $codeGen;
 
     /** @throws AnnotationException */
     public function __construct(string $classDir)
@@ -36,7 +35,6 @@ final class Compiler implements CompilerInterface
         }
 
         $this->classDir = $classDir;
-        $this->codeGen = new AopCodeGen();
     }
 
     /**
@@ -114,7 +112,8 @@ final class Compiler implements CompilerInterface
     {
         $file = $this->getFileName($className->fqn);
         if (! file_exists($file)) {
-            $aopCode = $this->codeGen->generate($sourceClass, $bind, $className->postFix);
+            $code = new AopCode(new MethodSignatureString(PHP_VERSION_ID));
+            $aopCode = $code->generate($sourceClass, $bind, $className->postFix);
             file_put_contents($file, $aopCode);
         }
 
