@@ -19,7 +19,7 @@ final class AopCodeGen
      */
     public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix): string
     {
-        $code = new GeneratedCode(new MethodSignatureString(PHP_VERSION_ID));
+        $code = new AopCode(new MethodSignatureString(PHP_VERSION_ID));
 
         return $code->generate($sourceClass, $bind, $postfix);
     }

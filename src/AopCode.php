@@ -23,7 +23,7 @@ use const T_CLASS;
 use const T_EXTENDS;
 use const T_STRING;
 
-final class GeneratedCode
+final class AopCode
 {
     public const INTERCEPT_STATEMENT = '\$this->_intercept(__FUNCTION__, func_get_args());';
 
