@@ -6,9 +6,11 @@ namespace Ray\ServiceLocator;
 
 use Ray\ServiceLocator\Exception\DirectoryNotWritableException;
 
+use function chmod;
 use function file_exists;
 use function file_put_contents;
 use function hash;
+use function is_dir;
 use function is_writable;
 use function mkdir;
 use function pathinfo;
@@ -63,8 +65,13 @@ final class Cache
         $dir = $this->tmpDir
             . DIRECTORY_SEPARATOR
             . substr($hash, 0, 2);
-        if (! is_writable($dir)) {
+
+        if (! is_dir($dir)) {
             mkdir($dir, 0777, true);
+        }
+
+        if (! is_writable($dir)) {
+            chmod($dir, 0777);
         }
 
         return $dir
