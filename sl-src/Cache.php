@@ -30,12 +30,12 @@ final class Cache
     /** @var string  */
     private $tmpDir;
 
-        public function __construct(string $tmpDir)
-        {
-            if (! is_writable($tmpDir)) {
-                throw new DirectoryNotWritableException($tmpDir);
-            }
+    public function __construct(string $tmpDir)
+    {
+        if (! is_writable($tmpDir)) {
+            throw new DirectoryNotWritableException($tmpDir);
         }
+    }
 
     /**
      * @psalm-param callable():array<object> $callback
