@@ -26,82 +26,83 @@
 /**
  * Minimal cache
  */
-    final class Cache
+final class Cache
+{
+    /** @var string  */
+    private $tmpDir;
+
+    public function __construct(string $tmpDir)
     {
-        /** @var string  */
-        private $tmpDir;
-
-        public function __construct(string $tmpDir)
-        {
-            if (! is_writable($tmpDir)) {
-                throw new DirectoryNotWritableException($tmpDir);
-            }
-            $this->tmpDir = $tmpDir;
+        if (! is_writable($tmpDir)) {
+            throw new DirectoryNotWritableException($tmpDir);
         }
 
-        /**
-         * @psalm-param callable():array<object> $callback
-         *
-         * @return array<object>
-         *
-         * @psalm-suppress MixedInferredReturnType
-         */
-        public function get(string $key, callable $callback): array
-        {
-            $filename = $this->getFilename($key);
-            if (! file_exists($filename)) {
-                $value = $callback();
-                $this->writeFile($this->getFilename($key), serialize($value));
+        $this->tmpDir = $tmpDir;
+    }
 
-                return $value;
-            }
+    /**
+     * @psalm-param callable():array<object> $callback
+     *
+     * @return array<object>
+     *
+     * @psalm-suppress MixedInferredReturnType
+     */
+    public function get(string $key, callable $callback): array
+    {
+        $filename = $this->getFilename($key);
+        if (! file_exists($filename)) {
+            $value = $callback();
+            $this->writeFile($this->getFilename($key), serialize($value));
 
-            /** @psalm-suppress MixedAssignment, MixedArgument, MixedReturnStatement */
-            return unserialize(require $filename); // @phpstan-ignore-line
+            return $value;
         }
 
-        private function getFilename(string $id): string
-        {
-            $hash = hash('crc32', $id);
+        /** @psalm-suppress MixedAssignment, MixedArgument, MixedReturnStatement */
+        return unserialize(require $filename); // @phpstan-ignore-line
+    }
 
-            $dir = $this->tmpDir
-            . DIRECTORY_SEPARATOR
-            . substr($hash, 0, 2);
-            if (! is_dir($dir) && ! @mkdir($dir) && ! is_dir($dir) && ! is_writable($dir)) {
-                // @codeCoverageIgnoreStart
-                throw new DirectoryNotWritableException($dir);
-                // @codeCoverageIgnoreEnd
-            }
+    private function getFilename(string $id): string
+    {
+        $hash = hash('crc32', $id);
 
-            return $dir
-            . DIRECTORY_SEPARATOR
-            . $hash
-            . '.php';
+        $dir = $this->tmpDir
+        . DIRECTORY_SEPARATOR
+        . substr($hash, 0, 2);
+        if (! is_dir($dir) && ! @mkdir($dir) && ! is_dir($dir) && ! is_writable($dir)) {
+            // @codeCoverageIgnoreStart
+            throw new DirectoryNotWritableException($dir);
+            // @codeCoverageIgnoreEnd
         }
 
-        private function writeFile(string $filename, string $value): void
-        {
-            $filepath = pathinfo($filename, PATHINFO_DIRNAME);
-            if (! is_writable($filepath)) {
-                // @codeCoverageIgnoreStart
-                throw new DirectoryNotWritableException($filepath);
-                // @codeCoverageIgnoreEnd
-            }
+        return $dir
+        . DIRECTORY_SEPARATOR
+        . $hash
+        . '.php';
+    }
 
-            $tmpFile = (string) tempnam($filepath, 'swap');
-            $valueWithSingileQuote = "'{$value}'";
-
-            $content = '<?php return ' . $valueWithSingileQuote . ';';
-            if (file_put_contents($tmpFile, $content) !== false) {
-                if (@rename($tmpFile, $filename)) {
-                    return;
-                }
-
-                // @codeCoverageIgnoreStart
-                @unlink($tmpFile);
-            }
-
+    private function writeFile(string $filename, string $value): void
+    {
+        $filepath = pathinfo($filename, PATHINFO_DIRNAME);
+        if (! is_writable($filepath)) {
+            // @codeCoverageIgnoreStart
             throw new DirectoryNotWritableException($filepath);
             // @codeCoverageIgnoreEnd
         }
+
+        $tmpFile = (string) tempnam($filepath, 'swap');
+        $valueWithSingileQuote = "'{$value}'";
+
+        $content = '<?php return ' . $valueWithSingileQuote . ';';
+        if (file_put_contents($tmpFile, $content) !== false) {
+            if (@rename($tmpFile, $filename)) {
+                return;
+            }
+
+            // @codeCoverageIgnoreStart
+            @unlink($tmpFile);
+        }
+
+        throw new DirectoryNotWritableException($filepath);
+        // @codeCoverageIgnoreEnd
     }
+}
