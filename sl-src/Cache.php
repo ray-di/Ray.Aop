@@ -1,26 +1,27 @@
 <?php
 
-declare(strict_types=1);
+    declare(strict_types=1);
 
-namespace Ray\ServiceLocator;
+    namespace Ray\ServiceLocator;
 
-use Ray\ServiceLocator\Exception\DirectoryNotWritableException;
+    use Ray\ServiceLocator\Exception\DirectoryNotWritableException;
 
-use function file_exists;
-use function file_put_contents;
-use function hash;
-use function is_writable;
-use function mkdir;
-use function pathinfo;
-use function rename;
-use function serialize;
-use function substr;
-use function tempnam;
-use function unlink;
-use function unserialize;
+    use function file_exists;
+    use function file_put_contents;
+    use function hash;
+    use function is_dir;
+    use function is_writable;
+    use function mkdir;
+    use function pathinfo;
+    use function rename;
+    use function serialize;
+    use function substr;
+    use function tempnam;
+    use function unlink;
+    use function unserialize;
 
-use const DIRECTORY_SEPARATOR;
-use const PATHINFO_DIRNAME;
+    use const DIRECTORY_SEPARATOR;
+    use const PATHINFO_DIRNAME;
 
 /**
  * Minimal cache
@@ -32,6 +33,10 @@ final class Cache
 
     public function __construct(string $tmpDir)
     {
+        if (! is_writable($tmpDir)) {
+            throw new DirectoryNotWritableException($tmpDir);
+        }
+
         $this->tmpDir = $tmpDir;
     }
 
@@ -61,16 +66,18 @@ final class Cache
         $hash = hash('crc32', $id);
 
         $dir = $this->tmpDir
-            . DIRECTORY_SEPARATOR
-            . substr($hash, 0, 2);
-        if (! is_writable($dir)) {
-            mkdir($dir, 0777, true);
+        . DIRECTORY_SEPARATOR
+        . substr($hash, 0, 2);
+        if (! is_dir($dir) && ! @mkdir($dir) && ! is_dir($dir) && ! is_writable($dir)) {
+            // @codeCoverageIgnoreStart
+            throw new DirectoryNotWritableException($dir);
+            // @codeCoverageIgnoreEnd
         }
 
         return $dir
-            . DIRECTORY_SEPARATOR
-            . $hash
-            . '.php';
+        . DIRECTORY_SEPARATOR
+        . $hash
+        . '.php';
     }
 
     private function writeFile(string $filename, string $value): void
