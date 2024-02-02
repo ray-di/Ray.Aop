@@ -82,6 +82,6 @@ final class TypeString
     {
         $isBuiltin = $type->isBuiltin() || in_array($type->getName(), ['static', 'self'], true);
 
-        return $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
+        return $isBuiltin ? $type->getName() : '\\' . $type->getName();
     }
 }
