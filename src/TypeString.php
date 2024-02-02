@@ -13,6 +13,7 @@ use function array_map;
 use function assert;
 use function class_exists;
 use function implode;
+use function in_array;
 use function sprintf;
 
 final class TypeString
