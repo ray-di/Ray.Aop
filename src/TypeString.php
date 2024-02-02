@@ -80,7 +80,7 @@ final class TypeString
 
     private static function getFqnType(ReflectionNamedType $type): string
     {
-        $isBuiltinOrSelf = $type->isBuiltin();
+        $isBuiltin = $type->isBuiltin() || in_array($type->getName(), ['static', 'self'], true);
 
         return $isBuiltinOrSelf ? $type->getName() : '\\' . $type->getName();
     }
