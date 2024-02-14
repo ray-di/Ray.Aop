@@ -13,7 +13,6 @@ use function array_map;
 use function assert;
 use function class_exists;
 use function implode;
-use function in_array;
 use function sprintf;
 
 final class TypeString
@@ -55,7 +54,8 @@ final class TypeString
     private function intersectionTypeToString(ReflectionIntersectionType $intersectionType): string
     {
         $types = $intersectionType->getTypes();
-        $typeStrings = array_map(static function ($type) {
+        /** @var array<ReflectionNamedType> $types */
+        $typeStrings = array_map(static function (ReflectionNamedType $type): string {
             return '\\' . $type->getName();
         }, $types);
 
@@ -64,11 +64,13 @@ final class TypeString
 
     public function getUnionType(ReflectionUnionType $type): string
     {
-        $types = array_map(/** @param ReflectionNamedType|ReflectionIntersectionType $t */ static function ($t) {
+        $types = array_map(static function ($t) {
             if ($t instanceof ReflectionIntersectionType) {
-                $intersectionTypes = array_map(/** @param ReflectionNamedType $t */ static function ($t) {
+                $types = $t->getTypes();
+                /** @var array<ReflectionNamedType>  $types */
+                $intersectionTypes = array_map(static function (ReflectionNamedType $t): string {
                     return self::getFqnType($t);
-                }, $t->getTypes());
+                }, $types);
 
                 return sprintf('(%s)', implode('&', $intersectionTypes));
             }
@@ -79,10 +81,11 @@ final class TypeString
         return implode('|', $types);
     }
 
-    private static function getFqnType(ReflectionNamedType $type): string
+    private static function getFqnType(ReflectionNamedType $namedType): string
     {
-        $isBuiltin = $type->isBuiltin() || in_array($type->getName(), ['static', 'self'], true);
+        $type = $namedType->getName();
+        $isBuiltin = $namedType->isBuiltin() || $type === 'static' || $type === 'self';
 
-        return $isBuiltin ? $type->getName() : '\\' . $type->getName();
+        return $isBuiltin ? $type : '\\' . $type;
     }
 }
