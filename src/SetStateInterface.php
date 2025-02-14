@@ -7,7 +7,7 @@ namespace Ray\Aop;
 use Ray\Aop\MethodInterceptor as MethodBindings;
 
 /** @psalm-import-type MethodBindings from Types */
-interface SetStateInterface extends WeavedInterface
+interface SetStateInterface extends WeavedInterface // @phpstan-ignore-line
 {
     /**
      * @param MethodBindings $bindings
