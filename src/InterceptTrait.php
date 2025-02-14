@@ -21,7 +21,8 @@ trait InterceptTrait
     /**
      * @param MethodBindings $bindings
      *
-     * @see WeavedInterface::_initState()
+     * {@inheritDoc}
+     *
      * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
     public function _initState(array $bindings): void // phpcs:ignore

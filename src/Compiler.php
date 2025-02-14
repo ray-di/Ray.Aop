@@ -64,7 +64,7 @@ final class Compiler implements CompilerInterface
         $compiledClass = $this->compile($class, $bind);
         assert(class_exists($compiledClass));
         $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
-        if ($instance instanceof WeavedInterface) {
+        if ($instance instanceof SetStateInterface) {
             $instance->_initState($bind->getBindings());
         }
 

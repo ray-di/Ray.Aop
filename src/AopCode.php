@@ -56,7 +56,7 @@ final class AopCode
     public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix): string
     {
         $this->parseClass($sourceClass, $postfix);
-        $this->implementsInterface(WeavedInterface::class);
+        $this->implementsInterface(SetStateInterface::class);
         $this->addMethods($sourceClass, $bind);
 
         return $this->getCodeText();

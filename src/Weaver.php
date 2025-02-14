@@ -57,7 +57,7 @@ final class Weaver
     {
         $aopClass = $this->weave($class);
         $instance = (new ReflectionClass($aopClass))->newInstanceArgs($args);
-        if (! $instance instanceof WeavedInterface) {
+        if (! $instance instanceof SetStateInterface) {
             /** @var T $instance  */
             return $instance;
         }
