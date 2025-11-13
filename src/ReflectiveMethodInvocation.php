@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use ArrayObject;
+use Override;
 use ReflectionClass;
 use ReflectionObject;
 
-use function array_shift;
 use function assert;
 use function call_user_func_array;
 use function is_callable;
@@ -17,17 +17,13 @@ use function is_callable;
  * @psalm-import-type ArgumentList from Types
  * @psalm-import-type NamedArguments from Types
  * @psalm-import-type InterceptorList from Types
+ * @psalm-import-type MethodName from Types
+ * @psalm-import-type ConstructorArguments from Types
  * @template T of object
  * @implements MethodInvocation<T>
  */
 final class ReflectiveMethodInvocation implements MethodInvocation
 {
-    /**
-     * @var T
-     * @readonly
-     */
-    private $object;
-
     /**
      * @var ArgumentList
      * @readonly
@@ -35,53 +31,42 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     private $arguments;
 
     /**
-     * @var non-empty-string
-     * @readonly
-     */
-    private $method;
-
-    /**
-     * @var InterceptorList
-     * @psalm-readonly-allow-private-mutation
-     */
-    private $interceptors;
-
-    /**
      * @var callable(mixed...): mixed
      * @readonly
      */
     private $callable;
+    private int $currentInterceptorIndex = 0;
 
     /**
-     * @param T                 $object       Target object
-     * @param non-empty-string  $method       Method name
-     * @param array<int, mixed> $arguments    Method arguments
-     * @param InterceptorList   $interceptors Method interceptors
+     * @param T                    $object       Target object
+     * @param MethodName           $method       Method name
+     * @param ConstructorArguments $arguments    Method arguments
+     * @param InterceptorList      $interceptors Method interceptors
      */
     public function __construct(
-        object $object,
-        string $method,
+        /** @readonly */
+        private readonly object $object,
+        /** @readonly */
+        private readonly string $method,
         array $arguments,
-        array $interceptors = []
+        /** @readonly */
+        private readonly array $interceptors = [],
     ) {
-        $this->object = $object;
-        $this->method = $method;
-        $callable = [$object, $method];
+        $callable = [$this->object, $this->method];
         assert(is_callable($callable));
         $this->callable = $callable;
+        /** @psalm-suppress InvalidPropertyAssignmentValue */
         $this->arguments = new ArrayObject($arguments);
-        $this->interceptors = $interceptors;
     }
 
+    #[Override]
     public function getMethod(): ReflectionMethod
     {
         if ($this->object instanceof WeavedInterface) {
             $class = (new ReflectionObject($this->object))->getParentClass();
             assert($class instanceof ReflectionClass);
-            $method = new ReflectionMethod($class->name, $this->method);
-            $method->setObject($this->object);
 
-            return $method;
+            return new ReflectionMethod($class->name, $this->method);
         }
 
         return new ReflectionMethod($this->object, $this->method);
@@ -94,6 +79,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      *
      * @psalm-mutation-free
      */
+    #[Override]
     public function getArguments(): ArrayObject
     {
         return $this->arguments;
@@ -104,6 +90,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      *
      * @return NamedArguments
      */
+    #[Override]
     public function getNamedArguments(): ArrayObject
     {
         $args = $this->getArguments();
@@ -122,10 +109,12 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function proceed()
     {
-        $interceptor = array_shift($this->interceptors);
-        if ($interceptor instanceof MethodInterceptor) {
+        if (isset($this->interceptors[$this->currentInterceptorIndex])) {
+            $interceptor = $this->interceptors[$this->currentInterceptorIndex++];
+
             return $interceptor->invoke($this);
         }
 
@@ -137,6 +126,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      *
      * @psalm-external-mutation-free
      */
+    #[Override]
     public function getThis()
     {
         return $this->object;

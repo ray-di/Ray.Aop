@@ -19,7 +19,6 @@ use function preg_replace_callback;
 use function sprintf;
 use function token_get_all;
 
-use const PHP_VERSION_ID;
 use const T_CLASS;
 use const T_EXTENDS;
 use const T_STRING;
@@ -34,18 +33,11 @@ final class AopCode
 {
     public const INTERCEPT_STATEMENT = '\$this->_intercept(__FUNCTION__, func_get_args());';
 
-    /** @var string */
-    private $code = '';
+    private string $code = '';
+    private int $curlyBraceCount = 0;
 
-    /** @var int  */
-    private $curlyBraceCount = 0;
-
-    /** @var MethodSignatureString */
-    private $methodSignature;
-
-    public function __construct(MethodSignatureString $methodSignature)
+    public function __construct(private readonly MethodSignatureString $methodSignature)
     {
-        $this->methodSignature = $methodSignature;
     }
 
     /**
@@ -227,7 +219,7 @@ final class AopCode
     /** @param ReflectionClass<object> $sourceClass */
     public function resolveInterceptTrait(ReflectionClass $sourceClass): void
     {
-        if (PHP_VERSION_ID >= 80200 && $sourceClass->isReadOnly()) {
+        if ($sourceClass->isReadOnly()) {
             $this->addReadOnlyInterceptorTrait();
 
             return;

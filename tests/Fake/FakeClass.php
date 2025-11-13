@@ -7,22 +7,18 @@ namespace Ray\Aop;
 use Ray\Aop\Annotation\FakeClassMarker;
 use Ray\Aop\Annotation\FakeMarker;
 
-/**
- * @FakeClassMarker
- */
-class FakeClass
+#[FakeClassMarker]
+class FakeClass implements \Stringable
 {
     public $a = 0;
     public $msg = 'hello';
 
-    public function __toString()
+    public function __toString(): string
     {
         return 'toStringString';
     }
 
-    /**
-     * @FakeMarker(1)
-     */
+    #[FakeMarker(1)]
     public function add($n)
     {
         $this->a += $n;
@@ -38,9 +34,6 @@ class FakeClass
         return $a - $b;
     }
 
-    /**
-     * @Log
-     */
     public function getTriple(int $c): int
     {
         return $c * 3;

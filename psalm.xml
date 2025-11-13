@@ -9,10 +9,10 @@
     findUnusedCode = "false"
 >
     <projectFiles>
-        <directory name="sl-src" />
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
+            <directory name="src-deprecated" />
         </ignoreFiles>
     </projectFiles>
 </psalm>

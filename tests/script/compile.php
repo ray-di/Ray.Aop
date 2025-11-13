@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Composer\Autoload\ClassLoader;
+
+use function assert;
 use function dirname;
 
 $loader = require dirname(__DIR__, 2) . '/vendor/autoload.php';
+assert($loader instanceof ClassLoader);
 $loader->addPsr4('Ray\Aop\\', dirname(__DIR__) . '/Fake');
 
 $tmpDir = dirname(__DIR__) . '/tmp';

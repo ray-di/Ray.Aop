@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Ray\Aop\Matcher;
 
 use ArrayObject;
+use Override;
 use Ray\Aop\AbstractMatcher;
 use Ray\Aop\Types;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function assert;
 use function in_array;
-use function strpos;
+use function str_starts_with;
 
 /**
  * @psalm-import-type Arguments from Types
@@ -19,26 +21,20 @@ use function strpos;
  */
 final class AnyMatcher extends AbstractMatcher
 {
-    /**
-     * @var BuiltinMethodsNames
-     * @readonly
-     */
-    private static $builtinMethods = [];
+    /** @var BuiltinMethodsNames|null */
+    private static $builtinMethods = null;
 
     public function __construct()
     {
         parent::__construct();
 
-        if (self::$builtinMethods !== []) {
-            return;
-        }
-
-        $this->setBuildInMethods();
+        self::$builtinMethods ??= $this->getBuiltinMethods();
     }
 
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
         unset($class, $arguments);
@@ -49,6 +45,7 @@ final class AnyMatcher extends AbstractMatcher
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
         unset($arguments);
@@ -56,23 +53,29 @@ final class AnyMatcher extends AbstractMatcher
         return ! ($this->isMagicMethod($method->name) || $this->isBuiltinMethod($method->name));
     }
 
-    private function setBuildInMethods(): void
+    /** @return BuiltinMethodsNames */
+    private function getBuiltinMethods(): array
     {
         $methods = (new ReflectionClass(ArrayObject::class))->getMethods();
+        $builtinMethods = [];
         foreach ($methods as $method) {
-            self::$builtinMethods[] = $method->name;
+            $builtinMethods[] = $method->name;
         }
+
+        return $builtinMethods;
     }
 
     /** @psalm-pure */
     private function isMagicMethod(string $name): bool
     {
-        return strpos($name, '__') === 0;
+        return str_starts_with($name, '__');
     }
 
     /** @psalm-external-mutation-free */
     private function isBuiltinMethod(string $name): bool
     {
+        assert(self::$builtinMethods !== null);
+
         return in_array($name, self::$builtinMethods, true);
     }
 }

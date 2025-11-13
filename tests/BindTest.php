@@ -57,17 +57,15 @@ class BindTest extends TestCase
         $this->assertSame($this->bind->getBindings(), []);
     }
 
+    /** @doesNotPerformAssertions */
     public function testToString(): void
     {
         $nullBind = (string) (new Bind());
-        $this->assertIsString($nullBind);
 
         $interceptors = [new FakeDoubleInterceptor()];
         $pointcut = new Pointcut((new Matcher())->startsWith('Ray'), (new Matcher())->startsWith('get'), $interceptors);
         $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
         $bindString = (string) $this->bind;
-        $this->assertIsString($bindString);
-        $this->assertIsString($nullBind, $bindString);
     }
 
     public function testMyMatcher(): void

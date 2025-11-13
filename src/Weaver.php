@@ -10,39 +10,23 @@ use function file_exists;
 use function sprintf;
 use function str_replace;
 
+/**
+ * @psalm-import-type BindingName from Types
+ * @psalm-import-type ScriptDir from Types
+ */
 final class Weaver
 {
-    /**
-     * @var BindInterface
-     * @readonly
-     */
-    private $bind;
+    /** @var BindingName */
+    private readonly string $bindName;
+    private readonly Compiler $compiler;
 
-    /**
-     * @var string
-     * @readonly
-     */
-    private $bindName;
-
-    /**
-     * @var string
-     * @readonly
-     */
-    private $classDir;
-
-    /**
-     * @var Compiler
-     * @readonly
-     */
-    private $compiler;
-
-    /** @param non-empty-string $classDir */
-    public function __construct(BindInterface $bind, string $classDir)
+    /** @param ScriptDir $classDir */
+    public function __construct(private readonly BindInterface $bind, private readonly string $classDir)
     {
-        $this->bind = $bind;
-        $this->bindName = (string) $bind;
+        /** @psalm-suppress PropertyTypeCoercion */
+        /** @phpstan-ignore-next-line assign.propertyType */
+        $this->bindName = (string) $this->bind;
         $this->compiler = new Compiler($classDir);
-        $this->classDir = $classDir;
     }
 
     /**
@@ -56,9 +40,9 @@ final class Weaver
     public function newInstance(string $class, array $args): object
     {
         $aopClass = $this->weave($class);
+        /** @var T $instance */
         $instance = (new ReflectionClass($aopClass))->newInstanceArgs($args);
         if (! $instance instanceof WeavedInterface) {
-            /** @var T $instance  */
             return $instance;
         }
 

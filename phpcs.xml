@@ -9,9 +9,9 @@
     <arg name="cache" value=".phpcs-cache"/>
     <arg name="colors"/>
 
-    <!-- Compatibility with PHP 7.3.0 -->
-    <config name="php_version" value="70300"/>
-com
+    <!-- Compatibility with PHP 8.2.0 -->
+    <config name="php_version" value="80200"/>
+
     <!-- Ignore warnings, show progress of the run and show sniff names -->
     <arg value="nps"/>
 
@@ -39,12 +39,18 @@ com
         <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousTraitNaming.SuperfluousSuffix"/>
         <exclude name="SlevomatCodingStandard.PHP.RequireExplicitAssertion.RequiredExplicitAssertion"/>
+        <!-- Deprecated sniffs -->
+        <exclude name="SlevomatCodingStandard.TypeHints.UnionTypeHintFormat"/>
         <!-- /Base -->
         <!-- Option -->
         <exclude name="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall.MissingTrailingComma"/>
         <!-- /Option -->
         <!-- Exclude Fake files form Doctrine CS -->
     </rule>
+    <rule ref="SlevomatCodingStandard.TypeHints.DNFTypeHintFormat"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
+    <rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility"/>
+    <rule ref="Generic.WhiteSpace.LanguageConstructSpacing"/>
 
     <!-- Additional Rules -->
     <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">

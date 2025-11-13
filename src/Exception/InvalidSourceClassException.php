@@ -6,6 +6,6 @@ namespace Ray\Aop\Exception;
 
 use LogicException;
 
-class InvalidSourceClassException extends LogicException implements ExceptionInterface
+final class InvalidSourceClassException extends LogicException implements ExceptionInterface
 {
 }

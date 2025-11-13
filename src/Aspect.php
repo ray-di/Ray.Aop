@@ -23,26 +23,26 @@ use function sys_get_temp_dir;
  * @psalm-import-type MatcherConfigList from Types
  * @psalm-import-type Arguments from Types
  * @psalm-import-type MethodName from Types
+ * @psalm-import-type ScriptDir from Types
  */
 final class Aspect
 {
     /**
      * Temporary directory for generated proxy classes
      *
-     * @var non-empty-string
-     * @readonly
+     * @var ScriptDir
      */
-    private $tmpDir;
+    private readonly string $tmpDir;
 
     /**
      * Collection of matcher configurations
      *
      * @var MatcherConfigList
      */
-    private $matchers = [];
+    private array $matchers = [];
 
-    /** @param non-empty-string|null $tmpDir Directory for generated proxy classes */
-    public function __construct(?string $tmpDir = null)
+    /** @param ScriptDir|null $tmpDir Directory for generated proxy classes */
+    public function __construct(string|null $tmpDir = null)
     {
         if ($tmpDir === null) {
             $tmp = sys_get_temp_dir();
@@ -77,7 +77,7 @@ final class Aspect
     /**
      * Weave aspects into classes in the specified directory
      *
-     * @param non-empty-string $classDir Target class directory
+     * @param ScriptDir $classDir Target class directory
      *
      * @throws RuntimeException When Ray.Aop extension is not loaded.
      *

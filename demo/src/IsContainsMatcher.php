@@ -19,7 +19,7 @@ final class IsContainsMatcher extends AbstractMatcher
     {
         [$contains] = $arguments;
 
-        return strpos($class->name, $contains) !== false;
+        return str_contains($class->name, $contains);
     }
 
     /**
@@ -29,6 +29,6 @@ final class IsContainsMatcher extends AbstractMatcher
     {
         [$contains] = $arguments;
 
-        return strpos($method->name, $contains) !== false;
+        return str_contains($method->name, $contains);
     }
 }

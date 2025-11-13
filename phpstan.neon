@@ -4,7 +4,6 @@ parameters:
   phpVersion: 80200
   level: max
   paths:
-    - sl-src
     - src
     - tests
   excludePaths:
@@ -12,3 +11,4 @@ parameters:
     - tests/tmp_unerase/*
     - tests/Fake/*
     - tests/AspectFake/*
+    - src-deprecated/*

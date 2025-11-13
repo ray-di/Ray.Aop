@@ -11,7 +11,6 @@ use ReflectionUnionType;
 
 use function array_map;
 use function assert;
-use function class_exists;
 use function implode;
 use function sprintf;
 
@@ -20,33 +19,18 @@ use function sprintf;
  */
 final class TypeString
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    private $nullableStr;
-
-    /**
-     * @var bool
-     * @readonly
-     */
-    private $hasUnionType;
-
-    public function __construct(string $nullableStr)
+    public function __construct(private readonly string $nullableStr)
     {
-        $this->nullableStr = $nullableStr;
-        $this->hasUnionType = class_exists('ReflectionUnionType');
     }
 
     /** @psalm-external-mutation-free */
-    public function __invoke(?ReflectionType $type): string
+    public function __invoke(ReflectionType|null $type): string
     {
         if (! $type) {
             return '';
         }
 
-        // PHP 8.0+
-        if ($this->hasUnionType && $type instanceof ReflectionUnionType) {
+        if ($type instanceof ReflectionUnionType) {
             return $this->getUnionType($type);
         }
 
@@ -69,10 +53,12 @@ final class TypeString
     private function intersectionTypeToString(ReflectionIntersectionType $intersectionType): string
     {
         $types = $intersectionType->getTypes();
-        /** @var array<ReflectionNamedType> $types */
-        $typeStrings = array_map(static function (ReflectionNamedType $type): string {
-            return '\\' . $type->getName();
-        }, $types);
+        $typeStrings = [];
+
+        /** @var ReflectionNamedType $type */
+        foreach ($types as $type) {
+            $typeStrings[] = '\\' . $type->getName();
+        }
 
         return implode(' & ', $typeStrings);
     }
@@ -84,9 +70,7 @@ final class TypeString
             if ($t instanceof ReflectionIntersectionType) {
                 $types = $t->getTypes();
                 /** @var array<ReflectionNamedType>  $types */
-                $intersectionTypes = array_map(static function (ReflectionNamedType $t): string {
-                    return self::getFqnType($t);
-                }, $types);
+                $intersectionTypes = array_map(self::getFqnType(...), $types);
 
                 return sprintf('(%s)', implode('&', $intersectionTypes));
             }

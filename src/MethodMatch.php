@@ -8,7 +8,6 @@ use ReflectionClass;
 use ReflectionMethod;
 
 use function array_key_exists;
-use function get_class;
 
 /**
  * @psalm-import-type MethodInterceptors from Types
@@ -18,14 +17,10 @@ use function get_class;
  * @psalm-import-type Arguments from Types
  * @psalm-import-type Pointcuts from Types
  */
-final class MethodMatch
+final readonly class MethodMatch
 {
-    /** @var BindInterface */
-    private $bind;
-
-    public function __construct(BindInterface $bind)
+    public function __construct(private BindInterface $bind)
     {
-        $this->bind = $bind;
     }
 
     /**
@@ -34,7 +29,7 @@ final class MethodMatch
      */
     public function __invoke(ReflectionClass $class, \Ray\Aop\ReflectionMethod $method, array $pointcuts): void
     {
-        /** @var array<int, object> $annotations */
+        /** @var list<object> $annotations */
         $annotations = $method->getAnnotations();
         // priority bind
         foreach ($pointcuts as $key => $pointcut) {
@@ -74,20 +69,20 @@ final class MethodMatch
 
     /**
      * @param ReflectionClass<object> $class
-     * @param Pointcut[]              $pointcuts
-     * @param array<int, object>      $annotations
+     * @param Pointcuts               $pointcuts
+     * @param list<object>            $annotations
      *
-     * @return Pointcut[]
+     * @return Pointcuts
      */
     private function onionOrderMatch(
         ReflectionClass $class,
         ReflectionMethod $method,
         array $pointcuts,
-        array $annotations
+        array $annotations,
     ): array {
         // method bind in annotation order
         foreach ($annotations as $annotation) {
-            $annotationIndex = get_class($annotation);
+            $annotationIndex = $annotation::class;
             if (! array_key_exists($annotationIndex, $pointcuts)) {
                 continue;
             }

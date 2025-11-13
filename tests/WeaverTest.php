@@ -6,7 +6,6 @@ namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
 
-use function assert;
 use function class_exists;
 use function passthru;
 use function serialize;
@@ -52,7 +51,7 @@ class WeaverTest extends TestCase
     public function testNewInstance(Weaver $weaver): void
     {
         $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
-        assert($weaved instanceof FakeWeaverMock);
+        $this->assertInstanceOf(FakeWeaverMock::class, $weaved);
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
@@ -61,9 +60,9 @@ class WeaverTest extends TestCase
     public function testCachedWeaver(Weaver $weaver): void
     {
         $weaver = unserialize(serialize($weaver));
-        assert($weaver instanceof  Weaver);
+        $this->assertInstanceOf(Weaver::class, $weaver);
         $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
-        assert($weaved instanceof FakeWeaverMock);
+        $this->assertInstanceOf(FakeWeaverMock::class, $weaved);
         $result = $weaved->returnSame(1);
         $this->assertSame(2, $result);
     }
@@ -76,7 +75,7 @@ class WeaverTest extends TestCase
             (new Matcher())->any(),
             [new FakeInterceptor()]
         );
-        $bind = (new Bind());
+        $bind = new Bind();
         $bind->bind(FakeWeaverScript::class, [$pointcut]);
         $weaver = new Weaver($bind, __DIR__ . '/tmp');
         $className = $weaver->weave(FakeWeaverScript::class);

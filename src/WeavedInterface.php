@@ -10,7 +10,7 @@ interface WeavedInterface
     /**
      * @param MethodBindings $bindings
      *
-     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     * @SuppressWarnings("PHPMD.CamelCaseMethodName")
      */
     public function _setBindings(array $bindings): void; // phpcs:ignore
 }

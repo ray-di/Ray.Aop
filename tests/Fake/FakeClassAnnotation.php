@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-/**
- * @Annotation
- * @Target("CLASS")
- */
+use Attribute;
+
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class FakeClassAnnotation
 {
-    public $value;
+    public function __construct(public string $value = '')
+    {
+    }
 }

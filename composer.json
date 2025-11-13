@@ -10,16 +10,12 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
-        "ext-hash": "*",
-        "ext-tokenizer": "*",
-        "doctrine/annotations": "^1.12 || ^2.0",
-        "koriym/attributes": "^1.0.3"
+        "php": "^8.2",
+        "ext-tokenizer": "*"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4.1",
-        "phpunit/phpunit": "^8.5.23 || ^9.5.10",
-        "nikic/php-parser": "^4.16"
+        "phpunit/phpunit": "^10.5.0"
     },
     "config": {
         "sort-packages": true,
@@ -29,10 +25,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Ray\\Aop\\": ["src/", "src-php8"],
-            "Ray\\ServiceLocator\\": ["sl-src/"]
-        },
-        "files": ["annotation_loader.php"]
+            "Ray\\Aop\\": "src/",
+            "Ray\\ServiceLocator\\": "src-deprecated/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -53,8 +48,8 @@
         "tests": ["@cs", "@test", "@sa"],
         "coverage": ["php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"],
         "pcov": ["php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"],
-        "cs": ["phpcs --standard=./phpcs.xml sl-src src tests"],
-        "cs-fix": ["phpcbf sl-src src tests"],
+        "cs": ["phpcs --standard=./phpcs.xml src tests"],
+        "cs-fix": ["phpcbf src tests"],
         "clean": ["phpstan clear-result-cache", "psalm --clear-cache", "rm -rf tests/tmp/*.php"],
         "sa": ["psalm --monochrome --show-info=true", "phpstan --memory-limit=-1 analyse -c phpstan.neon"],
         "metrics": ["phpmetrics --report-html=build/metrics --exclude=Exception src"],

@@ -6,6 +6,6 @@ namespace Ray\Aop\Exception;
 
 use LogicException;
 
-class MultipleClassInOneFileException extends LogicException implements ExceptionInterface
+final class MultipleClassInOneFileException extends LogicException implements ExceptionInterface
 {
 }

@@ -6,6 +6,6 @@ namespace Ray\Aop\Exception;
 
 use InvalidArgumentException;
 
-class InvalidMatcherException extends InvalidArgumentException implements ExceptionInterface
+final class InvalidMatcherException extends InvalidArgumentException implements ExceptionInterface
 {
 }

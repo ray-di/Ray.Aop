@@ -11,6 +11,7 @@ use function call_user_func_array;
 /**
  * @psalm-import-type MethodBindings from Types
  * @psalm-import-type Arguments from Types
+ * @phpstan-ignore trait.unused
  */
 trait ReadOnlyInterceptTrait
 {
@@ -20,8 +21,10 @@ trait ReadOnlyInterceptTrait
      * @param MethodBindings $bindings
      *
      * @see WeavedInterface::_setBindings()
+     *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
-    public function _setBindings(array $bindings): void
+    public function _setBindings(array $bindings): void // @phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
         $this->_state = new InterceptTraitState($bindings);
     }

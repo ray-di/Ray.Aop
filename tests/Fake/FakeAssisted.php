@@ -10,10 +10,6 @@ namespace Ray\Aop;
 
 use Ray\Aop\Annotation\AbstractAssisted;
 
-/**
- * @Annotation
- * @Target("METHOD")
- */
 final class FakeAssisted extends AbstractAssisted
 {
     /** @var array<string> */

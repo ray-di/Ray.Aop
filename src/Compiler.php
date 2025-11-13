@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Override;
 use ParseError;
 use Ray\Aop\Exception\CompilationFailedException;
 use Ray\Aop\Exception\NotWritableException;
@@ -19,8 +20,6 @@ use function method_exists;
 use function sprintf;
 use function str_replace;
 
-use const PHP_VERSION_ID;
-
 /**
  *  Compiler
  *
@@ -29,16 +28,17 @@ use const PHP_VERSION_ID;
  *  methods and ensures the classes are writable.
  *
  * @psalm-import-type ConstructorArguments from Types
+ * @psalm-import-type ScriptDir from Types
  */
 final class Compiler implements CompilerInterface
 {
     /**
-     * @var non-empty-string
+     * @var ScriptDir
      * @readonly
      */
     public $classDir;
 
-    /** @param  non-empty-string $classDir */
+    /** @param ScriptDir $classDir */
     public function __construct(string $classDir)
     {
         if (! is_writable($classDir)) {
@@ -59,6 +59,7 @@ final class Compiler implements CompilerInterface
      * @template T of object
      * @psalm-immutable
      */
+    #[Override]
     public function newInstance(string $class, array $args, BindInterface $bind): object
     {
         $compiledClass = $this->compile($class, $bind);
@@ -83,6 +84,7 @@ final class Compiler implements CompilerInterface
      * @template T of object
      * @sideEffect Genaerates a new class file
      */
+    #[Override]
     public function compile(string $class, BindInterface $bind): string
     {
         if ($this->hasNoBinding($class, $bind)) {
@@ -91,23 +93,20 @@ final class Compiler implements CompilerInterface
         }
 
         $className = new AopPostfixClassName($class, (string) $bind, $this->classDir);
-        if (class_exists($className->fqn, false)) {
-            goto return_fqn;
+        if (! class_exists($className->fqn, false)) {
+            try {
+                $this->requireFile($className, new ReflectionClass($class), $bind);
+                // @codeCoverageIgnoreStart
+            } catch (ParseError) {
+                $msg = sprintf('class:%s Compilation failed in Ray.Aop. This is most likely a bug in Ray.Aop, please report it to the issue. https://github.com/ray-di/Ray.Aop/issues', $class);
+
+                throw new CompilationFailedException($msg);
+                // @codeCoverageIgnoreEnd
+            }
         }
 
-        try {
-            $this->requireFile($className, new ReflectionClass($class), $bind);
-            // @codeCoverageIgnoreStart
-        } catch (ParseError $e) {
-            $msg = sprintf('class:%s Compilation failed in Ray.Aop. This is most likely a bug in Ray.Aop, please report it to the issue. https://github.com/ray-di/Ray.Aop/issues', $class);
-
-            throw new CompilationFailedException($msg);
-            // @codeCoverageIgnoreEnd
-        }
-
-        return_fqn:
-        $fqn = $className->fqn; // phpcs:ignore SlevomatCodingStandard.Variables.UselessVariable.UselessVariable
         /** @var class-string<T> $fqn */
+        $fqn = $className->fqn;
 
         return $fqn;
     }
@@ -141,7 +140,7 @@ final class Compiler implements CompilerInterface
     {
         $file = $this->getFileName($className->fqn);
         if (! file_exists($file)) {
-            $code = new AopCode(new MethodSignatureString(PHP_VERSION_ID));
+            $code = new AopCode(new MethodSignatureString());
             $aopCode = $code->generate($sourceClass, $bind, $className->postFix);
             file_put_contents($file, $aopCode);
         }

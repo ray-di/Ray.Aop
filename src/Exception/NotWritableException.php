@@ -6,6 +6,6 @@ namespace Ray\Aop\Exception;
 
 use RuntimeException;
 
-class NotWritableException extends RuntimeException implements ExceptionInterface
+final class NotWritableException extends RuntimeException implements ExceptionInterface
 {
 }

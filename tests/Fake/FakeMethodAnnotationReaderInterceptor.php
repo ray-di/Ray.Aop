@@ -13,6 +13,7 @@ class FakeMethodAnnotationReaderInterceptor implements MethodInterceptor
     public static $classAnnotations;
     public static $classAnnotation;
     public static $methodAnnotations;
+    /** @var array<object>|null */
     public static $methodAnnotation;
 
     public function invoke(MethodInvocation $invocation)

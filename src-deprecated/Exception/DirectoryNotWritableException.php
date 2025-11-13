@@ -6,6 +6,7 @@ namespace Ray\ServiceLocator\Exception;
 
 use RuntimeException;
 
+/** @deprecated */
 final class DirectoryNotWritableException extends RuntimeException
 {
 }

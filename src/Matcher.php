@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Override;
 use Ray\Aop\Exception\InvalidAnnotationException;
 use Ray\Aop\Exception\InvalidArgumentException;
 
 use function class_exists;
+use function func_get_args;
 
-class Matcher implements MatcherInterface
+final class Matcher implements MatcherInterface
 {
     /**
      * {@inheritDoc}
      *
      * @psalm-mutation-free
      */
+    #[Override]
     public function any()
     {
         return new BuiltinMatcher(__FUNCTION__, []);
@@ -24,6 +27,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function annotatedWith($annotationName): AbstractMatcher
     {
         if (! class_exists($annotationName)) {
@@ -36,6 +40,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function subclassesOf($superClass): AbstractMatcher
     {
         if (! class_exists($superClass)) {
@@ -50,6 +55,7 @@ class Matcher implements MatcherInterface
      *
      * @psalm-mutation-free
      */
+    #[Override]
     public function startsWith($prefix): AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, [$prefix]);
@@ -58,17 +64,19 @@ class Matcher implements MatcherInterface
     // @codingStandardsIgnoreStart
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB) : AbstractMatcher
+    #[Override]
+    public function logicalOr(AbstractMatcher $matcherA, AbstractMatcher $matcherB): AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, func_get_args());
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB) : AbstractMatcher
+    #[Override]
+    public function logicalAnd(AbstractMatcher $matcherA, AbstractMatcher $matcherB): AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, func_get_args());
     }
@@ -78,6 +86,7 @@ class Matcher implements MatcherInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function logicalNot(AbstractMatcher $matcher): AbstractMatcher
     {
         return new BuiltinMatcher(__FUNCTION__, [$matcher]);

@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use Generator;
 use IteratorAggregate;
+use Override;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
@@ -15,13 +16,13 @@ use function class_exists;
 use function file_get_contents;
 use function preg_match;
 use function preg_replace;
+use function str_contains;
 use function str_replace;
-use function strpos;
 use function strstr;
 use function trim;
 
 /** @implements IteratorAggregate<class-string> */
-final class ClassList implements IteratorAggregate
+final readonly class ClassList implements IteratorAggregate
 {
     private const MULTI_LINE_COMMENT_PATTERN = '/\/\*.*?\*\//s';
     private const SINGLE_LINE_COMMENT_PATTERN = '/\/\/.*$/m';
@@ -32,14 +33,14 @@ final class ClassList implements IteratorAggregate
     /**
      * Extracts the Fully Qualified Class Name (FQCN) from a PHP file.
      */
-    public static function getClassName(string $file): ?string
+    public static function getClassName(string $file): string|null
     {
         $content = file_get_contents($file);
         if ($content === false) {
             return null; // @codeCoverageIgnore
         }
 
-        if (strpos($content, '<?php') !== false) {
+        if (str_contains($content, '<?php')) {
             $content = strstr($content, '<?php');
         }
 
@@ -67,15 +68,12 @@ final class ClassList implements IteratorAggregate
         return null;
     }
 
-    /** @var string */
-    private $directory;
-
-    public function __construct(string $directory)
+    public function __construct(private string $directory)
     {
-        $this->directory = $directory;
     }
 
     /** @return Generator<class-string> */
+    #[Override]
     public function getIterator(): Generator
     {
         $files = new RegexIterator(

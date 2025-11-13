@@ -25,6 +25,9 @@
 
 /**
  * Minimal cache
+ *
+ * @deprecated Use your own caching implementation.
+ * @psalm-suppress DeprecatedClass
  */
 final class Cache
 {
@@ -57,8 +60,11 @@ final class Cache
             return $value;
         }
 
-        /** @psalm-suppress MixedAssignment, MixedArgument, MixedReturnStatement */
-        return unserialize(require $filename); // @phpstan-ignore-line
+        /**
+         * @psalm-suppress MixedAssignment, MixedArgument, MixedReturnStatement
+         * @phpstan-ignore-next-line return.type, argument.type
+         */
+        return unserialize(require $filename);
     }
 
     private function getFilename(string $id): string

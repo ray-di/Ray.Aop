@@ -12,7 +12,6 @@ use Ray\Aop\Matcher\AnyMatcher;
 use Ray\Aop\Matcher\StartsWithMatcher;
 
 use function dirname;
-use function get_class;
 
 class AspectTest extends TestCase
 {
@@ -43,7 +42,7 @@ class AspectTest extends TestCase
             [new FakeMyInterceptor()]
         );
         $myClass = $this->aspect->newInstance(FakeNonFinalClass::class);
-        $this->assertNotSame(get_class($myClass), FakeNonFinalClass::class);
+        $this->assertNotSame($myClass::class, FakeNonFinalClass::class);
         $result = $myClass->myMethod();
         // the original method is intercepted
         $this->assertEquals('intercepted original', $result);
@@ -72,7 +71,7 @@ class AspectTest extends TestCase
         // here we are testing the interception!
         $myClass = new FakePeclClass();
         $result = $myClass->myMethod();
-        $this->assertSame(get_class($myClass), FakePeclClass::class);
+        $this->assertSame($myClass::class, FakePeclClass::class);
         // the original method is intercepted
         $this->assertEquals('intercepted original', $result);
     }

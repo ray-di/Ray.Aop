@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use Override;
+
 use function array_key_exists;
 use function array_merge;
 use function serialize;
@@ -23,13 +25,8 @@ final class Bind implements BindInterface
      *
      * @var MethodBindings
      */
-    private $bindings = [];
-
-    /**
-     * @var MethodMatch
-     * @readonly
-     */
-    private $methodMatch;
+    private array $bindings = [];
+    private readonly MethodMatch $methodMatch;
 
     public function __construct()
     {
@@ -48,6 +45,7 @@ final class Bind implements BindInterface
      * @param class-string $class     Target class
      * @param Pointcuts    $pointcuts List of pointcuts
      */
+    #[Override]
     public function bind(string $class, array $pointcuts): BindInterface
     {
         $pointcuts = $this->getAnnotationPointcuts($pointcuts);
@@ -73,6 +71,7 @@ final class Bind implements BindInterface
      * @param MethodName         $method       Method name
      * @param MethodInterceptors $interceptors List of interceptors
      */
+    #[Override]
     public function bindInterceptors(string $method, array $interceptors): BindInterface
     {
         $this->bindings[$method] = ! array_key_exists($method, $this->bindings)
@@ -89,6 +88,7 @@ final class Bind implements BindInterface
      *
      * @psalm-mutation-free
      */
+    #[Override]
     public function getBindings(): array
     {
         return $this->bindings;

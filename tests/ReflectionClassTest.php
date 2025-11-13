@@ -15,7 +15,7 @@ class ReflectionClassTest extends TestCase
 
     public function setUp(): void
     {
-        $this->class = new ReflectionClass(FakeClassTartget::class);
+        $this->class = new ReflectionClass(FakeClassTartget::class); // @phpstan-ignore-line
     }
 
     public function testGetAnnottaions(): void

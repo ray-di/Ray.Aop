@@ -17,7 +17,6 @@ use function tempnam;
 use function unlink;
 
 use const PHP_EOL;
-use const PHP_VERSION_ID;
 
 class AopCodeTest extends TestCase
 {
@@ -26,7 +25,7 @@ class AopCodeTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->codeGen = new AopCode(new MethodSignatureString(PHP_VERSION_ID));
+        $this->codeGen = new AopCode(new MethodSignatureString());
     }
 
     public function testTypeDeclarations(): void

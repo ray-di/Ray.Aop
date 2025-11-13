@@ -8,9 +8,7 @@ use const PHP_EOL;
 
 class AnnotationRealBillingService implements BillingService
 {
-    /**
-     * @WeekendBlock
-     */
+    #[WeekendBlock]
     public function chargeOrder(): string
     {
         return 'Charged.' . PHP_EOL;

@@ -11,7 +11,6 @@ use Traversable;
 
 class FakeTypedMock
 {
-    /** @FakeMarker3  */
     #[FakeMarker2]
     #[FakeMarker3]
     public function passIterator(ArrayIterator $iterator): Traversable

@@ -4,47 +4,47 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Ray\ServiceLocator\ServiceLocator;
+use Override;
 use ReturnTypeWillChange;
 
+use function array_map;
 use function get_class_methods;
 
 /**
  * @template T of object
  * @template-extends \ReflectionClass<T>
  */
-class ReflectionClass extends \ReflectionClass implements Reader
+final class ReflectionClass extends \ReflectionClass
 {
     /**
-     * {@inheritDoc}
+     * Get all attributes as instantiated objects
      *
-     * @psalm-suppress NoInterfaceProperties
+     * @return list<object>
      */
     public function getAnnotations(): array
     {
-        /** @var list<object> $annotations */
-        $annotations = ServiceLocator::getReader()->getClassAnnotations(new \ReflectionClass($this->name));
+        $attributes = $this->getAttributes();
 
-        return $annotations;
+        return array_map(
+            static fn ($attribute) => $attribute->newInstance(),
+            $attributes
+        );
     }
 
     /**
+     * Get a specific attribute by name
+     *
      * @param class-string<TAnnotation> $annotationName
      *
      * @return TAnnotation|null
      *
      * @template TAnnotation of object
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     * @psalm-external-mutation-free
      */
-    public function getAnnotation(string $annotationName)
+    public function getAnnotation(string $annotationName): object|null
     {
-        $annotations = $this->getAnnotations();
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof $annotationName) {
-                return $annotation;
-            }
+        $attributes = $this->getAttributes($annotationName);
+        if (isset($attributes[0])) {
+            return $attributes[0]->newInstance();
         }
 
         return null;
@@ -57,6 +57,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
      *
      * @psalm-external-mutation-free
      */
+    #[Override]
     public function getMethods($filter = null): array
     {
         unset($filter);
@@ -69,11 +70,9 @@ class ReflectionClass extends \ReflectionClass implements Reader
         return $methods;
     }
 
-    /**
-     * @psalm-suppress MethodSignatureMismatch
-     * @psalm-external-mutation-free
-     */
-    public function getConstructor(): ?\ReflectionMethod
+    /** @psalm-external-mutation-free */
+    #[Override]
+    public function getConstructor(): \ReflectionMethod|null
     {
         $parent = parent::getConstructor();
         if ($parent === null) {
@@ -88,6 +87,7 @@ class ReflectionClass extends \ReflectionClass implements Reader
      *
      * @psalm-external-mutation-free
      */
+    #[Override]
     #[ReturnTypeWillChange]
     public function getParentClass()
     {

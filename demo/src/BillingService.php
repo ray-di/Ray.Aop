@@ -6,8 +6,6 @@ namespace Ray\Aop\Demo;
 
 interface BillingService
 {
-    /**
-     * @WeekendBlock
-     */
+    #[WeekendBlock]
     public function chargeOrder();
 }

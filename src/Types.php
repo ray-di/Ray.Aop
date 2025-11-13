@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use ArrayObject;
+use ReflectionClass;
 
 /**
  * Type definitions for Ray.Aop
  *
  * @phpcs:disable SlevomatCodingStandard.Commenting.DocCommentSpacing
+ * @psalm-suppress UnusedClass
  * @template T of object
  *
  * Domain Types
@@ -46,6 +48,7 @@ use ArrayObject;
  * @psalm-type ClassBoundInterceptors = array<ClassName, MethodBoundInterceptors>
  *
  * PointCut Types
+ * @psalm-type PointcutInterceptors = array<MethodInterceptor|class-string<MethodInterceptor>>
  * @psalm-type Pointcuts = array<Pointcut>
  * @phpcs:enable
  */

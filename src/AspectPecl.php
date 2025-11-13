@@ -21,6 +21,7 @@ use function method_intercept;
  * @psalm-import-type ClassBoundInterceptors from Types
  * @psalm-import-type MatcherConfigList from Types
  * @psalm-import-type MethodInterceptors from Types
+ * @psalm-import-type ScriptDir from Types
  * @codeCoverageIgnore
  */
 final class AspectPecl
@@ -35,7 +36,7 @@ final class AspectPecl
     /**
      * Weave aspects into classes in the specified directory
      *
-     * @param non-empty-string  $classDir Target class directory
+     * @param ScriptDir         $classDir Target class directory
      * @param MatcherConfigList $matchers List of matchers and interceptors
      *
      * @throws RuntimeException When Ray.Aop extension is not loaded.
@@ -104,7 +105,6 @@ final class AspectPecl
         foreach ($boundInterceptors as $className => $methods) {
             $methodNames = array_keys($methods);
             foreach ($methodNames as $methodName) {
-                assert($dispatcher instanceof MethodInterceptorInterface);
                 method_intercept($className, $methodName, $dispatcher);
             }
         }

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-/**
- * @FakeResource
- * @FakeClassAnnotation
- */
+#[FakeResource]
+#[FakeClassAnnotation]
 class FakePhp7Class
 {
     public function run(string $a, int $b, float $c, bool $d): array

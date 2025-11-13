@@ -6,6 +6,6 @@ namespace Ray\Aop\Exception;
 
 use LogicException;
 
-class CompilationFailedException extends LogicException
+final class CompilationFailedException extends LogicException
 {
 }

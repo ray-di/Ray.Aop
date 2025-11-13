@@ -221,27 +221,26 @@ $class = $invocation->getMethod()->getDeclaringClass();
 * `$class->->getAnnotations()`    - Get class attributes/annotations
 * `$class->->getAnnotation($name)`     - Get class attributes/annotation
 
-## Annotation/Attribute
+## Attributes
 
-Ray.Aop can be used either with [doctrine/annotation](https://github.com/doctrine/annotations) in PHP 7/8 or with an [Attributes](https://www.php.net/manual/en/language.attributes.overview.php) in PHP8.
+Ray.Aop uses PHP 8 [Attributes](https://www.php.net/manual/en/language.attributes.overview.php) for defining aspects. Doctrine annotations are no longer supported as of v2.15.
 
 ## AOP Alliance
 
 The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html).
+
+## Requirements
+
+- PHP 8.2 or higher
+- Composer
 
 ## Installation
 
 The recommended way to install Ray.Aop is through [Composer](https://github.com/composer/composer).
 
 ```bash
-# Add Ray.Aop as a dependency
+# Install Ray.Aop
 $ composer require ray/aop ^2.0
-```
-
-### PHP8 attributes only (recommended)
-
-```php
-SevericeLocator::setReader(new AttributeReader);`
 ```
 
 ## Integrated DI framework
@@ -255,4 +254,3 @@ Ray.Aop follows semantic versioning and ensures backward compatibility. Released
 ---
 
 * Note: This documentation of the part is taken from [Guice/AOP](https://github.com/google/guice/wiki/AOP).
-  z1

@@ -5,21 +5,19 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use ArrayIterator;
-use Doctrine\Common\Annotations\AnnotationReader;
 use FakeGlobalEmptyNamespaced;
 use FakeGlobalNamespaced;
-use LogicException;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker3;
 use Ray\Aop\Exception\NotWritableException;
 use ReflectionClass;
-use ReflectionMethod;
 
 use function array_shift;
 use function assert;
 use function class_exists;
 use function file_get_contents;
+use function is_array;
 use function passthru;
 use function serialize;
 use function unserialize;
@@ -46,7 +44,6 @@ class CompilerTest extends TestCase
     {
         $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
         $this->assertInstanceOf(FakeMock::class, $mock);
-        assert($mock instanceof FakeMock);
 
         return $mock;
     }
@@ -57,7 +54,6 @@ class CompilerTest extends TestCase
         $class2 = $this->compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class1));
         $this->assertSame($class1, $class2);
-        assert(class_exists($class1));
         $class1File = (new ReflectionClass($class1))->getFileName();
         $class2File = (new ReflectionClass($class1))->getFileName();
         $this->assertSame($class1File, $class2File);
@@ -113,7 +109,6 @@ class CompilerTest extends TestCase
     public function testParentMethodIntercept(): void
     {
         $mock = $this->compiler->newInstance(FakeMockGrandChild::class, [], $this->bind);
-        assert($mock instanceof FakeMockGrandChild);
         $result = $mock->returnSame(1);
         $this->assertSame(2, $result);
     }
@@ -122,7 +117,6 @@ class CompilerTest extends TestCase
     {
         $bind = (new Bind())->bindInterceptors('passIterator', [new NullInterceptor()]);
         $mock = $this->compiler->newInstance(FakeTypedMockGrandChild::class, [], $bind);
-        assert($mock instanceof FakeTypedMockGrandChild);
         $result = $mock->passIterator(new ArrayIterator());
         $this->assertInstanceOf(ArrayIterator::class, $result);
     }
@@ -130,7 +124,6 @@ class CompilerTest extends TestCase
     public function testParentOfParentMethodIntercept(): void
     {
         $mock = $this->compiler->newInstance(FakeMockChildChild::class, [], $this->bind);
-        assert($mock instanceof FakeMockChild);
         $result = $mock->returnSame(1);
         $this->assertSame(2, $result);
     }
@@ -138,9 +131,8 @@ class CompilerTest extends TestCase
     public function testGetPrivateVal(): void
     {
         $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
-        assert($mock instanceof FakeMock);
         $val = $mock->getPrivateVal();
-        $this->assertSame($val, 1);
+        $this->assertSame(1, $val);
     }
 
     public function testCallAbortProceedInterceptorTwice(): void
@@ -149,7 +141,6 @@ class CompilerTest extends TestCase
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeAbortProceedInterceptor()]);
         $this->bind->bind(FakeWeaved::class, [$pointcut]);
         $mock = $this->compiler->newInstance(FakeMock::class, [], $this->bind);
-        assert($mock instanceof FakeMock);
         $this->assertSame(40, $mock->returnSame(1));
         $this->assertSame(40, $mock->returnSame(1));
     }
@@ -189,18 +180,17 @@ class CompilerTest extends TestCase
     public function testSerialize(): void
     {
         $compiler = unserialize(serialize($this->compiler));
-        assert($compiler instanceof Compiler);
+        $this->assertInstanceOf(Compiler::class, $compiler);
         $class = $compiler->compile(FakeMock::class, $this->bind);
         $this->assertTrue(class_exists($class));
     }
 
     public function testIncludeCompilerFile(): void
     {
-        // new aop class file saved.
         passthru('php ' . __DIR__ . '/script/compile.php');
-        // include class file.
-        $class = require __DIR__ . '/script/compile.php';
-        $isWeaved = (new ReflectionClass($class))->implementsInterface(WeavedInterface::class);
+        /** @var class-string $mock */
+        $mock = require __DIR__ . '/script/compile.php';
+        $isWeaved = (new ReflectionClass($mock))->implementsInterface(WeavedInterface::class);
         $this->assertTrue($isWeaved);
     }
 
@@ -213,21 +203,23 @@ class CompilerTest extends TestCase
     public function testAnnotation(): void
     {
         $class = $this->compiler->compile(FakeAnnotateClass::class, $this->bind);
-        $annotations = (new AnnotationReader())->getMethodAnnotations(new ReflectionMethod($class, 'getDouble'));
+        /** @var object[] $annotations */
+        $annotations = (new ReflectionMethod($class, 'getDouble'))->getAnnotations();
         $this->assertCount(4, $annotations);
     }
 
     public function testNoNamespace(): void
     {
         $class = $this->compiler->compile(FakeAnnotateClassNoName::class, $this->bind);
-        $annotations = (new AnnotationReader())->getMethodAnnotations(new ReflectionMethod($class, 'getDouble'));
+        /** @var object[] $annotations */
+        $annotations = (new ReflectionMethod($class, 'getDouble'))->getAnnotations();
         $this->assertCount(3, $annotations);
     }
 
     public function testArrayTypehintedAndCallable(): void
     {
         $class = $this->compiler->compile(FakeArrayTypehinted::class, $this->bind);
-        assert(class_exists($class));
+        $this->assertTrue(class_exists($class));
         $file = (string) file_get_contents((string) (new ReflectionClass($class))->getFileName());
         $expected = 'public function returnSame(array $arrayParam, callable $callableParam)';
         $this->assertStringContainsString($expected, $file);
@@ -256,10 +248,11 @@ class CompilerTest extends TestCase
         $bind = (new Bind())->bindInterceptors('getDouble', [new FakeMethodAnnotationReaderInterceptor()]);
         $compiler = new Compiler(__DIR__ . '/tmp');
         $mock = $compiler->newInstance(FakeAnnotateClass::class, [], $bind);
-        assert($mock instanceof FakeAnnotateClass);
+        $this->assertInstanceOf(FakeAnnotateClass::class, $mock);
         $mock->getDouble(1);
         $methodAnnotation = FakeMethodAnnotationReaderInterceptor::$methodAnnotation;
         $this->assertInstanceOf(FakeMarker::class, $methodAnnotation);
+        /** @var object[] $methodAnnotations */
         $methodAnnotations = FakeMethodAnnotationReaderInterceptor::$methodAnnotations;
         $this->assertCount(4, $methodAnnotations);
         $annotation = array_shift($methodAnnotations);
@@ -272,6 +265,7 @@ class CompilerTest extends TestCase
         $classAnnotation = FakeMethodAnnotationReaderInterceptor::$classAnnotation;
         $classAnnotations = FakeMethodAnnotationReaderInterceptor::$classAnnotations;
         $this->assertInstanceOf(FakeClassAnnotation::class, $classAnnotation);
+        /** @var object[] $classAnnotations */
         $this->assertCount(2, $classAnnotations);
         $annotation = array_shift($classAnnotations);
         $this->assertInstanceOf(FakeResource::class, $annotation);
@@ -282,12 +276,10 @@ class CompilerTest extends TestCase
         $bind = (new Bind())->bindInterceptors('returnSame', [new FakeMethodAnnotationReaderInterceptor()]);
         $compiler = new Compiler(__DIR__ . '/tmp');
         $mock = $compiler->newInstance(FakeMock::class, [], $bind);
-        if (! $mock instanceof FakeMock) {
-            throw new LogicException();
-        }
-
+        $this->assertInstanceOf(FakeMock::class, $mock);
         $mock->returnSame(1);
         $this->assertNull(FakeMethodAnnotationReaderInterceptor::$methodAnnotation);
+        assert(is_array(FakeMethodAnnotationReaderInterceptor::$methodAnnotations));
         $this->assertCount(0, FakeMethodAnnotationReaderInterceptor::$methodAnnotations);
     }
 
@@ -296,7 +288,7 @@ class CompilerTest extends TestCase
         $bind = (new Bind())->bindInterceptors('returnSame', [new FakeChangeArgsInterceptor()]);
         $compiler = new Compiler(__DIR__ . '/tmp');
         $mock = $compiler->newInstance(FakeMock::class, [], $bind);
-        assert($mock instanceof FakeMock);
+        $this->assertInstanceOf(FakeMock::class, $mock);
         $mock->returnSame(1);
         $this->assertSame('changed', $mock->returnSame(1));
     }
@@ -304,7 +296,6 @@ class CompilerTest extends TestCase
     public function testUnnamespacedClass(): void
     {
         $mock = $this->compiler->newInstance(FakeGlobalNamespaced::class, [], $this->bind);
-        assert($mock instanceof FakeGlobalNamespaced);
         $this->assertInstanceOf(FakeGlobalNamespaced::class, $mock);
         $this->assertSame(2, $mock->returnSame(1));
     }
@@ -312,7 +303,6 @@ class CompilerTest extends TestCase
     public function testEmptyNamespaceClass(): void
     {
         $mock = $this->compiler->newInstance(FakeGlobalEmptyNamespaced::class, [], $this->bind);
-        assert($mock instanceof FakeGlobalEmptyNamespaced);
         $this->assertInstanceOf(FakeGlobalEmptyNamespaced::class, $mock);
         $this->assertSame(2, $mock->returnSame(1));
     }
@@ -322,7 +312,7 @@ class CompilerTest extends TestCase
         $bind = (new Bind())->bindInterceptors('returnTypeVoid', [new FakeChangeArgsInterceptor()]);
         $compiler = new Compiler(__DIR__ . '/tmp');
         $mock = $compiler->newInstance(FakePhp71NullableClass::class, [], $bind);
-        assert($mock instanceof FakePhp71NullableClass);
+        $this->assertInstanceOf(FakePhp71NullableClass::class, $mock);
         $mock->returnTypeVoid();
         $this->assertTrue($mock->returnTypeVoidCalled);
     }

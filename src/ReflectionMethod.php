@@ -4,75 +4,55 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Ray\ServiceLocator\ServiceLocator;
+use Override;
 
-use function assert;
-use function class_exists;
-use function is_object;
+use function array_map;
 
-final class ReflectionMethod extends \ReflectionMethod implements Reader
+final class ReflectionMethod extends \ReflectionMethod
 {
-    /** @var ?WeavedInterface */
-    private $object;
-
-    /**
-     * Set dependencies
-     */
-    public function setObject(WeavedInterface $object): void
-    {
-        $this->object = $object;
-    }
-
     /**
      * @return ReflectionClass<object>
      *
      * @psalm-external-mutation-free
-     * @psalm-suppress MethodSignatureMismatch
      */
+    #[Override]
     public function getDeclaringClass(): ReflectionClass
     {
-        if (! is_object($this->object)) {
-            return new ReflectionClass($this->class);
-        }
+        $parent = parent::getDeclaringClass();
 
-        $parencClass = (new \ReflectionClass($this->object))->getParentClass();
-        assert($parencClass instanceof \ReflectionClass);
-        $originalClass = $parencClass->name;
-
-        return new ReflectionClass($originalClass);
+        return new ReflectionClass($parent->getName());
     }
 
     /**
-     * {@inheritDoc}
+     * Get all attributes as instantiated objects
      *
-     * @psalm-suppress NoInterfaceProperties
+     * @return list<object>
      */
     public function getAnnotations(): array
     {
-        assert(class_exists($this->class));
-        /** @var list<object> $annotations */
-        $annotations = ServiceLocator::getReader()->getMethodAnnotations(new \ReflectionMethod($this->class, $this->name));
+        $attributes = $this->getAttributes();
 
-        return $annotations;
+        return array_map(
+            static fn ($attribute) => $attribute->newInstance(),
+            $attributes
+        );
     }
 
     /**
+     * Get a specific attribute by name
+     *
      * @param class-string<T> $annotationName
+     * @param int             $flags          Optional flags (e.g., ReflectionAttribute::IS_INSTANCEOF)
      *
      * @return T|null
      *
      * @template T of object
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     * @psalm-external-mutation-free
      */
-    public function getAnnotation(string $annotationName)
+    public function getAnnotation(string $annotationName, int $flags = 0): object|null
     {
-        $annotations = $this->getAnnotations();
-        foreach ($annotations as $annotation) {
-            if ($annotation instanceof $annotationName) {
-                return $annotation;
-            }
+        $attributes = $this->getAttributes($annotationName, $flags);
+        if (isset($attributes[0])) {
+            return $attributes[0]->newInstance();
         }
 
         return null;

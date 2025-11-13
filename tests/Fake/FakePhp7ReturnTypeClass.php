@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-/**
- * @FakeResource
- * @FakeClassAnnotation
- */
+#[FakeResource]
+#[FakeClassAnnotation]
 class FakePhp7ReturnTypeClass
 {
     public function returnTypeArray(): array
