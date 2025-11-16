@@ -102,8 +102,6 @@ $aspect = new Aspect('/path/to/tmp/dir');
 
 If not specified, the system's default temporary directory will be used.
 
-This concludes the basic usage of Ray.Aop. For more detailed information and advanced usage, please refer to the full documentation.
-
 ## Own matcher
 
 You can have your own matcher.
