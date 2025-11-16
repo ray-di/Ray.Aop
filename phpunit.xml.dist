@@ -10,7 +10,6 @@
       <directory suffix=".php">src</directory>
     </include>
     <exclude>
-      <file>src/PeclDispatcher.php</file>
       <file>src/ReadOnlyInterceptTrait.php</file>
     </exclude>
   </source>
