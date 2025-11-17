@@ -49,7 +49,6 @@ final class Compiler implements CompilerInterface
      * @return T
      *
      * @template T of object
-     * @psalm-immutable
      */
     #[Override]
     public function newInstance(string $class, array $args, BindInterface $bind): object
