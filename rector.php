@@ -15,8 +15,7 @@ return RectorConfig::configure()
         __DIR__ . '/src/InterceptTrait.php',
         __DIR__ . '/src/ReadOnlyInterceptTrait.php',
     ])
-    // uncomment to reach your current PHP version
-     ->withPhpSets()
+    ->withPhpSets()
     ->withTypeCoverageLevel(1)
     ->withDeadCodeLevel(1)
     ->withCodeQualityLevel(1);
