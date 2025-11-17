@@ -44,11 +44,7 @@ final class MethodSignatureString
         return implode(' ', $methodSignatureParts);
     }
 
-    /**
-     * @return list<string>
-     *
-     * @psalm-pure
-     */
+    /** @return list<string> */
     private function getDocComment(ReflectionMethod $method): array
     {
         $docComment = $method->getDocComment();
