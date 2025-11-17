@@ -75,20 +75,6 @@ final class Aspect
     }
 
     /**
-     * Weave aspects into classes in the specified directory
-     *
-     * @param ScriptDir $classDir Target class directory
-     *
-     * @throws RuntimeException When Ray.Aop extension is not loaded.
-     *
-     * @codeCoverageIgnore
-     */
-    public function weave(string $classDir): void
-    {
-        (new AspectPecl())->weave($classDir, $this->matchers);
-    }
-
-    /**
      * Create new instance with woven aspects
      *
      * @param class-string<T> $className Target class name
