@@ -11,22 +11,11 @@ use function filemtime;
 
 /**
  * Fully qualified name including postfix
- *
- * @psalm-immutable
  */
 final class AopPostfixClassName
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    public $fqn;
-
-    /**
-     * @var string
-     * @readonly
-     */
-    public $postFix;
+    public readonly string $fqn;
+    public readonly string $postFix;
 
     /** @param class-string $class */
     public function __construct(string $class, string $bindings, string $classDir)

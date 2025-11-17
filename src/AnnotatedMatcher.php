@@ -15,11 +15,8 @@ use ReflectionMethod;
  */
 final class AnnotatedMatcher extends BuiltinMatcher
 {
-    /**
-     * @var class-string
-     * @readonly
-     */
-    public $annotation;
+    /** @var class-string */
+    public readonly string $annotation;
 
     /**
      * @param MatcherName            $matcherName

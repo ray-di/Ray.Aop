@@ -24,17 +24,11 @@ use function is_callable;
  */
 final class ReflectiveMethodInvocation implements MethodInvocation
 {
-    /**
-     * @var ArgumentList
-     * @readonly
-     */
-    private $arguments;
+    /** @var ArgumentList */
+    private readonly ArrayObject $arguments;
 
-    /**
-     * @var callable(mixed...): mixed
-     * @readonly
-     */
-    private $callable;
+    /** @var callable(mixed...): mixed */
+    private readonly mixed $callable;
     private int $currentInterceptorIndex = 0;
 
     /**

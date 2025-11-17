@@ -32,20 +32,12 @@ use function str_replace;
  */
 final class Compiler implements CompilerInterface
 {
-    /**
-     * @var ScriptDir
-     * @readonly
-     */
-    public $classDir;
-
     /** @param ScriptDir $classDir */
-    public function __construct(string $classDir)
+    public function __construct(public readonly string $classDir)
     {
         if (! is_writable($classDir)) {
             throw new NotWritableException($classDir);
         }
-
-        $this->classDir = $classDir;
     }
 
     /**
@@ -57,7 +49,6 @@ final class Compiler implements CompilerInterface
      * @return T
      *
      * @template T of object
-     * @psalm-immutable
      */
     #[Override]
     public function newInstance(string $class, array $args, BindInterface $bind): object
