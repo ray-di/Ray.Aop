@@ -12,8 +12,7 @@ final class InterceptTraitState
 
     /** @param MethodBindings $bindings */
     public function __construct(
-        /** @readonly */
-        public array $bindings,
+        public readonly array $bindings,
     ) {
     }
 }
