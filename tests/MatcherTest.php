@@ -41,4 +41,19 @@ class MatcherTest extends TestCase
 
         (new Matcher())->subclassesOf('__invalid_class');
     }
+
+    /** @throws ReflectionException */
+    public function testSubclassesOfPassesArguments(): void
+    {
+        $matcher = (new Matcher())->subclassesOf(FakeClass::class);
+        $this->assertSame([FakeClass::class], $matcher->getArguments());
+    }
+
+    /** @throws ReflectionException */
+    public function testLogicalNotPassesArguments(): void
+    {
+        $innerMatcher = new FakeMatcher();
+        $matcher = (new Matcher())->logicalNot($innerMatcher);
+        $this->assertSame([$innerMatcher], $matcher->getArguments());
+    }
 }

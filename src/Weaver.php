@@ -43,7 +43,7 @@ final class Weaver
         /** @var T $instance */
         $instance = (new ReflectionClass($aopClass))->newInstanceArgs($args);
         if (! $instance instanceof WeavedInterface) {
-            return $instance;
+            return $instance; // @codeCoverageIgnore
         }
 
         $instance->_setBindings($this->bind->getBindings());
