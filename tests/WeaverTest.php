@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
@@ -33,8 +32,6 @@ class WeaverTest extends TestCase
         $this->assertTrue(class_exists($className, false));
     }
 
-    #[CoversMethod(Weaver::class, 'loadClass')]
-    #[CoversMethod(Weaver::class, 'weave')]
     public function testWeaveLoadsCompiledAopFile(): void
     {
         $matcher = new Matcher();

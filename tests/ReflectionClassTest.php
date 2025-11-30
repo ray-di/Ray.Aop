@@ -10,8 +10,8 @@ use function count;
 
 class ReflectionClassTest extends TestCase
 {
-    /** @var ReflectionClass<object> */
-    private $class;
+    /** @var ReflectionClass<FakeClassTarget> */
+    private ReflectionClass $class;
 
     public function setUp(): void
     {
