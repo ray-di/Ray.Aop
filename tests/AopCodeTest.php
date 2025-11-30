@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
@@ -20,15 +21,14 @@ use const PHP_EOL;
 
 class AopCodeTest extends TestCase
 {
-    /** @var AopCode */
-    private $codeGen;
+    private AopCode $codeGen;
 
     protected function setUp(): void
     {
         $this->codeGen = new AopCode(new MethodSignatureString());
     }
 
-    public function testTypeDeclarations(): void
+    public function testTypeDeclarationsArePreserved(): void
     {
         $bind = new Bind();
         $bind->bindInterceptors('run', []);
@@ -37,7 +37,7 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString($expected, $code);
     }
 
-    public function testReturnType(): void
+    public function testReturnTypeIsPreserved(): void
     {
         $bind = new Bind();
         $bind->bindInterceptors('returnTypeArray', []);
@@ -46,8 +46,8 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString($expected, $code);
     }
 
-    /** @requires PHP 8.1 */
-    public function testVariousMethodSignature(): void
+    #[RequiresPhp('8.1')]
+    public function testVariousMethodSignaturesInPhp81(): void
     {
         $bind = new Bind();
         for ($i = 1; $i <= 25; $i++) {
@@ -130,8 +130,8 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString("public function method25(#[\Ray\Aop\Attribute\FakeAttr1()] \$a, #[\Ray\Aop\Attribute\FakeAttr1()] #[\Ray\Aop\Attribute\FakeAttr2(name: 'famicon', age: 40)] \$b): void", $code);
     }
 
-    /** @requires PHP 8.2 */
-    public function testVariousMethodSignaturePhp82(): void
+    #[RequiresPhp('8.2')]
+    public function testVariousMethodSignaturesInPhp82(): void
     {
         $bind = new Bind();
         for ($i = 100; $i <= 106; $i++) {
@@ -153,7 +153,7 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString('public function method106(): (\Ray\Aop\FakeNullInterface&\Ray\Aop\FakeNullInterface1)|string', $code);
     }
 
-    public function testInvalidSourceClass(): void
+    public function testGeneratingCodeForInvalidSourceClassThrowsException(): void
     {
         $this->expectException(InvalidSourceClassException::class);
         $this->codeGen->generate(new ReflectionClass(stdClass::class), new Bind(), '_test');

@@ -12,10 +12,8 @@ use ReflectionMethod;
 class ReflectiveMethodInvocationTest extends TestCase
 {
     /** @var ReflectiveMethodInvocation<FakeClass> */
-    protected $invocation;
-
-    /** @var FakeClass */
-    protected $fake;
+    protected ReflectiveMethodInvocation $invocation;
+    protected FakeClass $fake;
 
     protected function setUp(): void
     {
@@ -25,45 +23,45 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->invocation = new ReflectiveMethodInvocation($this->fake, 'add', [1]);
     }
 
-    public function testGetMethod(): void
+    public function testGetMethodReturnsReflectionMethod(): void
     {
         $methodReflection = $this->invocation->getMethod();
         $this->assertInstanceOf(ReflectionMethod::class, $methodReflection);
     }
 
-    public function testGetMethodMethodName(): void
+    public function testGetMethodReturnsCorrectMethodInfo(): void
     {
         $methodReflection = $this->invocation->getMethod();
         $this->assertSame(FakeClass::class, $methodReflection->class);
         $this->assertSame('add', $methodReflection->name);
     }
 
-    public function testGetArguments(): void
+    public function testGetArgumentsReturnsInvocationArguments(): void
     {
         $args = $this->invocation->getArguments();
         $this->assertSame((array) $args, [1]);
     }
 
-    public function testProceed(): void
+    public function testProceedExecutesMethod(): void
     {
         $this->invocation->proceed();
         $this->assertSame(1, $this->fake->a);
     }
 
-    public function testProceedTwoTimes(): void
+    public function testProceedCanBeCalledMultipleTimes(): void
     {
         $this->invocation->proceed();
         $this->invocation->proceed();
         $this->assertSame(2, $this->fake->a);
     }
 
-    public function testGetThis(): void
+    public function testGetThisReturnsTargetObject(): void
     {
         $actual = $this->invocation->getThis();
         $this->assertSame($this->fake, $actual);
     }
 
-    public function testGetParentMethod(): void
+    public function testGetParentMethodReturnsParentClassMethod(): void
     {
         $fake = new FakeWeavedClass();
         $invocation = new ReflectiveMethodInvocation($fake, 'add', [1]);
@@ -72,7 +70,7 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->assertSame('add', $method->name);
     }
 
-    public function testProceedMultipleInterceptors(): void
+    public function testProceedWithMultipleInterceptorsExecutesAll(): void
     {
         $fake = new FakeWeavedClass();
         $invocation = new ReflectiveMethodInvocation($fake, 'add', [1], [new FakeInterceptor(), new FakeInterceptor()]);
@@ -80,26 +78,26 @@ class ReflectiveMethodInvocationTest extends TestCase
         $this->assertSame(1, $fake->a);
     }
 
-    public function testGetNamedArguments(): void
+    public function testGetNamedArgumentsReturnsArgumentsAsAssociativeArray(): void
     {
         $args = $this->invocation->getNamedArguments();
         $this->assertSame((array) $args, ['n' => 1]);
     }
 
-    public function testGetNamedArgumentsWithDefaultValue(): void
+    public function testGetNamedArgumentsIncludesDefaultValues(): void
     {
         $invocation = new ReflectiveMethodInvocation(new FakeWeavedClass(), 'defaultValue', [1, null], [new FakeInterceptor(), new FakeInterceptor()]);
         $args = $invocation->getNamedArguments();
         $this->assertSame((array) $args, ['a' => 1, 'b' => null]);
     }
 
-    public function testGetAnnotation(): void
+    public function testGetAnnotationReturnsMethodAnnotation(): void
     {
         $fakeMarker = $this->invocation->getMethod()->getAnnotation(FakeMarker::class);
         $this->assertInstanceOf(FakeMarker::class, $fakeMarker);
     }
 
-    public function testGetClassAnnotation(): void
+    public function testGetClassAnnotationReturnsDeclaringClassAnnotation(): void
     {
         $fakeMarker = $this->invocation->getMethod()->getDeclaringClass()->getAnnotation(FakeClassMarker::class);
         $this->assertInstanceOf(FakeClassMarker::class, $fakeMarker);

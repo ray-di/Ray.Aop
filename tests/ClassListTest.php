@@ -11,7 +11,7 @@ use function iterator_to_array;
 
 class ClassListTest extends TestCase
 {
-    public function testGetIterator(): void
+    public function testGetIteratorReturnsAllExistingClasses(): void
     {
         $classList = new ClassList(__DIR__ . '/../src');
         $classes = iterator_to_array($classList->getIterator());

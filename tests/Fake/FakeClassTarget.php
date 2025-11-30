@@ -10,7 +10,7 @@ use Ray\Aop\Annotation\FakeMarker3;
 
 #[FakeResource]
 #[FakeClassAnnotation("item")]
-class FakeClassTartget
+class FakeClassTarget
 {
     #[FakeMarker(1)]
     public function __construct()

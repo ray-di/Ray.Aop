@@ -12,7 +12,7 @@ use ReflectionException;
 class MatcherTest extends TestCase
 {
     /** @throws ReflectionException */
-    public function testReturnBuildInMatcher(): void
+    public function testAllMatcherMethodsReturnBuiltinMatcher(): void
     {
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher())->any());
         $this->assertInstanceOf(BuiltinMatcher::class, (new Matcher())->annotatedWith(FakeResource::class));
@@ -27,7 +27,7 @@ class MatcherTest extends TestCase
     }
 
     /** @throws ReflectionException */
-    public function testValidationForAnnotatedWith(): void
+    public function testAnnotatedWithThrowsExceptionForInvalidClass(): void
     {
         $this->expectException(InvalidAnnotationException::class);
 
@@ -35,7 +35,7 @@ class MatcherTest extends TestCase
     }
 
     /** @throws ReflectionException */
-    public function testValidationForSubclassesOf(): void
+    public function testSubclassesOfThrowsExceptionForInvalidClass(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -43,14 +43,14 @@ class MatcherTest extends TestCase
     }
 
     /** @throws ReflectionException */
-    public function testSubclassesOfPassesArguments(): void
+    public function testSubclassesOfPassesArgumentsCorrectly(): void
     {
         $matcher = (new Matcher())->subclassesOf(FakeClass::class);
         $this->assertSame([FakeClass::class], $matcher->getArguments());
     }
 
     /** @throws ReflectionException */
-    public function testLogicalNotPassesArguments(): void
+    public function testLogicalNotPassesArgumentsCorrectly(): void
     {
         $innerMatcher = new FakeMatcher();
         $matcher = (new Matcher())->logicalNot($innerMatcher);

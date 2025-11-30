@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 use function class_exists;
@@ -13,7 +15,7 @@ use function unserialize;
 
 class WeaverTest extends TestCase
 {
-    public function testConstruct(): Weaver
+    public function testConstructorCreatesWeaverInstance(): Weaver
     {
         $matcher = new Matcher();
         $pointcut = new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor()]);
@@ -24,20 +26,16 @@ class WeaverTest extends TestCase
         return $weaver;
     }
 
-    /** @depends testConstruct */
-    public function testWeave(Weaver $weaver): void
+    #[Depends('testConstructorCreatesWeaverInstance')]
+    public function testWeaveCreatesProxyClass(Weaver $weaver): void
     {
         $className = $weaver->weave(FakeWeaverMock::class);
         $this->assertTrue(class_exists($className, false));
     }
 
-    /**
-     * This tests cover compiled aop file loading.
-     *
-     * @covers \Ray\Aop\Weaver::loadClass
-     * @covers \Ray\Aop\Weaver::weave
-     */
-    public function testWeaveLoad(): void
+    #[CoversMethod(Weaver::class, 'loadClass')]
+    #[CoversMethod(Weaver::class, 'weave')]
+    public function testWeaveLoadsCompiledAopFile(): void
     {
         $matcher = new Matcher();
         $pointcut = new Pointcut($matcher->any(), $matcher->any(), []);
@@ -47,8 +45,8 @@ class WeaverTest extends TestCase
         $this->assertTrue(class_exists($className, false));
     }
 
-    /** @depends testConstruct */
-    public function testNewInstance(Weaver $weaver): void
+    #[Depends('testConstructorCreatesWeaverInstance')]
+    public function testNewInstanceCreatesWeavedObject(Weaver $weaver): void
     {
         $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
         $this->assertInstanceOf(FakeWeaverMock::class, $weaved);
@@ -56,8 +54,8 @@ class WeaverTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    /** @depends testConstruct */
-    public function testCachedWeaver(Weaver $weaver): void
+    #[Depends('testConstructorCreatesWeaverInstance')]
+    public function testSerializedWeaverMaintainsFunctionality(Weaver $weaver): void
     {
         $weaver = unserialize(serialize($weaver));
         $this->assertInstanceOf(Weaver::class, $weaver);
@@ -67,7 +65,7 @@ class WeaverTest extends TestCase
         $this->assertSame(2, $result);
     }
 
-    public function testWeaveCompiled(): void
+    public function testWeaveHandlesPrecompiledClass(): void
     {
         passthru('php ' . __DIR__ . '/script/weave.php');
         $pointcut = new Pointcut(

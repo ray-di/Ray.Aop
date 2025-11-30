@@ -14,26 +14,25 @@ use function dirname;
 
 class AspectTest extends TestCase
 {
-    /** @var Aspect */
-    private $aspect;
+    private Aspect $aspect;
 
     protected function setUp(): void
     {
         $this->aspect = new Aspect();
     }
 
-    public function testTmpDir(): void
+    public function testAspectCanBeCreatedWithCustomTmpDirectory(): void
     {
         $this->assertInstanceOf(Aspect::class, new Aspect(dirname(__DIR__) . '/tmp'));
     }
 
-    public function testTmpDirNotWritable(): void
+    public function testNonWritableDirectoryThrowsException(): void
     {
         $this->expectException(NotWritableException::class);
         new Aspect('/__INVALID_DIR__');
     }
 
-    public function testNewInstance(): void
+    public function testNewInstanceCreatesWeavedObjectWithInterceptor(): void
     {
         $this->aspect->bind(
             new AnyMatcher(),
@@ -47,13 +46,13 @@ class AspectTest extends TestCase
         $this->assertEquals('intercepted original', $result);
     }
 
-    public function testNewInstanceWithNoBound(): void
+    public function testNewInstanceWithoutBindingsReturnsOriginalClass(): void
     {
-        $insntance = $this->aspect->newInstance(FakeNonFinalClass::class);
-        $this->assertInstanceOf(FakeNonFinalClass::class, $insntance);
+        $instance = $this->aspect->newInstance(FakeNonFinalClass::class);
+        $this->assertInstanceOf(FakeNonFinalClass::class, $instance);
     }
 
-    public function testAnnotateMatcher(): void
+    public function testAnnotationBasedMatcherBindsCorrectly(): void
     {
         $aspect = new Aspect();
         $aspect->bind(
