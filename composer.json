@@ -15,12 +15,15 @@
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4.1",
-        "phpunit/phpunit": "^10.5.0"
+        "infection/infection": "^0.31.9",
+        "phpunit/phpunit": "^10.5.0",
+        "symfony/string": "^7.2"
     },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "bamarni/composer-bin-plugin": true
+            "bamarni/composer-bin-plugin": true,
+            "infection/extension-installer": true
         }
     },
     "autoload": {
@@ -52,7 +55,22 @@
         "sa": ["psalm --monochrome --show-info=true", "phpstan --memory-limit=-1 analyse -c phpstan.neon"],
         "metrics": ["phpmetrics --report-html=build/metrics --exclude=Exception src"],
         "phpmd": ["phpmd src text ./phpmd.xml"],
-        "build": ["@cs", "@sa", "@pcov", "@metrics"]
+        "mt": ["infection --threads=4"],
+        "build": ["@cs", "@sa", "@pcov", "@metrics", "@mt"]
+    },
+    "scripts-descriptions": {
+        "test": "Run unit tests",
+        "tests": "Run coding standards, tests, and static analysis",
+        "coverage": "Generate test coverage report with Xdebug",
+        "pcov": "Generate test coverage report with PCOV",
+        "cs": "Check coding standards",
+        "cs-fix": "Fix coding standards violations",
+        "clean": "Clear all caches",
+        "sa": "Run static analysis (Psalm and PHPStan)",
+        "metrics": "Generate code metrics report",
+        "phpmd": "Run PHP Mess Detector",
+        "mt": "Run mutation testing with Infection",
+        "build": "Run full build process (cs, sa, coverage, metrics, mt)"
     },
     "extra": {
         "bamarni-bin": {

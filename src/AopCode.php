@@ -10,7 +10,6 @@ use ReflectionNamedType;
 use ReflectionUnionType;
 
 use function array_keys;
-use function file_exists;
 use function file_get_contents;
 use function implode;
 use function in_array;
@@ -93,14 +92,25 @@ final class AopCode
     }
 
     /** @param ReflectionClass<object> $sourceClass */
-    private function parseClass(ReflectionClass $sourceClass, string $postfix): void
+    private function getSourceCode(ReflectionClass $sourceClass): string
     {
-        $fileName = (string) $sourceClass->getFileName();
-        if (! file_exists($fileName)) {
+        $fileName = $sourceClass->getFileName();
+        if ($fileName === false) {
             throw new InvalidSourceClassException($sourceClass->getName());
         }
 
-        $code = (string) file_get_contents($fileName);
+        $code = file_get_contents($fileName);
+        if ($code === false) {
+            throw new InvalidSourceClassException($sourceClass->getName()); // @codeCoverageIgnore
+        }
+
+        return $code;
+    }
+
+    /** @param ReflectionClass<object> $sourceClass */
+    private function parseClass(ReflectionClass $sourceClass, string $postfix): void
+    {
+        $code = $this->getSourceCode($sourceClass);
         /** @var array<int, array{int, string, int}|string> $tokens */
         $tokens = token_get_all($code);
         $iterator = new TokenIterator($tokens);
