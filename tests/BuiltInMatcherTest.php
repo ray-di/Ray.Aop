@@ -37,4 +37,31 @@ class BuiltInMatcherTest extends TestCase
         $this->expectException(InvalidMatcherException::class);
         new BuiltinMatcher('invalid', []);
     }
+
+    public function testGetArgumentsReturnsConstructorArguments(): void
+    {
+        $arguments = ['Ray\Aop'];
+        $matcher = new BuiltinMatcher('startsWith', $arguments);
+        $this->assertEquals($arguments, $matcher->getArguments());
+    }
+
+    public function testMatchesClassWithDifferentMatcher(): void
+    {
+        $matcher = new BuiltinMatcher('any', []);
+        $class = new ReflectionClass(FakeClass::class);
+        $this->assertTrue($matcher->matchesClass($class, []));
+    }
+
+    public function testMatchesMethodWithDifferentMatcher(): void
+    {
+        $matcher = new BuiltinMatcher('any', []);
+        $method = new ReflectionMethod(FakeClass::class, 'getDouble');
+        $this->assertTrue($matcher->matchesMethod($method, []));
+    }
+
+    public function testMatcherWithEmptyArguments(): void
+    {
+        $matcher = new BuiltinMatcher('any', []);
+        $this->assertEquals([], $matcher->getArguments());
+    }
 }

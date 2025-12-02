@@ -21,6 +21,8 @@ use const PHP_EOL;
 
 class AopCodeTest extends TestCase
 {
+    private const TMP_DIR = __DIR__ . '/tmp';
+
     private AopCode $codeGen;
 
     protected function setUp(): void
@@ -157,5 +159,80 @@ class AopCodeTest extends TestCase
     {
         $this->expectException(InvalidSourceClassException::class);
         $this->codeGen->generate(new ReflectionClass(stdClass::class), new Bind(), '_test');
+    }
+
+    public function testVoidReturnTypeMethodDoesNotHaveReturnStatement(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnTypeVoid', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind, '_test');
+
+        // void return type should not have 'return' before intercept statement
+        $this->assertStringContainsString('function returnTypeVoid(): void', $code);
+        $this->assertStringNotContainsString('return $this->_intercept', $code);
+        $this->assertStringContainsString('$this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testNonVoidReturnTypeMethodHasReturnStatement(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnNullable', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind, '_test');
+
+        // non-void return type should have 'return'
+        $this->assertStringContainsString('function returnNullable(string $str): null|int', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testClassWithExistingImplementsGetsWeavedInterfaceAdded(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method1', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // Class already has implements, should add WeavedInterface to existing list
+        $this->assertStringContainsString('implements FakeNullInterface, \Ray\Aop\FakeNullInterface1, \Ray\Aop\WeavedInterface', $code);
+    }
+
+    public function testClassWithoutImplementsGetsWeavedInterfaceAdded(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('run', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
+
+        // Class without implements should get WeavedInterface added
+        $this->assertStringContainsString('implements \Ray\Aop\WeavedInterface', $code);
+    }
+
+    public function testGeneratedCodeHasCorrectClassDeclaration(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('run', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
+
+        // The class declaration should have proper extends syntax
+        $this->assertStringContainsString('class FakePhp7Class_test extends FakePhp7Class', $code);
+    }
+
+    public function testUnionReturnTypeMethodHasReturnStatement(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method18', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // union return type should have 'return'
+        $this->assertStringContainsString('function method18(): string|int', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testEmptyBindingsDoesNotAddMethods(): void
+    {
+        $bind = new Bind();
+        // No bindings
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
+
+        // Should still have the class but no intercepted methods
+        $this->assertStringContainsString('class FakePhp7Class_test extends FakePhp7Class', $code);
+        $this->assertStringNotContainsString('_intercept(__FUNCTION__', $code);
     }
 }

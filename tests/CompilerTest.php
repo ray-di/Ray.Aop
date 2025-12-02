@@ -324,4 +324,39 @@ class CompilerTest extends TestCase
         $this->assertInstanceOf(FakePhp82ReadOnlyClass::class, $mock);
         $this->assertInstanceOf(WeavedInterface::class, $mock);
     }
+
+    public function testCompileWithBindingForExistingMethod(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnSame', [new FakeDoubleInterceptor()]);
+        $class = $this->compiler->compile(FakeMock::class, $bind);
+
+        // Should compile and create weaved class
+        $this->assertNotSame(FakeMock::class, $class);
+        $this->assertTrue(class_exists($class));
+    }
+
+    public function testCompileWithBindingForNonExistingMethod(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('nonExistentMethod', [new FakeDoubleInterceptor()]);
+        $class = $this->compiler->compile(FakeMock::class, $bind);
+
+        // Even with binding for non-existent method, compiler creates weaved class
+        // because hasNoBinding checks if bindings array is empty first
+        $this->assertNotSame(FakeMock::class, $class);
+        $this->assertTrue(class_exists($class));
+    }
+
+    public function testCompileWithMixedExistingAndNonExistingMethods(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnSame', [new FakeDoubleInterceptor()]);
+        $bind->bindInterceptors('nonExistentMethod', [new FakeDoubleInterceptor()]);
+        $class = $this->compiler->compile(FakeMock::class, $bind);
+
+        // Should compile because at least one method exists
+        $this->assertNotSame(FakeMock::class, $class);
+        $this->assertTrue(class_exists($class));
+    }
 }
