@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
@@ -46,7 +45,6 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString($expected, $code);
     }
 
-    #[RequiresPhp('8.1')]
     public function testVariousMethodSignaturesInPhp81(): void
     {
         $bind = new Bind();
@@ -130,7 +128,6 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString("public function method25(#[\Ray\Aop\Attribute\FakeAttr1()] \$a, #[\Ray\Aop\Attribute\FakeAttr1()] #[\Ray\Aop\Attribute\FakeAttr2(name: 'famicon', age: 40)] \$b): void", $code);
     }
 
-    #[RequiresPhp('8.2')]
     public function testVariousMethodSignaturesInPhp82(): void
     {
         $bind = new Bind();
@@ -232,5 +229,62 @@ class AopCodeTest extends TestCase
         // Should still have the class but no intercepted methods
         $this->assertStringContainsString('class FakePhp7Class_test extends FakePhp7Class', $code);
         $this->assertStringNotContainsString('_intercept(__FUNCTION__', $code);
+    }
+
+    public function testIntersectionTypeReturnIsPreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method103', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp82Types::class), $bind, '_test');
+
+        // intersection type should be preserved
+        $this->assertStringContainsString('\Ray\Aop\FakeNullInterface & \Ray\Aop\FakeNullInterface1', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testDnfTypeReturnIsPreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method106', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp82Types::class), $bind, '_test');
+
+        // DNF type (intersection inside union) should be preserved
+        $this->assertStringContainsString('(\Ray\Aop\FakeNullInterface&\Ray\Aop\FakeNullInterface1)|string', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testEnumAttributeArgumentIsPreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method23', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // Enum value as attribute argument should be preserved
+        $this->assertStringContainsString('#[\Ray\Aop\Annotation\FakeMarker5(', $code);
+        $this->assertStringContainsString('FakePhp81Enum::Apple', $code);
+    }
+
+    public function testNamedEnumAttributeArgumentsArePreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method24', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // Named Enum arguments should be preserved
+        $this->assertStringContainsString('#[\Ray\Aop\Annotation\FakeMarker6(', $code);
+        $this->assertStringContainsString('fruit1:', $code);
+        $this->assertStringContainsString('fruit2:', $code);
+    }
+
+    public function testParameterAttributesArePreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method25', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // Parameter attributes should be preserved (format: #[\Class\Name()])
+        $this->assertStringContainsString('#[\Ray\Aop\Attribute\FakeAttr1()]', $code);
+        $this->assertStringContainsString('#[\Ray\Aop\Attribute\FakeAttr2(name:', $code);
+        $this->assertStringContainsString('age: 40', $code);
     }
 }

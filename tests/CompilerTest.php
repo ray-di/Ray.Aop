@@ -8,7 +8,6 @@ use ArrayIterator;
 use FakeGlobalEmptyNamespaced;
 use FakeGlobalNamespaced;
 use PHPUnit\Framework\Attributes\Depends;
-use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker3;
@@ -309,7 +308,6 @@ class CompilerTest extends TestCase
         $this->assertInstanceOf(WeavedInterface::class, $mock);
     }
 
-    #[RequiresPhp('8.0')]
     public function testMixedTypeParameterIsHandled(): void
     {
         $mock = $this->compiler->newInstance(FakeMixedParamClass::class, [], $this->bind);
@@ -317,7 +315,6 @@ class CompilerTest extends TestCase
         $this->assertInstanceOf(WeavedInterface::class, $mock);
     }
 
-    #[RequiresPhp('8.2')]
     public function testReadOnlyClassCanBeWeaved(): void
     {
         $mock = $this->compiler->newInstance(FakePhp82ReadOnlyClass::class, [], $this->bind);
