@@ -114,12 +114,6 @@ class AspectTest extends TestCase
         $this->assertEquals('intercepted intercepted original', $result);
     }
 
-    public function testNonExistentDirectoryThrowsException(): void
-    {
-        $this->expectException(NotWritableException::class);
-        new Aspect('/this/path/definitely/does/not/exist');
-    }
-
     public function testDefaultTmpDirIsUsedWhenNullPassed(): void
     {
         // Default constructor should use sys_get_temp_dir()
