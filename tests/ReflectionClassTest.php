@@ -10,21 +10,21 @@ use function count;
 
 class ReflectionClassTest extends TestCase
 {
-    /** @var ReflectionClass<object> */
-    private $class;
+    /** @var ReflectionClass<FakeClassTarget> */
+    private ReflectionClass $class;
 
     public function setUp(): void
     {
-        $this->class = new ReflectionClass(FakeClassTartget::class); // @phpstan-ignore-line
+        $this->class = new ReflectionClass(FakeClassTarget::class);
     }
 
-    public function testGetAnnottaions(): void
+    public function testGetAnnotations(): void
     {
         $annotations = $this->class->getAnnotations();
         $this->assertSame(2, count($annotations));
     }
 
-    public function testGetAnnottaion(): void
+    public function testGetAnnotation(): void
     {
         $annotation = $this->class->getAnnotation(FakeResource::class);
         $this->assertInstanceOf(FakeResource::class, $annotation);

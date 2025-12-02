@@ -14,13 +14,13 @@ use function unserialize;
 
 class AnnotatedMatcherTest extends TestCase
 {
-    public function testSerialize(): void
+    public function testMatcherCanBeSerialized(): void
     {
         $matcher = new AnnotatedMatcher('annotatedWith', [FakeMarker::class]);
         $this->assertInstanceOf(AnnotatedMatcher::class, unserialize(serialize($matcher)));
     }
 
-    public function testMatchesMethodWithStandardReflectionMethod(): void
+    public function testMatchesAnnotatedMethodWithStandardReflectionMethod(): void
     {
         $matcher = new AnnotatedMatcher('annotatedWith', [FakeMarker::class]);
         $method = new ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
@@ -28,7 +28,7 @@ class AnnotatedMatcherTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testMatchesMethodWithRayReflectionMethod(): void
+    public function testMatchesAnnotatedMethodWithRayReflectionMethod(): void
     {
         $matcher = new AnnotatedMatcher('annotatedWith', [FakeMarker::class]);
         $method = new \Ray\Aop\ReflectionMethod(FakeAnnotateClass::class, 'getDouble');
@@ -36,7 +36,7 @@ class AnnotatedMatcherTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testMatchesClassWithStandardReflectionClass(): void
+    public function testMatchesAnnotatedClassWithStandardReflectionClass(): void
     {
         $matcher = new AnnotatedMatcher('annotatedWith', [FakeClassAnnotation::class]);
         $class = new ReflectionClass(FakeAnnotateClass::class);
@@ -44,7 +44,7 @@ class AnnotatedMatcherTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testMatchesClassWithRayReflectionClass(): void
+    public function testMatchesAnnotatedClassWithRayReflectionClass(): void
     {
         $matcher = new AnnotatedMatcher('annotatedWith', [FakeClassAnnotation::class]);
         $class = new \Ray\Aop\ReflectionClass(FakeAnnotateClass::class);

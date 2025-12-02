@@ -20,15 +20,14 @@ use const PHP_EOL;
 
 class AopCodeTest extends TestCase
 {
-    /** @var AopCode */
-    private $codeGen;
+    private AopCode $codeGen;
 
     protected function setUp(): void
     {
         $this->codeGen = new AopCode(new MethodSignatureString());
     }
 
-    public function testTypeDeclarations(): void
+    public function testTypeDeclarationsArePreserved(): void
     {
         $bind = new Bind();
         $bind->bindInterceptors('run', []);
@@ -37,7 +36,7 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString($expected, $code);
     }
 
-    public function testReturnType(): void
+    public function testReturnTypeIsPreserved(): void
     {
         $bind = new Bind();
         $bind->bindInterceptors('returnTypeArray', []);
@@ -46,8 +45,7 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString($expected, $code);
     }
 
-    /** @requires PHP 8.1 */
-    public function testVariousMethodSignature(): void
+    public function testVariousMethodSignaturesInPhp81(): void
     {
         $bind = new Bind();
         for ($i = 1; $i <= 25; $i++) {
@@ -130,8 +128,7 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString("public function method25(#[\Ray\Aop\Attribute\FakeAttr1()] \$a, #[\Ray\Aop\Attribute\FakeAttr1()] #[\Ray\Aop\Attribute\FakeAttr2(name: 'famicon', age: 40)] \$b): void", $code);
     }
 
-    /** @requires PHP 8.2 */
-    public function testVariousMethodSignaturePhp82(): void
+    public function testVariousMethodSignaturesInPhp82(): void
     {
         $bind = new Bind();
         for ($i = 100; $i <= 106; $i++) {
@@ -153,9 +150,141 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString('public function method106(): (\Ray\Aop\FakeNullInterface&\Ray\Aop\FakeNullInterface1)|string', $code);
     }
 
-    public function testInvalidSourceClass(): void
+    public function testGeneratingCodeForInvalidSourceClassThrowsException(): void
     {
         $this->expectException(InvalidSourceClassException::class);
         $this->codeGen->generate(new ReflectionClass(stdClass::class), new Bind(), '_test');
+    }
+
+    public function testVoidReturnTypeMethodDoesNotHaveReturnStatement(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnTypeVoid', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind, '_test');
+
+        // void return type should not have 'return' before intercept statement
+        $this->assertStringContainsString('function returnTypeVoid(): void', $code);
+        $this->assertStringNotContainsString('return $this->_intercept', $code);
+        $this->assertStringContainsString('$this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testNonVoidReturnTypeMethodHasReturnStatement(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnNullable', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp71NullableClass::class), $bind, '_test');
+
+        // non-void return type should have 'return'
+        $this->assertStringContainsString('function returnNullable(string $str): null|int', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testClassWithExistingImplementsGetsWeavedInterfaceAdded(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method1', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // Class already has implements, should add WeavedInterface to existing list
+        $this->assertStringContainsString('implements FakeNullInterface, \Ray\Aop\FakeNullInterface1, \Ray\Aop\WeavedInterface', $code);
+    }
+
+    public function testClassWithoutImplementsGetsWeavedInterfaceAdded(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('run', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
+
+        // Class without implements should get WeavedInterface added
+        $this->assertStringContainsString('implements \Ray\Aop\WeavedInterface', $code);
+    }
+
+    public function testGeneratedCodeHasCorrectClassDeclaration(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('run', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
+
+        // The class declaration should have proper extends syntax
+        $this->assertStringContainsString('class FakePhp7Class_test extends FakePhp7Class', $code);
+    }
+
+    public function testUnionReturnTypeMethodHasReturnStatement(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method18', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // union return type should have 'return'
+        $this->assertStringContainsString('function method18(): string|int', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testEmptyBindingsDoesNotAddMethods(): void
+    {
+        $bind = new Bind();
+        // No bindings
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
+
+        // Should still have the class but no intercepted methods
+        $this->assertStringContainsString('class FakePhp7Class_test extends FakePhp7Class', $code);
+        $this->assertStringNotContainsString('_intercept(__FUNCTION__', $code);
+    }
+
+    public function testIntersectionTypeReturnIsPreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method103', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp82Types::class), $bind, '_test');
+
+        // intersection type should be preserved
+        $this->assertStringContainsString('\Ray\Aop\FakeNullInterface & \Ray\Aop\FakeNullInterface1', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testDnfTypeReturnIsPreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method106', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp82Types::class), $bind, '_test');
+
+        // DNF type (intersection inside union) should be preserved
+        $this->assertStringContainsString('(\Ray\Aop\FakeNullInterface&\Ray\Aop\FakeNullInterface1)|string', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+    }
+
+    public function testEnumAttributeArgumentIsPreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method23', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // Enum value as attribute argument should be preserved
+        $this->assertStringContainsString('#[\Ray\Aop\Annotation\FakeMarker5(', $code);
+        $this->assertStringContainsString('FakePhp81Enum::Apple', $code);
+    }
+
+    public function testNamedEnumAttributeArgumentsArePreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method24', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // Named Enum arguments should be preserved
+        $this->assertStringContainsString('#[\Ray\Aop\Annotation\FakeMarker6(', $code);
+        $this->assertStringContainsString('fruit1:', $code);
+        $this->assertStringContainsString('fruit2:', $code);
+    }
+
+    public function testParameterAttributesArePreserved(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('method25', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp8Types::class), $bind, '_test');
+
+        // Parameter attributes should be preserved (format: #[\Class\Name()])
+        $this->assertStringContainsString('#[\Ray\Aop\Attribute\FakeAttr1()]', $code);
+        $this->assertStringContainsString('#[\Ray\Aop\Attribute\FakeAttr2(name:', $code);
+        $this->assertStringContainsString('age: 40', $code);
     }
 }

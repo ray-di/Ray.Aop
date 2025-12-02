@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker2;
@@ -11,11 +12,10 @@ use Ray\Aop\Annotation\FakeMarker3;
 
 class BindTest extends TestCase
 {
-    /** @var Bind */
-    protected $bind;
+    protected Bind $bind;
 
     /** @var array<MethodInterceptor> */
-    protected $interceptors;
+    protected array $interceptors;
 
     protected function setUp(): void
     {
@@ -24,14 +24,14 @@ class BindTest extends TestCase
         $this->bind = new Bind();
     }
 
-    public function testBindInterceptors(): void
+    public function testBindInterceptorsToMethod(): void
     {
         $interceptors = [new FakeDoubleInterceptor(), new FakeDoubleInterceptor()];
         $this->bind->bindInterceptors('getDouble', $interceptors);
         $this->assertSame($this->bind->getBindings()['getDouble'], $interceptors);
     }
 
-    public function testBind(): void
+    public function testBindWithMatchingPointcut(): void
     {
         $interceptors = [new FakeDoubleInterceptor()];
         $pointcut = new Pointcut((new Matcher())->startsWith('Ray'), (new Matcher())->startsWith('get'), $interceptors);
@@ -40,7 +40,7 @@ class BindTest extends TestCase
         $this->assertSame($this->bind->getBindings()['getDouble'], $interceptors);
     }
 
-    public function testBindWithConstructor(): void
+    public function testBindToClassWithConstructor(): void
     {
         $interceptors = [new FakeDoubleInterceptor()];
         $pointcut = new Pointcut((new Matcher())->startsWith('Ray'), (new Matcher())->startsWith('get'), $interceptors);
@@ -49,7 +49,7 @@ class BindTest extends TestCase
         $this->assertSame($this->bind->getBindings()['getDouble'], $interceptors);
     }
 
-    public function testBindUnmatched(): void
+    public function testBindWithNonMatchingPointcutCreatesNoBindings(): void
     {
         $interceptors = [new FakeDoubleInterceptor()];
         $pointcut = new Pointcut((new Matcher())->startsWith('XXX'), (new Matcher())->startsWith('get'), $interceptors);
@@ -57,8 +57,8 @@ class BindTest extends TestCase
         $this->assertSame($this->bind->getBindings(), []);
     }
 
-    /** @doesNotPerformAssertions */
-    public function testToString(): void
+    #[DoesNotPerformAssertions]
+    public function testToStringConversion(): void
     {
         $nullBind = (string) (new Bind());
 
@@ -68,7 +68,7 @@ class BindTest extends TestCase
         $bindString = (string) $this->bind;
     }
 
-    public function testMyMatcher(): void
+    public function testBindWithCustomMatcher(): void
     {
         $interceptors = [new FakeDoubleInterceptor()];
         $pointcut = new Pointcut(new FakeMatcher(), (new Matcher())->any(), $interceptors);
@@ -77,14 +77,14 @@ class BindTest extends TestCase
         $this->assertSame($this->bind->getBindings()['getDouble'], $interceptors);
     }
 
-    public function testNotClassMatch(): void
+    public function testBindWithNonMatchingClassMatcher(): void
     {
         $pointcut = new Pointcut(new FakeMatcher(false), (new Matcher())->any(), [new FakeDoubleInterceptor()]);
         $this->bind->bind(FakeAnnotateClass::class, [$pointcut]);
         $this->assertArrayNotHasKey('getDouble', $this->bind->getBindings());
     }
 
-    public function testOnionAnnotation(): void
+    public function testMultipleAnnotationBasedInterceptorsAreOrderedCorrectly(): void
     {
         $onion1 = new FakeOnionInterceptor1();
         $onion2 = new FakeOnionInterceptor2();
@@ -101,7 +101,7 @@ class BindTest extends TestCase
         $this->assertSame($expect, $actual);
     }
 
-    public function testOnionAnnotationAndPriorityPointcut(): void
+    public function testPriorityPointcutIsExecutedFirst(): void
     {
         $onion1 = new FakeOnionInterceptor1();
         $onion2 = new FakeOnionInterceptor2();

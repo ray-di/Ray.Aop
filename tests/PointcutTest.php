@@ -8,13 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 class PointcutTest extends TestCase
 {
-    public function testNew(): void
+    public function testPointcutCanBeCreated(): void
     {
-        $pointCunt = new Pointcut(
+        $pointcut = new Pointcut(
             new BuiltinMatcher('startsWith', ['Ray']),
             new BuiltinMatcher('startsWith', ['get']),
             [new FakeInterceptor()]
         );
-        $this->assertInstanceOf(Pointcut::class, $pointCunt);
+        $this->assertInstanceOf(Pointcut::class, $pointcut);
     }
 }
