@@ -20,7 +20,8 @@ class AopPostfixClassNameTest extends TestCase
     {
         $className = new AopPostfixClassName(FakeClass::class, 'bindings', '/tmp');
         $this->assertStringStartsWith(FakeClass::class, $className->fqn);
-        $this->assertStringEndsWith($className->postFix, $className->fqn);
+        $this->assertNotEmpty($className->postFix);
+        $this->assertSame(FakeClass::class . $className->postFix, $className->fqn);
     }
 
     public function testDifferentBindingsProduceDifferentPostfixes(): void

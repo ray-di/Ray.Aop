@@ -21,8 +21,6 @@ use const PHP_EOL;
 
 class AopCodeTest extends TestCase
 {
-    private const TMP_DIR = __DIR__ . '/tmp';
-
     private AopCode $codeGen;
 
     protected function setUp(): void
