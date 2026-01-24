@@ -5,20 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.19.1] - 2026-01-24
 
-### Added
-- Rector configuration for PHP 8.2+ code quality improvements
-- Deprecation stubs for PECL extension support (`AspectPecl`, `PeclDispatcher`) in `src-deprecated/` for backward compatibility
+### Fixed
+- `getAnnotation()` now matches child classes by default using `ReflectionAttribute::IS_INSTANCEOF` (#254, #255)
+
+## [2.19.0] - 2025-11-17
 
 ### Changed
-- **BREAKING**: Removed PECL extension support (refs #242)
-  - Migration guide: Use proxy-based AOP with `$aspect->bind() + newInstance()` instead
-  - See https://github.com/ray-di/Ray.Aop/issues/242 for details
-  - Deprecated stubs throw `LogicException` with migration instructions
-- Replaced `@readonly` annotations with native `readonly` keyword for PHP 8.2 optimization
-- Removed incorrect immutability annotations (`@psalm-immutable`, `@psalm-pure`) from classes with Reflection API dependencies
-- Updated `composer.json` autoload to include `src-deprecated/` for backward compatibility
+- **BREAKING**: Removed PECL extension support (#248, refs #242)
+  - Migration: Use proxy-based AOP with `$aspect->bind() + newInstance()` instead
+  - Backward-compatible deprecation stubs provided in `src-deprecated/`
+- Replace `@readonly` annotations with native `readonly` keyword (#249)
 
 ## [2.18.0] - 2025-02-23
 
@@ -224,7 +222,8 @@ $billing = $aspect->newInstance(RealBillingService::class);
 - CI: Migrate from Travis CI to GitHub Actions
 - Add phpmd check
 
-[Unreleased]: https://github.com/ray-di/Ray.Aop/compare/2.18.0...HEAD
+[2.19.1]: https://github.com/ray-di/Ray.Aop/compare/2.19.0...2.19.1
+[2.19.0]: https://github.com/ray-di/Ray.Aop/compare/2.18.0...2.19.0
 [2.18.0]: https://github.com/ray-di/Ray.Aop/compare/2.17.2...2.18.0
 [2.17.3]: https://github.com/ray-di/Ray.Aop/compare/2.17.2...2.17.3
 [2.17.2]: https://github.com/ray-di/Ray.Aop/compare/2.17.1...2.17.2
