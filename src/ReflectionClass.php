@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Override;
+use ReflectionAttribute;
 use ReturnTypeWillChange;
 
 use function array_map;
@@ -32,17 +33,16 @@ final class ReflectionClass extends \ReflectionClass
     }
 
     /**
-     * Get a specific attribute by name
-     *
-     * @param class-string<TAnnotation> $annotationName
-     *
-     * @return TAnnotation|null
-     *
-     * @template TAnnotation of object
-     */
-    public function getAnnotation(string $annotationName): object|null
+         * Retrieve a single class attribute by its annotation class name.
+         *
+         * @template TAnnotation of object
+         * @param class-string<TAnnotation> $annotationName The annotation class name to search for.
+         * @param int                       $flags          Matching flags passed to ReflectionClass::getAttributes (e.g., ReflectionAttribute::IS_INSTANCEOF).
+         * @return TAnnotation|null The instantiated annotation of type `TAnnotation` if found, `null` otherwise.
+         */
+    public function getAnnotation(string $annotationName, int $flags = ReflectionAttribute::IS_INSTANCEOF): object|null
     {
-        $attributes = $this->getAttributes($annotationName);
+        $attributes = $this->getAttributes($annotationName, $flags);
         if (isset($attributes[0])) {
             return $attributes[0]->newInstance();
         }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Override;
+use ReflectionAttribute;
 
 use function array_map;
 
@@ -39,16 +40,16 @@ final class ReflectionMethod extends \ReflectionMethod
     }
 
     /**
-     * Get a specific attribute by name
-     *
-     * @param class-string<T> $annotationName
-     * @param int             $flags          Optional flags (e.g., ReflectionAttribute::IS_INSTANCEOF)
-     *
-     * @return T|null
-     *
-     * @template T of object
-     */
-    public function getAnnotation(string $annotationName, int $flags = 0): object|null
+         * Retrieve the first attribute instance matching the given attribute name.
+         *
+         * @param class-string<T> $annotationName Fully-qualified attribute class name to search for.
+         * @param int             $flags          Optional ReflectionAttribute flags (e.g., ReflectionAttribute::IS_INSTANCEOF).
+         *
+         * @return T|null The instantiated attribute object if found, `null` otherwise.
+         *
+         * @template T of object
+         */
+    public function getAnnotation(string $annotationName, int $flags = ReflectionAttribute::IS_INSTANCEOF): object|null
     {
         $attributes = $this->getAttributes($annotationName, $flags);
         if (isset($attributes[0])) {
