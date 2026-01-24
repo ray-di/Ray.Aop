@@ -20,6 +20,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed incorrect immutability annotations (`@psalm-immutable`, `@psalm-pure`) from classes with Reflection API dependencies
 - Updated `composer.json` autoload to include `src-deprecated/` for backward compatibility
 
+## [2.19.1] - 2026-01-24
+
+### Fixed
+- `getAnnotation()` now matches child classes by default using `ReflectionAttribute::IS_INSTANCEOF` (#254, #255)
+
+## [2.19.0] - 2025-11-17
+
+### Changed
+- **BREAKING**: Removed PECL extension support (#248, refs #242)
+  - Migration: Use proxy-based AOP with `$aspect->bind() + newInstance()` instead
+  - Backward-compatible deprecation stubs provided in `src-deprecated/`
+- Replace `@readonly` annotations with native `readonly` keyword (#249)
+
 ## [2.18.0] - 2025-02-23
 
 ### Added
@@ -224,7 +237,9 @@ $billing = $aspect->newInstance(RealBillingService::class);
 - CI: Migrate from Travis CI to GitHub Actions
 - Add phpmd check
 
-[Unreleased]: https://github.com/ray-di/Ray.Aop/compare/2.18.0...HEAD
+[Unreleased]: https://github.com/ray-di/Ray.Aop/compare/2.19.1...HEAD
+[2.19.1]: https://github.com/ray-di/Ray.Aop/compare/2.19.0...2.19.1
+[2.19.0]: https://github.com/ray-di/Ray.Aop/compare/2.18.0...2.19.0
 [2.18.0]: https://github.com/ray-di/Ray.Aop/compare/2.17.2...2.18.0
 [2.17.3]: https://github.com/ray-di/Ray.Aop/compare/2.17.2...2.17.3
 [2.17.2]: https://github.com/ray-di/Ray.Aop/compare/2.17.1...2.17.2
