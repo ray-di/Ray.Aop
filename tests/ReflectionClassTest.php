@@ -60,4 +60,11 @@ class ReflectionClassTest extends TestCase
     {
         $this->assertInstanceOf(ReflectionClass::class, (new ReflectionClass(FakeMockChild::class))->getParentClass());
     }
+
+    public function testGetAnnotationMatchesChildClass(): void
+    {
+        $class = new ReflectionClass(FakeClassWithChildAttribute::class);
+        $annotation = $class->getAnnotation(FakeParentAttribute::class);
+        $this->assertInstanceOf(FakeChildAttribute::class, $annotation);
+    }
 }

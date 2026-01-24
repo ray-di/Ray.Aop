@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Override;
+use ReflectionAttribute;
 
 use function array_map;
 
@@ -48,7 +49,7 @@ final class ReflectionMethod extends \ReflectionMethod
      *
      * @template T of object
      */
-    public function getAnnotation(string $annotationName, int $flags = 0): object|null
+    public function getAnnotation(string $annotationName, int $flags = ReflectionAttribute::IS_INSTANCEOF): object|null
     {
         $attributes = $this->getAttributes($annotationName, $flags);
         if (isset($attributes[0])) {
