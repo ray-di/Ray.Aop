@@ -231,6 +231,15 @@ class AopCodeTest extends TestCase
         $this->assertStringNotContainsString('_intercept(__FUNCTION__', $code);
     }
 
+    public function testEnumSourceDoesNotGenerateClassWeaving(): void
+    {
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp81Enum::class), new Bind(), '_test');
+
+        $this->assertStringContainsString('enum FakePhp81Enum', $code);
+        $this->assertStringNotContainsString('WeavedInterface', $code);
+        $this->assertStringNotContainsString('_intercept(__FUNCTION__', $code);
+    }
+
     public function testIntersectionTypeReturnIsPreserved(): void
     {
         $bind = new Bind();
@@ -286,5 +295,38 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString('#[\Ray\Aop\Attribute\FakeAttr1()]', $code);
         $this->assertStringContainsString('#[\Ray\Aop\Attribute\FakeAttr2(name:', $code);
         $this->assertStringContainsString('age: 40', $code);
+    }
+
+    public function testReadOnlyClassUsesReadOnlyInterceptTrait(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('foo', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp82ReadOnlyClass::class), $bind, '_test');
+
+        // Readonly class should use ReadOnlyInterceptTrait
+        $this->assertStringContainsString('use \Ray\Aop\ReadOnlyInterceptTrait;', $code);
+        $this->assertStringNotContainsString('use \Ray\Aop\InterceptTrait;', $code);
+    }
+
+    public function testNonReadOnlyClassUsesStandardInterceptTrait(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('run', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
+
+        // Non-readonly class should use standard InterceptTrait
+        $this->assertStringContainsString('use \Ray\Aop\InterceptTrait;', $code);
+        $this->assertStringNotContainsString('use \Ray\Aop\ReadOnlyInterceptTrait;', $code);
+    }
+
+    public function testNoReturnTypeMethodHasReturnStatement(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('noReturnType', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakePhp7Class::class), $bind, '_test');
+
+        // Method without return type should have 'return' before intercept
+        $this->assertStringContainsString('function noReturnType($a)', $code);
+        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
     }
 }

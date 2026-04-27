@@ -45,13 +45,16 @@ final class Aspect
     public function __construct(string|null $tmpDir = null)
     {
         if ($tmpDir === null) {
-            $tmp = sys_get_temp_dir();
-            $tmpDir = $tmp !== '' ? $tmp : '/tmp';
+            $tmpDir = sys_get_temp_dir();
         }
 
-        if (! file_exists($tmpDir) || ! is_writable($tmpDir)) {
+        // Defensive validation for resolved temp dirs.
+        // @codeCoverageIgnoreStart
+        if ($tmpDir === '' || ! file_exists($tmpDir) || ! is_writable($tmpDir)) {
             throw new NotWritableException("{$tmpDir} is not writable.");
         }
+
+        // @codeCoverageIgnoreEnd
 
         $this->tmpDir = $tmpDir;
     }

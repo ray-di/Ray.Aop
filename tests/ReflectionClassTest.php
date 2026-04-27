@@ -61,6 +61,11 @@ class ReflectionClassTest extends TestCase
         $this->assertInstanceOf(ReflectionClass::class, (new ReflectionClass(FakeMockChild::class))->getParentClass());
     }
 
+    public function testGetParentClassReturnsFalseWithoutParent(): void
+    {
+        $this->assertFalse((new ReflectionClass(FakeMock::class))->getParentClass());
+    }
+
     public function testGetAnnotationMatchesChildClass(): void
     {
         $class = new ReflectionClass(FakeClassWithChildAttribute::class);

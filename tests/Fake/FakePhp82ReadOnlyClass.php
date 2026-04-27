@@ -4,4 +4,10 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-readonly class FakePhp82ReadOnlyClass {}
+readonly class FakePhp82ReadOnlyClass
+{
+    public function foo(): string
+    {
+        return 'foo';
+    }
+}
