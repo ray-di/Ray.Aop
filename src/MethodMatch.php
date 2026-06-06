@@ -7,7 +7,8 @@ namespace Ray\Aop;
 use ReflectionClass;
 use ReflectionMethod;
 
-use function array_key_exists;
+use function is_a;
+use function is_string;
 
 /**
  * @psalm-import-type MethodInterceptors from Types
@@ -29,8 +30,6 @@ final readonly class MethodMatch
      */
     public function __invoke(ReflectionClass $class, \Ray\Aop\ReflectionMethod $method, array $pointcuts): void
     {
-        /** @var list<object> $annotations */
-        $annotations = $method->getAnnotations();
         // priority bind
         foreach ($pointcuts as $key => $pointcut) {
             if (! ($pointcut instanceof PriorityPointcut)) {
@@ -41,7 +40,7 @@ final readonly class MethodMatch
             unset($pointcuts[$key]);
         }
 
-        $onion = $this->onionOrderMatch($class, $method, $pointcuts, $annotations);
+        $onion = $this->onionOrderMatch($class, $method, $pointcuts);
 
         // default binding
         foreach ($onion as $pointcut) {
@@ -70,7 +69,6 @@ final readonly class MethodMatch
     /**
      * @param ReflectionClass<object> $class
      * @param Pointcuts               $pointcuts
-     * @param list<object>            $annotations
      *
      * @return Pointcuts
      */
@@ -78,19 +76,46 @@ final readonly class MethodMatch
         ReflectionClass $class,
         ReflectionMethod $method,
         array $pointcuts,
-        array $annotations,
     ): array {
-        // method bind in annotation order
-        foreach ($annotations as $annotation) {
-            $annotationIndex = $annotation::class;
-            if (! array_key_exists($annotationIndex, $pointcuts)) {
-                continue;
-            }
+        if (! $this->hasAnnotationPointcut($pointcuts)) {
+            return $pointcuts;
+        }
 
-            $this->annotatedMethodMatchBind($class, $method, $pointcuts[$annotationIndex]);
-            unset($pointcuts[$annotationIndex]);
+        // method bind in annotation order
+        foreach ($method->getAttributes() as $attribute) {
+            /** @var class-string $annotationIndex */
+            $annotationIndex = $attribute->getName();
+            foreach ($pointcuts as $key => $pointcut) {
+                if (! $pointcut->methodMatcher instanceof AnnotatedMatcher) {
+                    continue;
+                }
+
+                if (! is_string($key)) {
+                    continue;
+                }
+
+                /** @var class-string $key */
+                if ($annotationIndex !== $key && ! is_a($annotationIndex, $key, true)) {
+                    continue;
+                }
+
+                $this->annotatedMethodMatchBind($class, $method, $pointcut);
+                unset($pointcuts[$key]);
+            }
         }
 
         return $pointcuts;
+    }
+
+    /** @param Pointcuts $pointcuts */
+    private function hasAnnotationPointcut(array $pointcuts): bool
+    {
+        foreach ($pointcuts as $pointcut) {
+            if ($pointcut->methodMatcher instanceof AnnotatedMatcher) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

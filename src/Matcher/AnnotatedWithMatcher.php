@@ -7,6 +7,7 @@ namespace Ray\Aop\Matcher;
 use Override;
 use Ray\Aop\AbstractMatcher;
 use Ray\Aop\Types;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -26,12 +27,9 @@ final class AnnotatedWithMatcher extends AbstractMatcher
         /** @var Arguments $arguments */
         [$annotationName] = $arguments;
         assert(is_string($annotationName));
-        /** @psalm-suppress MixedAssignment $annotation */
-        /** @psalm-suppress ArgumentTypeCoercion */
-        /** @phpstan-ignore-next-line argument.type, argument.templateType */
-        $annotation = $class->getAnnotation($annotationName);
+        /** @var class-string $annotationName */
 
-        return (bool) $annotation;
+        return $class->getAttributes($annotationName, ReflectionAttribute::IS_INSTANCEOF) !== [];
     }
 
     /**
@@ -44,11 +42,8 @@ final class AnnotatedWithMatcher extends AbstractMatcher
         /** @var Arguments $arguments */
         [$annotationName] = $arguments;
         assert(is_string($annotationName));
+        /** @var class-string $annotationName */
 
-        /** @psalm-suppress ArgumentTypeCoercion */
-        /** @phpstan-ignore-next-line argument.type, argument.templateType */
-        $annotation = $method->getAnnotation($annotationName);
-
-        return (bool) $annotation;
+        return $method->getAttributes($annotationName, ReflectionAttribute::IS_INSTANCEOF) !== [];
     }
 }

@@ -119,4 +119,26 @@ class BindTest extends TestCase
         ];
         $this->assertSame($expect, $actual);
     }
+
+    public function testNonAnnotationPointcutDoesNotInstantiateMethodAttributes(): void
+    {
+        FakeCountingAttribute::$instances = 0;
+
+        $pointcut = new Pointcut((new Matcher())->any(), (new Matcher())->any(), [new FakeDoubleInterceptor()]);
+        $this->bind->bind(FakeCountingAttributeClass::class, [$pointcut]);
+
+        $this->assertArrayHasKey('run', $this->bind->getBindings());
+        $this->assertSame(0, FakeCountingAttribute::$instances);
+    }
+
+    public function testAnnotatedPointcutDoesNotInstantiateMethodAttributes(): void
+    {
+        FakeCountingAttribute::$instances = 0;
+
+        $pointcut = new Pointcut((new Matcher())->any(), (new Matcher())->annotatedWith(FakeCountingAttribute::class), [new FakeDoubleInterceptor()]);
+        $this->bind->bind(FakeCountingAttributeClass::class, [$pointcut]);
+
+        $this->assertArrayHasKey('run', $this->bind->getBindings());
+        $this->assertSame(0, FakeCountingAttribute::$instances);
+    }
 }
