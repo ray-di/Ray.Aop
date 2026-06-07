@@ -7,6 +7,7 @@ namespace Ray\Aop;
 use ReflectionClass;
 use ReflectionMethod;
 
+use function assert;
 use function is_a;
 use function is_string;
 
@@ -90,10 +91,7 @@ final readonly class MethodMatch
                     continue;
                 }
 
-                if (! is_string($key)) {
-                    continue;
-                }
-
+                assert(is_string($key));
                 /** @var class-string $key */
                 if ($annotationIndex !== $key && ! is_a($annotationIndex, $key, true)) {
                     continue;
