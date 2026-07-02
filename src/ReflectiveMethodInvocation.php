@@ -84,7 +84,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      *
      * @return ArgumentList
      *
-     * @psalm-mutation-free
+     * @psalm-external-mutation-free
      */
     #[Override]
     public function getArguments(): ArrayObject

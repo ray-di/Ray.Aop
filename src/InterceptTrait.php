@@ -6,8 +6,6 @@ namespace Ray\Aop;
 
 /**
  * @psalm-import-type MethodBindings from Types
- * @psalm-import-type MethodName from Types
- * @psalm-import-type ConstructorArguments from Types
  */
 trait InterceptTrait // @phpstan-ignore-line
 {

@@ -6,7 +6,6 @@ namespace Ray\Aop;
 
 /**
  * @psalm-import-type MethodBindings from Types
- * @psalm-import-type Arguments from Types
  * @phpstan-ignore trait.unused
  */
 trait ReadOnlyInterceptTrait

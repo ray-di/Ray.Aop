@@ -9,13 +9,14 @@ use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
+use function array_flip;
 use function array_keys;
 use function file_get_contents;
 use function implode;
-use function in_array;
-use function preg_replace;
 use function preg_replace_callback;
 use function sprintf;
+use function strrpos;
+use function substr_replace;
 use function token_get_all;
 
 use const T_CLASS;
@@ -30,16 +31,19 @@ use const T_STRING;
  */
 final class AopCode
 {
+    /** Code generation version — bump on codegen changes to invalidate cached proxies */
+    public const GENERATION = 2;
+
     /** Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag) */
     private const INVOKE_TEMPLATE = <<<'PHP'
-        $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
-        %s$__aop->proceed();
+            $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
+            %s$__aop->proceed();
     PHP;
 
     /** Template for readonly classes (bindings accessed via $_state) */
     private const INVOKE_READONLY_TEMPLATE = <<<'PHP'
-        $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
-        %s$__aop->proceed();
+            $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
+            %s$__aop->proceed();
     PHP;
 
     private string $code = '';
@@ -88,10 +92,13 @@ final class AopCode
      *
      * @psalm-external-mutation-free
      */
+    /** @psalm-external-mutation-free */
     private function insert(string $code): void
     {
-        $replacement = $code . '}';
-        $this->code = (string) preg_replace('/}\s*$/', $replacement, $this->code);
+        $lastBrace = strrpos($this->code, '}');
+        if ($lastBrace !== false) {
+            $this->code = substr_replace($this->code, $code . '}', $lastBrace);
+        }
     }
 
     /** @psalm-external-mutation-free */
@@ -185,7 +192,7 @@ final class AopCode
     /** @param ReflectionClass<object> $class */
     private function addMethods(ReflectionClass $class, BindInterface $bind, bool $isReadOnly): void
     {
-        $bindings = \array_flip(\array_keys($bind->getBindings()));
+        $bindings = array_flip(array_keys($bind->getBindings()));
         $template = $isReadOnly ? self::INVOKE_READONLY_TEMPLATE : self::INVOKE_TEMPLATE;
 
         $parentMethods = $class->getMethods();

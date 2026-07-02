@@ -322,6 +322,16 @@ class CompilerTest extends TestCase
         $this->assertInstanceOf(WeavedInterface::class, $mock);
     }
 
+    public function testReadOnlyClassMethodInterception(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('greet', [new NullInterceptor()]);
+        $mock = $this->compiler->newInstance(FakePhp82ReadOnlyClass::class, [], $bind);
+        // Invoke intercepted method — validates codegen + trait compatibility
+        $result = $mock->greet('World');
+        $this->assertSame('Hello, World', $result);
+    }
+
     public function testCompileWithBindingForExistingMethod(): void
     {
         $bind = new Bind();
@@ -355,5 +365,22 @@ class CompilerTest extends TestCase
         // Should compile because at least one method exists
         $this->assertNotSame(FakeMock::class, $class);
         $this->assertTrue(class_exists($class));
+    }
+
+    /**
+     * Regression: interceptor calling another intercepted method on the same object
+     * must not cause infinite recursion (old _isAspect flag was prone to this)
+     */
+    public function testReentrantInterceptorCrossMethodCall(): void
+    {
+        $bind = new Bind();
+        $interceptor = new FakeReentrantInterceptor();
+        $bind->bindInterceptors('returnSame', [$interceptor]);
+        $bind->bindInterceptors('getSub', [$interceptor]);
+
+        $mock = $this->compiler->newInstance(FakeMock::class, [], $bind);
+        $result = $mock->returnSame(42);
+
+        $this->assertSame(42, $result);
     }
 }
