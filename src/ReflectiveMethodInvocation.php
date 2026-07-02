@@ -54,18 +54,6 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         $this->arguments = $arguments;
     }
 
-    /**
-     * Reset arguments and internal state for object reuse
-     *
-     * @param ConstructorArguments $arguments
-     */
-    public function resetArgs(array $arguments): void
-    {
-        $this->arguments = $arguments;
-        $this->argumentsObject = null;
-        $this->currentInterceptorIndex = 0;
-    }
-
     #[Override]
     public function getMethod(): ReflectionMethod
     {

@@ -253,7 +253,7 @@ final class AopCode
     }
 
     /** @param ReflectionClass<object> $sourceClass */
-    public function resolveInterceptTrait(ReflectionClass $sourceClass): void
+    private function resolveInterceptTrait(ReflectionClass $sourceClass): void
     {
         if ($sourceClass->isReadOnly()) {
             $this->addReadOnlyInterceptorTrait();
