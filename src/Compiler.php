@@ -73,7 +73,7 @@ final class Compiler implements CompilerInterface
      * @return class-string<T>
      *
      * @template T of object
-     * @sideEffect Genaerates a new class file
+     * @sideEffect Generates a new class file
      */
     #[Override]
     public function compile(string $class, BindInterface $bind): string

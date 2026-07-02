@@ -230,7 +230,7 @@ final class AopCode
     }
 
     /** @psalm-external-mutation-free */
-    private function addInterceporTrait(): void
+    private function addInterceptorTrait(): void
     {
         $this->add(sprintf("{\n    use \%s;\n}\n", InterceptTrait::class));
     }
@@ -262,6 +262,6 @@ final class AopCode
             return;
         }
 
-        $this->addInterceporTrait();
+        $this->addInterceptorTrait();
     }
 }

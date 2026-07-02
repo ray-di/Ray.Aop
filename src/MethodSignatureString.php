@@ -38,8 +38,8 @@ final class MethodSignatureString
     {
         $signatureParts = $this->getDocComment($method);
         $this->addAttributes($method, $signatureParts);
-        $modiferedSignatureParts = $this->addAccessModifiers($method, $signatureParts);
-        $methodSignatureParts = $this->addMethodSignature($method, $modiferedSignatureParts);
+        $modifiedSignatureParts = $this->addAccessModifiers($method, $signatureParts);
+        $methodSignatureParts = $this->addMethodSignature($method, $modifiedSignatureParts);
 
         return implode(' ', $methodSignatureParts);
     }
