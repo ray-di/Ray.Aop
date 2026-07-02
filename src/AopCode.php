@@ -92,13 +92,16 @@ final class AopCode
      *
      * @psalm-external-mutation-free
      */
+
     /** @psalm-external-mutation-free */
     private function insert(string $code): void
     {
         $lastBrace = strrpos($this->code, '}');
-        if ($lastBrace !== false) {
-            $this->code = substr_replace($this->code, $code . '}', $lastBrace);
+        if ($lastBrace === false) {
+            return;
         }
+
+        $this->code = substr_replace($this->code, $code . '}', $lastBrace);
     }
 
     /** @psalm-external-mutation-free */

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-/**
- * @psalm-import-type MethodBindings from Types
- */
+/** @psalm-import-type MethodBindings from Types */
 trait InterceptTrait // @phpstan-ignore-line
 {
     /**

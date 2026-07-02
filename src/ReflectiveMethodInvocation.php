@@ -26,7 +26,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     /** @var list<mixed> Plain array for fast access in proceed() */
     private array $arguments;
 
-    /** @var ArrayObject|null Lazy-created only if getArguments() is called */
+    /** @var ArrayObject<int, mixed>|null Lazy-created only if getArguments() is called */
     private ArrayObject|null $argumentsObject = null;
 
     /** @var callable(mixed...): mixed Pre-bound callable for fast dispatch */
@@ -50,7 +50,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         private readonly array $interceptors = [],
         Closure|null $parentCall = null,
     ) {
-        $this->callable = $parentCall ?? [$this->object, $this->method];
+        $this->callable = $parentCall ?? [$this->object, $this->method]; // @phpstan-ignore assign.propertyType
         $this->arguments = $arguments;
     }
 
@@ -116,10 +116,10 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         // Use ArrayObject if getArguments() was called (and possibly mutated),
         // otherwise use the fast plain array path
         if ($this->argumentsObject !== null) {
-            return ($this->callable)(...$this->argumentsObject->getArrayCopy());
+            return ($this->callable)(...$this->argumentsObject->getArrayCopy()); // @phpstan-ignore callable.nonCallable
         }
 
-        return ($this->callable)(...$this->arguments);
+        return ($this->callable)(...$this->arguments); // @phpstan-ignore callable.nonCallable
     }
 
     /**
