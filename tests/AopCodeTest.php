@@ -164,8 +164,8 @@ class AopCodeTest extends TestCase
 
         // void return type should not have 'return' before intercept statement
         $this->assertStringContainsString('function returnTypeVoid(): void', $code);
-        $this->assertStringNotContainsString('return $this->_intercept', $code);
-        $this->assertStringContainsString('$this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringNotContainsString('return $__aop->proceed', $code);
+        $this->assertStringContainsString('$__aop->proceed();', $code);
     }
 
     public function testNonVoidReturnTypeMethodHasReturnStatement(): void
@@ -176,7 +176,7 @@ class AopCodeTest extends TestCase
 
         // non-void return type should have 'return'
         $this->assertStringContainsString('function returnNullable(string $str): null|int', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $__aop->proceed();', $code);
     }
 
     public function testClassWithExistingImplementsGetsWeavedInterfaceAdded(): void
@@ -217,7 +217,7 @@ class AopCodeTest extends TestCase
 
         // union return type should have 'return'
         $this->assertStringContainsString('function method18(): string|int', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $__aop->proceed();', $code);
     }
 
     public function testEmptyBindingsDoesNotAddMethods(): void
@@ -239,7 +239,7 @@ class AopCodeTest extends TestCase
 
         // intersection type should be preserved
         $this->assertStringContainsString('\Ray\Aop\FakeNullInterface & \Ray\Aop\FakeNullInterface1', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $__aop->proceed();', $code);
     }
 
     public function testDnfTypeReturnIsPreserved(): void
@@ -250,7 +250,7 @@ class AopCodeTest extends TestCase
 
         // DNF type (intersection inside union) should be preserved
         $this->assertStringContainsString('(\Ray\Aop\FakeNullInterface&\Ray\Aop\FakeNullInterface1)|string', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $__aop->proceed();', $code);
     }
 
     public function testEnumAttributeArgumentIsPreserved(): void

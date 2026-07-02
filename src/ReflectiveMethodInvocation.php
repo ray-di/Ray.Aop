@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use ArrayObject;
+use Closure;
 use Override;
 use ReflectionClass;
 use ReflectionObject;
 
 use function assert;
-use function call_user_func_array;
-use function is_callable;
 
 /**
  * @psalm-import-type ArgumentList from Types
@@ -24,10 +23,13 @@ use function is_callable;
  */
 final class ReflectiveMethodInvocation implements MethodInvocation
 {
-    /** @var ArgumentList */
-    private readonly ArrayObject $arguments;
+    /** @var list<mixed> Plain array for fast access in proceed() */
+    private array $arguments;
 
-    /** @var callable(mixed...): mixed */
+    /** @var ArrayObject|null Lazy-created only if getArguments() is called */
+    private ArrayObject|null $argumentsObject = null;
+
+    /** @var callable(mixed...): mixed Pre-bound callable for fast dispatch */
     private readonly mixed $callable;
     private int $currentInterceptorIndex = 0;
 
@@ -36,6 +38,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
      * @param MethodName           $method       Method name
      * @param ConstructorArguments $arguments    Method arguments
      * @param InterceptorList      $interceptors Method interceptors
+     * @param Closure|null         $parentCall   Direct parent-method closure (avoids double-dispatch through proxy)
      */
     public function __construct(
         /** @readonly */
@@ -45,12 +48,22 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         array $arguments,
         /** @readonly */
         private readonly array $interceptors = [],
+        Closure|null $parentCall = null,
     ) {
-        $callable = [$this->object, $this->method];
-        assert(is_callable($callable));
-        $this->callable = $callable;
-        /** @psalm-suppress InvalidPropertyAssignmentValue */
-        $this->arguments = new ArrayObject($arguments);
+        $this->callable = $parentCall ?? [$this->object, $this->method];
+        $this->arguments = $arguments;
+    }
+
+    /**
+     * Reset arguments and internal state for object reuse
+     *
+     * @param ConstructorArguments $arguments
+     */
+    public function resetArgs(array $arguments): void
+    {
+        $this->arguments = $arguments;
+        $this->argumentsObject = null;
+        $this->currentInterceptorIndex = 0;
     }
 
     #[Override]
@@ -76,7 +89,7 @@ final class ReflectiveMethodInvocation implements MethodInvocation
     #[Override]
     public function getArguments(): ArrayObject
     {
-        return $this->arguments;
+        return $this->argumentsObject ??= new ArrayObject($this->arguments);
     }
 
     /**
@@ -112,7 +125,13 @@ final class ReflectiveMethodInvocation implements MethodInvocation
             return $interceptor->invoke($this);
         }
 
-        return call_user_func_array($this->callable, (array) $this->arguments);
+        // Use ArrayObject if getArguments() was called (and possibly mutated),
+        // otherwise use the fast plain array path
+        if ($this->argumentsObject !== null) {
+            return ($this->callable)(...$this->argumentsObject->getArrayCopy());
+        }
+
+        return ($this->callable)(...$this->arguments);
     }
 
     /**

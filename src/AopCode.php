@@ -30,7 +30,17 @@ use const T_STRING;
  */
 final class AopCode
 {
-    public const INTERCEPT_STATEMENT = '\$this->_intercept(__FUNCTION__, func_get_args());';
+    /** Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag) */
+    private const INVOKE_TEMPLATE = <<<'PHP'
+        $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
+        %s$__aop->proceed();
+    PHP;
+
+    /** Template for readonly classes (bindings accessed via $_state) */
+    private const INVOKE_READONLY_TEMPLATE = <<<'PHP'
+        $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
+        %s$__aop->proceed();
+    PHP;
 
     private string $code = '';
     private int $curlyBraceCount = 0;
@@ -48,7 +58,7 @@ final class AopCode
     {
         $this->parseClass($sourceClass, $postfix);
         $this->implementsInterface(WeavedInterface::class);
-        $this->addMethods($sourceClass, $bind);
+        $this->addMethods($sourceClass, $bind, $sourceClass->isReadOnly());
 
         return $this->getCodeText();
     }
@@ -173,14 +183,16 @@ final class AopCode
     }
 
     /** @param ReflectionClass<object> $class */
-    private function addMethods(ReflectionClass $class, BindInterface $bind): void
+    private function addMethods(ReflectionClass $class, BindInterface $bind, bool $isReadOnly): void
     {
-        $bindings = array_keys($bind->getBindings());
+        $bindings = \array_flip(\array_keys($bind->getBindings()));
+        $template = $isReadOnly ? self::INVOKE_READONLY_TEMPLATE : self::INVOKE_TEMPLATE;
 
         $parentMethods = $class->getMethods();
         $interceptedMethods = [];
         foreach ($parentMethods as $method) {
-            if (! in_array($method->getName(), $bindings)) {
+            $methodName = $method->getName();
+            if (! isset($bindings[$methodName])) {
                 continue;
             }
 
@@ -192,7 +204,14 @@ final class AopCode
             }
 
             $return = $isVoid ? '' : 'return ';
-            $interceptedMethods[] = sprintf("    %s\n    {\n        %s%s\n    }\n", $signature, $return, self::INTERCEPT_STATEMENT);
+            $body = sprintf(
+                $template,
+                $methodName, // '(string) method' arg
+                $methodName, // bindings key
+                $methodName, // parent::method(...)
+                $return,     // 'return ' or ''
+            );
+            $interceptedMethods[] = sprintf("    %s\n    {\n%s    }\n", $signature, $body);
         }
 
         if (! $interceptedMethods) {
