@@ -122,7 +122,7 @@ final class MethodSignatureString
     private function formatArg($name, $value): string
     {
         $formattedValue = $value instanceof UnitEnum ?
-            '\\' . var_export($value, true)
+            var_export($value, true)
             : preg_replace('/\s+/', '', var_export($value, true));
 
         return is_numeric($name) ? (string) $formattedValue : "{$name}: {$formattedValue}";
