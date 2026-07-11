@@ -33,6 +33,17 @@ final class Weaver
     }
 
     /**
+     * Exclude in-process FQN cache from serialization. A restored Weaver in another
+     * process must re-run loadClass()/compile() — cached names would skip require and fatal.
+     *
+     * @return list<'bindName'|'compiler'|'bind'|'classDir'>
+     */
+    public function __sleep(): array
+    {
+        return ['bindName', 'compiler', 'bind', 'classDir'];
+    }
+
+    /**
      * @param class-string<T> $class
      * @param list<mixed>     $args
      *

@@ -6,6 +6,7 @@ namespace Ray\Aop;
 
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 use function class_exists;
 use function passthru;
@@ -83,8 +84,17 @@ class WeaverTest extends TestCase
     #[Depends('testConstructorCreatesWeaverInstance')]
     public function testSerializedWeaverMaintainsFunctionality(Weaver $weaver): void
     {
-        $weaver = unserialize(serialize($weaver));
+        // Populate classCache, then ensure it is not restored after unserialize
+        $weaver->weave(FakeWeaverMock::class);
+        $serialized = serialize($weaver);
+        $this->assertStringNotContainsString('classCache', $serialized);
+
+        $weaver = unserialize($serialized);
         $this->assertInstanceOf(Weaver::class, $weaver);
+
+        $cache = (new ReflectionProperty(Weaver::class, 'classCache'))->getValue($weaver);
+        $this->assertSame([], $cache, 'classCache must not survive serialize/unserialize');
+
         $weaved = $weaver->newInstance(FakeWeaverMock::class, []);
         $this->assertInstanceOf(FakeWeaverMock::class, $weaved);
         $result = $weaved->returnSame(1);

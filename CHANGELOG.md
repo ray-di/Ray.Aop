@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Compiler::compile()` now (re)emits the weaved class file even when the class is already declared in the process but the file is missing, so a compile pipeline that cleans and recompiles produces complete output for runtime loaders that resolve weaved classes by name. (#261)
 - Infinite recursion when an interceptor invoked another intercepted method on the same instance via `getThis()`. Such nested calls are now intercepted normally (previously interception state was corrupted). (#260)
 - Codegen no longer corrupts generated method code containing `$1`-style sequences (`preg_replace` backreference bug in `AopCode::insert()`). (#260)
+- Bind/match no longer instantiates method attributes via `getAnnotations()`/`getAnnotation()`, so a broken attribute constructor on an unrelated method cannot fatal `bind()`. (#259)
+- `Weaver` serialization excludes the in-process weaved-class cache so a restored Weaver in another process reloads class files instead of assuming FQNs are already defined. (#259)
 
 ### Removed
 - Internal API: `AopCode::INTERCEPT_STATEMENT` public const, `_intercept()`, `_isAspect`; `AopCode::resolveInterceptTrait()` is now private. (#260)
