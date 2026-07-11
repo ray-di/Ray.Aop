@@ -223,7 +223,7 @@ PHP;
             }
 
             $return = $isVoid ? '' : 'return ';
-            /** @var list<object> $interceptors */
+            /** @var list<object|class-string> $interceptors */
             $interceptors = $bindings[$methodName];
             $body = sprintf(
                 $template,
@@ -247,7 +247,7 @@ PHP;
     /**
      * Short class names for the always-on weaved-method comment (self-documenting bind).
      *
-     * @param list<object> $interceptors
+     * @param list<object|class-string> $interceptors
      */
     private function interceptorShortNames(array $interceptors): string
     {
