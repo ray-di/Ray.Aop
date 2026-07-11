@@ -55,7 +55,9 @@ final class Compiler implements CompilerInterface
     {
         $compiledClass = $this->compile($class, $bind);
         assert(class_exists($compiledClass));
-        $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
+        /** @var class-string<T> $compiledClass */
+        /** @psalm-suppress MixedMethodCall */
+        $instance = new $compiledClass(...$args);
         if ($instance instanceof WeavedInterface) {
             $instance->_setBindings($bind->getBindings());
         }

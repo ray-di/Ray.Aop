@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Override;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -35,12 +36,10 @@ final class AnnotatedMatcher extends BuiltinMatcher
     #[Override]
     public function matchesClass(ReflectionClass $class, array $arguments): bool
     {
-        $rayClass = $class instanceof \Ray\Aop\ReflectionClass ? $class : new \Ray\Aop\ReflectionClass($class->getName());
         /** @var class-string $annotationName */
         $annotationName = $arguments[0];
-        $annotation = $rayClass->getAnnotation($annotationName);
 
-        return $annotation !== null;
+        return $class->getAttributes($annotationName, ReflectionAttribute::IS_INSTANCEOF) !== [];
     }
 
     /**
@@ -49,11 +48,9 @@ final class AnnotatedMatcher extends BuiltinMatcher
     #[Override]
     public function matchesMethod(ReflectionMethod $method, array $arguments): bool
     {
-        $rayMethod = $method instanceof \Ray\Aop\ReflectionMethod ? $method : new \Ray\Aop\ReflectionMethod($method->class, $method->getName());
         /** @var class-string $annotationName */
         $annotationName = $arguments[0];
-        $annotation = $rayMethod->getAnnotation($annotationName);
 
-        return $annotation !== null;
+        return $method->getAttributes($annotationName, ReflectionAttribute::IS_INSTANCEOF) !== [];
     }
 }

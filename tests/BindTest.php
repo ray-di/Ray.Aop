@@ -119,4 +119,53 @@ class BindTest extends TestCase
         ];
         $this->assertSame($expect, $actual);
     }
+
+    public function testNonAnnotationPointcutDoesNotInstantiateMethodAttributes(): void
+    {
+        FakeCountingAttribute::$instances = 0;
+
+        $pointcut = new Pointcut((new Matcher())->any(), (new Matcher())->any(), [new FakeDoubleInterceptor()]);
+        $this->bind->bind(FakeCountingAttributeClass::class, [$pointcut]);
+
+        $this->assertArrayHasKey('run', $this->bind->getBindings());
+        $this->assertSame(0, FakeCountingAttribute::$instances);
+    }
+
+    public function testAnnotatedPointcutDoesNotInstantiateMethodAttributes(): void
+    {
+        FakeCountingAttribute::$instances = 0;
+
+        $pointcut = new Pointcut((new Matcher())->any(), (new Matcher())->annotatedWith(FakeCountingAttribute::class), [new FakeDoubleInterceptor()]);
+        $this->bind->bind(FakeCountingAttributeClass::class, [$pointcut]);
+
+        $this->assertArrayHasKey('run', $this->bind->getBindings());
+        $this->assertSame(0, FakeCountingAttribute::$instances);
+    }
+
+    public function testAnnotatedWithParentAttributeMatchesChildAttribute(): void
+    {
+        $interceptor = new FakeDoubleInterceptor();
+        $pointcut = new Pointcut(
+            (new Matcher())->any(),
+            (new Matcher())->annotatedWith(FakeParentAttr::class),
+            [$interceptor],
+        );
+        $this->bind->bind(FakeChildAttrClass::class, [$pointcut]);
+
+        $this->assertSame(['run' => [$interceptor]], $this->bind->getBindings());
+    }
+
+    public function testAnnotationOrderDeterminesInterceptorOrder(): void
+    {
+        // FakeAnnotateClass::getDouble attributes: FakeMarker3, FakeMarker2, FakeMarker, FakeMarker
+        $i3 = new FakeOnionInterceptor3();
+        $i2 = new FakeOnionInterceptor2();
+        $i1 = new FakeOnionInterceptor1();
+        $pc3 = new Pointcut((new Matcher())->any(), (new Matcher())->annotatedWith(FakeMarker3::class), [$i3]);
+        $pc2 = new Pointcut((new Matcher())->any(), (new Matcher())->annotatedWith(FakeMarker2::class), [$i2]);
+        $pc1 = new Pointcut((new Matcher())->any(), (new Matcher())->annotatedWith(FakeMarker::class), [$i1]);
+        $this->bind->bind(FakeAnnotateClass::class, [$pc1, $pc2, $pc3]);
+
+        $this->assertSame([$i3, $i2, $i1], $this->bind->getBindings()['getDouble']);
+    }
 }
