@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use FakeGlobalInterceptor;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\InvalidSourceClassException;
 use ReflectionClass;
@@ -345,5 +346,18 @@ class AopCodeTest extends TestCase
         // Method without return type should have 'return' before intercept
         $this->assertStringContainsString('function noReturnType($a)', $code);
         $this->assertStringContainsString('return $invocation->proceed();', $code);
+    }
+
+    public function testInterceptorShortNamesHandlesClassStringAndGlobalNamespace(): void
+    {
+        $bind = new Bind();
+        /** @var list<MethodInterceptor|class-string<MethodInterceptor>> $interceptors */
+        $interceptors = [FakeGlobalInterceptor::class, NullInterceptor::class];
+        $bind->bindInterceptors('returnSame', $interceptors);
+        $code = $this->codeGen->generate(new ReflectionClass(FakeMock::class), $bind, '_test');
+
+        // Class-string interceptor: short name extracted without instantiation
+        // Global-namespace class: no backslash, so full name is the short name
+        $this->assertStringContainsString('// FakeGlobalInterceptor, NullInterceptor', $code);
     }
 }
