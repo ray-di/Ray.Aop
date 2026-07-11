@@ -9,15 +9,15 @@ use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
-use function array_flip;
-use function array_keys;
 use function file_get_contents;
 use function implode;
+use function is_object;
 use function preg_replace;
 use function preg_replace_callback;
 use function rtrim;
 use function sprintf;
 use function strrpos;
+use function substr;
 use function substr_replace;
 use function token_get_all;
 use function trim;
@@ -35,20 +35,23 @@ use const T_STRING;
 final class AopCode
 {
     /** Code generation version — bump on codegen changes to invalidate cached proxies */
-    public const GENERATION = 5;
+    public const GENERATION = 6;
 
     /**
      * Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag).
+     * Leading // line lists interceptor short class names (self-documenting weaved code).
      * Two statements: build MethodInvocation, then proceed (compact, no blank line).
      */
     // Closing delimiter at column 0 so body keeps 8-space method indent (PSR12)
     private const INVOKE_TEMPLATE = <<<'PHP'
+        // %s
         $invocation = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
         %s$invocation->proceed();
 PHP;
 
     /** Template for readonly classes (bindings accessed via $_state) */
     private const INVOKE_READONLY_TEMPLATE = <<<'PHP'
+        // %s
         $invocation = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
         %s$invocation->proceed();
 PHP;
@@ -201,7 +204,7 @@ PHP;
     /** @param ReflectionClass<object> $class */
     private function addMethods(ReflectionClass $class, BindInterface $bind, bool $isReadOnly): void
     {
-        $bindings = array_flip(array_keys($bind->getBindings()));
+        $bindings = $bind->getBindings();
         $template = $isReadOnly ? self::INVOKE_READONLY_TEMPLATE : self::INVOKE_TEMPLATE;
 
         $parentMethods = $class->getMethods();
@@ -220,8 +223,11 @@ PHP;
             }
 
             $return = $isVoid ? '' : 'return ';
+            /** @var list<object|class-string> $interceptors */
+            $interceptors = $bindings[$methodName];
             $body = sprintf(
                 $template,
+                $this->interceptorShortNames($interceptors),
                 $methodName, // '(string) method' arg
                 $methodName, // bindings key
                 $methodName, // parent::method(...)
@@ -236,6 +242,23 @@ PHP;
         }
 
         $this->insert(implode("\n", $interceptedMethods));
+    }
+
+    /**
+     * Short class names for the always-on weaved-method comment (self-documenting bind).
+     *
+     * @param list<object|class-string> $interceptors
+     */
+    private function interceptorShortNames(array $interceptors): string
+    {
+        $names = [];
+        foreach ($interceptors as $interceptor) {
+            $fqn = is_object($interceptor) ? $interceptor::class : $interceptor;
+            $pos = strrpos($fqn, '\\');
+            $names[] = $pos === false ? $fqn : substr($fqn, $pos + 1);
+        }
+
+        return $names === [] ? '(none)' : implode(', ', $names);
     }
 
     /** @psalm-external-mutation-free */
