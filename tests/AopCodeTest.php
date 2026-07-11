@@ -80,17 +80,12 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString('public function method19(): string|int|null', $code);
         $this->assertStringContainsString('public function method20(): \DateTime|string|null', $code);
 
-        // PHPDoc is not generated
-        $phpDoc = '    /**
-     * PHPDoc
-     */';
         $this->assertStringContainsString(
             implode(
                 PHP_EOL,
                 [
-                    $phpDoc,
-                    '     #[\\Ray\\Aop\\Annotation\\FakeMarker4(array(0=>1,1=>2,), 3)]',
-                    '      public function method21()',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarker4(array(0=>1,1=>2,), 3)]',
+                    '    public function method21()',
                 ]
             ),
             $code
@@ -99,8 +94,8 @@ class AopCodeTest extends TestCase
             implode(
                 PHP_EOL,
                 [
-                    '     #[\\Ray\\Aop\\Annotation\\FakeMarkerName(a: 1, b: \'string\', c: true)]',
-                    '      public function method22()',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarkerName(a: 1, b: \'string\', c: true)]',
+                    '    public function method22()',
                 ]
             ),
             $code
@@ -109,8 +104,8 @@ class AopCodeTest extends TestCase
             implode(
                 PHP_EOL,
                 [
-                    '     #[\\Ray\\Aop\\Annotation\\FakeMarker5(\\Ray\\Aop\\FakePhp81Enum::Apple)]',
-                    '      public function method23()',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarker5(\\Ray\\Aop\\FakePhp81Enum::Apple)]',
+                    '    public function method23()',
                 ]
             ),
             $code
@@ -119,8 +114,8 @@ class AopCodeTest extends TestCase
             implode(
                 PHP_EOL,
                 [
-                    '     #[\\Ray\\Aop\\Annotation\\FakeMarker6(fruit1: \\Ray\\Aop\\FakePhp81Enum::Apple, fruit2: \\Ray\\Aop\\FakePhp81Enum::Orange)]',
-                    '      public function method24()',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarker6(fruit1: \\Ray\\Aop\\FakePhp81Enum::Apple, fruit2: \\Ray\\Aop\\FakePhp81Enum::Orange)]',
+                    '    public function method24()',
                 ]
             ),
             $code

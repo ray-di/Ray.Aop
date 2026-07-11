@@ -33,38 +33,27 @@ final class MethodSignatureString
         $this->typeString = new TypeString(self::NULLABLE);
     }
 
-    /** @psalm-external-mutation-free  */
+    /**
+     * Returns a PSR12-friendly method signature: every line indented with 4 spaces.
+     */
     public function get(ReflectionMethod $method): string
     {
-        $signatureParts = $this->getDocComment($method);
-        $this->addAttributes($method, $signatureParts);
-        $modifiedSignatureParts = $this->addAccessModifiers($method, $signatureParts);
-        $methodSignatureParts = $this->addMethodSignature($method, $modifiedSignatureParts);
-
-        return implode(' ', $methodSignatureParts);
-    }
-
-    /** @return list<string> */
-    private function getDocComment(ReflectionMethod $method): array
-    {
+        $lines = [];
         $docComment = $method->getDocComment();
-
-        return is_string($docComment) ? [$docComment . PHP_EOL] : [];
-    }
-
-    /** @param list<string> $signatureParts */
-    private function addAttributes(ReflectionMethod $method, array &$signatureParts): void
-    {
-        $attributes = $method->getAttributes();
-        foreach ($attributes as $attribute) {
-            $signatureParts[] = sprintf('    #[%s]', $this->formatAttributeStr($attribute)) . PHP_EOL;
+        if (is_string($docComment)) {
+            // Keep Reflection's exact docblock text so re-parsed getDocComment() matches the source
+            $lines[] = $docComment;
         }
 
-        if (empty($signatureParts)) {
-            return;
+        foreach ($method->getAttributes() as $attribute) {
+            $lines[] = self::INDENT . sprintf('#[%s]', $this->formatAttributeStr($attribute));
         }
 
-        $signatureParts[] = self::INDENT;
+        $signatureParts = $this->addAccessModifiers($method, []);
+        $signatureParts = $this->addMethodSignature($method, $signatureParts);
+        $lines[] = self::INDENT . implode(' ', $signatureParts);
+
+        return implode(PHP_EOL, $lines);
     }
 
     /** @param ReflectionAttribute<object> $attribute */

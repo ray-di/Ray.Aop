@@ -13,12 +13,14 @@ use function array_flip;
 use function array_keys;
 use function file_get_contents;
 use function implode;
+use function preg_replace;
 use function preg_replace_callback;
 use function rtrim;
 use function sprintf;
 use function strrpos;
 use function substr_replace;
 use function token_get_all;
+use function trim;
 
 use const T_CLASS;
 use const T_EXTENDS;
@@ -33,25 +35,23 @@ use const T_STRING;
 final class AopCode
 {
     /** Code generation version — bump on codegen changes to invalidate cached proxies */
-    public const GENERATION = 4;
+    public const GENERATION = 5;
 
     /**
      * Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag).
-     * Two statements keep the story: build MethodInvocation, then proceed.
-     * Blank line before proceed matches common CS (e.g. accidental phpcbf on generated files).
+     * Two statements: build MethodInvocation, then proceed (compact, no blank line).
      */
+    // Closing delimiter at column 0 so body keeps 8-space method indent (PSR12)
     private const INVOKE_TEMPLATE = <<<'PHP'
-            $invocation = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
-
-            %s$invocation->proceed();
-    PHP;
+        $invocation = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
+        %s$invocation->proceed();
+PHP;
 
     /** Template for readonly classes (bindings accessed via $_state) */
     private const INVOKE_READONLY_TEMPLATE = <<<'PHP'
-            $invocation = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
-
-            %s$invocation->proceed();
-    PHP;
+        $invocation = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
+        %s$invocation->proceed();
+PHP;
 
     private string $code = '';
     private int $curlyBraceCount = 0;
@@ -67,6 +67,8 @@ final class AopCode
      */
     public function generate(ReflectionClass $sourceClass, BindInterface $bind, string $postfix): string
     {
+        $this->code = '';
+        $this->curlyBraceCount = 0;
         $this->parseClass($sourceClass, $postfix);
         $this->implementsInterface(WeavedInterface::class);
         $this->addMethods($sourceClass, $bind, $sourceClass->isReadOnly());
@@ -166,6 +168,8 @@ final class AopCode
 
             $isClassSignatureEnds = $inClass && $text === '{';
             if ($isClassSignatureEnds) {
+                // Drop trailing spaces before the class body (PSR2 SpaceBeforeBrace / EndLine)
+                $this->code = rtrim($this->code, " \t");
                 $this->resolveInterceptTrait($sourceClass);
 
                 return;
@@ -185,16 +189,13 @@ final class AopCode
         $pattern = '/(class\s+[\w\s]+extends\s+\w+)(?:\s+implements\s+(.+))?/';
         $this->code = (string) preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
             if (isset($matches[2])) {
-                // 既に implements が存在する場合
-                // $match[0] class  FakePhp8Types_test extends FakePhp8Types  implements FakeNullInterface, \Ray\Aop\FakeNullInterface1
-                // $match[1] class  FakePhp8Types_test extends FakePhp8Types
-                // $match[2] FakeNullInterface, \Ray\Aop\FakeNullInterface1
-                return sprintf('%s implements %s, \%s', $matches[1], $matches[2], $interfaceName);
+                return sprintf('%s implements %s, \\%s', rtrim($matches[1]), trim($matches[2]), $interfaceName);
             }
 
-            // implements が存在しない場合
-            return sprintf('%s implements \%s', $matches[0], $interfaceName);
+            return sprintf('%s implements \\%s', rtrim($matches[0]), $interfaceName);
         }, $this->code);
+        // Class declaration must not end with trailing spaces (before body brace)
+        $this->code = (string) preg_replace('/[ \t]+$/m', '', $this->code);
     }
 
     /** @param ReflectionClass<object> $class */
@@ -226,8 +227,8 @@ final class AopCode
                 $methodName, // parent::method(...)
                 $return,     // 'return ' or ''
             );
-            // Closing brace on its own line (avoid "proceed();    }")
-            $interceptedMethods[] = sprintf("    %s\n    {\n%s\n    }\n", $signature, rtrim($body, "\n"));
+            // Signature is already 4-space indented; body uses 8-space indent (PSR12)
+            $interceptedMethods[] = sprintf("%s\n    {\n%s\n    }\n", $signature, rtrim($body, "\n"));
         }
 
         if (! $interceptedMethods) {
@@ -240,13 +241,14 @@ final class AopCode
     /** @psalm-external-mutation-free */
     private function addInterceptorTrait(): void
     {
-        $this->add(sprintf("{\n    use \%s;\n}\n", InterceptTrait::class));
+        // Blank line after trait use (PSR12.Traits.UseDeclaration)
+        $this->add(sprintf("{\n    use \\%s;\n\n}\n", InterceptTrait::class));
     }
 
     /** @psalm-external-mutation-free */
     private function addReadOnlyInterceptorTrait(): void
     {
-        $this->add(sprintf("{\n    use \%s;\n}\n", ReadOnlyInterceptTrait::class));
+        $this->add(sprintf("{\n    use \\%s;\n\n}\n", ReadOnlyInterceptTrait::class));
     }
 
     /** @psalm-external-mutation-free */
@@ -258,7 +260,8 @@ final class AopCode
             $this->curlyBraceCount--;
         }
 
-        return $this->code;
+        // PSR2: single trailing newline at EOF
+        return rtrim($this->code, "\n") . "\n";
     }
 
     /** @param ReflectionClass<object> $sourceClass */
