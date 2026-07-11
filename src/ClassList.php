@@ -45,8 +45,8 @@ final readonly class ClassList implements IteratorAggregate
         }
 
         // Remove comments
-        $content = preg_replace(self::MULTI_LINE_COMMENT_PATTERN, '', (string) $content); // Multi-line comments
-        $content = preg_replace(self::SINGLE_LINE_COMMENT_PATTERN, '', (string) $content); // Single-line comments
+        $content = preg_replace(self::MULTI_LINE_COMMENT_PATTERN, '', (string) $content);
+        $content = preg_replace(self::SINGLE_LINE_COMMENT_PATTERN, '', (string) $content);
 
         // Remove string literals
         $content = preg_replace(self::STRING_LITERAL_PATTERN, '', (string) $content);
