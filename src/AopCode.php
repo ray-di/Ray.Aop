@@ -11,6 +11,7 @@ use ReflectionUnionType;
 
 use function file_get_contents;
 use function implode;
+use function is_object;
 use function preg_replace;
 use function preg_replace_callback;
 use function rtrim;
@@ -252,7 +253,7 @@ PHP;
     {
         $names = [];
         foreach ($interceptors as $interceptor) {
-            $fqn = $interceptor::class;
+            $fqn = is_object($interceptor) ? $interceptor::class : $interceptor;
             $pos = strrpos($fqn, '\\');
             $names[] = $pos === false ? $fqn : substr($fqn, $pos + 1);
         }
