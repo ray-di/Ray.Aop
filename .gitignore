@@ -1,6 +1,8 @@
 /vendor/
 /build/
 /tests/tmp/
+/tests/tmp_unerase/*.php
+/benchmarks/tmp/*.php
 /demo/tmp/
 /.phpcs-cache
 /.phpunit.result.cache

@@ -38,12 +38,14 @@ final class AopCode
     private const INVOKE_TEMPLATE = <<<'PHP'
             $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
             %s$__aop->proceed();
+
     PHP;
 
     /** Template for readonly classes (bindings accessed via $_state) */
     private const INVOKE_READONLY_TEMPLATE = <<<'PHP'
             $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
             %s$__aop->proceed();
+
     PHP;
 
     private string $code = '';
@@ -96,7 +98,7 @@ final class AopCode
     {
         $lastBrace = strrpos($this->code, '}');
         if ($lastBrace === false) {
-            return;
+            return; // @codeCoverageIgnore
         }
 
         $this->code = substr_replace($this->code, $code . '}', $lastBrace);

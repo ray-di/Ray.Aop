@@ -48,7 +48,7 @@ class AopCodeTest extends TestCase
     public function testVariousMethodSignaturesInPhp81(): void
     {
         $bind = new Bind();
-        for ($i = 1; $i <= 25; $i++) {
+        for ($i = 1; $i <= 26; $i++) {
             $bind->bindInterceptors('method' . (string) $i, []);
         }
 
@@ -126,6 +126,8 @@ class AopCodeTest extends TestCase
             $code
         );
         $this->assertStringContainsString("public function method25(#[\Ray\Aop\Attribute\FakeAttr1()] \$a, #[\Ray\Aop\Attribute\FakeAttr1()] #[\Ray\Aop\Attribute\FakeAttr2(name: 'famicon', age: 40)] \$b): void", $code);
+        // $1 in attribute args must survive codegen (preg_replace would strip it as a backreference)
+        $this->assertStringContainsString('a$1b', $code);
     }
 
     public function testVariousMethodSignaturesInPhp82(): void
@@ -228,7 +230,7 @@ class AopCodeTest extends TestCase
 
         // Should still have the class but no intercepted methods
         $this->assertStringContainsString('class FakePhp7Class_test extends FakePhp7Class', $code);
-        $this->assertStringNotContainsString('_intercept(__FUNCTION__', $code);
+        $this->assertStringNotContainsString('ReflectiveMethodInvocation', $code);
     }
 
     public function testIntersectionTypeReturnIsPreserved(): void

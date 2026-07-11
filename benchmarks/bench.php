@@ -36,7 +36,7 @@ $compileTime = (\hrtime(true) - $compileStart) / 1e6; // ms
 \printf("  Time: %.3f ms\n\n", $compileTime);
 
 // -------------------------------------------------------
-// Runtime hot-path benchmark (100K iterations)
+// Runtime hot-path benchmark (5K iterations)
 // -------------------------------------------------------
 $iterations = 5_000;
 

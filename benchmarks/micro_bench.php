@@ -9,7 +9,6 @@ require __DIR__ . '/BenchService.php';
 require __DIR__ . '/BenchInterceptor.php';
 
 use ArrayObject;
-use Ray\Aop\ReflectiveMethodInvocation;
 
 // -------------------------------------------------------
 // Micro-benchmark: Individual component costs
@@ -20,14 +19,14 @@ function bench(string $label, callable $fn, int $iterations = ITERATIONS): void
 {
     // Warm up
     $fn();
-    
+
     $start = \hrtime(true);
     for ($i = 0; $i < $iterations; $i++) {
         $fn();
     }
     $time = (\hrtime(true) - $start) / 1e6; // ms
     $perCall = ($time / $iterations) * 1000; // μs
-    
+
     \printf("%-55s %8.3f ms  %8.3f μs/call\n", $label, $time, $perCall);
 }
 

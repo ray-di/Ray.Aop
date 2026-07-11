@@ -79,4 +79,8 @@ class FakePhp8Types implements FakeNullInterface, \Ray\Aop\FakeNullInterface1
         #[FakeAttr1, FakeAttr2(name: 'famicon', age: 40)]
         $b
     ): void {}
+
+    // Attribute argument containing $1 — must not be treated as a preg backreference
+    #[FakeMarker4(['a$1b'], 1)]
+    public function method26() {}
 }
