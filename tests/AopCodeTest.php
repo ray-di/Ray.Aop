@@ -344,6 +344,6 @@ class AopCodeTest extends TestCase
 
         // Method without return type should have 'return' before intercept
         $this->assertStringContainsString('function noReturnType($a)', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $invocation->proceed();', $code);
     }
 }
