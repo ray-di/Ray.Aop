@@ -46,6 +46,7 @@ final class WeavedFileReemissionTest extends TestCase
             // Re-weave: must re-emit the file even though the class is declared.
             $compiler->compile(FakeMock::class, $bind);
             $this->assertTrue(file_exists($file), 're-weave must re-emit the weaved file when it is missing');
+            $this->assertTrue(class_exists($fqn, false), 're-weave must not unset the already-declared class');
         } finally {
             foreach (glob($tmpDir . '/*') ?: [] as $f) {
                 @unlink($f);
