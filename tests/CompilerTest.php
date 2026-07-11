@@ -303,7 +303,9 @@ class CompilerTest extends TestCase
 
     public function testAnonymousClassCanBeWeaved(): void
     {
-        $mock = $this->compiler->newInstance(FakeAnonymousClass::class, [], $this->bind);
+        $bind = new Bind();
+        $bind->bindInterceptors('hasAnonymousClass', [new NullInterceptor()]);
+        $mock = $this->compiler->newInstance(FakeAnonymousClass::class, [], $bind);
         $this->assertInstanceOf(FakeAnonymousClass::class, $mock);
         $this->assertInstanceOf(WeavedInterface::class, $mock);
     }
@@ -317,7 +319,9 @@ class CompilerTest extends TestCase
 
     public function testReadOnlyClassCanBeWeaved(): void
     {
-        $mock = $this->compiler->newInstance(FakePhp82ReadOnlyClass::class, [], $this->bind);
+        $bind = new Bind();
+        $bind->bindInterceptors('greet', [new NullInterceptor()]);
+        $mock = $this->compiler->newInstance(FakePhp82ReadOnlyClass::class, [], $bind);
         $this->assertInstanceOf(FakePhp82ReadOnlyClass::class, $mock);
         $this->assertInstanceOf(WeavedInterface::class, $mock);
     }
@@ -349,10 +353,8 @@ class CompilerTest extends TestCase
         $bind->bindInterceptors('nonExistentMethod', [new FakeDoubleInterceptor()]);
         $class = $this->compiler->compile(FakeMock::class, $bind);
 
-        // Even with binding for non-existent method, compiler creates weaved class
-        // because hasNoBinding checks if bindings array is empty first
-        $this->assertNotSame(FakeMock::class, $class);
-        $this->assertTrue(class_exists($class));
+        // Bindings that match no methods on the class are a no-op — return original FQN
+        $this->assertSame(FakeMock::class, $class);
     }
 
     public function testCompileWithMixedExistingAndNonExistingMethods(): void

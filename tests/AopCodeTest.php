@@ -231,6 +231,9 @@ class AopCodeTest extends TestCase
         // Should still have the class but no intercepted methods
         $this->assertStringContainsString('class FakePhp7Class_test extends FakePhp7Class', $code);
         $this->assertStringNotContainsString('ReflectiveMethodInvocation', $code);
+        // Early-return in addMethods must skip insert(''): empty insert truncates the
+        // trailing newline after the final brace (ReturnRemoval mutant).
+        $this->assertStringEndsWith("}\n", $code);
     }
 
     public function testIntersectionTypeReturnIsPreserved(): void

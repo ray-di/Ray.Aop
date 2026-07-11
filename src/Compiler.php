@@ -106,9 +106,9 @@ final class Compiler implements CompilerInterface
     /** @param class-string $class */
     private function hasNoBinding(string $class, BindInterface $bind): bool
     {
-        $hasMethod = $this->hasBoundMethod($class, $bind);
-
-        return ! $bind->getBindings() && ! $hasMethod;
+        // No weaving when none of the bound methods exist on the target class
+        // (empty bindings, or only names that do not match real methods).
+        return ! $this->hasBoundMethod($class, $bind);
     }
 
     /** @param class-string $class */

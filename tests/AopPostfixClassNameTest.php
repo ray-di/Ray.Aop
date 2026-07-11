@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
+use function crc32;
+use function filemtime;
 use function substr;
 
 class AopPostfixClassNameTest extends TestCase
@@ -14,6 +17,23 @@ class AopPostfixClassNameTest extends TestCase
     {
         $className = new AopPostfixClassName(FakeClass::class, 'bindings', '/tmp');
         $this->assertStringStartsWith('_', $className->postFix);
+    }
+
+    /**
+     * Pins the exact hash inputs (order + GENERATION). Concat reorder / GENERATION
+     * removal mutants change crc32 and must fail here.
+     */
+    public function testPostfixMatchesDeterministicHashFormula(): void
+    {
+        $bindings = 'bindings';
+        $classDir = '/tmp';
+        $fileTime = (string) filemtime((string) (new ReflectionClass(FakeClass::class))->getFileName());
+        $expected = '_' . crc32($fileTime . $bindings . $classDir . AopCode::GENERATION);
+
+        $className = new AopPostfixClassName(FakeClass::class, $bindings, $classDir);
+
+        $this->assertSame($expected, $className->postFix);
+        $this->assertSame(FakeClass::class . $expected, $className->fqn);
     }
 
     public function testFqnContainsOriginalClassNameAndPostfix(): void
