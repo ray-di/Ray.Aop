@@ -5,15 +5,35 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
-use function substr;
+use function crc32;
+use function filemtime;
+use function sprintf;
 
 class AopPostfixClassNameTest extends TestCase
 {
-    public function testPostfixStartsWithUnderscore(): void
+    public function testPostfixIsUnsignedDigits(): void
     {
         $className = new AopPostfixClassName(FakeClass::class, 'bindings', '/tmp');
-        $this->assertStringStartsWith('_', $className->postFix);
+        $this->assertMatchesRegularExpression('/^\d+$/', $className->postFix);
+    }
+
+    /**
+     * Pins the exact hash inputs (order + GENERATION). Concat reorder / GENERATION
+     * removal mutants change crc32 and must fail here.
+     */
+    public function testPostfixMatchesDeterministicHashFormula(): void
+    {
+        $bindings = 'bindings';
+        $classDir = '/tmp';
+        $fileTime = (string) filemtime((string) (new ReflectionClass(FakeClass::class))->getFileName());
+        $expected = sprintf('%u', crc32($fileTime . $bindings . $classDir . AopCode::GENERATION));
+
+        $className = new AopPostfixClassName(FakeClass::class, $bindings, $classDir);
+
+        $this->assertSame($expected, $className->postFix);
+        $this->assertSame(FakeClass::class . $expected, $className->fqn);
     }
 
     public function testFqnContainsOriginalClassNameAndPostfix(): void
@@ -49,18 +69,10 @@ class AopPostfixClassNameTest extends TestCase
         $this->assertEquals($className1->fqn, $className2->fqn);
     }
 
-    public function testPostfixIsNumeric(): void
-    {
-        $className = new AopPostfixClassName(FakeClass::class, 'bindings', '/tmp');
-        // postFix format is '_' followed by crc32 hash (numeric)
-        $numericPart = substr($className->postFix, 1);
-        $this->assertMatchesRegularExpression('/^-?\d+$/', $numericPart);
-    }
-
     public function testEmptyBindingsProducesValidPostfix(): void
     {
         $className = new AopPostfixClassName(FakeClass::class, '', '/tmp');
-        $this->assertStringStartsWith('_', $className->postFix);
+        $this->assertMatchesRegularExpression('/^\d+$/', $className->postFix);
         $this->assertNotEmpty($className->postFix);
     }
 

@@ -16,8 +16,7 @@
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4.1",
         "infection/infection": "^0.31.9",
-        "phpunit/phpunit": "^10.5.0",
-        "symfony/string": "^7.2"
+        "phpunit/phpunit": "^10.5.0"
     },
     "config": {
         "sort-packages": true,

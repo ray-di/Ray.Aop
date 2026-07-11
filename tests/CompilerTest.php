@@ -303,7 +303,9 @@ class CompilerTest extends TestCase
 
     public function testAnonymousClassCanBeWeaved(): void
     {
-        $mock = $this->compiler->newInstance(FakeAnonymousClass::class, [], $this->bind);
+        $bind = new Bind();
+        $bind->bindInterceptors('hasAnonymousClass', [new NullInterceptor()]);
+        $mock = $this->compiler->newInstance(FakeAnonymousClass::class, [], $bind);
         $this->assertInstanceOf(FakeAnonymousClass::class, $mock);
         $this->assertInstanceOf(WeavedInterface::class, $mock);
     }
@@ -317,9 +319,21 @@ class CompilerTest extends TestCase
 
     public function testReadOnlyClassCanBeWeaved(): void
     {
-        $mock = $this->compiler->newInstance(FakePhp82ReadOnlyClass::class, [], $this->bind);
+        $bind = new Bind();
+        $bind->bindInterceptors('greet', [new NullInterceptor()]);
+        $mock = $this->compiler->newInstance(FakePhp82ReadOnlyClass::class, [], $bind);
         $this->assertInstanceOf(FakePhp82ReadOnlyClass::class, $mock);
         $this->assertInstanceOf(WeavedInterface::class, $mock);
+    }
+
+    public function testReadOnlyClassMethodInterception(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('greet', [new NullInterceptor()]);
+        $mock = $this->compiler->newInstance(FakePhp82ReadOnlyClass::class, [], $bind);
+        // Invoke intercepted method — validates codegen + trait compatibility
+        $result = $mock->greet('World');
+        $this->assertSame('Hello, World', $result);
     }
 
     public function testCompileWithBindingForExistingMethod(): void
@@ -339,10 +353,8 @@ class CompilerTest extends TestCase
         $bind->bindInterceptors('nonExistentMethod', [new FakeDoubleInterceptor()]);
         $class = $this->compiler->compile(FakeMock::class, $bind);
 
-        // Even with binding for non-existent method, compiler creates weaved class
-        // because hasNoBinding checks if bindings array is empty first
-        $this->assertNotSame(FakeMock::class, $class);
-        $this->assertTrue(class_exists($class));
+        // Bindings that match no methods on the class are a no-op — return original FQN
+        $this->assertSame(FakeMock::class, $class);
     }
 
     public function testCompileWithMixedExistingAndNonExistingMethods(): void
@@ -355,5 +367,22 @@ class CompilerTest extends TestCase
         // Should compile because at least one method exists
         $this->assertNotSame(FakeMock::class, $class);
         $this->assertTrue(class_exists($class));
+    }
+
+    /**
+     * Regression: interceptor calling another intercepted method on the same object
+     * must not cause infinite recursion (old _isAspect flag was prone to this)
+     */
+    public function testReentrantInterceptorCrossMethodCall(): void
+    {
+        $bind = new Bind();
+        $interceptor = new FakeReentrantInterceptor();
+        $bind->bindInterceptors('returnSame', [$interceptor]);
+        $bind->bindInterceptors('getSub', [$interceptor]);
+
+        $mock = $this->compiler->newInstance(FakeMock::class, [], $bind);
+        $result = $mock->returnSame(42);
+
+        $this->assertSame(42, $result);
     }
 }

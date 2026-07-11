@@ -48,7 +48,7 @@ class AopCodeTest extends TestCase
     public function testVariousMethodSignaturesInPhp81(): void
     {
         $bind = new Bind();
-        for ($i = 1; $i <= 25; $i++) {
+        for ($i = 1; $i <= 26; $i++) {
             $bind->bindInterceptors('method' . (string) $i, []);
         }
 
@@ -80,17 +80,12 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString('public function method19(): string|int|null', $code);
         $this->assertStringContainsString('public function method20(): \DateTime|string|null', $code);
 
-        // PHPDoc is not generated
-        $phpDoc = '    /**
-     * PHPDoc
-     */';
         $this->assertStringContainsString(
             implode(
                 PHP_EOL,
                 [
-                    $phpDoc,
-                    '     #[\\Ray\\Aop\\Annotation\\FakeMarker4(array(0=>1,1=>2,), 3)]',
-                    '      public function method21()',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarker4(array(0=>1,1=>2,), 3)]',
+                    '    public function method21()',
                 ]
             ),
             $code
@@ -99,8 +94,8 @@ class AopCodeTest extends TestCase
             implode(
                 PHP_EOL,
                 [
-                    '     #[\\Ray\\Aop\\Annotation\\FakeMarkerName(a: 1, b: \'string\', c: true)]',
-                    '      public function method22()',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarkerName(a: 1, b: \'string\', c: true)]',
+                    '    public function method22()',
                 ]
             ),
             $code
@@ -109,8 +104,8 @@ class AopCodeTest extends TestCase
             implode(
                 PHP_EOL,
                 [
-                    '     #[\\Ray\\Aop\\Annotation\\FakeMarker5(\\Ray\\Aop\\FakePhp81Enum::Apple)]',
-                    '      public function method23()',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarker5(\\Ray\\Aop\\FakePhp81Enum::Apple)]',
+                    '    public function method23()',
                 ]
             ),
             $code
@@ -119,13 +114,15 @@ class AopCodeTest extends TestCase
             implode(
                 PHP_EOL,
                 [
-                    '     #[\\Ray\\Aop\\Annotation\\FakeMarker6(fruit1: \\Ray\\Aop\\FakePhp81Enum::Apple, fruit2: \\Ray\\Aop\\FakePhp81Enum::Orange)]',
-                    '      public function method24()',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarker6(fruit1: \\Ray\\Aop\\FakePhp81Enum::Apple, fruit2: \\Ray\\Aop\\FakePhp81Enum::Orange)]',
+                    '    public function method24()',
                 ]
             ),
             $code
         );
         $this->assertStringContainsString("public function method25(#[\Ray\Aop\Attribute\FakeAttr1()] \$a, #[\Ray\Aop\Attribute\FakeAttr1()] #[\Ray\Aop\Attribute\FakeAttr2(name: 'famicon', age: 40)] \$b): void", $code);
+        // $1 in attribute args must survive codegen (preg_replace would strip it as a backreference)
+        $this->assertStringContainsString('a$1b', $code);
     }
 
     public function testVariousMethodSignaturesInPhp82(): void
@@ -164,8 +161,8 @@ class AopCodeTest extends TestCase
 
         // void return type should not have 'return' before intercept statement
         $this->assertStringContainsString('function returnTypeVoid(): void', $code);
-        $this->assertStringNotContainsString('return $this->_intercept', $code);
-        $this->assertStringContainsString('$this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringNotContainsString('return $invocation->proceed', $code);
+        $this->assertStringContainsString('$invocation->proceed();', $code);
     }
 
     public function testNonVoidReturnTypeMethodHasReturnStatement(): void
@@ -176,7 +173,10 @@ class AopCodeTest extends TestCase
 
         // non-void return type should have 'return'
         $this->assertStringContainsString('function returnNullable(string $str): null|int', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $invocation->proceed();', $code);
+        // Closing brace must not glue onto proceed()
+        $this->assertStringNotContainsString('proceed();    }', $code);
+        $this->assertMatchesRegularExpression('/\$invocation->proceed\(\);\n    \}/', $code);
     }
 
     public function testClassWithExistingImplementsGetsWeavedInterfaceAdded(): void
@@ -217,7 +217,7 @@ class AopCodeTest extends TestCase
 
         // union return type should have 'return'
         $this->assertStringContainsString('function method18(): string|int', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $invocation->proceed();', $code);
     }
 
     public function testEmptyBindingsDoesNotAddMethods(): void
@@ -228,7 +228,10 @@ class AopCodeTest extends TestCase
 
         // Should still have the class but no intercepted methods
         $this->assertStringContainsString('class FakePhp7Class_test extends FakePhp7Class', $code);
-        $this->assertStringNotContainsString('_intercept(__FUNCTION__', $code);
+        $this->assertStringNotContainsString('ReflectiveMethodInvocation', $code);
+        // Early-return in addMethods must skip insert(''): empty insert truncates the
+        // trailing newline after the final brace (ReturnRemoval mutant).
+        $this->assertStringEndsWith("}\n", $code);
     }
 
     public function testIntersectionTypeReturnIsPreserved(): void
@@ -239,7 +242,7 @@ class AopCodeTest extends TestCase
 
         // intersection type should be preserved
         $this->assertStringContainsString('\Ray\Aop\FakeNullInterface & \Ray\Aop\FakeNullInterface1', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $invocation->proceed();', $code);
     }
 
     public function testDnfTypeReturnIsPreserved(): void
@@ -250,7 +253,7 @@ class AopCodeTest extends TestCase
 
         // DNF type (intersection inside union) should be preserved
         $this->assertStringContainsString('(\Ray\Aop\FakeNullInterface&\Ray\Aop\FakeNullInterface1)|string', $code);
-        $this->assertStringContainsString('return $this->_intercept(__FUNCTION__, func_get_args());', $code);
+        $this->assertStringContainsString('return $invocation->proceed();', $code);
     }
 
     public function testEnumAttributeArgumentIsPreserved(): void
