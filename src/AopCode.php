@@ -32,20 +32,24 @@ use const T_STRING;
 final class AopCode
 {
     /** Code generation version — bump on codegen changes to invalidate cached proxies */
-    public const GENERATION = 2;
+    public const GENERATION = 3;
 
-    /** Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag) */
+    /**
+     * Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag).
+     * Two statements keep the story: build MethodInvocation, then proceed.
+     * Blank line before proceed matches common CS (e.g. accidental phpcbf on generated files).
+     */
     private const INVOKE_TEMPLATE = <<<'PHP'
-            $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
-            %s$__aop->proceed();
+            $invocation = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->bindings['%s'], parent::%s(...));
 
+            %s$invocation->proceed();
     PHP;
 
     /** Template for readonly classes (bindings accessed via $_state) */
     private const INVOKE_READONLY_TEMPLATE = <<<'PHP'
-            $__aop = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
-            %s$__aop->proceed();
+            $invocation = new \Ray\Aop\ReflectiveMethodInvocation($this, '%s', func_get_args(), $this->_state->bindings['%s'], parent::%s(...));
 
+            %s$invocation->proceed();
     PHP;
 
     private string $code = '';
