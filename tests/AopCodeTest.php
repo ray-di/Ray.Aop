@@ -164,7 +164,7 @@ class AopCodeTest extends TestCase
         $this->assertStringNotContainsString('return $invocation->proceed', $code);
         $this->assertStringContainsString('$invocation->proceed();', $code);
         // empty interceptor list produces the documented "(none)" comment
-        $this->assertStringContainsString("// (none)", $code);
+        $this->assertStringContainsString('// (none)', $code);
     }
 
     public function testGeneratedMethodDocumentsInterceptorShortClassNames(): void
