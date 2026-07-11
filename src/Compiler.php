@@ -84,7 +84,8 @@ final class Compiler implements CompilerInterface
         }
 
         $className = new AopPostfixClassName($class, (string) $bind, $this->classDir);
-        if (! class_exists($className->fqn, false)) {
+        $file = $this->getFileName($className->fqn);
+        if (! class_exists($className->fqn, false) || ! file_exists($file)) {
             try {
                 $this->requireFile($className, new ReflectionClass($class), $bind);
                 // @codeCoverageIgnoreStart
