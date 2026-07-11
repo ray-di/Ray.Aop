@@ -14,6 +14,7 @@ use function array_keys;
 use function file_get_contents;
 use function implode;
 use function preg_replace_callback;
+use function rtrim;
 use function sprintf;
 use function strrpos;
 use function substr_replace;
@@ -32,7 +33,7 @@ use const T_STRING;
 final class AopCode
 {
     /** Code generation version — bump on codegen changes to invalidate cached proxies */
-    public const GENERATION = 3;
+    public const GENERATION = 4;
 
     /**
      * Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag).
@@ -225,7 +226,8 @@ final class AopCode
                 $methodName, // parent::method(...)
                 $return,     // 'return ' or ''
             );
-            $interceptedMethods[] = sprintf("    %s\n    {\n%s    }\n", $signature, $body);
+            // Closing brace on its own line (avoid "proceed();    }")
+            $interceptedMethods[] = sprintf("    %s\n    {\n%s\n    }\n", $signature, rtrim($body, "\n"));
         }
 
         if (! $interceptedMethods) {

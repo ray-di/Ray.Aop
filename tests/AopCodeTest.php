@@ -179,6 +179,9 @@ class AopCodeTest extends TestCase
         // non-void return type should have 'return'
         $this->assertStringContainsString('function returnNullable(string $str): null|int', $code);
         $this->assertStringContainsString('return $invocation->proceed();', $code);
+        // Closing brace must not glue onto proceed()
+        $this->assertStringNotContainsString('proceed();    }', $code);
+        $this->assertMatchesRegularExpression('/\$invocation->proceed\(\);\n    \}/', $code);
     }
 
     public function testClassWithExistingImplementsGetsWeavedInterfaceAdded(): void
