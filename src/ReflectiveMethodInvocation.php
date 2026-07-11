@@ -53,14 +53,16 @@ final class ReflectiveMethodInvocation implements MethodInvocation
         private readonly array $interceptors = [],
         Closure|null $parentCall = null,
     ) {
-        if ($parentCall !== null) {
-            $this->callable = $parentCall;
-        } else {
+        if ($parentCall === null) {
             $callable = [$this->object, $this->method];
             assert(is_callable($callable));
             $this->callable = $callable;
+            $this->arguments = $arguments;
+
+            return;
         }
 
+        $this->callable = $parentCall;
         $this->arguments = $arguments;
     }
 
