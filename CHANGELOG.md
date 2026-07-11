@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proxy dispatch is now a direct `parent::method(...)` first-class callable (no double dispatch through the proxy); intercepted-call overhead roughly halved. Generated proxies are invalidated via `AopCode::GENERATION` — existing script dirs regenerate once after upgrade (stale files are ignored, not loaded). (#260)
 - Faster weave/`newInstance` path: cache weaved class names, instantiate with `new $class(...$args)` instead of reflection, and match attributes without instantiating them during bind. (#259)
 - Annotation-order (onion) binding now respects attribute inheritance (`is_a`, aligned with #255). Methods annotated with a subclass attribute may get a different interceptor order than before (they were previously bound only in the default phase). (#259)
+- Weaved methods include an always-on `//` comment listing bound interceptor short class names (self-documenting generated code; no runtime cost). (#262)
 
 ### Fixed
 - `Compiler::compile()` now (re)emits the weaved class file even when the class is already declared in the process but the file is missing, so a compile pipeline that cleans and recompiles produces complete output for runtime loaders that resolve weaved classes by name. (#261)

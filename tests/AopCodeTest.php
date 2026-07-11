@@ -165,6 +165,18 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString('$invocation->proceed();', $code);
     }
 
+    public function testGeneratedMethodDocumentsInterceptorShortClassNames(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnSame', [new FakeDoubleInterceptor(), new NullInterceptor()]);
+        $code = $this->codeGen->generate(new ReflectionClass(FakeMock::class), $bind, '_test');
+
+        // Always-on comment: short class names only (no FQN), bind order preserved
+        $this->assertStringContainsString('// FakeDoubleInterceptor, NullInterceptor', $code);
+        $this->assertStringNotContainsString('// Ray\\Aop\\FakeDoubleInterceptor', $code);
+        $this->assertStringContainsString('$invocation = new \\Ray\\Aop\\ReflectiveMethodInvocation', $code);
+    }
+
     public function testNonVoidReturnTypeMethodHasReturnStatement(): void
     {
         $bind = new Bind();
