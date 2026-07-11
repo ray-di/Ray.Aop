@@ -8,9 +8,11 @@ namespace Ray\Aop;
 trait InterceptTrait // @phpstan-ignore-line
 {
     /**
+     * Interceptor map for this weaved instance.
+     * Written once via `_setBindings()`; thereafter treated as readonly and read by generated proxy methods.
+     *
      * @var MethodBindings
      * @readonly
-     * @deprecated Do not use this property directly. Use the `_setBindings` setter method instead for initialization.
      */
     public $bindings = [];
 
