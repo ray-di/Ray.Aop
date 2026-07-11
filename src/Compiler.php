@@ -55,7 +55,9 @@ final class Compiler implements CompilerInterface
     {
         $compiledClass = $this->compile($class, $bind);
         assert(class_exists($compiledClass));
-        $instance = (new ReflectionClass($compiledClass))->newInstanceArgs($args);
+        /** @var class-string<T> $compiledClass */
+        /** @psalm-suppress MixedMethodCall */
+        $instance = new $compiledClass(...$args);
         if ($instance instanceof WeavedInterface) {
             $instance->_setBindings($bind->getBindings());
         }
@@ -73,7 +75,7 @@ final class Compiler implements CompilerInterface
      * @return class-string<T>
      *
      * @template T of object
-     * @sideEffect Genaerates a new class file
+     * @sideEffect Generates a new class file
      */
     #[Override]
     public function compile(string $class, BindInterface $bind): string
@@ -84,9 +86,10 @@ final class Compiler implements CompilerInterface
         }
 
         $className = new AopPostfixClassName($class, (string) $bind, $this->classDir);
-        if (! class_exists($className->fqn, false)) {
+        $file = $this->getFileName($className->fqn);
+        if (! class_exists($className->fqn, false) || ! file_exists($file)) {
             try {
-                $this->requireFile($className, new ReflectionClass($class), $bind);
+                $this->requireFile($className, new ReflectionClass($class), $bind, $file);
                 // @codeCoverageIgnoreStart
             } catch (ParseError) {
                 $msg = sprintf('class:%s Compilation failed in Ray.Aop. This is most likely a bug in Ray.Aop, please report it to the issue. https://github.com/ray-di/Ray.Aop/issues', $class);
@@ -105,9 +108,9 @@ final class Compiler implements CompilerInterface
     /** @param class-string $class */
     private function hasNoBinding(string $class, BindInterface $bind): bool
     {
-        $hasMethod = $this->hasBoundMethod($class, $bind);
-
-        return ! $bind->getBindings() && ! $hasMethod;
+        // No weaving when none of the bound methods exist on the target class
+        // (empty bindings, or only names that do not match real methods).
+        return ! $this->hasBoundMethod($class, $bind);
     }
 
     /** @param class-string $class */
@@ -127,9 +130,8 @@ final class Compiler implements CompilerInterface
     }
 
     /** @param ReflectionClass<object> $sourceClass */
-    private function requireFile(AopPostfixClassName $className, ReflectionClass $sourceClass, BindInterface $bind): void
+    private function requireFile(AopPostfixClassName $className, ReflectionClass $sourceClass, BindInterface $bind, string $file): void
     {
-        $file = $this->getFileName($className->fqn);
         if (! file_exists($file)) {
             $code = new AopCode(new MethodSignatureString());
             $aopCode = $code->generate($sourceClass, $bind, $className->postFix);

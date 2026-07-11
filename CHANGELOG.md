@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+- Proxy dispatch is now a direct `parent::method(...)` first-class callable (no double dispatch through the proxy); intercepted-call overhead roughly halved. Generated proxies are invalidated via `AopCode::GENERATION` — existing script dirs regenerate once after upgrade (stale files are ignored, not loaded). (#260)
+- Faster weave/`newInstance` path: cache weaved class names, instantiate with `new $class(...$args)` instead of reflection, and match attributes without instantiating them during bind. (#259)
+- Annotation-order (onion) binding now respects attribute inheritance (`is_a`, aligned with #255). Methods annotated with a subclass attribute may get a different interceptor order than before (they were previously bound only in the default phase). (#259)
+- Weaved methods include an always-on `//` comment listing bound interceptor short class names (self-documenting generated code; no runtime cost). (#262)
+
+### Fixed
+- `Compiler::compile()` now (re)emits the weaved class file even when the class is already declared in the process but the file is missing, so a compile pipeline that cleans and recompiles produces complete output for runtime loaders that resolve weaved classes by name. (#261)
+- Infinite recursion when an interceptor invoked another intercepted method on the same instance via `getThis()`. Such nested calls are now intercepted normally (previously interception state was corrupted). (#260)
+- Codegen no longer corrupts generated method code containing `$1`-style sequences (`preg_replace` backreference bug in `AopCode::insert()`). (#260)
+- Bind/match no longer instantiates method attributes via `getAnnotations()`/`getAnnotation()`, so a broken attribute constructor on an unrelated method cannot fatal `bind()`. (#259)
+- `Weaver` serialization excludes the in-process weaved-class cache so a restored Weaver in another process reloads class files instead of assuming FQNs are already defined. (#259)
+
+### Removed
+- Internal API: `AopCode::INTERCEPT_STATEMENT` public const, `_intercept()`, `_isAspect`; `AopCode::resolveInterceptTrait()` is now private. (#260)
+
 ## [2.19.1] - 2026-01-24
 
 ### Fixed

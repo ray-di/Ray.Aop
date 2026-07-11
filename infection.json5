@@ -16,8 +16,8 @@
     },
     "tmpDir": "build/infection",
     "timeout": 60,
-    "minMsi": 80,
-    "minCoveredMsi": 83,
+    "minMsi": 83,
+    "minCoveredMsi": 85,
     "testFramework": "phpunit",
     "phpUnit": {
         "configDir": ".",

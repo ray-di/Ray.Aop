@@ -10,4 +10,9 @@ readonly class FakePhp82ReadOnlyClass
     {
         return 'foo';
     }
+
+    public function greet(string $name): string
+    {
+        return 'Hello, ' . $name;
+    }
 }

@@ -20,6 +20,9 @@ final class Weaver
     private readonly string $bindName;
     private readonly Compiler $compiler;
 
+    /** @var array<class-string, class-string> */
+    private array $classCache = [];
+
     /** @param ScriptDir $classDir */
     public function __construct(private readonly BindInterface $bind, private readonly string $classDir)
     {
@@ -27,6 +30,17 @@ final class Weaver
         /** @phpstan-ignore-next-line assign.propertyType */
         $this->bindName = (string) $this->bind;
         $this->compiler = new Compiler($classDir);
+    }
+
+    /**
+     * Exclude in-process FQN cache from serialization. A restored Weaver in another
+     * process must re-run loadClass()/compile() — cached names would skip require and fatal.
+     *
+     * @return list<'bindName'|'compiler'|'bind'|'classDir'>
+     */
+    public function __sleep(): array
+    {
+        return ['bindName', 'compiler', 'bind', 'classDir'];
     }
 
     /**
@@ -41,13 +55,15 @@ final class Weaver
     {
         $aopClass = $this->weave($class);
         /** @var T $instance */
-        $instance = (new ReflectionClass($aopClass))->newInstanceArgs($args);
+        /** @var class-string<T> $aopClass */
+        /** @psalm-suppress MixedMethodCall */
+        $instance = new $aopClass(...$args);
+        assert($instance instanceof $class);
         if (! $instance instanceof WeavedInterface) {
-            return $instance; // @codeCoverageIgnore
+            return $instance;
         }
 
         $instance->_setBindings($this->bind->getBindings());
-        assert($instance instanceof $class);
 
         return $instance;
     }
@@ -59,21 +75,25 @@ final class Weaver
      */
     public function weave(string $class): string
     {
+        if (isset($this->classCache[$class])) {
+            return $this->classCache[$class];
+        }
+
         $aopClass = new AopPostfixClassName($class, $this->bindName, $this->classDir);
         if (class_exists($aopClass->fqn, false)) {
-            return $aopClass->fqn;
+            return $this->classCache[$class] = $aopClass->fqn;
         }
 
         if ($this->loadClass($aopClass->fqn)) {
             assert(class_exists($aopClass->fqn));
 
-            return $aopClass->fqn;
+            return $this->classCache[$class] = $aopClass->fqn;
         }
 
         $newClass = $this->compiler->compile($class, $this->bind);
         assert(class_exists($newClass));
 
-        return $newClass;
+        return $this->classCache[$class] = $newClass;
     }
 
     private function loadClass(string $class): bool
