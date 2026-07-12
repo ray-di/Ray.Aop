@@ -353,6 +353,7 @@ class AopCodeTest extends TestCase
         $bind = new Bind();
         /** @var list<MethodInterceptor|class-string<MethodInterceptor>> $interceptors */
         $interceptors = [FakeGlobalInterceptor::class, NullInterceptor::class];
+        /** @phpstan-ignore-next-line — class-string interceptors are valid at runtime (PointcutInterceptors type) */
         $bind->bindInterceptors('returnSame', $interceptors);
         $code = $this->codeGen->generate(new ReflectionClass(FakeMock::class), $bind, '_test');
 

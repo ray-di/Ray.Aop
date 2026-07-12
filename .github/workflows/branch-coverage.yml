@@ -17,9 +17,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: tokenizer
           coverage: xdebug
           tools: composer:v2
+          ini-values: memory_limit=-1
 
       - name: Get Composer cache directory
         id: composer-cache
@@ -33,9 +33,22 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Report branch coverage
+        env:
+          XDEBUG_MODE: coverage
         run: |
-          php -d memory_limit=512M -dxdebug.mode=coverage ./vendor/bin/phpunit \
-            --path-coverage --coverage-text --only-summary-for-coverage-text
+          php -d xdebug.mode=coverage ./vendor/bin/phpunit \
+            --path-coverage \
+            --coverage-text \
+            --only-summary-for-coverage-text \
+            --coverage-html=build/coverage-html
+
+      - name: Upload HTML Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: branch-coverage-html-${{ github.run_id }}
+          path: build/coverage-html
+          retention-days: 7
