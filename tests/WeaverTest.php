@@ -115,4 +115,15 @@ class WeaverTest extends TestCase
         $className = $weaver->weave(FakeWeaverScript::class);
         $this->assertTrue(class_exists($className, false));
     }
+
+    public function testNewInstanceReturnsOriginalWhenNoBindings(): void
+    {
+        $bind = new Bind();
+        $weaver = new Weaver($bind, __DIR__ . '/tmp');
+
+        $instance = $weaver->newInstance(FakeWeaverMock::class, []);
+
+        $this->assertInstanceOf(FakeWeaverMock::class, $instance);
+        $this->assertNotInstanceOf(WeavedInterface::class, $instance);
+    }
 }

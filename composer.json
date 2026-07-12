@@ -1,7 +1,9 @@
 {
     "name": "ray/aop",
     "description": "An aspect oriented framework",
-    "keywords": ["AOP"],
+    "keywords": [
+        "AOP"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -27,35 +29,77 @@
     },
     "autoload": {
         "psr-4": {
-            "Ray\\Aop\\": ["src/", "src-deprecated/"],
+            "Ray\\Aop\\": [
+                "src/",
+                "src-deprecated/"
+            ],
             "Ray\\ServiceLocator\\": "src-deprecated/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Ray\\Aop\\": ["tests/", "tests/Fake/", "tests/Aspect", "tests/Aspect/Fake"]
+            "Ray\\Aop\\": [
+                "tests/",
+                "tests/Fake/",
+                "tests/Aspect",
+                "tests/Aspect/Fake"
+            ]
         },
         "files": [
             "tests/Fake/FakeGlobalNamespaced.php",
-            "tests/Fake/FakeGlobalEmptyNamespaced.php"
+            "tests/Fake/FakeGlobalEmptyNamespaced.php",
+            "tests/Fake/FakeGlobalInterceptor.php"
         ]
     },
     "suggest": {
         "ray/di": "A dependency injection framework"
     },
-    "scripts" :{
-        "test": ["phpunit"],
-        "tests": ["@cs", "@test", "@sa"],
-        "coverage": ["php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"],
-        "pcov": ["php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"],
-        "cs": ["phpcs --standard=./phpcs.xml src tests"],
-        "cs-fix": ["phpcbf src tests"],
-        "clean": ["phpstan clear-result-cache", "psalm --clear-cache", "rm -rf tests/tmp/*.php"],
-        "sa": ["psalm --monochrome --show-info=true", "phpstan --memory-limit=-1 analyse -c phpstan.neon"],
-        "metrics": ["phpmetrics --report-html=build/metrics --exclude=Exception src"],
-        "phpmd": ["phpmd src text ./phpmd.xml"],
-        "mt": ["infection --threads=4"],
-        "build": ["@cs", "@sa", "@pcov", "@metrics", "@mt"]
+    "scripts": {
+        "test": [
+            "phpunit"
+        ],
+        "tests": [
+            "@cs",
+            "@test",
+            "@sa"
+        ],
+        "coverage": [
+            "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+        ],
+        "pcov": [
+            "php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"
+        ],
+        "cs": [
+            "phpcs --standard=./phpcs.xml src tests"
+        ],
+        "cs-fix": [
+            "phpcbf src tests"
+        ],
+        "clean": [
+            "phpstan clear-result-cache",
+            "psalm --clear-cache",
+            "rm -rf tests/tmp/*.php"
+        ],
+        "sa": [
+            "psalm --monochrome --show-info=true",
+            "phpstan --memory-limit=-1 analyse -c phpstan.neon"
+        ],
+        "metrics": [
+            "phpmetrics --report-html=build/metrics --exclude=Exception src"
+        ],
+        "phpmd": [
+            "phpmd src text ./phpmd.xml"
+        ],
+        "mt": [
+            "infection --threads=4"
+        ],
+        "build": [
+            "@cs",
+            "@sa",
+            "@pcov",
+            "@metrics",
+            "@mt"
+        ]
     },
     "scripts-descriptions": {
         "test": "Run unit tests",

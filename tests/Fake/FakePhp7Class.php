@@ -12,4 +12,10 @@ class FakePhp7Class
     {
         return [$a, $b, $c, $d];
     }
+
+    /** @return mixed */
+    public function noReturnType($a)
+    {
+        return $a;
+    }
 }
