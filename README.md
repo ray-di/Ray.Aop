@@ -199,7 +199,6 @@ The method interceptor API implemented by Ray.Aop is a part of a public specific
 ## Requirements
 
 - PHP 8.2 or higher
-- Composer
 
 ## Installation
 
