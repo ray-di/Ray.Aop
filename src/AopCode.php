@@ -20,7 +20,6 @@ use function strrpos;
 use function substr;
 use function substr_replace;
 use function token_get_all;
-use function trim;
 
 use const T_CLASS;
 use const T_EXTENDS;
@@ -35,7 +34,7 @@ use const T_STRING;
 final class AopCode
 {
     /** Code generation version — bump on codegen changes to invalidate cached proxies */
-    public const GENERATION = 6;
+    public const GENERATION = 7;
 
     /**
      * Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag).
@@ -171,8 +170,10 @@ PHP;
 
             $isClassSignatureEnds = $inClass && $text === '{';
             if ($isClassSignatureEnds) {
-                // Drop trailing spaces before the class body (PSR2 SpaceBeforeBrace / EndLine)
-                $this->code = rtrim($this->code, " \t");
+                // Drop the source whitespace before the body brace; the trait template
+                // re-adds it as a newline so the brace owns its line whatever the
+                // source style was (PSR2 SpaceBeforeBrace / EndLine).
+                $this->code = rtrim($this->code);
                 $this->resolveInterceptTrait($sourceClass);
 
                 return;
@@ -189,10 +190,13 @@ PHP;
      */
     private function implementsInterface(string $interfaceName): void
     {
-        $pattern = '/(class\s+[\w\s]+extends\s+\w+)(?:\s+implements\s+(.+))?/';
+        $pattern = '/(class\s+[\w\s]+extends\s+\w+)(?:\s+implements\s+([^{]*[^{\s]))?/';
         $this->code = (string) preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
             if (isset($matches[2])) {
-                return sprintf('%s implements %s, \\%s', rtrim($matches[1]), trim($matches[2]), $interfaceName);
+                // A multi-line list is folded onto the declaration line
+                $interfaces = (string) preg_replace('/\s+/', ' ', $matches[2]);
+
+                return sprintf('%s implements %s, \\%s', rtrim($matches[1]), $interfaces, $interfaceName);
             }
 
             return sprintf('%s implements \\%s', rtrim($matches[0]), $interfaceName);
@@ -265,13 +269,13 @@ PHP;
     private function addInterceptorTrait(): void
     {
         // Blank line after trait use (PSR12.Traits.UseDeclaration)
-        $this->add(sprintf("{\n    use \\%s;\n\n}\n", InterceptTrait::class));
+        $this->add(sprintf("\n{\n    use \\%s;\n\n}\n", InterceptTrait::class));
     }
 
     /** @psalm-external-mutation-free */
     private function addReadOnlyInterceptorTrait(): void
     {
-        $this->add(sprintf("{\n    use \\%s;\n\n}\n", ReadOnlyInterceptTrait::class));
+        $this->add(sprintf("\n{\n    use \\%s;\n\n}\n", ReadOnlyInterceptTrait::class));
     }
 
     /** @psalm-external-mutation-free */
