@@ -93,6 +93,41 @@ class CompilerTest extends TestCase
         $this->assertSame(2, $result);
     }
 
+    /**
+     * PSR-12 puts the body brace on its own line, which is what kept the codegen
+     * regex honest. A source class that puts it on the declaration line used to
+     * compile to a proxy that did not parse (CompilationFailedException).
+     */
+    public function testClassWithSameLineBodyBraceIsWeavedIntoWorkingProxy(): void
+    {
+        $bind = (new Bind())->bind(FakeSameLineBraceClass::class, [$this->doublePointcut()]);
+        $weaved = $this->compiler->newInstance(FakeSameLineBraceClass::class, [], $bind);
+
+        // The source interface survives alongside the weaved marker
+        $this->assertInstanceOf(FakeNullInterface::class, $weaved);
+        $this->assertInstanceOf(WeavedInterface::class, $weaved);
+        $this->assertSame(2, $weaved->returnSame(1));
+    }
+
+    /** A multi-line implements list used to lose every name after the first. */
+    public function testClassWithMultiLineImplementsIsWeavedIntoWorkingProxy(): void
+    {
+        $bind = (new Bind())->bind(FakeMultiLineImplementsClass::class, [$this->doublePointcut()]);
+        $weaved = $this->compiler->newInstance(FakeMultiLineImplementsClass::class, [], $bind);
+
+        $this->assertInstanceOf(FakeNullInterface::class, $weaved);
+        $this->assertInstanceOf(FakeNullInterface1::class, $weaved);
+        $this->assertInstanceOf(WeavedInterface::class, $weaved);
+        $this->assertSame(2, $weaved->returnSame(1));
+    }
+
+    private function doublePointcut(): Pointcut
+    {
+        $matcher = new Matcher();
+
+        return new Pointcut($matcher->any(), $matcher->startsWith('return'), [new FakeDoubleInterceptor()]);
+    }
+
     public function testInheritedMethodsAreIntercepted(): void
     {
         $mock = $this->compiler->newInstance(FakeMockGrandChild::class, [], $this->bind);
