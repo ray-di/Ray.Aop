@@ -204,6 +204,41 @@ class AopCodeTest extends TestCase
         $this->assertStringContainsString('implements FakeNullInterface, \Ray\Aop\FakeNullInterface1, \Ray\Aop\WeavedInterface', $code);
     }
 
+    public function testClassWithSameLineBodyBraceGetsWeavedInterfaceAdded(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnSame', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakeSameLineBraceClass::class), $bind, '_test');
+
+        // The body brace must not be swallowed into the implements list
+        $this->assertStringContainsString('implements FakeNullInterface, \Ray\Aop\WeavedInterface', $code);
+        $this->assertStringNotContainsString('{,', $code);
+        // Body brace stays on its own line (PSR12), whatever the source style is
+        $this->assertMatchesRegularExpression('/implements FakeNullInterface, \\\\Ray\\\\Aop\\\\WeavedInterface\n\{\n/', $code);
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'tmp_') . '.php';
+        file_put_contents($tempFile, $code);
+        require $tempFile;
+        unlink($tempFile);
+        $this->assertTrue(class_exists('\Ray\Aop\FakeSameLineBraceClass_test'));
+    }
+
+    public function testClassWithMultiLineImplementsKeepsEveryInterface(): void
+    {
+        $bind = new Bind();
+        $bind->bindInterceptors('returnSame', []);
+        $code = $this->codeGen->generate(new ReflectionClass(FakeMultiLineImplementsClass::class), $bind, '_test');
+
+        // The list is folded onto the declaration line, no name is dropped
+        $this->assertStringContainsString('implements FakeNullInterface, FakeNullInterface1, \Ray\Aop\WeavedInterface', $code);
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'tmp_') . '.php';
+        file_put_contents($tempFile, $code);
+        require $tempFile;
+        unlink($tempFile);
+        $this->assertTrue(class_exists('\Ray\Aop\FakeMultiLineImplementsClass_test'));
+    }
+
     public function testClassWithoutImplementsGetsWeavedInterfaceAdded(): void
     {
         $bind = new Bind();
