@@ -55,6 +55,11 @@ PHP;
         %s$invocation->proceed();
 PHP;
 
+    private const CLASS_DECLARATION_PATTERN = 'class\s+[\w\s]+extends\s+\w+';
+
+    /** Matches the implements list, ending before the body brace; [^{]*[^{\s] stops at the last interface name */
+    private const IMPLEMENTS_LIST_PATTERN = '[^{]*[^{\s]';
+
     private string $code = '';
     private int $curlyBraceCount = 0;
 
@@ -190,7 +195,7 @@ PHP;
      */
     private function implementsInterface(string $interfaceName): void
     {
-        $pattern = '/(class\s+[\w\s]+extends\s+\w+)(?:\s+implements\s+([^{]*[^{\s]))?/';
+        $pattern = '/(' . self::CLASS_DECLARATION_PATTERN . ')(?:\s+implements\s+(' . self::IMPLEMENTS_LIST_PATTERN . '))?/';
         $this->code = (string) preg_replace_callback($pattern, static function ($matches) use ($interfaceName) {
             if (isset($matches[2])) {
                 // A multi-line list is folded onto the declaration line
