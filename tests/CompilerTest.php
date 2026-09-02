@@ -14,14 +14,21 @@ use Ray\Aop\Annotation\FakeMarker3;
 use Ray\Aop\Exception\NotWritableException;
 use ReflectionClass;
 
+use function array_map;
 use function array_shift;
 use function assert;
 use function class_exists;
 use function file_get_contents;
 use function glob;
 use function is_array;
+use function mkdir;
 use function passthru;
+use function rmdir;
 use function serialize;
+use function str_replace;
+use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
 use function unserialize;
 
 class CompilerTest extends TestCase
@@ -247,9 +254,16 @@ class CompilerTest extends TestCase
 
     public function testCompileLeavesNoSwapFile(): void
     {
-        $this->compiler->compile(FakeWeaved::class, $this->bind);
+        $dir = sys_get_temp_dir() . '/ray-aop-' . uniqid();
+        mkdir($dir);
 
-        $this->assertSame([], glob(__DIR__ . '/tmp/swap*'));
+        $class = (new Compiler($dir))->compile(FakeWeaved::class, $this->bind);
+
+        $entries = glob($dir . '/*') ?: [];
+        $this->assertSame([$dir . '/' . str_replace('\\', '_', $class) . '.php'], $entries);
+
+        array_map(unlink(...), $entries);
+        rmdir($dir);
     }
 
     public function testNonWritableDirectoryThrowsException(): void
