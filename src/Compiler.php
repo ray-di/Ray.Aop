@@ -14,7 +14,6 @@ use function array_keys;
 use function assert;
 use function class_exists;
 use function file_exists;
-use function file_put_contents;
 use function is_writable;
 use function method_exists;
 use function sprintf;
@@ -135,7 +134,7 @@ final class Compiler implements CompilerInterface
         if (! file_exists($file)) {
             $code = new AopCode(new MethodSignatureString());
             $aopCode = $code->generate($sourceClass, $bind, $className->postFix);
-            file_put_contents($file, $aopCode);
+            (new FilePutContents())($file, $aopCode);
         }
 
         require_once $file;

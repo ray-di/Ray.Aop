@@ -18,6 +18,7 @@ use function array_shift;
 use function assert;
 use function class_exists;
 use function file_get_contents;
+use function glob;
 use function is_array;
 use function passthru;
 use function serialize;
@@ -242,6 +243,13 @@ class CompilerTest extends TestCase
         $file = (string) file_get_contents((string) (new ReflectionClass($class))->getFileName());
         $expected = 'public function returnSame(array $arrayParam, callable $callableParam)';
         $this->assertStringContainsString($expected, $file);
+    }
+
+    public function testCompileLeavesNoSwapFile(): void
+    {
+        $this->compiler->compile(FakeWeaved::class, $this->bind);
+
+        $this->assertSame([], glob(__DIR__ . '/tmp/swap*'));
     }
 
     public function testNonWritableDirectoryThrowsException(): void
