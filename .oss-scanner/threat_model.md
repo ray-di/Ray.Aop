@@ -52,13 +52,18 @@ Everything is installed; the network is already gone.
 - A wrong matcher or interception decision on its own is medium; it is critical only with a path shown from
   untrusted input to it.
 - Denial of service (a write that fills the directory, parsing that hangs) is medium.
-- A finding that needs the cache directory to already be writable by another user, or a `unserialize()` of a file
-  only the application writes, is low. Report it, but state the assumption it rests on.
+- A finding that needs the attacker to write a cache directory the application owns — the same user, a private
+  directory — is low: the attacker already runs code as the application. A `unserialize()` of a file only the
+  application writes is low for the same reason. It is not low when the `classDir` is writable by another user,
+  which the default `sys_get_temp_dir()` makes the normal case: `Compiler::compile()` and `Weaver::weave()` both
+  prefer an existing `<classDir>/<Class_Name>.php` over regenerating it and `require` it — that is the "path the
+  attacker chose" case above, not a separate low-severity case. Report it, and state which case it rests on.
 
 ## Anything to leave alone
 
-- The `chmod(0666 & ~umask())` in `FilePutContents` is deliberate and matches the umask. It is only interesting
-  with a scenario in which a different user shares that directory.
+- The `chmod(0666 & ~umask())` in `FilePutContents` is deliberate and matches the umask; it is not a finding by
+  itself. A directory writable by another user is the scenario severity rates critical above, not a reason to
+  downgrade it.
 - `crc32` collisions in `AopPostfixClassName` are a known trade-off rather than a finding by itself. Report one
   only by naming two realistic inputs that collide and what goes wrong then.
 - Coding standards, test coverage and the deprecated `src-deprecated/` API surface are out of scope.
