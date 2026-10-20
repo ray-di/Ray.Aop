@@ -26,8 +26,7 @@ directory can be a shared or predictable path such as a temp directory.
 - `src/Matcher/`, `src/Pointcut.php`, `src/Bind.php` — matching is application configuration; interesting when a
   wrong decision skips or adds interception.
 
-`src-deprecated/` (the old `Cache` and `ServiceLocator`) is legacy and lower priority, but it does unserialize
-files and is in scope.
+`src-deprecated/` (the old `Cache` and `ServiceLocator`) is legacy, kept for 1.x compatibility, and out of scope.
 
 ## How to exercise it
 
