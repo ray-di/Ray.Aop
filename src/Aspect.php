@@ -9,9 +9,19 @@ use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
 
+use function clearstatcache;
 use function file_exists;
+use function fileowner;
+use function fileperms;
+use function is_dir;
 use function is_writable;
+use function mkdir;
+use function sprintf;
 use function sys_get_temp_dir;
+use function tempnam;
+use function unlink;
+
+use const DIRECTORY_SEPARATOR;
 
 /**
  * Aspect class manages aspect weaving and method interception
@@ -45,7 +55,7 @@ final class Aspect
     public function __construct(string|null $tmpDir = null)
     {
         if ($tmpDir === null) {
-            $tmpDir = sys_get_temp_dir();
+            $tmpDir = self::privateTmpDir();
         }
 
         // Defensive validation for resolved temp dirs.
@@ -57,6 +67,38 @@ final class Aspect
         // @codeCoverageIgnoreEnd
 
         $this->tmpDir = $tmpDir;
+    }
+
+    /**
+     * A directory under the system temp dir that only the current user can write
+     *
+     * Proxies are `require`d from the script dir, so one writable by another user lets that user run code here.
+     */
+    private static function privateTmpDir(): string
+    {
+        $tmpDir = sys_get_temp_dir();
+        // @codeCoverageIgnoreStart
+        if (DIRECTORY_SEPARATOR === '\\') {
+            return $tmpDir; // Windows: the temp dir is per-user and has no POSIX owner/mode
+        }
+
+        // @codeCoverageIgnoreEnd
+
+        $probe = (string) tempnam($tmpDir, 'aop');
+        $uid = fileowner($probe); // the effective user, without ext-posix
+        @unlink($probe);
+        $dir = sprintf('%s/ray-aop-%s', $tmpDir, (string) $uid);
+        if (! is_dir($dir)) {
+            @mkdir($dir, 0700);
+        }
+
+        clearstatcache(true, $dir);
+        $isPrivate = is_dir($dir) && fileowner($dir) === $uid && ((int) fileperms($dir) & 0022) === 0;
+        if (! $isPrivate) {
+            throw new NotWritableException("{$dir} must be owned by the current user and not writable by others.");
+        }
+
+        return $dir;
     }
 
     /**

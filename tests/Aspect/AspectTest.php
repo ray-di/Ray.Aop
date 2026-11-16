@@ -4,13 +4,19 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Annotation\FakeClassMarker;
 use Ray\Aop\Exception\NotWritableException;
 use Ray\Aop\Matcher\AnyMatcher;
 use Ray\Aop\Matcher\StartsWithMatcher;
+use ReflectionClass;
 
+use function chmod;
 use function dirname;
+use function fileperms;
+use function realpath;
+use function sys_get_temp_dir;
 
 class AspectTest extends TestCase
 {
@@ -114,10 +120,35 @@ class AspectTest extends TestCase
         $this->assertEquals('intercepted intercepted original', $result);
     }
 
-    public function testDefaultTmpDirIsUsedWhenNullPassed(): void
+    public function testDefaultTmpDirIsNotWritableByOthers(): string
     {
-        // Default constructor should use sys_get_temp_dir()
+        $dir = $this->defaultScriptDir();
+
+        $this->assertNotSame(realpath(sys_get_temp_dir()), realpath($dir));
+        $this->assertSame(0, fileperms($dir) & 0022);
+
+        return $dir;
+    }
+
+    #[Depends('testDefaultTmpDirIsNotWritableByOthers')]
+    public function testDefaultTmpDirWritableByOthersIsRejected(string $dir): void
+    {
+        $mode = fileperms($dir) & 0777;
+        chmod($dir, 0777);
+        try {
+            $this->expectException(NotWritableException::class);
+            new Aspect();
+        } finally {
+            chmod($dir, $mode);
+        }
+    }
+
+    private function defaultScriptDir(): string
+    {
         $aspect = new Aspect();
-        $this->assertInstanceOf(Aspect::class, $aspect);
+        $aspect->bind(new AnyMatcher(), new StartsWithMatcher('my'), [new FakeMyInterceptor()]);
+        $weaved = $aspect->newInstance(FakeNonFinalClass::class);
+
+        return dirname((string) (new ReflectionClass($weaved))->getFileName());
     }
 }

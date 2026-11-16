@@ -100,7 +100,9 @@ When creating an `Aspect` instance, you can optionally specify a temporary direc
 $aspect = new Aspect('/path/to/tmp/dir');
 ```
 
-If not specified, the system's default temporary directory will be used.
+If not specified, a per-user directory under the system's temporary directory is used.
+
+Generated classes are loaded with `require` from this directory, so it must not be writable by other users.
 
 ## Own matcher
 

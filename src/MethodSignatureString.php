@@ -8,15 +8,13 @@ use Reflection;
 use ReflectionAttribute;
 use ReflectionMethod;
 use ReflectionParameter;
-use UnitEnum;
 
 use function array_merge;
 use function implode;
+use function is_array;
 use function is_numeric;
 use function is_string;
-use function preg_replace;
 use function sprintf;
-use function str_replace;
 use function var_export;
 
 use const PHP_EOL;
@@ -110,11 +108,25 @@ final class MethodSignatureString
      */
     private function formatArg($name, $value): string
     {
-        $formattedValue = $value instanceof UnitEnum ?
-            var_export($value, true)
-            : preg_replace('/\s+/', '', var_export($value, true));
+        $formattedValue = $this->export($value);
 
-        return is_numeric($name) ? (string) $formattedValue : "{$name}: {$formattedValue}";
+        return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
+    }
+
+    /** var_export() on one line; string values keep every character */
+    private function export(mixed $value): string
+    {
+        if (! is_array($value)) {
+            return var_export($value, true);
+        }
+
+        $items = '';
+        /** @psalm-suppress MixedAssignment */
+        foreach ($value as $key => $item) {
+            $items .= sprintf('%s=>%s,', var_export($key, true), $this->export($item));
+        }
+
+        return "array({$items})";
     }
 
     private function generateParameterCode(ReflectionParameter $param): string
@@ -126,8 +138,7 @@ final class MethodSignatureString
         $referenceStr = $param->isPassedByReference() ? '&' : '';
         $defaultStr = '';
         if ($param->isDefaultValueAvailable()) {
-            $default = var_export($param->getDefaultValue(), true);
-            $defaultStr = ' = ' . str_replace(["\r", "\n"], '', $default);
+            $defaultStr = ' = ' . $this->export($param->getDefaultValue());
         }
 
         return "{$attributesStr}{$typeStrWithSpace}{$referenceStr}{$variadicStr}\${$param->getName()}{$defaultStr}";
