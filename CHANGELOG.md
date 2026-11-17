@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2.20.3 - 2026-11-17
+
 ### Fixed
 - Strings in the attribute arguments and parameter default values of weaved methods keep their whitespace; `#[Link(title: 'Next page')]` read back as `'Nextpage'`.
 
