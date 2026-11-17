@@ -4,27 +4,29 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
+use PhpToken;
 use Reflection;
 use ReflectionAttribute;
 use ReflectionMethod;
 use ReflectionParameter;
-use UnitEnum;
 
 use function array_merge;
 use function implode;
 use function is_numeric;
 use function is_string;
-use function preg_replace;
 use function sprintf;
 use function str_replace;
 use function var_export;
 
 use const PHP_EOL;
+use const T_OPEN_TAG;
+use const T_WHITESPACE;
 
 final class MethodSignatureString
 {
     private const NULLABLE = 'null|';
     private const INDENT = '    ';
+    private const OPEN_TAG = '<?php ';
 
     private readonly TypeString $typeString;
 
@@ -110,11 +112,17 @@ final class MethodSignatureString
      */
     private function formatArg($name, $value): string
     {
-        $formattedValue = $value instanceof UnitEnum ?
-            var_export($value, true)
-            : preg_replace('/\s+/', '', var_export($value, true));
+        // One line: drop whitespace tokens only; a string literal is one token and keeps its content.
+        $formattedValue = '';
+        foreach (PhpToken::tokenize(self::OPEN_TAG . var_export($value, true)) as $token) {
+            if ($token->id === T_OPEN_TAG || $token->id === T_WHITESPACE) {
+                continue;
+            }
 
-        return is_numeric($name) ? (string) $formattedValue : "{$name}: {$formattedValue}";
+            $formattedValue .= $token->text;
+        }
+
+        return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
     }
 
     private function generateParameterCode(ReflectionParameter $param): string

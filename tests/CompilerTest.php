@@ -235,6 +235,17 @@ class CompilerTest extends TestCase
         $this->assertCount(4, $annotations);
     }
 
+    public function testAttributeArgumentsKeepWhitespaceInStrings(): void
+    {
+        $bind = (new Bind())->bindInterceptors('get', [new NullInterceptor()]);
+        $class = $this->compiler->compile(FakeAttributeTextClass::class, $bind);
+        $this->assertNotSame(FakeAttributeTextClass::class, $class);
+
+        $original = (new ReflectionMethod(FakeAttributeTextClass::class, 'get'))->getAttributes()[0]->newInstance();
+        $weaved = (new ReflectionMethod($class, 'get'))->getAttributes()[0]->newInstance();
+        $this->assertEquals($original, $weaved);
+    }
+
     public function testClassWithoutNamespaceCanBeCompiled(): void
     {
         $class = $this->compiler->compile(FakeAnnotateClassNoName::class, $this->bind);
