@@ -34,7 +34,7 @@ use const T_STRING;
 final class AopCode
 {
     /** Code generation version — bump on codegen changes to invalidate cached proxies */
-    public const GENERATION = 7;
+    public const GENERATION = 8;
 
     /**
      * Template for direct parent-FCC dispatch (no _intercept, no _isAspect flag).

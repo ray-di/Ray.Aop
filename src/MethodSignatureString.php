@@ -8,15 +8,12 @@ use Reflection;
 use ReflectionAttribute;
 use ReflectionMethod;
 use ReflectionParameter;
-use UnitEnum;
 
 use function array_merge;
 use function implode;
 use function is_numeric;
 use function is_string;
-use function preg_replace;
 use function sprintf;
-use function str_replace;
 use function var_export;
 
 use const PHP_EOL;
@@ -33,9 +30,6 @@ final class MethodSignatureString
         $this->typeString = new TypeString(self::NULLABLE);
     }
 
-    /**
-     * Returns a PSR12-friendly method signature: every line indented with 4 spaces.
-     */
     public function get(ReflectionMethod $method): string
     {
         $lines = [];
@@ -110,11 +104,9 @@ final class MethodSignatureString
      */
     private function formatArg($name, $value): string
     {
-        $formattedValue = $value instanceof UnitEnum ?
-            var_export($value, true)
-            : preg_replace('/\s+/', '', var_export($value, true));
+        $formattedValue = var_export($value, true);
 
-        return is_numeric($name) ? (string) $formattedValue : "{$name}: {$formattedValue}";
+        return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
     }
 
     private function generateParameterCode(ReflectionParameter $param): string
@@ -126,8 +118,7 @@ final class MethodSignatureString
         $referenceStr = $param->isPassedByReference() ? '&' : '';
         $defaultStr = '';
         if ($param->isDefaultValueAvailable()) {
-            $default = var_export($param->getDefaultValue(), true);
-            $defaultStr = ' = ' . str_replace(["\r", "\n"], '', $default);
+            $defaultStr = ' = ' . var_export($param->getDefaultValue(), true);
         }
 
         return "{$attributesStr}{$typeStrWithSpace}{$referenceStr}{$variadicStr}\${$param->getName()}{$defaultStr}";
