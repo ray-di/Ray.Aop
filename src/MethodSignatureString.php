@@ -15,7 +15,6 @@ use function implode;
 use function is_numeric;
 use function is_string;
 use function sprintf;
-use function str_replace;
 use function var_export;
 
 use const PHP_EOL;
@@ -112,17 +111,25 @@ final class MethodSignatureString
      */
     private function formatArg($name, $value): string
     {
-        // One line: drop whitespace tokens only; a string literal is one token and keeps its content.
-        $formattedValue = '';
+        $formattedValue = $this->exportOneLine($value);
+
+        return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
+    }
+
+    /** @psalm-external-mutation-free */
+    private function exportOneLine(mixed $value): string
+    {
+        // Drop whitespace tokens only; a string literal is one token and keeps its content.
+        $code = '';
         foreach (PhpToken::tokenize(self::OPEN_TAG . var_export($value, true)) as $token) {
             if ($token->id === T_OPEN_TAG || $token->id === T_WHITESPACE) {
                 continue;
             }
 
-            $formattedValue .= $token->text;
+            $code .= $token->text;
         }
 
-        return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
+        return $code;
     }
 
     private function generateParameterCode(ReflectionParameter $param): string
@@ -134,8 +141,7 @@ final class MethodSignatureString
         $referenceStr = $param->isPassedByReference() ? '&' : '';
         $defaultStr = '';
         if ($param->isDefaultValueAvailable()) {
-            $default = var_export($param->getDefaultValue(), true);
-            $defaultStr = ' = ' . str_replace(["\r", "\n"], '', $default);
+            $defaultStr = ' = ' . $this->exportOneLine($param->getDefaultValue());
         }
 
         return "{$attributesStr}{$typeStrWithSpace}{$referenceStr}{$variadicStr}\${$param->getName()}{$defaultStr}";
