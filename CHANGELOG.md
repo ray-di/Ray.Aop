@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- Weaved methods keep the exact string values of their attribute arguments and parameter default values, including those inside arrays. Codegen stripped whitespace inside these strings, so `#[Link(title: 'Next page')]` became `'Nextpage'` and a default `"a\nb"` became `'ab'`.
+- Strings in the attribute arguments and parameter default values of weaved methods keep their whitespace; `#[Link(title: 'Next page')]` read back as `'Nextpage'`.
 
 ## 2.20.2 - 2026-09-03
 
