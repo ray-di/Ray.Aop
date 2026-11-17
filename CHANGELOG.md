@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - `new Aspect()` without a directory now writes proxies to a per-user `ray-aop-<uid>` directory (mode 0700) under the system temp dir instead of the shared temp dir itself. If you pass a script directory yourself, make sure no other user can write to it.
+- `new Aspect()` throws `NotWritableException` when that `ray-aop-<uid>` directory already exists but is a symlink, is owned by another user, or is writable by group or others.
 - An interceptor name containing a newline can no longer inject code into a generated proxy.
 
 ### Changed

@@ -14,6 +14,7 @@ use function file_exists;
 use function fileowner;
 use function fileperms;
 use function is_dir;
+use function is_link;
 use function is_writable;
 use function mkdir;
 use function sprintf;
@@ -73,6 +74,7 @@ final class Aspect
      * A directory under the system temp dir that only the current user can write
      *
      * Proxies are `require`d from the script dir, so one writable by another user lets that user run code here.
+     * The check runs once: the sticky bit of the system temp dir keeps another user from replacing the directory afterwards.
      */
     private static function privateTmpDir(): string
     {
@@ -84,18 +86,34 @@ final class Aspect
 
         // @codeCoverageIgnoreEnd
 
-        $probe = (string) tempnam($tmpDir, 'aop');
-        $uid = fileowner($probe); // the effective user, without ext-posix
+        // The owner of a file created here is the user the directory must belong to (no ext-posix needed)
+        $probe = tempnam($tmpDir, 'aop');
+        $uid = $probe === false ? false : fileowner($probe);
+        // @codeCoverageIgnoreStart
+        if ($probe === false || $uid === false) {
+            throw new NotWritableException("{$tmpDir} is not writable.");
+        }
+
+        // @codeCoverageIgnoreEnd
+
         @unlink($probe);
-        $dir = sprintf('%s/ray-aop-%s', $tmpDir, (string) $uid);
-        if (! is_dir($dir)) {
+        $dir = sprintf('%s/ray-aop-%d', $tmpDir, $uid);
+        if (! is_dir($dir) && ! is_link($dir)) {
             @mkdir($dir, 0700);
+            clearstatcache(true, $dir);
+            // @codeCoverageIgnoreStart
+            if (! is_dir($dir)) {
+                throw new NotWritableException("Could not create {$dir}.");
+            }
+
+            // @codeCoverageIgnoreEnd
         }
 
         clearstatcache(true, $dir);
-        $isPrivate = is_dir($dir) && fileowner($dir) === $uid && ((int) fileperms($dir) & 0022) === 0;
+        // fileowner() and fileperms() follow a symlink, so a link to a directory this user owns would pass them
+        $isPrivate = ! is_link($dir) && fileowner($dir) === $uid && ((int) fileperms($dir) & 0022) === 0;
         if (! $isPrivate) {
-            throw new NotWritableException("{$dir} must be owned by the current user and not writable by others.");
+            throw new NotWritableException("{$dir} must be a directory owned by the current user, not a symlink, and not writable by others.");
         }
 
         return $dir;

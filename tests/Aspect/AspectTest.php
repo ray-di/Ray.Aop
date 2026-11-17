@@ -15,8 +15,16 @@ use ReflectionClass;
 use function chmod;
 use function dirname;
 use function fileperms;
+use function mkdir;
 use function realpath;
+use function rename;
+use function rmdir;
+use function symlink;
 use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
+
+use const DIRECTORY_SEPARATOR;
 
 class AspectTest extends TestCase
 {
@@ -122,6 +130,10 @@ class AspectTest extends TestCase
 
     public function testDefaultTmpDirIsNotWritableByOthers(): string
     {
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->markTestSkipped('The default script dir is the per-user temp dir on Windows');
+        }
+
         $dir = $this->defaultScriptDir();
 
         $this->assertNotSame(realpath(sys_get_temp_dir()), realpath($dir));
@@ -140,6 +152,24 @@ class AspectTest extends TestCase
             new Aspect();
         } finally {
             chmod($dir, $mode);
+        }
+    }
+
+    #[Depends('testDefaultTmpDirIsNotWritableByOthers')]
+    public function testDefaultTmpDirThatIsASymlinkIsRejected(string $dir): void
+    {
+        $moved = $dir . '-' . uniqid();
+        $target = sys_get_temp_dir() . '/ray-aop-link-target-' . uniqid();
+        rename($dir, $moved);
+        mkdir($target, 0700);
+        symlink($target, $dir);
+        try {
+            $this->expectException(NotWritableException::class);
+            new Aspect();
+        } finally {
+            unlink($dir);
+            rmdir($target);
+            rename($moved, $dir);
         }
     }
 

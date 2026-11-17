@@ -59,7 +59,7 @@ final class MethodSignatureString
     {
         $argsList = $attribute->getArguments();
         $formattedArgs = [];
-        /** @var scalar $value */
+        /** @var mixed $value */
         foreach ($argsList as $name => $value) {
             $formattedArgs[] = $this->formatArg($name, $value);
         }
@@ -113,7 +113,7 @@ final class MethodSignatureString
         return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
     }
 
-    /** var_export() on one line; string values keep every character */
+    /** var_export() without the whitespace it adds to arrays; string values keep every character */
     private function export(mixed $value): string
     {
         if (! is_array($value)) {
