@@ -30,9 +30,6 @@ final class MethodSignatureString
         $this->typeString = new TypeString(self::NULLABLE);
     }
 
-    /**
-     * Returns a PSR12-friendly method signature: every line indented with 4 spaces.
-     */
     public function get(ReflectionMethod $method): string
     {
         $lines = [];
