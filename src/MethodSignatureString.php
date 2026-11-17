@@ -111,13 +111,13 @@ final class MethodSignatureString
      */
     private function formatArg($name, $value): string
     {
-        $formattedValue = $this->exportOneLine($value);
+        $formattedValue = $this->exportCompact($value);
 
         return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
     }
 
     /** @psalm-external-mutation-free */
-    private function exportOneLine(mixed $value): string
+    private function exportCompact(mixed $value): string
     {
         // Drop whitespace tokens only; a string literal is one token and keeps its content.
         $code = '';
@@ -141,7 +141,7 @@ final class MethodSignatureString
         $referenceStr = $param->isPassedByReference() ? '&' : '';
         $defaultStr = '';
         if ($param->isDefaultValueAvailable()) {
-            $defaultStr = ' = ' . $this->exportOneLine($param->getDefaultValue());
+            $defaultStr = ' = ' . $this->exportCompact($param->getDefaultValue());
         }
 
         return "{$attributesStr}{$typeStrWithSpace}{$referenceStr}{$variadicStr}\${$param->getName()}{$defaultStr}";
