@@ -11,6 +11,7 @@ use ReflectionMethod;
 use ReflectionParameter;
 
 use function array_merge;
+use function array_shift;
 use function implode;
 use function is_numeric;
 use function is_string;
@@ -18,7 +19,6 @@ use function sprintf;
 use function var_export;
 
 use const PHP_EOL;
-use const T_OPEN_TAG;
 use const T_WHITESPACE;
 
 final class MethodSignatureString
@@ -120,9 +120,11 @@ final class MethodSignatureString
     private function exportCompact(mixed $value): string
     {
         // Drop whitespace tokens only; a string literal is one token and keeps its content.
+        $tokens = PhpToken::tokenize(self::OPEN_TAG . var_export($value, true));
+        array_shift($tokens);
         $code = '';
-        foreach (PhpToken::tokenize(self::OPEN_TAG . var_export($value, true)) as $token) {
-            if ($token->id === T_OPEN_TAG || $token->id === T_WHITESPACE) {
+        foreach ($tokens as $token) {
+            if ($token->id === T_WHITESPACE) {
                 continue;
             }
 
