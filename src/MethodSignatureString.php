@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use PhpToken;
 use Reflection;
 use ReflectionAttribute;
 use ReflectionMethod;
 use ReflectionParameter;
 
 use function array_merge;
-use function array_shift;
 use function implode;
 use function is_numeric;
 use function is_string;
@@ -19,13 +17,11 @@ use function sprintf;
 use function var_export;
 
 use const PHP_EOL;
-use const T_WHITESPACE;
 
 final class MethodSignatureString
 {
     private const NULLABLE = 'null|';
     private const INDENT = '    ';
-    private const OPEN_TAG = '<?php ';
 
     private readonly TypeString $typeString;
 
@@ -111,27 +107,9 @@ final class MethodSignatureString
      */
     private function formatArg($name, $value): string
     {
-        $formattedValue = $this->exportCompact($value);
+        $formattedValue = var_export($value, true);
 
         return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
-    }
-
-    /** @psalm-external-mutation-free */
-    private function exportCompact(mixed $value): string
-    {
-        // Drop whitespace tokens only; a string literal is one token and keeps its content.
-        $tokens = PhpToken::tokenize(self::OPEN_TAG . var_export($value, true));
-        array_shift($tokens);
-        $code = '';
-        foreach ($tokens as $token) {
-            if ($token->id === T_WHITESPACE) {
-                continue;
-            }
-
-            $code .= $token->text;
-        }
-
-        return $code;
     }
 
     private function generateParameterCode(ReflectionParameter $param): string
@@ -143,7 +121,7 @@ final class MethodSignatureString
         $referenceStr = $param->isPassedByReference() ? '&' : '';
         $defaultStr = '';
         if ($param->isDefaultValueAvailable()) {
-            $defaultStr = ' = ' . $this->exportCompact($param->getDefaultValue());
+            $defaultStr = ' = ' . var_export($param->getDefaultValue(), true);
         }
 
         return "{$attributesStr}{$typeStrWithSpace}{$referenceStr}{$variadicStr}\${$param->getName()}{$defaultStr}";
