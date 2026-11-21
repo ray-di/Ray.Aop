@@ -11,7 +11,6 @@ use ReflectionParameter;
 
 use function array_merge;
 use function implode;
-use function is_array;
 use function is_numeric;
 use function is_string;
 use function sprintf;
@@ -31,9 +30,6 @@ final class MethodSignatureString
         $this->typeString = new TypeString(self::NULLABLE);
     }
 
-    /**
-     * Returns a PSR12-friendly method signature: every line indented with 4 spaces.
-     */
     public function get(ReflectionMethod $method): string
     {
         $lines = [];
@@ -59,7 +55,7 @@ final class MethodSignatureString
     {
         $argsList = $attribute->getArguments();
         $formattedArgs = [];
-        /** @var mixed $value */
+        /** @var scalar $value */
         foreach ($argsList as $name => $value) {
             $formattedArgs[] = $this->formatArg($name, $value);
         }
@@ -108,25 +104,9 @@ final class MethodSignatureString
      */
     private function formatArg($name, $value): string
     {
-        $formattedValue = $this->export($value);
+        $formattedValue = var_export($value, true);
 
         return is_numeric($name) ? $formattedValue : "{$name}: {$formattedValue}";
-    }
-
-    /** var_export() without the whitespace it adds to arrays; string values keep every character */
-    private function export(mixed $value): string
-    {
-        if (! is_array($value)) {
-            return var_export($value, true);
-        }
-
-        $items = '';
-        /** @psalm-suppress MixedAssignment */
-        foreach ($value as $key => $item) {
-            $items .= sprintf('%s=>%s,', var_export($key, true), $this->export($item));
-        }
-
-        return "array({$items})";
     }
 
     private function generateParameterCode(ReflectionParameter $param): string
@@ -138,7 +118,7 @@ final class MethodSignatureString
         $referenceStr = $param->isPassedByReference() ? '&' : '';
         $defaultStr = '';
         if ($param->isDefaultValueAvailable()) {
-            $defaultStr = ' = ' . $this->export($param->getDefaultValue());
+            $defaultStr = ' = ' . var_export($param->getDefaultValue(), true);
         }
 
         return "{$attributesStr}{$typeStrWithSpace}{$referenceStr}{$variadicStr}\${$param->getName()}{$defaultStr}";

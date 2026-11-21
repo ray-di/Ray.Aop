@@ -5,19 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
 
 ### Security
-- `new Aspect()` without a directory now writes proxies to a per-user `ray-aop-<uid>` directory (mode 0700) under the system temp dir instead of the shared temp dir itself. If you pass a script directory yourself, make sure no other user can write to it.
-- `new Aspect()` throws `NotWritableException` when that `ray-aop-<uid>` directory already exists but is a symlink, is owned by another user, or is writable by group or others.
+- `new Aspect()` without a directory writes proxies to a per-user `ray-aop-<uid>` directory (mode 0700) under the system temp dir, and throws `DirectoryNotPrivate` if another user can write to it. If you pass a script directory yourself, make sure no other user can write to it ([GHSA-hx92-2qxg-m977](https://github.com/ray-di/Ray.Aop/security/advisories/GHSA-hx92-2qxg-m977)).
 - An interceptor name containing a newline can no longer inject code into a generated proxy.
 
 ### Changed
 - Weaving a class that is not the first class in its file throws `MultipleClassInOneFileException`; it used to return the name of a class that does not exist.
 
 ### Fixed
-- Proxy methods keep attribute arguments and parameter default values exactly; whitespace inside string values was dropped.
 - A class whose attribute contains `Foo::class` followed by another name (e.g. a named argument) compiles instead of failing with `CompilationFailedException`.
+
+## 2.20.3 - 2026-11-17
+
+### Fixed
+- Strings in the attribute arguments and parameter default values of weaved methods keep their whitespace; `#[Link(title: 'Next page')]` read back as `'Nextpage'`.
 
 ## 2.20.2 - 2026-09-03
 

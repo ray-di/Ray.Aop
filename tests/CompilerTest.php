@@ -13,6 +13,7 @@ use Ray\Aop\Annotation\FakeMarker;
 use Ray\Aop\Annotation\FakeMarker3;
 use Ray\Aop\Exception\NotWritableException;
 use ReflectionClass;
+use ReflectionParameter;
 
 use function array_map;
 use function array_shift;
@@ -233,6 +234,30 @@ class CompilerTest extends TestCase
         /** @var object[] $annotations */
         $annotations = (new ReflectionMethod($class, 'getDouble'))->getAnnotations();
         $this->assertCount(4, $annotations);
+    }
+
+    public function testAttributeArgumentsKeepWhitespaceInStrings(): void
+    {
+        $bind = (new Bind())->bindInterceptors('get', [new NullInterceptor()]);
+        $class = $this->compiler->compile(FakeAttributeTextClass::class, $bind);
+        $this->assertNotSame(FakeAttributeTextClass::class, $class);
+
+        $original = (new ReflectionMethod(FakeAttributeTextClass::class, 'get'))->getAttributes()[0]->newInstance();
+        $weaved = (new ReflectionMethod($class, 'get'))->getAttributes()[0]->newInstance();
+        $this->assertEquals($original, $weaved);
+    }
+
+    public function testParameterDefaultValuesKeepWhitespaceInStrings(): void
+    {
+        $bind = (new Bind())->bindInterceptors('get', [new NullInterceptor()]);
+        $class = $this->compiler->compile(FakeDefaultTextClass::class, $bind);
+        $this->assertNotSame(FakeDefaultTextClass::class, $class);
+
+        $defaults = static fn (string $class): array => array_map(
+            static fn (ReflectionParameter $param): mixed => $param->getDefaultValue(),
+            (new ReflectionMethod($class, 'get'))->getParameters(),
+        );
+        $this->assertSame($defaults(FakeDefaultTextClass::class), $defaults($class));
     }
 
     public function testClassWithoutNamespaceCanBeCompiled(): void

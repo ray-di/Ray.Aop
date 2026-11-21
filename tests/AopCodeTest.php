@@ -17,6 +17,7 @@ use function implode;
 use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;
+use function var_export;
 
 use const PHP_EOL;
 
@@ -86,7 +87,7 @@ class AopCodeTest extends TestCase
             implode(
                 PHP_EOL,
                 [
-                    '    #[\\Ray\\Aop\\Annotation\\FakeMarker4(array(0=>1,1=>2,), 3)]',
+                    '    #[\\Ray\\Aop\\Annotation\\FakeMarker4(' . var_export([1, 2], true) . ', 3)]',
                     '    public function method21()',
                 ]
             ),
