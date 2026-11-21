@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use PHPUnit\Framework\TestCase;
-use Ray\Aop\Exception\DirectoryNotPrivate;
+use Ray\Aop\Exception\DirectoryNotPrivateException;
 
 use function chmod;
 use function dirname;
@@ -45,7 +45,7 @@ class PrivateTmpDirTest extends TestCase
         $dir = (new PrivateTmpDir())($this->baseDir);
         chmod($dir, 0777);
 
-        $this->expectException(DirectoryNotPrivate::class);
+        $this->expectException(DirectoryNotPrivateException::class);
         (new PrivateTmpDir())($this->baseDir);
     }
 
@@ -57,7 +57,7 @@ class PrivateTmpDirTest extends TestCase
         mkdir($ownDir, 0700);
         symlink($ownDir, $dir);
 
-        $this->expectException(DirectoryNotPrivate::class);
+        $this->expectException(DirectoryNotPrivateException::class);
         (new PrivateTmpDir())($this->baseDir);
     }
 }

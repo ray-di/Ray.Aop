@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ray\Aop;
 
-use Ray\Aop\Exception\DirectoryNotPrivate;
+use Ray\Aop\Exception\DirectoryNotPrivateException;
 use Ray\Aop\Exception\NotWritableException;
 
 use function clearstatcache;
@@ -49,7 +49,7 @@ final class PrivateTmpDir
             && $stat['uid'] === $uid
             && ($stat['mode'] & self::WRITABLE_BY_GROUP_OR_OTHERS) === 0;
         if (! $isPrivate) {
-            throw new DirectoryNotPrivate($dir);
+            throw new DirectoryNotPrivateException($dir);
         }
 
         return $dir;

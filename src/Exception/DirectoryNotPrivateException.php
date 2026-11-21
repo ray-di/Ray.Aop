@@ -11,6 +11,6 @@ use RuntimeException;
  *
  * Message format: {directory path}
  */
-final class DirectoryNotPrivate extends RuntimeException implements ExceptionInterface
+final class DirectoryNotPrivateException extends RuntimeException implements ExceptionInterface
 {
 }
