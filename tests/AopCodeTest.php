@@ -7,6 +7,7 @@ namespace Ray\Aop;
 use FakeGlobalInterceptor;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\Exception\InvalidSourceClassException;
+use Ray\Aop\Exception\MultipleClassInOneFileException;
 use ReflectionClass;
 use stdClass;
 
@@ -396,5 +397,32 @@ class AopCodeTest extends TestCase
         // Class-string interceptor: short name extracted without instantiation
         // Global-namespace class: no backslash, so full name is the short name
         $this->assertStringContainsString('// FakeGlobalInterceptor, NullInterceptor', $code);
+    }
+
+    public function testInterceptorNameStaysInsideComment(): void
+    {
+        $anonymous = new class implements MethodInterceptor {
+            public function invoke(MethodInvocation $invocation): mixed
+            {
+                return $invocation->proceed();
+            }
+        };
+        $bind = new Bind();
+        /** @phpstan-ignore-next-line — not a class name on purpose */
+        $bind->bindInterceptors('returnSame', [$anonymous, "Foo\necho 'injected'; //"]);
+        $code = $this->codeGen->generate(new ReflectionClass(FakeMock::class), $bind, '_test');
+
+        $this->assertDoesNotMatchRegularExpression('/^\s*echo/m', $code);
+        $this->assertStringNotContainsString("\0", $code);
+    }
+
+    public function testClassThatIsNotFirstInItsFileIsRejected(): void
+    {
+        class_exists(FakeTwoClass::class); // loads the file that also declares FakeTwoClassTwo
+        $bind = new Bind();
+        $bind->bindInterceptors('foo', []);
+
+        $this->expectException(MultipleClassInOneFileException::class);
+        $this->codeGen->generate(new ReflectionClass(FakeTwoClassTwo::class), $bind, '_test');
     }
 }

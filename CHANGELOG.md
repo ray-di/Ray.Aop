@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- `new Aspect()` without a directory writes proxies to a per-user `ray-aop-<uid>` directory (mode 0700) under the system temp dir, and throws `DirectoryNotPrivateException` if another user can write to it. If you pass a script directory yourself, make sure no other user can write to it ([GHSA-hx92-2qxg-m977](https://github.com/ray-di/Ray.Aop/security/advisories/GHSA-hx92-2qxg-m977)).
+- An interceptor name containing a newline can no longer inject code into a generated proxy.
+
+### Changed
+- Weaving a class that is not the first class in its file throws `MultipleClassInOneFileException`; it used to return the name of a class that does not exist.
+
+### Fixed
+- A class whose attribute contains `Foo::class` followed by another name (e.g. a named argument) compiles instead of failing with `CompilationFailedException`.
+- The deprecated `Ray\ServiceLocator\Cache` returns cached values that contain `'` or `\` unchanged.
+
 ## 2.20.3 - 2026-11-17
 
 ### Fixed

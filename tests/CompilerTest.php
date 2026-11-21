@@ -277,6 +277,21 @@ class CompilerTest extends TestCase
         $this->assertStringContainsString($expected, $file);
     }
 
+    public function testProxyKeepsAttributeArgumentsAndDefaultValues(): void
+    {
+        $bind = (new Bind())->bindInterceptors('run', [new NullInterceptor()]);
+        $class = $this->compiler->compile(FakeAttributeArgs::class, $bind);
+
+        $source = new ReflectionMethod(FakeAttributeArgs::class, 'run');
+        $proxy = new ReflectionMethod($class, 'run');
+        $this->assertNotSame($source->class, $proxy->class);
+        foreach ($source->getAttributes() as $i => $attribute) {
+            $this->assertSame($attribute->getArguments(), $proxy->getAttributes()[$i]->getArguments());
+        }
+
+        $this->assertSame($source->getParameters()[0]->getDefaultValue(), $proxy->getParameters()[0]->getDefaultValue());
+    }
+
     public function testCompileLeavesNoSwapFile(): void
     {
         $dir = sys_get_temp_dir() . '/ray-aop-' . uniqid();

@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Ray\Aop;
 
 use Ray\Aop\Exception\InvalidSourceClassException;
+use Ray\Aop\Exception\MultipleClassInOneFileException;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
+use function explode;
 use function file_get_contents;
 use function implode;
 use function is_object;
@@ -16,6 +18,7 @@ use function preg_replace;
 use function preg_replace_callback;
 use function rtrim;
 use function sprintf;
+use function str_ends_with;
 use function strrpos;
 use function substr;
 use function substr_replace;
@@ -118,9 +121,13 @@ PHP;
         $this->code = substr_replace($this->code, $code . '}', $lastBrace);
     }
 
-    /** @psalm-external-mutation-free */
-    private function addClassName(string $className, string $postfix): void
+    /** @param ReflectionClass<object> $sourceClass */
+    private function addClassName(string $className, string $postfix, ReflectionClass $sourceClass): void
     {
+        if ($className !== $sourceClass->getShortName()) {
+            throw new MultipleClassInOneFileException($sourceClass->getName());
+        }
+
         $newClassName = $className . $postfix;
         $this->add($newClassName . ' extends ' . $className . ' ');
     }
@@ -153,7 +160,8 @@ PHP;
 
         for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
             [$id, $text] = $iterator->getToken();
-            $isClassKeyword = $id === T_CLASS;
+            // "Foo::class" is a constant, not a declaration
+            $isClassKeyword = $id === T_CLASS && ! str_ends_with(rtrim($this->code), '::');
             if ($isClassKeyword) {
                 $inClass = true;
                 $this->add($text);
@@ -163,7 +171,7 @@ PHP;
             $isClassName = $inClass && $id === T_STRING && empty($className);
             if ($isClassName) {
                 $className = $text;
-                $this->addClassName($className, $postfix);
+                $this->addClassName($className, $postfix, $sourceClass);
                 continue;
             }
 
@@ -263,8 +271,11 @@ PHP;
         $names = [];
         foreach ($interceptors as $interceptor) {
             $fqn = is_object($interceptor) ? $interceptor::class : $interceptor;
-            $pos = strrpos($fqn, '\\');
-            $names[] = $pos === false ? $fqn : substr($fqn, $pos + 1);
+            $name = explode("\0", $fqn, 2)[0]; // an anonymous class name is followed by "\0<file>:<line>"
+            $pos = strrpos($name, '\\');
+            $shortName = $pos === false ? $name : substr($name, $pos + 1);
+            // The name lands in a "//" comment of the generated code: nothing may end that comment
+            $names[] = (string) preg_replace('/[^\w@\x80-\xff]/', '', $shortName);
         }
 
         return $names === [] ? '(none)' : implode(', ', $names);

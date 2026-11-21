@@ -45,7 +45,7 @@ final class Aspect
     public function __construct(string|null $tmpDir = null)
     {
         if ($tmpDir === null) {
-            $tmpDir = sys_get_temp_dir();
+            $tmpDir = (new PrivateTmpDir())(sys_get_temp_dir());
         }
 
         // Defensive validation for resolved temp dirs.

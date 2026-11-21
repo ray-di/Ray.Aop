@@ -9,8 +9,14 @@ use Ray\Aop\Annotation\FakeClassMarker;
 use Ray\Aop\Exception\NotWritableException;
 use Ray\Aop\Matcher\AnyMatcher;
 use Ray\Aop\Matcher\StartsWithMatcher;
+use ReflectionClass;
 
 use function dirname;
+use function fileperms;
+use function realpath;
+use function sys_get_temp_dir;
+
+use const DIRECTORY_SEPARATOR;
 
 class AspectTest extends TestCase
 {
@@ -114,10 +120,18 @@ class AspectTest extends TestCase
         $this->assertEquals('intercepted intercepted original', $result);
     }
 
-    public function testDefaultTmpDirIsUsedWhenNullPassed(): void
+    public function testDefaultTmpDirIsPrivate(): void
     {
-        // Default constructor should use sys_get_temp_dir()
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->markTestSkipped('No POSIX owner/mode on Windows.');
+        }
+
         $aspect = new Aspect();
-        $this->assertInstanceOf(Aspect::class, $aspect);
+        $aspect->bind(new AnyMatcher(), new StartsWithMatcher('my'), [new FakeMyInterceptor()]);
+        $weaved = $aspect->newInstance(FakeNonFinalClass::class);
+        $dir = dirname((string) (new ReflectionClass($weaved))->getFileName());
+
+        $this->assertSame(realpath((new PrivateTmpDir())(sys_get_temp_dir())), realpath($dir));
+        $this->assertSame(0, fileperms($dir) & 0022);
     }
 }
