@@ -19,6 +19,7 @@
     use function tempnam;
     use function unlink;
     use function unserialize;
+    use function var_export;
 
     use const DIRECTORY_SEPARATOR;
     use const PATHINFO_DIRNAME;
@@ -96,9 +97,7 @@ final class Cache
         }
 
         $tmpFile = (string) tempnam($filepath, 'swap');
-        $valueWithSingileQuote = "'{$value}'";
-
-        $content = '<?php return ' . $valueWithSingileQuote . ';';
+        $content = '<?php return ' . var_export($value, true) . ';';
         if (file_put_contents($tmpFile, $content) !== false) {
             if (@rename($tmpFile, $filename)) {
                 return;

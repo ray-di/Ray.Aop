@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - A class whose attribute contains `Foo::class` followed by another name (e.g. a named argument) compiles instead of failing with `CompilationFailedException`.
+- The deprecated `Ray\ServiceLocator\Cache` returns cached values that contain `'` or `\` unchanged.
 
 ## 2.20.3 - 2026-11-17
 
